@@ -137,3 +137,23 @@ class CapabilityAttachment(models.Model):
 
     class Meta:
         db_table = 'capability_attachment'
+
+class ProductPerson(TimeStampMixin, UUIDMixin):
+    PERSON_TYPE_USER = 0
+    PERSON_TYPE_PRODUCT_ADMIN = 1
+    PERSON_TYPE_PRODUCT_MANAGER = 2
+    PERSON_TYPE_CONTRIBUTOR = 3
+
+    PERSON_TYPE = (
+        (PERSON_TYPE_USER, "User"),
+        (PERSON_TYPE_PRODUCT_ADMIN, "Product Admin"),
+        (PERSON_TYPE_PRODUCT_MANAGER, "Product Manager"),
+        (PERSON_TYPE_CONTRIBUTOR, "Contributor"),
+    )
+    product = models.ForeignKey('work.Product', on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    right = models.IntegerField(choices=PERSON_TYPE, default=0)
+
+    def __str__(self):
+        return '{} is {} of {}'.format(self.person.user.username, self.get_right_display(), self.product)
+

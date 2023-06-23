@@ -270,7 +270,6 @@ class Bounty(TimeStampMixin):
     is_active = models.BooleanField(default=True)
 
 
-
 class ChallengeListing(models.Model):
     challenge = models.OneToOneField(Challenge, on_delete=models.CASCADE, unique=True)
     title = models.TextField()
