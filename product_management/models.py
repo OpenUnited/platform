@@ -54,7 +54,7 @@ class Capability(MP_Node):
 @receiver(post_save, sender=Capability)
 def save_capability(sender, instance, created, **kwargs):
     if not created:
-        # update tasklisting when capability info is updated
+        # update challengelisting when capability info is updated
         ChallengeListing.objects.filter(capability=instance).update(capability_data=to_dict(instance))
 
 class Initiative(TimeStampMixin, UUIDMixin):
@@ -73,14 +73,14 @@ class Initiative(TimeStampMixin, UUIDMixin):
     def __str__(self):
         return self.name
 
-    def get_available_tasks_count(self):
-        return self.task_set.filter(status=Task.TASK_STATUS_AVAILABLE).count()
+    def get_available_challenges_count(self):
+        return self.challenge_set.filter(status=Challenge.CHALLENGE_STATUS_AVAILABLE).count()
 
-    def get_completed_task_count(self):
-        return self.task_set.filter(status=Task.TASK_STATUS_DONE).count()
+    def get_completed_challenges_count(self):
+        return self.challenge_set.filter(status=Challenge.CHALLENGE_STATUS_DONE).count()
 
-    def get_task_tags(self):
-        return Tag.objects.filter(task_tags__initiative=self).distinct("id").all()
+    def get_challenge_tags(self):
+        return Challenge.objects.filter(task_tags__initiative=self).distinct("id").all()
 
     @staticmethod
     def get_filtered_data(input_data, filter_data=None, exclude_data=None):
@@ -100,10 +100,10 @@ class Initiative(TimeStampMixin, UUIDMixin):
             filter_data["status__in"] = statuses
 
         if tags:
-            filter_data["task__tag__in"] = tags
+            filter_data["challenge__tag__in"] = tags
 
         if categories:
-            filter_data["task__category__parent__in"] = categories
+            filter_data["challenge__category__parent__in"] = categories
 
         queryset = Initiative.objects.filter(**filter_data)
         if exclude_data:
@@ -115,7 +115,7 @@ class Initiative(TimeStampMixin, UUIDMixin):
 @receiver(post_save, sender=Initiative)
 def save_initiative(sender, instance, created, **kwargs):
     if not created:
-        # update tasklisting when initiative info is updated
+        # update challengelisting when initiative info is updated
         ChallengeListing.objects.filter(initiative=instance).update(initiative_data=to_dict(instance))
 
 
