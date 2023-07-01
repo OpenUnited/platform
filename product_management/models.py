@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.db import models
+
 class Product(ProductMixin):
     attachment = models.ManyToManyField(Attachment, related_name="product_attachements", blank=True)
     capability_start = models.ForeignKey(Capability, on_delete=models.CASCADE, null=True, editable=False)
