@@ -15,12 +15,30 @@ from notification.models import Notification
 from talent.models import Person
 from work.models import Bounty
 
-CLAIM_TYPE_DONE = 0
-CLAIM_TYPE_ACTIVE = 1
-CLAIM_TYPE_FAILED = 2
-CLAIM_TYPE_IN_REVIEW = 3
+class Organisation(TimeStampMixin):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    username = models.CharField(max_length=39,
+                                unique=True,
+                                default='',
+                                validators=[
+                                    RegexValidator(
+                                        regex="^[a-z0-9]*$",
+                                        message="Username may only contain letters and numbers",
+                                        code="invalid_username"
+                                    )
+                                ])
+    name = models.CharField(max_length=512, unique=True)
+    photo = models.ImageField(upload_to='avatars/', null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = "Organisations"
 
+    def get_username(self):
+        return self.username
+
+    def __str__(self):
+        return self.name
+        
 class OrganisationAccountCredit(TimeStampMixin, UUIDMixin):
     organisation_account = models.ForeignKey(to='OrganisationAccount', on_delete=models.CASCADE)
     number_of_points = models.PositiveIntegerField()

@@ -1,7 +1,7 @@
 from django.db import models
 
 class Product(ProductMixin):
-    attachment = models.ManyToManyField(Attachment, related_name="product_attachements", blank=True)
+    attachment = models.ManyToManyField(Attachment, related_name="product_attachments", blank=True)
     capability_start = models.ForeignKey(Capability, on_delete=models.CASCADE, null=True, editable=False)
     owner = models.ForeignKey('commercial.ProductOwner', on_delete=models.CASCADE, null=True)
 
