@@ -272,7 +272,7 @@ class ContributorReward(TimeStampMixin, UUIDMixin):
 
 class ContributorAccountCredit(TimeStampMixin, UUIDMixin):
     CreditReason = (
-        (1, "TASK"),
+        (1, "BOUNTY"),
         (2, "LIQUIDATION"),
         (3, "REWARD")
     )

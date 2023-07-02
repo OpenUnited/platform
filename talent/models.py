@@ -71,7 +71,7 @@ def save_bounty_claim(sender, instance, created, **kwargs):
             if reviewer:
                 notify.send(instance, recipient=reviewer_user, verb=subject, description=message)
                 notification.tasks.send_notification.delay([Notification.Type.EMAIL],
-                                                           Notification.EventType.TASK_READY_TO_REVIEW,
+                                                           Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
                                                            receivers=[reviewer.id],
                                                            task_title=challenge.title,
                                                            task_link=challenge.get_challenge_link())
@@ -120,7 +120,7 @@ def save_bounty_claim_request(sender, instance, created, **kwargs):
         if reviewer:
             notify.send(instance, recipient=reviewer_user, verb=subject, description=message)
             notification.tasks.send_notification.delay([Notification.Type.EMAIL],
-                                                       Notification.EventType.TASK_DELIVERY_ATTEMPT_CREATED,
+                                                       Notification.EventType.BOUNTY_DELIVERY_ATTEMPT_CREATED,
                                                        receivers=[reviewer.id],
                                                        task_title=bounty_claim.bounty.challenge.title)
     if not created:
