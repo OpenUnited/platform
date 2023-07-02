@@ -6,6 +6,8 @@
 # Icon must end with two \r
 Icon
 
+# Data
+utility-scripts/export/*
 
 # Thumbnails
 ._*
