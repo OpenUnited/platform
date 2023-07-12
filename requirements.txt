@@ -7,7 +7,6 @@ sentry-sdk  # https://github.com/getsentry/sentry-python
 # ------------------------------------------------------------------------------
 django-anymail  # https://github.com/anymail/django-anymail
 django-storages
-django-environ
 
 requests
 
