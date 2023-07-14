@@ -56,8 +56,8 @@ class PersonWebsite(models.Model):
 class PersonSkill(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, default=None,
                                        related_name="skills")
-    skill = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
-    expertise = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
+    skill = models.JSONField(blank=True, null=True)
+    expertise = models.JSONField(blank=True, null=True)
 
 
 class Skill(AncestryMixin):

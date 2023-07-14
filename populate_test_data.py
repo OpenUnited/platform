@@ -58,11 +58,14 @@ else:
 
     update_stdout("Create PersonSkill records")
 
-    #full-stack development
+    #Skill: Full-stack Development
     full_stack_development = Skill.objects.get(pk=106)
 
-    PersonSkill()
+    #Expertise: Django
+    django_expertise = Expertise.objects.get(pk=33)
 
+    gary_skill = PersonSkill(person=gary, skill=full_stack_development.ancestry(), expertise=django_expertise.ancestry())
+    gary_skill.save()
 
     update_stdout("Create User records")
 
