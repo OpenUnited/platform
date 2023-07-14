@@ -6,7 +6,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
-from talent.models import Person
+from talent.models import Person, PersonProfile
 from security.models import User
 
 print("Django version: " + django.get_version())
@@ -23,7 +23,7 @@ else:
 
     print(Person.objects.all().count())
 
-    sys.stdout.write("\r.....Create Person records".ljust(80, "."))
+    sys.stdout.write("\r.....Create User & Person records".ljust(80, "."))
     sys.stdout.flush()
     time.sleep(0.5)
 
@@ -36,17 +36,32 @@ else:
     gary_user.save()
     gary = Person(user=gary_user, full_name='Gary Garner', preferred_name='Gary', headline='I am Gary', test_user=True)
     gary.save()
-    
-    # shirly = Person(full_name='Shirley Ghostman', preferred_name='Shirl', test_user=True)
-    # shirly.save()
+
+    shirley_user = User(email="test+shirley@openunited.com", username="shirleyaghost")
+    shirley_user.save()
+    shirley = Person(user=shirley_user, full_name='Shirley Ghostman', preferred_name='Shirl', headline='Shirley Ghostman here', test_user=True)
+    shirley.save()
 
     sys.stdout.write("\r.....Create Profile records".ljust(80, "."))
     sys.stdout.flush()
     time.sleep(0.5)
 
+    #Clear and create PersonProfile records
+    
+    PersonProfile.objects.all().delete()
+
+    gary_profile = PersonProfile(person=gary, overview="Hi, I am Gary! This is my overview.")
+    gary_profile.save()
+
+    shirley_profile = PersonProfile(person=shirley, overview="Hi, I am Shirley! This is my brief overview.")
+    shirley_profile.save()
+
+
     sys.stdout.write("\r.....Create PersonSkill records".ljust(80, "."))
     sys.stdout.flush()
     time.sleep(0.5)
+
+    
 
     sys.stdout.write("\r.....Create User records".ljust(80, "."))
     sys.stdout.flush()
