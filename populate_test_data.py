@@ -43,6 +43,7 @@ else:
 
     update_stdout("Setup Skills & Expertise records")
 
+    Skill.objects.all().delete()
     skill_file = os.path.abspath("utility/reference_data/skill.json")
     with open(skill_file) as json_file:
         skill_data_set = json.load(json_file)
@@ -50,6 +51,7 @@ else:
             skill = Skill(**skill_data)
             skill.save()
 
+    Expertise.objects.all().delete()
     expertise_file = os.path.abspath("utility/reference_data/expertise.json")
     with open(expertise_file) as json_file:
         expertise_data_set = json.load(json_file)
