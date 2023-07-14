@@ -18,6 +18,16 @@ def update_stdout(message):
     sys.stdout.flush()
     time.sleep(0.5)
 
+def load_reference_data(classname):
+    klass = eval(classname.capitalize())
+    klass.objects.all().delete()
+    file = os.path.abspath("utility/reference_data/"+classname+".json")
+    with open(file) as json_file:
+        data_set = json.load(json_file)
+        for data in data_set:
+            obj = klass(**data)
+            obj.save()
+
 proceed = input("Running this script will replace all your current data. Ok? (Y/N)").lower()[0]
 
 if proceed != "y":
@@ -43,23 +53,11 @@ else:
 
     update_stdout("Setup Skills & Expertise records")
 
-    Skill.objects.all().delete()
-    skill_file = os.path.abspath("utility/reference_data/skill.json")
-    with open(skill_file) as json_file:
-        skill_data_set = json.load(json_file)
-        for skill_data in skill_data_set:
-            skill = Skill(**skill_data)
-            skill.save()
-
-    Expertise.objects.all().delete()
-    expertise_file = os.path.abspath("utility/reference_data/expertise.json")
-    with open(expertise_file) as json_file:
-        expertise_data_set = json.load(json_file)
-        for expertise_data in expertise_data_set:
-            expertise = Expertise(**expertise_data)
-            expertise.save()
+    load_reference_data("skill")
+    load_reference_data("expertise")
 
     update_stdout("Create PersonSkill records")
+
 
 
     update_stdout("Create User records")
