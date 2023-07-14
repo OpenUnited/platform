@@ -2,13 +2,14 @@ import os
 import sys
 import time
 import django
-# from talent.models import Person
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
-print("Django version: " + django.get_version())
+from talent.models import Person
+from security.models import User
 
+print("Django version: " + django.get_version())
 
 proceed = input("Running this script will replace all your current data. Ok? (Y/N)").lower()[0]
 
@@ -20,18 +21,23 @@ else:
     sys.stdout.flush()
     time.sleep(0.5)
 
-    # print(Person.object.all().count())
+    print(Person.objects.all().count())
 
     sys.stdout.write("\r.....Create Person records".ljust(80, "."))
     sys.stdout.flush()
     time.sleep(0.5)
 
-    #Create Person records 
-
-    # gary = Person(full_name='Gary Garner',email='test+garry@openunited.com')
-    # gary.save()
+    #Clear and create User and Person records
     
-    # shirly = Person(full_name='Shirley Ghostman',email='test+shirly@openunited.com')
+    Person.objects.all().delete()
+    User.objects.all().delete()
+
+    gary_user = User(email="test+gary@openunited.com", username="garyg")
+    gary_user.save()
+    gary = Person(user=gary_user, full_name='Gary Garner', preferred_name='Gary', headline='I am Gary', test_user=True)
+    gary.save()
+    
+    # shirly = Person(full_name='Shirley Ghostman', preferred_name='Shirl', test_user=True)
     # shirly.save()
 
     sys.stdout.write("\r.....Create Profile records".ljust(80, "."))
@@ -82,5 +88,6 @@ else:
     sys.stdout.write("\r.....Create Portfolio records".ljust(80, "."))
     sys.stdout.flush()
     time.sleep(0.5)
+
+    sys.stdout.write("\r.....Complete!".ljust(80, "."))
     
-   
