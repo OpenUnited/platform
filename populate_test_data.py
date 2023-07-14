@@ -40,7 +40,8 @@ else:
     shirley = Person(user=shirley_user, full_name='Shirley Ghostman', preferred_name='Shirl', headline='Shirley Ghostman here', test_user=True)
     shirley.save()
 
-    update_stdout("Create Profile records")
+    update_stdout("Setup Skills & Expertise records")
+
 
 
     update_stdout("Create PersonSkill records")

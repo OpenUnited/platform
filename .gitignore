@@ -7,7 +7,7 @@
 Icon
 
 # Data
-utility-scripts/export/*
+utility/export/*
 
 # Thumbnails
 ._*
