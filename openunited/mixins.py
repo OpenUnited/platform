@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-
+import json
 
 class TimeStampMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -16,6 +16,26 @@ class UUIDMixin(models.Model):
     class Meta:
         abstract = True
 
+class AncestryMixin(models.Model):
+    class Meta:
+        abstract=True
+
+    def ancestry(self):
+        lineage = []
+        lineage.insert(0, self.name)
+        if self.parent is None:
+            return json.dumps(lineage)
+        else:
+            return __class__.s_ancestry(self.parent, lineage)
+    
+    @staticmethod
+    def s_ancestry(obj, lineage):
+        lineage.insert(0, obj.name)
+        if obj.parent is None:
+            return json.dumps(lineage)
+        else:
+            return __class__.s_ancestry(obj.parent, lineage)
+    
 
 class VoteMixin(TimeStampMixin, UUIDMixin):
     VOTE_TYPES = (

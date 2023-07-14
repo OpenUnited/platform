@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from openunited.mixins import TimeStampMixin, UUIDMixin
+from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 
 CLAIM_TYPE_DONE = 0
 CLAIM_TYPE_ACTIVE = 1
@@ -54,12 +54,13 @@ class PersonWebsite(models.Model):
                                related_name="websites")
 
 class PersonSkill(models.Model):
-    skill = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
-    expertise = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, default=None,
                                        related_name="skills")
-    
-class Skill(models.Model):
+    skill = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
+    expertise = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
+
+
+class Skill(AncestryMixin):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, default=None,
                                related_name="children")
     active = models.BooleanField(default=False, db_index=True)
@@ -68,23 +69,6 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
-    
-    def ancestry(self):
-        lineage = []
-        lineage.insert(0, self.name)
-        if self.parent is None:
-            return json.dumps(lineage)
-        else:
-            return __class__.s_ancestry(self.parent, lineage)
-    
-    @staticmethod
-    def s_ancestry(obj, lineage):
-        lineage.insert(0, obj.name)
-        if obj.parent is None:
-            return json.dumps(lineage)
-        else:
-            return __class__.s_ancestry(obj.parent, lineage)
-
 
     @staticmethod
     def get_active_skills(active=True, parent=None):
@@ -95,7 +79,7 @@ class Skill(models.Model):
         return Skill.objects.filter(active=active, parent=None).values('id', 'name')
 
 
-class Expertise(models.Model):
+class Expertise(AncestryMixin):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, default=None,
                                related_name="expertise_children")
     skill = models.ForeignKey(Skill, on_delete=models.SET_NULL, null=True, blank=True, default=None,
