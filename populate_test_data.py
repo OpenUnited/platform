@@ -6,10 +6,16 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
-from talent.models import Person, PersonProfile
+from talent.models import Person
 from security.models import User
 
 print("Django version: " + django.get_version())
+
+def update_stdout(message):
+    output = ("\r....."+message).ljust(80, ".")
+    sys.stdout.write(output)
+    sys.stdout.flush()
+    time.sleep(0.5)
 
 proceed = input("Running this script will replace all your current data. Ok? (Y/N)").lower()[0]
 
@@ -17,15 +23,7 @@ if proceed != "y":
     print("Stopped at your request")
 else:
 
-    sys.stdout.write("\r.....Deleting all data".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    print(Person.objects.all().count())
-
-    sys.stdout.write("\r.....Create User & Person records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
+    update_stdout("Create User & Person records")
 
     #Clear and create User and Person records
     
@@ -42,67 +40,41 @@ else:
     shirley = Person(user=shirley_user, full_name='Shirley Ghostman', preferred_name='Shirl', headline='Shirley Ghostman here', test_user=True)
     shirley.save()
 
-    sys.stdout.write("\r.....Create Profile records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
+    update_stdout("Create Profile records")
 
-    #Clear and create PersonProfile records
+
+    update_stdout("Create PersonSkill records")
+
+
+    update_stdout("Create User records")
+
+
+    update_stdout("Create Product records")
+
+
+    update_stdout("Create ProductPerson records")
+
+
+    update_stdout("Create Capability records")
+
+
+    update_stdout("Create Challenge records")
+
+
+    update_stdout("Create Challenge Dependency records")
+
+
+    update_stdout("Create Bounty records")
+
+
+    update_stdout("Create BountyClaim records")
+
+
+    update_stdout("Create BountyClaim Submission Attempt records")
+
+
+    update_stdout("Create Portfolio records")
+
     
-    PersonProfile.objects.all().delete()
+    update_stdout("Complete!")
 
-    gary_profile = PersonProfile(person=gary, overview="Hi, I am Gary! This is my overview.")
-    gary_profile.save()
-
-    shirley_profile = PersonProfile(person=shirley, overview="Hi, I am Shirley! This is my brief overview.")
-    shirley_profile.save()
-
-
-    sys.stdout.write("\r.....Create PersonSkill records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    
-
-    sys.stdout.write("\r.....Create User records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create Product records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create ProductPerson records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create Capability records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create Challenge records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create Challenge Dependency records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create Bounty records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create BountyClaim records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Create BountyClaim Submission Attempt records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-
-    sys.stdout.write("\r.....Create Portfolio records".ljust(80, "."))
-    sys.stdout.flush()
-    time.sleep(0.5)
-
-    sys.stdout.write("\r.....Complete!".ljust(80, "."))
-    
