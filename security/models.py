@@ -1,54 +1,50 @@
 import re
 import uuid
 
+from django.contrib import auth
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser
 from django.core.validators import RegexValidator
 from django.db import models
-from polymorphic.managers import PolymorphicManager
-from django.contrib.auth.models import AbstractBaseUser
+# from commerce.models import Organisation
 
-from backend.mixins import TimeStampMixin, UUIDMixin
-from commerce.models import Organisation
 
-from django.contrib import auth
+# class OrganisationPerson(TimeStampMixin, UUIDMixin):
+#     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+#     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+#     right = models.IntegerField(choices=ProductPerson.PERSON_TYPE, default=0)
 
-class OrganisationPerson(TimeStampMixin, UUIDMixin):
-    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    right = models.IntegerField(choices=ProductPerson.PERSON_TYPE, default=0)
+#     def __str__(self):
+#         return '{} is {} of {}'.format(self.person, self.right, self.organisation)
 
-    def __str__(self):
-        return '{} is {} of {}'.format(self.person, self.right, self.organisation)
+# class ProductOwner(TimeStampMixin, UUIDMixin):
+#     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, blank=True, null=True, default=None)
+#     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
 
-class ProductOwner(TimeStampMixin, UUIDMixin):
-    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, blank=True, null=True, default=None)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+#     def __str__(self):
+#         return f"Person: {self.person.first_name}" if self.person else f"Organization: {self.organisation.name}"
 
-    def __str__(self):
-        return f"Person: {self.person.first_name}" if self.person else f"Organization: {self.organisation.name}"
+#     def clean(self):
+#         if not self.organisation and not self.person:
+#             raise ValidationError("Please select person or organisation")
 
-    def clean(self):
-        if not self.organisation and not self.person:
-            raise ValidationError("Please select person or organisation")
+#     def get_username(self):
+#         try:
+#             if not self.person:
+#                 return self.organisation.get_username()
+#             return self.person.get_username()
+#         except AttributeError:
+#             return self.organisation.get_username()
+#         except BaseException:
+#             return ""
 
-    def get_username(self):
-        try:
-            if not self.person:
-                return self.organisation.get_username()
-            return self.person.get_username()
-        except AttributeError:
-            return self.organisation.get_username()
-        except BaseException:
-            return ""
-
-    @classmethod
-    def get_or_create(cls, person):
-        try:
-            return cls.objects.get(person=person)
-        except cls.DoesNotExist:
-            obj = cls.objects.create(person=person)
-            return obj
+#     @classmethod
+#     def get_or_create(cls, person):
+#         try:
+#             return cls.objects.get(person=person)
+#         except cls.DoesNotExist:
+#             obj = cls.objects.create(person=person)
+#             return obj
 
 class BlacklistedUsernames(models.Model):
     username = models.CharField(max_length=30, unique=True, blank=False)
@@ -106,6 +102,7 @@ class User(AbstractBaseUser):
                                     )
                                 ])
 
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
     def has_perm(self, perm, obj=None):
@@ -118,8 +115,6 @@ class User(AbstractBaseUser):
 
     def get_all_permissions(self, obj=None):
         return _user_get_permissions(self, obj, 'all') 
-
-    USERNAME_FIELD = 'username'
 
     objects = UserManager()
 

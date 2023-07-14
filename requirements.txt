@@ -2,17 +2,3 @@
 
 gunicorn  # https://github.com/benoitc/gunicorn
 sentry-sdk  # https://github.com/getsentry/sentry-python
-
-# Django
-# ------------------------------------------------------------------------------
-django-anymail  # https://github.com/anymail/django-anymail
-django-storages
-
-requests
-
-sendgrid
-boto3
-botocore
-
-celery
-flower
