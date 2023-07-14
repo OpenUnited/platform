@@ -1,13 +1,7 @@
 Django==4.2.2
 django-debug-toolbar
-django-summernote
 Pillow
-markdown
-whitenoise
-django-lifecycle
-django-model-utils
 python-dotenv
 psycopg2-binary
-pycryptodomex==3.10.1
--e git+https://github.com/MoveBigRocks/core-utils.git#egg=core-utils
--e git+https://github.com/MoveBigRocks/entitlements.git#egg=entitlements
+#-e git+https://github.com/MoveBigRocks/core-utils.git#egg=core-utils
+#-e git+https://github.com/MoveBigRocks/entitlements.git#egg=entitlements

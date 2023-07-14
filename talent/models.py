@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from entitlements.exceptions import ValidationError as ValidError
 from openunited.mixins import TimeStampMixin, UUIDMixin
 
 CLAIM_TYPE_DONE = 0
@@ -22,7 +21,7 @@ class Person(TimeStampMixin):
     last_name = models.CharField(max_length=150)
     photo = models.ImageField(upload_to='avatars/', null=True, blank=True)
     headline = models.TextField()
-    user = models.ForeignKey(to='users.User', on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(to='security.User', on_delete=models.CASCADE, default=None)
     test_user = models.BooleanField(default=False, blank=True)
 
     class Meta:
