@@ -57,6 +57,49 @@ class PersonSkill(models.Model):
     expertise = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, default=None,
                                        related_name="skills")
+    
+class Skill(models.Model):
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, default=None,
+                               related_name="children")
+    active = models.BooleanField(default=False, db_index=True)
+    selectable = models.BooleanField(default=False)
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def get_active_skills(active=True, parent=None):
+        return Skill.objects.filter(active=active, parent=parent).all()
+
+    @staticmethod
+    def get_active_skill_list(active=True):
+        return Skill.objects.filter(active=active, parent=None).values('id', 'name')
+
+
+class Expertise(models.Model):
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, default=None,
+                               related_name="expertise_children")
+    skill = models.ForeignKey(Skill, on_delete=models.SET_NULL, null=True, blank=True, default=None,
+                                 related_name="skill_expertise")
+    selectable = models.BooleanField(default=False)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def get_skill_expertise(skill):
+        return Expertise.objects.filter(skill=skill).values('id', 'name')
+
+    @staticmethod
+    def get_all_expertise(parent=None):
+        return Expertise.objects.filter(parent=parent).all()
+
+    @staticmethod
+    def get_all_expertise_list():
+        return Expertise.objects.filter(parent=None).values('id', 'name')
+
 
 
 # class Review(TimeStampMixin, UUIDMixin):
