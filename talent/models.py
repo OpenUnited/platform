@@ -23,6 +23,8 @@ class Person(TimeStampMixin):
     headline = models.TextField()
     user = models.ForeignKey(to='security.User', on_delete=models.CASCADE, default=None)
     test_user = models.BooleanField(default=False, blank=True)
+    overview = models.TextField(blank=True)
+    send_me_bounties = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = 'People'
@@ -34,12 +36,11 @@ class Person(TimeStampMixin):
         if not self.user.username:
             raise AttributeError
         return self.user.username
-
-
-class PersonProfile(TimeStampMixin, UUIDMixin):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, related_name="profile")
-    overview = models.TextField()
-
+    
+    def get_email(self):
+        if not self.user.email:
+            raise AttributeError
+        return self.user.email
 
 class PersonWebsite(models.Model):
     WebsiteType = (
@@ -48,20 +49,14 @@ class PersonWebsite(models.Model):
     )
     website = models.CharField(max_length=200) 
     type = models.IntegerField(choices=WebsiteType)
-    person = models.ForeignKey(PersonProfile, blank=True, null=True, default=None, on_delete=models.CASCADE,
+    person = models.ForeignKey(Person, blank=True, null=True, default=None, on_delete=models.CASCADE,
                                related_name="websites")
-
 
 class PersonSkill(models.Model):
     category = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
     expertise = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
-    person_profile = models.ForeignKey(PersonProfile, on_delete=models.CASCADE, blank=True, null=True, default=None,
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, default=None,
                                        related_name="skills")
-
-
-class PersonPreference(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="preferences")
-    send_me_bounties = models.BooleanField(default=True)
 
 
 # class Review(TimeStampMixin, UUIDMixin):
