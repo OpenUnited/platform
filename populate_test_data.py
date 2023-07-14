@@ -7,7 +7,7 @@ import json
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
-from talent.models import Person, Skill, Expertise
+from talent.models import Person, Skill, Expertise, PersonSkill
 from security.models import User
 
 print("Django version: " + django.get_version())
@@ -58,6 +58,10 @@ else:
 
     update_stdout("Create PersonSkill records")
 
+    #full-stack development
+    full_stack_development = Skill.objects.get(pk=106)
+
+    PersonSkill()
 
 
     update_stdout("Create User records")

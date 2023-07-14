@@ -1,4 +1,5 @@
 import uuid
+import json
 
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
@@ -53,7 +54,7 @@ class PersonWebsite(models.Model):
                                related_name="websites")
 
 class PersonSkill(models.Model):
-    category = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
+    skill = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
     expertise = ArrayField(models.CharField(max_length=300, blank=True, null=True), default=list, blank=True, null=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, default=None,
                                        related_name="skills")
@@ -67,6 +68,23 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def ancestry(self):
+        lineage = []
+        lineage.insert(0, self.name)
+        if self.parent is None:
+            return json.dumps(lineage)
+        else:
+            return __class__.s_ancestry(self.parent, lineage)
+    
+    @staticmethod
+    def s_ancestry(obj, lineage):
+        lineage.insert(0, obj.name)
+        if obj.parent is None:
+            return json.dumps(lineage)
+        else:
+            return __class__.s_ancestry(obj.parent, lineage)
+
 
     @staticmethod
     def get_active_skills(active=True, parent=None):
