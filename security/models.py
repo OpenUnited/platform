@@ -6,6 +6,29 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.validators import RegexValidator
 from django.db import models
+from openunited.mixins import TimeStampMixin, UUIDMixin
+from talent.models import Person
+
+class ProductPerson(TimeStampMixin, UUIDMixin):
+    PERSON_TYPE_USER = 0
+    PERSON_TYPE_PRODUCT_ADMIN = 1
+    PERSON_TYPE_PRODUCT_MANAGER = 2
+    PERSON_TYPE_CONTRIBUTOR = 3
+
+    PERSON_TYPE = (
+        (PERSON_TYPE_USER, "User"),
+        (PERSON_TYPE_PRODUCT_ADMIN, "Product Admin"),
+        (PERSON_TYPE_PRODUCT_MANAGER, "Product Manager"),
+        (PERSON_TYPE_CONTRIBUTOR, "Contributor"),
+    )
+    product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    right = models.IntegerField(choices=PERSON_TYPE, default=0)
+
+    def __str__(self):
+        return '{} is {} of {}'.format(self.person.user.username, self.get_right_display(), self.product)
+
+
 # from commerce.models import Organisation
 
 
