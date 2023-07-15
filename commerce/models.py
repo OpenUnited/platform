@@ -49,7 +49,7 @@ class OrganisationAccountCredit(TimeStampMixin, UUIDMixin):
 
 
 class OrganisationAccount(models.Model):
-    organisation = models.ForeignKey(to="commercial.Organisation", on_delete=models.CASCADE)
+    organisation = models.ForeignKey(to="Organisation", on_delete=models.CASCADE)
     liquid_points_balance = models.PositiveBigIntegerField()
     nonliquid_points_balance = models.PositiveBigIntegerField()
 
@@ -225,13 +225,13 @@ class ProductAccountCredit(TimeStampMixin, UUIDMixin):
     
 
 class ProductAccountReservation(TimeStampMixin, UUIDMixin):
-    bounty_claim = models.ForeignKey(to="matching.BountyClaim", on_delete=models.CASCADE)
+    bounty_claim = models.ForeignKey(to="talent.BountyClaim", on_delete=models.CASCADE)
     number_of_points = models.PositiveIntegerField()
     type_of_points = models.IntegerField(choices=PointTypes.choices(), default=PointTypes.NONLIQUID)
     
 
 class ProductAccountDebit(TimeStampMixin, UUIDMixin):
-    bounty_claim = models.ForeignKey(to="matching.BountyClaim", on_delete=models.CASCADE)
+    bounty_claim = models.ForeignKey(to="talent.BountyClaim", on_delete=models.CASCADE)
     number_of_points = models.PositiveIntegerField()
     type_of_points = models.IntegerField(choices=PointTypes.choices(), default=PointTypes.NONLIQUID)
 
@@ -279,7 +279,7 @@ class ContributorAccountCredit(TimeStampMixin, UUIDMixin):
         (3, "REWARD")
     )
     reason = models.IntegerField(choices=CreditReason, default=0)
-    bounty_claim = models.ForeignKey(to="matching.BountyClaim", on_delete=models.CASCADE)
+    bounty_claim = models.ForeignKey(to="talent.BountyClaim", on_delete=models.CASCADE)
     contributor_account = models.ForeignKey(ContributorAccount, on_delete=models.CASCADE)
     number_of_points = models.PositiveIntegerField()
     type_of_points = models.IntegerField(choices=PointTypes.choices(), default=PointTypes.NONLIQUID)

@@ -12,6 +12,7 @@ from product_management.mixins import ProductMixin
 from engagement.models import Notification
 from talent.models import Person, Skill, Expertise
 from product_management.utils import get_person_data, to_dict
+from security.models import ProductRole
 
 
 class Tag(TimeStampMixin):
@@ -24,7 +25,7 @@ class Capability(MP_Node):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, default='')
     video_link = models.CharField(max_length=255, blank=True, null=True)
-    comments_start = models.ForeignKey(to='comments.capabilitycomment',
+    comments_start = models.ForeignKey(to='engagement.capabilitycomment',
                                        on_delete=models.SET_NULL,
                                        null=True, editable=False)
 
@@ -213,11 +214,11 @@ class Challenge(TimeStampMixin, UUIDMixin):
     updated_by = models.ForeignKey("talent.Person", on_delete=models.CASCADE, blank=True, null=True,
                                    related_name="updated_by")
     tracker = FieldTracker()
-    comments_start = models.ForeignKey(to="comments.challengecomment", on_delete=models.SET_NULL, null=True, editable=False)
+    comments_start = models.ForeignKey(to="engagement.challengecomment", on_delete=models.SET_NULL, null=True, editable=False)
     reviewer = models.ForeignKey("talent.Person", on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     video_url = models.URLField(blank=True, null=True)
-    contribution_guide = models.ForeignKey("contribution_management.ContributorGuide",
+    contribution_guide = models.ForeignKey("ContributorGuide",
                                            null=True,
                                            default=None,
                                            blank=True,
@@ -299,12 +300,12 @@ def save_challenge(sender, instance, created, **kwargs):
                         person_id=bounty_claim.person.id
                     )
                     if not ProductRole.objects.filter(**product_person_data,
-                                                        right__in=[ProductRole.PERSON_TYPE_CONTRIBUTOR,
-                                                                   ProductRole.PERSON_TYPE_PRODUCT_ADMIN,
-                                                                   ProductRole.PERSON_TYPE_PRODUCT_MANAGER]).exists():
+                                                        right__in=[ProductRole.RIGHT_CONTRIBUTOR,
+                                                                   ProductRole.RIGHT_PRODUCT_ADMIN,
+                                                                   ProductRole.RIGHT_PRODUCT_MANAGER]).exists():
                         with transaction.atomic():
                             ProductRole.objects.create(**product_person_data,
-                                                         right=ProductRole.PERSON_TYPE_CONTRIBUTOR)
+                                                         right=ProductRole.RIGHT_CONTRIBUTOR)
             except Exception as e:
                 print("Failed to change a user role", e, flush=True)
 
@@ -508,12 +509,12 @@ class ChallengeListing(models.Model):
         return queryset.distinct().order_by(sorted_by).all()
 
 
-class ChallengeDepend(models.Model):
-    challenge = models.ForeignKey(to=Challenge, on_delete=models.CASCADE, related_name='Challenge')
-    depends_by = models.ForeignKey(to=Challenge, on_delete=models.CASCADE)
+class ChallengeDependency(models.Model):
+    preceding_challenge = models.ForeignKey(to=Challenge, on_delete=models.CASCADE)
+    subsequent_challenge = models.ForeignKey(to=Challenge, on_delete=models.CASCADE, related_name='Challenge')
 
     class Meta:
-        db_table = 'work_challenge_depend'
+        db_table = 'product_management_challenge_dependencies'
 
 
 class ProductChallenge(TimeStampMixin, UUIDMixin):
