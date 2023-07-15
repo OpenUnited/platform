@@ -7,11 +7,18 @@ from model_utils import FieldTracker
 from treebeard.mp_tree import MP_Node
 
 import engagement.tasks
-from openunited.mixins import TimeStampMixin, UUIDMixin, ProductMixin
+from openunited.mixins import TimeStampMixin, UUIDMixin
+from product_management.mixins import ProductMixin
 from engagement.models import Notification
 from talent.models import Person, Skill, Expertise
 from product_management.utils import get_person_data, to_dict
 
+
+class Tag(TimeStampMixin):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
 
 class Capability(MP_Node):
     name = models.CharField(max_length=255)

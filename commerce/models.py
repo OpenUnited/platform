@@ -1,19 +1,21 @@
-from backend.mixins import TimeStampMixin, UUIDMixin
+from openunited.mixins import TimeStampMixin, UUIDMixin
 from django.db import models
 from django.db.models import Sum
 from .utils import *
 import datetime
+import uuid
 
 from django.db.models.signals import post_save
+from django.core.validators import RegexValidator
 from django.dispatch import receiver
 from model_utils import FieldTracker
 from notifications.signals import notify
 
-import notification.tasks
-from backend.mixins import TimeStampMixin, UUIDMixin
-from notification.models import Notification
+import engagement.tasks
+from openunited.mixins import TimeStampMixin, UUIDMixin
+from engagement.models import Notification
 from talent.models import Person
-from work.models import Bounty
+from product_management.models import Bounty
 
 class Organisation(TimeStampMixin):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
