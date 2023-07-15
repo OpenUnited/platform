@@ -64,7 +64,7 @@ else:
     fancy_out("Create Product records")
 
 
-    fancy_out("Create ProductPerson records")
+    fancy_out("Create ProductRole records")
 
 
     fancy_out("Create Capability records")

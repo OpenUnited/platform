@@ -62,13 +62,13 @@ class Product(ProductMixin):
     owner = models.ForeignKey('commercial.ProductOwner', on_delete=models.CASCADE, null=True)
 
     def get_members_emails(self):
-        return self.productperson_set.all().values_list("person__email_address", flat=True)
+        return self.productrole_set.all().values_list("person__email_address", flat=True)
 
     def get_members_ids(self):
-        return self.productperson_set.all().values_list("person__id", flat=True)
+        return self.productrole_set.all().values_list("person__id", flat=True)
 
     def is_product_member(self, person):
-        return self.productperson_set.filter(person=person).exists()
+        return self.productrole_set.filter(person=person).exists()
 
     def get_product_owner(self):
         product_owner = self.owner
@@ -291,13 +291,13 @@ def save_challenge(sender, instance, created, **kwargs):
                         product_id=instance.product.id,
                         person_id=bounty_claim.person.id
                     )
-                    if not ProductPerson.objects.filter(**product_person_data,
-                                                        right__in=[ProductPerson.PERSON_TYPE_CONTRIBUTOR,
-                                                                   ProductPerson.PERSON_TYPE_PRODUCT_ADMIN,
-                                                                   ProductPerson.PERSON_TYPE_PRODUCT_MANAGER]).exists():
+                    if not ProductRole.objects.filter(**product_person_data,
+                                                        right__in=[ProductRole.PERSON_TYPE_CONTRIBUTOR,
+                                                                   ProductRole.PERSON_TYPE_PRODUCT_ADMIN,
+                                                                   ProductRole.PERSON_TYPE_PRODUCT_MANAGER]).exists():
                         with transaction.atomic():
-                            ProductPerson.objects.create(**product_person_data,
-                                                         right=ProductPerson.PERSON_TYPE_CONTRIBUTOR)
+                            ProductRole.objects.create(**product_person_data,
+                                                         right=ProductRole.PERSON_TYPE_CONTRIBUTOR)
             except Exception as e:
                 print("Failed to change a user role", e, flush=True)
 

@@ -8,66 +8,65 @@ from django.core.validators import RegexValidator
 from django.db import models
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from talent.models import Person
+from commerce.models import Organisation
+from django.core.exceptions import ValidationError
 
-class ProductPerson(TimeStampMixin, UUIDMixin):
-    PERSON_TYPE_USER = 0
-    PERSON_TYPE_PRODUCT_ADMIN = 1
-    PERSON_TYPE_PRODUCT_MANAGER = 2
-    PERSON_TYPE_CONTRIBUTOR = 3
+class ProductRole(TimeStampMixin, UUIDMixin):
+    RIGHT_FOLLOWER = 0
+    RIGHT_PRODUCT_ADMIN = 1
+    RIGHT_PRODUCT_MANAGER = 2
+    RIGHT_CONTRIBUTOR = 3
 
-    PERSON_TYPE = (
-        (PERSON_TYPE_USER, "User"),
-        (PERSON_TYPE_PRODUCT_ADMIN, "Product Admin"),
-        (PERSON_TYPE_PRODUCT_MANAGER, "Product Manager"),
-        (PERSON_TYPE_CONTRIBUTOR, "Contributor"),
+    RIGHTS = (
+        (RIGHT_FOLLOWER, "Follower"),
+        (RIGHT_PRODUCT_ADMIN, "Admin"),
+        (RIGHT_PRODUCT_MANAGER, "Manager"),
+        (RIGHT_CONTRIBUTOR, "Contributor"),
     )
-    product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    right = models.IntegerField(choices=PERSON_TYPE, default=0)
+    product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
+    role = models.IntegerField(choices=RIGHTS, default=0)
 
     def __str__(self):
         return '{} is {} of {}'.format(self.person.user.username, self.get_right_display(), self.product)
 
 
-# from commerce.models import Organisation
+class OrganisationPerson(TimeStampMixin, UUIDMixin):
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    right = models.IntegerField(choices=ProductRole.RIGHTS, default=0)
 
+    def __str__(self):
+        return '{} is {} of {}'.format(self.person, self.right, self.organisation)
 
-# class OrganisationPerson(TimeStampMixin, UUIDMixin):
-#     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
-#     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-#     right = models.IntegerField(choices=ProductPerson.PERSON_TYPE, default=0)
+class ProductOwner(TimeStampMixin, UUIDMixin):
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, blank=True, null=True, default=None)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
 
-#     def __str__(self):
-#         return '{} is {} of {}'.format(self.person, self.right, self.organisation)
+    def __str__(self):
+        return f"Person: {self.person.first_name}" if self.person else f"Organization: {self.organisation.name}"
 
-# class ProductOwner(TimeStampMixin, UUIDMixin):
-#     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, blank=True, null=True, default=None)
-#     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    def clean(self):
+        if not self.organisation and not self.person:
+            raise ValidationError("Please select person or organisation")
 
-#     def __str__(self):
-#         return f"Person: {self.person.first_name}" if self.person else f"Organization: {self.organisation.name}"
+    def get_username(self):
+        try:
+            if not self.person:
+                return self.organisation.get_username()
+            return self.person.get_username()
+        except AttributeError:
+            return self.organisation.get_username()
+        except BaseException:
+            return ""
 
-#     def clean(self):
-#         if not self.organisation and not self.person:
-#             raise ValidationError("Please select person or organisation")
-
-#     def get_username(self):
-#         try:
-#             if not self.person:
-#                 return self.organisation.get_username()
-#             return self.person.get_username()
-#         except AttributeError:
-#             return self.organisation.get_username()
-#         except BaseException:
-#             return ""
-
-#     @classmethod
-#     def get_or_create(cls, person):
-#         try:
-#             return cls.objects.get(person=person)
-#         except cls.DoesNotExist:
-#             obj = cls.objects.create(person=person)
-#             return obj
+    @classmethod
+    def get_or_create(cls, person):
+        try:
+            return cls.objects.get(person=person)
+        except cls.DoesNotExist:
+            obj = cls.objects.create(person=person)
+            return obj
 
 class BlacklistedUsernames(models.Model):
     username = models.CharField(max_length=30, unique=True, blank=False)
