@@ -24,9 +24,10 @@ proceed = input("Running this script will replace all your current data. Ok? (Y/
 if len(proceed) == 0:
     fancy_out("Execution Abandoned")
     exit()
-    
+
 if proceed[0] != "y":
-    print("Stopped at your request")
+    fancy_out("Stopped at your request")
+    exit()
 else:
     fancy_out("Create User & Person records")
 
@@ -59,9 +60,6 @@ else:
 
     gary_skill = PersonSkill(person=gary, skill=full_stack_development.ancestry(), expertise=django_expertise.ancestry())
     gary_skill.save()
-
-    fancy_out("Create User records")
-
 
     fancy_out("Create Product records")
 
