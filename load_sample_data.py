@@ -19,13 +19,17 @@ def load_reference_data(classname):
             obj = klass(**data)
             obj.save()
 
-proceed = input("Running this script will replace all your current data. Ok? (Y/N)").lower()[0]
+proceed = input("Running this script will replace all your current data. Ok? (Y/N)").lower()
 
-if proceed != "y":
+if len(proceed) == 0:
+    fancy_out("Execution Abandoned")
+    exit()
+    
+if proceed[0] != "y":
     print("Stopped at your request")
 else:
     fancy_out("Create User & Person records")
-    
+
     #Clear and create User and Person records
     Person.objects.all().delete()
     User.objects.all().delete()
