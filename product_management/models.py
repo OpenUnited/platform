@@ -1,4 +1,60 @@
-from django.db import models
+from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.db import models, transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from model_utils import FieldTracker
+from treebeard.mp_tree import MP_Node
+
+import notification.tasks
+from openunited.mixins import TimeStampMixin, UUIDMixin, ProductMixin
+from engagement.models import Notification
+from talent.models import Person, ProductPerson
+from product_management.utils import get_person_data, to_dict
+
+
+class Capability(MP_Node):
+    name = models.CharField(max_length=255)
+    description = models.TextField(max_length=1000, default='')
+    video_link = models.CharField(max_length=255, blank=True, null=True)
+    comments_start = models.ForeignKey(to='comments.capabilitycomment',
+                                       on_delete=models.SET_NULL,
+                                       null=True, editable=False)
+
+    class Meta:
+        db_table = 'capability'
+        verbose_name_plural = 'capabilities'
+
+    def __str__(self):
+        return self.name
+
+
+@receiver(post_save, sender=Capability)
+def save_capability(sender, instance, created, **kwargs):
+    if not created:
+        # update challengelisting when capability info is updated
+        ChallengeListing.objects.filter(capability=instance).update(capability_data=to_dict(instance))
+
+
+class Attachment(models.Model):
+    name = models.CharField(max_length=512)
+    path = models.URLField()
+    file_type = models.CharField(max_length=5, null=True, blank=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class CapabilityAttachment(models.Model):
+    capability = models.ForeignKey(Capability, on_delete=models.CASCADE)
+    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'capability_attachment'
+
 
 class Product(ProductMixin):
     attachment = models.ManyToManyField(Attachment, related_name="product_attachments", blank=True)
@@ -34,28 +90,6 @@ def save_product(sender, instance, created, **kwargs):
             )
         )
 
-
-class Capability(MP_Node):
-    name = models.CharField(max_length=255)
-    description = models.TextField(max_length=1000, default='')
-    video_link = models.CharField(max_length=255, blank=True, null=True)
-    comments_start = models.ForeignKey(to='comments.capabilitycomment',
-                                       on_delete=models.SET_NULL,
-                                       null=True, editable=False)
-
-    class Meta:
-        db_table = 'capability'
-        verbose_name_plural = 'capabilities'
-
-    def __str__(self):
-        return self.name
-
-
-@receiver(post_save, sender=Capability)
-def save_capability(sender, instance, created, **kwargs):
-    if not created:
-        # update challengelisting when capability info is updated
-        ChallengeListing.objects.filter(capability=instance).update(capability_data=to_dict(instance))
 
 class Initiative(TimeStampMixin, UUIDMixin):
     INITIATIVE_STATUS = (
@@ -118,25 +152,6 @@ def save_initiative(sender, instance, created, **kwargs):
         # update challengelisting when initiative info is updated
         ChallengeListing.objects.filter(initiative=instance).update(initiative_data=to_dict(instance))
 
-
-class Attachment(models.Model):
-    name = models.CharField(max_length=512)
-    path = models.URLField()
-    file_type = models.CharField(max_length=5, null=True, blank=True)
-
-    class Meta:
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
-
-
-class CapabilityAttachment(models.Model):
-    capability = models.ForeignKey(Capability, on_delete=models.CASCADE)
-    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'capability_attachment'
 
 class ProductPerson(TimeStampMixin, UUIDMixin):
     PERSON_TYPE_USER = 0
