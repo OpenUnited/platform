@@ -1,9 +1,5 @@
 import uuid
-import json
 
-from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -14,7 +10,6 @@ CLAIM_TYPE_DONE = 0
 CLAIM_TYPE_ACTIVE = 1
 CLAIM_TYPE_FAILED = 2
 CLAIM_TYPE_IN_REVIEW = 3
-
 
 class Person(TimeStampMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
