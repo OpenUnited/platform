@@ -12,7 +12,7 @@ from security.models import User
 
 print("Django version: " + django.get_version())
 
-def update_stdout(message):
+def fancy_out(message):
     output = ("\r....."+message).ljust(80, ".")
     sys.stdout.write(output)
     sys.stdout.flush()
@@ -34,7 +34,7 @@ if proceed != "y":
     print("Stopped at your request")
 else:
 
-    update_stdout("Create User & Person records")
+    fancy_out("Create User & Person records")
 
     #Clear and create User and Person records
     
@@ -51,12 +51,12 @@ else:
     shirley = Person(user=shirley_user, full_name='Shirley Ghostman', preferred_name='Shirl', headline='Shirley Ghostman here', test_user=True)
     shirley.save()
 
-    update_stdout("Setup Skills & Expertise records")
+    fancy_out("Setup Skills & Expertise records")
 
     load_reference_data("skill")
     load_reference_data("expertise")
 
-    update_stdout("Create PersonSkill records")
+    fancy_out("Create PersonSkill records")
 
     #Skill: Full-stack Development
     full_stack_development = Skill.objects.get(pk=106)
@@ -67,35 +67,35 @@ else:
     gary_skill = PersonSkill(person=gary, skill=full_stack_development.ancestry(), expertise=django_expertise.ancestry())
     gary_skill.save()
 
-    update_stdout("Create User records")
+    fancy_out("Create User records")
 
 
-    update_stdout("Create Product records")
+    fancy_out("Create Product records")
 
 
-    update_stdout("Create ProductPerson records")
+    fancy_out("Create ProductPerson records")
 
 
-    update_stdout("Create Capability records")
+    fancy_out("Create Capability records")
 
 
-    update_stdout("Create Challenge records")
+    fancy_out("Create Challenge records")
 
 
-    update_stdout("Create Challenge Dependency records")
+    fancy_out("Create Challenge Dependency records")
 
 
-    update_stdout("Create Bounty records")
+    fancy_out("Create Bounty records")
 
 
-    update_stdout("Create BountyClaim records")
+    fancy_out("Create BountyClaim records")
 
 
-    update_stdout("Create BountyClaim Submission Attempt records")
+    fancy_out("Create BountyClaim Submission Attempt records")
 
 
-    update_stdout("Create Portfolio records")
+    fancy_out("Create Portfolio records")
 
     
-    update_stdout("Complete!")
+    fancy_out("Complete!")
 
