@@ -1,22 +1,13 @@
 import os
-import sys
-import time
 import django
 import json
+from utility.utils import *
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
 from talent.models import Person, Skill, Expertise, PersonSkill
 from security.models import User
-
-print("Django version: " + django.get_version())
-
-def fancy_out(message):
-    output = ("\r....."+message).ljust(80, ".")
-    sys.stdout.write(output)
-    sys.stdout.flush()
-    time.sleep(0.5)
 
 def load_reference_data(classname):
     klass = eval(classname.capitalize())
@@ -33,11 +24,9 @@ proceed = input("Running this script will replace all your current data. Ok? (Y/
 if proceed != "y":
     print("Stopped at your request")
 else:
-
     fancy_out("Create User & Person records")
-
-    #Clear and create User and Person records
     
+    #Clear and create User and Person records
     Person.objects.all().delete()
     User.objects.all().delete()
 
