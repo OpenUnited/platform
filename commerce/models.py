@@ -210,7 +210,7 @@ class OrganisationAccountDebit(TimeStampMixin, UUIDMixin):
 
 
 class ProductAccount(models.Model):
-    product = models.ForeignKey(to="work.Product", on_delete=models.CASCADE)
+    product = models.ForeignKey(to="product_management.Product", on_delete=models.CASCADE)
     liquid_points_balance = models.PositiveBigIntegerField()
     nonliquid_points_balance = models.PositiveBigIntegerField()
 

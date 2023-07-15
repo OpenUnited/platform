@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-
 class Notification(models.Model):
     class EventType(models.IntegerChoices):
         BOUNTY_CLAIMED = 0, _('Bounty Claimed')
@@ -56,3 +55,4 @@ def _template_is_valid(template, permitted_params):
         raise ValidationError({'template': _('No curly brace without a name permitted')}) from None
     except KeyError as ke:
         raise ValidationError({'template': _(f"{ke.args[0]} isn't a permitted param for template. Please use one of these: {permitted_params}")}) from None
+    

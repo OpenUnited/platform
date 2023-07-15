@@ -24,7 +24,7 @@ class Capability(MP_Node):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, default='')
     video_link = models.CharField(max_length=255, blank=True, null=True)
-    comments_start = models.ForeignKey(to='engagement.capabilitycomment',
+    comments_start = models.ForeignKey(to='talent.capabilitycomment',
                                        on_delete=models.SET_NULL,
                                        null=True, editable=False)
 
@@ -66,7 +66,7 @@ class CapabilityAttachment(models.Model):
 class Product(ProductMixin):
     attachment = models.ManyToManyField(Attachment, related_name="product_attachments", blank=True)
     capability_start = models.ForeignKey(Capability, on_delete=models.CASCADE, null=True, editable=False)
-    owner = models.ForeignKey('commercial.ProductOwner', on_delete=models.CASCADE, null=True)
+    owner = models.ForeignKey('security.ProductOwner', on_delete=models.CASCADE, null=True)
 
     def get_members_emails(self):
         return self.productrole_set.all().values_list("person__email_address", flat=True)
@@ -231,7 +231,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
     updated_by = models.ForeignKey("talent.Person", on_delete=models.CASCADE, blank=True, null=True,
                                    related_name="updated_by")
     tracker = FieldTracker()
-    comments_start = models.ForeignKey(to="engagement.challengecomment", on_delete=models.SET_NULL, null=True, editable=False)
+    comments_start = models.ForeignKey(to="talent.challengecomment", on_delete=models.SET_NULL, null=True, editable=False)
     reviewer = models.ForeignKey("talent.Person", on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     video_url = models.URLField(blank=True, null=True)
@@ -548,3 +548,30 @@ def save_product_task(sender, instance, created, **kwargs):
             .order_by('-published_id').first()
         challenge.published_id = last_product_challenge.published_id + 1 if last_product_challenge else 1
         challenge.save()
+
+class ContributorAgreement(models.Model):
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, related_name="product_contributor_agreement")
+    agreement_content = models.TextField()
+
+    class Meta:
+        db_table = "contribution_management_contributor_agreement"
+
+
+class ContributorAgreementAcceptance(models.Model):
+    agreement = models.ForeignKey(to=ContributorAgreement, on_delete=models.CASCADE)
+    person = models.ForeignKey(to='talent.Person', on_delete=models.CASCADE, related_name="person_contributor_agreement_acceptance")
+    accepted_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        db_table = "contribution_management_contributor_agreement_acceptance"
+
+
+class ContributorGuide(models.Model):
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, related_name="product_contributor_guide")
+    title = models.CharField(max_length=60, unique=True)
+    description = models.TextField(null=True, blank=True)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE, related_name="category_contributor_guide", 
+                                    blank=True, null=True, default=None)
+
+    def __str__(self):
+        return self.title

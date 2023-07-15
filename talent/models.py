@@ -5,6 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
+from engagement.models import Notification
+from treebeard.mp_tree import MP_Node
 
 CLAIM_TYPE_DONE = 0
 CLAIM_TYPE_ACTIVE = 1
@@ -98,53 +100,67 @@ class Expertise(AncestryMixin):
         return Expertise.objects.filter(parent=None).values('id', 'name')
 
 
+class BountyClaim(TimeStampMixin, UUIDMixin):
+    CLAIM_TYPE = (
+        (CLAIM_TYPE_DONE, "Done"),
+        (CLAIM_TYPE_ACTIVE, "Active"),
+        (CLAIM_TYPE_FAILED, "Failed"),
+        (CLAIM_TYPE_IN_REVIEW, "In review")
+    )
+    bounty = models.ForeignKey('product_management.Bounty', on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
-# class Review(TimeStampMixin, UUIDMixin):
-#     product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
-#     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-#     initiative = models.ForeignKey('product_management.Initiative', on_delete=models.CASCADE, null=True, blank=True)
-#     score = models.DecimalField(decimal_places=2, max_digits=3)
-#     text = models.TextField()
-#     created_by = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, related_name="given")
-
-
-# class BountyClaim(TimeStampMixin, UUIDMixin):
-#     CLAIM_TYPE = (
-#         (CLAIM_TYPE_DONE, "Done"),
-#         (CLAIM_TYPE_ACTIVE, "Active"),
-#         (CLAIM_TYPE_FAILED, "Failed"),
-#         (CLAIM_TYPE_IN_REVIEW, "In review")
-#     )
-#     bounty = models.ForeignKey('product_management.Bounty', on_delete=models.CASCADE)
-#     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
-#     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
-
-#     def __str__(self):
-#         return '{}: {} ({})'.format(self.bounty.challenge, self.person, self.kind)
+    def __str__(self):
+        return '{}: {} ({})'.format(self.bounty.challenge, self.person, self.kind)
 
 
-# @receiver(post_save, sender=BountyClaim)
-# def save_bounty_claim(sender, instance, created, **kwargs):
-#     challenge = instance.bounty.challenge
-#     reviewer = getattr(challenge, "reviewer", None)
-#     contributor = instance.person
-#     contributor_email = contributor.email_address
-#     reviewer_user = reviewer.user if reviewer else None
+@receiver(post_save, sender=BountyClaim)
+def save_bounty_claim(sender, instance, created, **kwargs):
+    challenge = instance.bounty.challenge
+    reviewer = getattr(challenge, "reviewer", None)
+    contributor = instance.person
+    contributor_email = contributor.email_address
+    reviewer_user = reviewer.user if reviewer else None
 
-#     if not created:
-#         # contributor has submitted the work for review
-#         if instance.kind == CLAIM_TYPE_IN_REVIEW and instance.tracker.previous("kind") is not CLAIM_TYPE_IN_REVIEW:
-#             challenge = instance.bounty.challenge
-#             subject = f"The challenge \"{challenge.title}\" is ready to review"
-#             message = f"You can see the challenge here: {challenge.get_challenge_link()}"
-#             if reviewer:
-#                 notification.tasks.send_notification.delay([Notification.Type.EMAIL],
-#                                                            Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
-#                                                            receivers=[reviewer.id],
-#                                                            task_title=challenge.title,
-#                                                            task_link=challenge.get_challenge_link())
+    if not created:
+        # contributor has submitted the work for review
+        if instance.kind == CLAIM_TYPE_IN_REVIEW and instance.tracker.previous("kind") is not CLAIM_TYPE_IN_REVIEW:
+            challenge = instance.bounty.challenge
+            subject = f"The challenge \"{challenge.title}\" is ready to review"
+            message = f"You can see the challenge here: {challenge.get_challenge_link()}"
+            if reviewer:
+                notification.tasks.send_notification.delay([Notification.Type.EMAIL],
+                                                           Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
+                                                           receivers=[reviewer.id],
+                                                           task_title=challenge.title,
+                                                           task_link=challenge.get_challenge_link())
+
+class Comment(MP_Node):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    text = models.TextField(max_length=1000)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.text
 
 
+class ChallengeComment(Comment):
+    pass
+
+
+class BugComment(Comment):
+    pass
+
+
+class IdeaComment(Comment):
+    pass
+
+
+class CapabilityComment(Comment):
+    pass
 # class BountyDeliveryAttempt(TimeStampMixin):
 #     SUBMISSION_TYPE_NEW = 0
 #     SUBMISSION_TYPE_APPROVED = 1
@@ -200,4 +216,11 @@ class Expertise(AncestryMixin):
 #                                                            Notification.EventType.CONTRIBUTOR_LEFT_TASK,
 #                                                            receivers=[reviewer.id],
 #                                                            task_title=bounty_claim.bounty.challenge.title)
+# class Review(TimeStampMixin, UUIDMixin):
+#     product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
+#     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+#     initiative = models.ForeignKey('product_management.Initiative', on_delete=models.CASCADE, null=True, blank=True)
+#     score = models.DecimalField(decimal_places=2, max_digits=3)
+#     text = models.TextField()
+#     created_by = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, related_name="given")
 
