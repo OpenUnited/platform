@@ -12,7 +12,6 @@ from product_management.mixins import ProductMixin
 from engagement.models import Notification
 from talent.models import Person, Skill, Expertise
 from product_management.utils import get_person_data, to_dict
-from security.models import ProductRole
 
 
 class Tag(TimeStampMixin):
@@ -98,6 +97,24 @@ def save_product(sender, instance, created, **kwargs):
             )
         )
 
+class ProductRole(TimeStampMixin, UUIDMixin):
+    FOLLOWER = 0
+    PRODUCT_ADMIN = 1
+    PRODUCT_MANAGER = 2
+    CONTRIBUTOR = 3
+
+    RIGHTS = (
+        (FOLLOWER, "Follower"),
+        (PRODUCT_ADMIN, "Admin"),
+        (PRODUCT_MANAGER, "Manager"),
+        (CONTRIBUTOR, "Contributor"),
+    )
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
+    role = models.IntegerField(choices=RIGHTS, default=0)
+
+    def __str__(self):
+        return '{} is {} of {}'.format(self.person.user.username, self.get_right_display(), self.product)
 
 class Initiative(TimeStampMixin, UUIDMixin):
     INITIATIVE_STATUS = (
@@ -300,12 +317,12 @@ def save_challenge(sender, instance, created, **kwargs):
                         person_id=bounty_claim.person.id
                     )
                     if not ProductRole.objects.filter(**product_person_data,
-                                                        right__in=[ProductRole.RIGHT_CONTRIBUTOR,
-                                                                   ProductRole.RIGHT_PRODUCT_ADMIN,
-                                                                   ProductRole.RIGHT_PRODUCT_MANAGER]).exists():
+                                                        right__in=[ProductRole.CONTRIBUTOR,
+                                                                   ProductRole.PRODUCT_ADMIN,
+                                                                   ProductRole.PRODUCT_MANAGER]).exists():
                         with transaction.atomic():
                             ProductRole.objects.create(**product_person_data,
-                                                         right=ProductRole.RIGHT_CONTRIBUTOR)
+                                                         right=ProductRole.CONTRIBUTOR)
             except Exception as e:
                 print("Failed to change a user role", e, flush=True)
 

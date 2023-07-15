@@ -8,28 +8,9 @@ from django.core.validators import RegexValidator
 from django.db import models
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from talent.models import Person
+from product_management.models import ProductRole
 from commerce.models import Organisation
 from django.core.exceptions import ValidationError
-
-class ProductRole(TimeStampMixin, UUIDMixin):
-    RIGHT_FOLLOWER = 0
-    RIGHT_PRODUCT_ADMIN = 1
-    RIGHT_PRODUCT_MANAGER = 2
-    RIGHT_CONTRIBUTOR = 3
-
-    RIGHTS = (
-        (RIGHT_FOLLOWER, "Follower"),
-        (RIGHT_PRODUCT_ADMIN, "Admin"),
-        (RIGHT_PRODUCT_MANAGER, "Manager"),
-        (RIGHT_CONTRIBUTOR, "Contributor"),
-    )
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
-    role = models.IntegerField(choices=RIGHTS, default=0)
-
-    def __str__(self):
-        return '{} is {} of {}'.format(self.person.user.username, self.get_right_display(), self.product)
-
 
 class OrganisationPerson(TimeStampMixin, UUIDMixin):
     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
