@@ -329,7 +329,7 @@ def save_challenge(sender, instance, created, **kwargs):
         if instance.tracker.previous('status') != instance.status \
                 and instance.status == Challenge.CHALLENGE_STATUS_CLAIMED \
                 and reviewer:
-            notification.tasks.send_notification.delay([Notification.Type.EMAIL],
+            engagement.tasks.send_notification.delay([Notification.Type.EMAIL],
                                                        Notification.EventType.TASK_STATUS_CHANGED,
                                                        receivers=[reviewer.id],
                                                        title=instance.title,

@@ -9,7 +9,6 @@ from django.db.models.signals import post_save
 from django.core.validators import RegexValidator
 from django.dispatch import receiver
 from model_utils import FieldTracker
-from notifications.signals import notify
 
 import engagement.tasks
 from openunited.mixins import TimeStampMixin, UUIDMixin
