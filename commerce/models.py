@@ -16,6 +16,7 @@ from engagement.models import Notification
 from talent.models import Person
 from product_management.models import Bounty
 
+
 class Organisation(TimeStampMixin):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     username = models.CharField(max_length=39,
@@ -52,35 +53,6 @@ class OrganisationAccount(models.Model):
     liquid_points_balance = models.PositiveBigIntegerField()
     nonliquid_points_balance = models.PositiveBigIntegerField()
 
-    def credit(self, granting_object):
-        credit_reason = OrganisationAccountCreditReasons.GRANT
-        type_of_points = PointTypes.NONLIQUID
-        if(granting_object.__class__.__name__.lower()) == "salesorder":
-            credit_reason = OrganisationAccountCreditReasons.SALE
-            type_of_points = PointTypes.LIQUID
-
-        #only grant points if granting_object has no existing related credit
-        if not granting_object.organisation_account_credit:
-            credit = OrganisationAccountCredit.objects.create(
-                        organisation_account = self,
-                        number_of_points = granting_object.number_of_points,
-                        credit_reason = credit_reason,
-                        type_of_points = type_of_points,
-                    )
-            self.recalculate_balances()
-            granting_object.mark_points_as_granted(credit)
-
-    def recalculate_balances(self):
-        nonliquid_credits = OrganisationAccountCredit.objects.filter(organisation_account=self, type_of_points=PointTypes.NONLIQUID).aggregate(Sum('number_of_points'))['number_of_points__sum'] or 0
-        nonliquid_debits = 0
-        self.nonliquid_points_balance = nonliquid_credits - nonliquid_debits
-
-        liquid_credits = OrganisationAccountCredit.objects.filter(organisation_account=self, type_of_points=PointTypes.LIQUID).aggregate(Sum('number_of_points'))['number_of_points__sum'] or 0
-        liquid_debits = 0
-        self.liquid_points_balance = liquid_credits - liquid_debits
-
-        self.save()
-
 
 class Cart(TimeStampMixin, UUIDMixin):
     organisation_account = models.ForeignKey(OrganisationAccount, on_delete=models.CASCADE)
@@ -92,27 +64,6 @@ class Cart(TimeStampMixin, UUIDMixin):
     sales_tax_in_cents = models.PositiveBigIntegerField()
     total_payable_in_cents = models.PositiveBigIntegerField()
     payment_type = models.IntegerField(choices=PaymentTypes.choices(), default=PaymentTypes.ONLINE)
-
-    @staticmethod
-    def new(organisation_account, creator, number_of_points, currency_of_payment, payment_type):  
-        price_per_point_in_cents = PointPriceConfiguration.get_point_inbound_price_in_cents(currency_of_payment)
-        subtotal_in_cents = number_of_points * price_per_point_in_cents
-        sales_tax_in_cents = 0 #TODO: create logic for sales tax based on org account
-        total_payable_in_cents = subtotal_in_cents + sales_tax_in_cents
-
-        cart = Cart.objects.create(
-            organisation_account = organisation_account,
-            creator = creator,
-            number_of_points = number_of_points,
-            currency_of_payment = currency_of_payment,
-            payment_type = payment_type,
-            price_per_point_in_cents = price_per_point_in_cents,
-            subtotal_in_cents = subtotal_in_cents,
-            sales_tax_in_cents = sales_tax_in_cents, 
-            total_payable_in_cents = total_payable_in_cents
-        )
-
-        return cart
 
 
 class Grant(models.Model):
@@ -160,6 +111,7 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
         return sales_order
 
     def register_payment(self, currency_of_payment, amount_paid_in_cents, detail):
+        from .services import OrganisationAccountService
         payment = InboundPayment.objects.create(
             sales_order = self,
             payment_type = self.payment_type,
@@ -171,7 +123,7 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
             self.payment_status = PaymentStatusOptions.PAID
             self.save
             #credit points to organisation account
-            self.organisation_account.credit(self)
+            OrganisationAccountService.credit(self)
             
         return payment
 
@@ -308,20 +260,3 @@ class PointPriceConfiguration(TimeStampMixin, UUIDMixin):
     usd_point_outbound_price_in_cents = models.IntegerField()
     eur_point_outbound_price_in_cents = models.IntegerField()
     gbp_point_outbound_price_in_cents = models.IntegerField()
-
-
-    @staticmethod
-    def get_point_inbound_price_in_cents(currency):
-        conversion_rate_queryset = PointPriceConfiguration.objects.filter(applicable_from_date__lte=datetime.date.today()).order_by('-created_at')
-        conversion_rates = conversion_rate_queryset.first()
-
-        if currency == CurrencyTypes.USD:
-            return conversion_rates.usd_point_inbound_price_in_cents
-        elif currency == CurrencyTypes.EUR:
-            return conversion_rates.eur_point_inbound_price_in_cents
-        elif currency == CurrencyTypes.GBP:
-            return conversion_rates.gbp_point_inbound_price_in_cents
-        else:
-            raise ValueError('No conversion rate for given currency.', currency)
-
-

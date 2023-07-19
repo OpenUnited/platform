@@ -1,6 +1,5 @@
 import re
 from django.contrib.auth.base_user import BaseUserManager
-from .models import BlacklistedUsernames, Organisation
 
 
 class UserManager(BaseUserManager):
@@ -9,6 +8,8 @@ class UserManager(BaseUserManager):
     """
 
     def create_user(self, username, email, password=None):
+        from .models import BlacklistedUsernames, Organisation
+
         if not username:
             raise ValueError("Username should be provided!")
         elif BlacklistedUsernames.objects.filter(username=username).exists():

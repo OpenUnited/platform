@@ -1,5 +1,6 @@
 import os
 import django
+from django.apps import apps
 import json
 from utility.utils import *
 
@@ -8,18 +9,34 @@ django.setup()
 
 from talent.models import Person, Skill, Expertise, PersonSkill
 from security.models import User
+from commerce.models import Organisation, OrganisationAccount, OrganisationAccountCredit
+from commerce.services import (
+    OrganisationService,
+    OrganisationAccountService,
+    OrganisationAccountCreditService,
+)
+
 
 def load_reference_data(classname):
     klass = eval(classname.capitalize())
     klass.objects.all().delete()
-    file = os.path.abspath("utility/reference_data/"+classname+".json")
+    file = os.path.abspath("utility/reference_data/" + classname + ".json")
     with open(file) as json_file:
         data_set = json.load(json_file)
         for data in data_set:
             obj = klass(**data)
             obj.save()
 
-proceed = input("Running this script will replace all your current data. Ok? (Y/N)").lower()
+
+def clear_rows_by_model_name(model_names_mapping: dict) -> None:
+    for model_name, app_name in model_names_mapping.items():
+        model = apps.get_model(app_name, model_name)
+        model.objects.all().delete()
+
+
+proceed = input(
+    "Running this script will replace all your current data. Ok? (Y/N)"
+).lower()
 
 if len(proceed) == 0:
     fancy_out("Execution Abandoned")
@@ -31,18 +48,37 @@ if proceed[0] != "y":
 else:
     fancy_out("Create User & Person records")
 
-    #Clear and create User and Person records
-    Person.objects.all().delete()
-    User.objects.all().delete()
+    d = {
+        "Organisation": "commerce",
+        "OrganisationAccount": "commerce",
+        "OrganisationAccountCredit": "commerce",
+        "Person": "talent",
+        "User": "security",
+    }
+
+    # Deletes all the existing records before populating sample data according to the dictionary
+    clear_rows_by_model_name(d)
 
     gary_user = User(email="test+gary@openunited.com", username="garyg")
     gary_user.save()
-    gary = Person(user=gary_user, full_name='Gary Garner', preferred_name='Gary', headline='I am Gary', test_user=True)
+    gary = Person(
+        user=gary_user,
+        full_name="Gary Garner",
+        preferred_name="Gary",
+        headline="I am Gary",
+        test_user=True,
+    )
     gary.save()
 
     shirley_user = User(email="test+shirley@openunited.com", username="shirleyaghost")
     shirley_user.save()
-    shirley = Person(user=shirley_user, full_name='Shirley Ghostman', preferred_name='Shirl', headline='Shirley Ghostman here', test_user=True)
+    shirley = Person(
+        user=shirley_user,
+        full_name="Shirley Ghostman",
+        preferred_name="Shirl",
+        headline="Shirley Ghostman here",
+        test_user=True,
+    )
     shirley.save()
 
     fancy_out("Setup Skills & Expertise records")
@@ -52,41 +88,67 @@ else:
 
     fancy_out("Create PersonSkill records")
 
-    #Skill: Full-stack Development
+    # Skill: Full-stack Development
     full_stack_development = Skill.objects.get(pk=106)
 
-    #Expertise: Django
+    # Expertise: Django
     django_expertise = Expertise.objects.get(pk=33)
 
-    gary_skill = PersonSkill(person=gary, skill=full_stack_development.ancestry(), expertise=django_expertise.ancestry())
+    gary_skill = PersonSkill(
+        person=gary,
+        skill=full_stack_development.ancestry(),
+        expertise=django_expertise.ancestry(),
+    )
     gary_skill.save()
+
+    fancy_out("Create Organisation records")
+
+    usernames = [
+        "organisation_1",
+        "organisation_2",
+        "organisation_3",
+        "organisation_4",
+        "organisation_5",
+    ]
+    organisations = []
+    organisation_service = OrganisationService()
+    for username in usernames:
+        organisations.append(organisation_service.create(username, username))
+
+    fancy_out("Create OrganisationAccount records")
+
+    organisation_accounts = []
+    organisation_account_service = OrganisationAccountService()
+    for organisation in organisations:
+        # TODO: replace the below 0's with random numbers
+        organisation_accounts.append(
+            organisation_account_service.create(organisation, 0, 0)
+        )
+
+    organisation_account_credits = []
+    organisation_account_credit_service = OrganisationAccountCreditService()
+    for organisation_account in organisation_accounts:
+        # TODO: replace the below 0 with a random number
+        organisation_account_credits.append(
+            organisation_account_credit_service.create(organisation_account, 0)
+        )
 
     fancy_out("Create Product records")
 
-
     fancy_out("Create ProductRole records")
-
 
     fancy_out("Create Capability records")
 
-
     fancy_out("Create Challenge records")
-
 
     fancy_out("Create Challenge Dependency records")
 
-
     fancy_out("Create Bounty records")
-
 
     fancy_out("Create BountyClaim records")
 
-
     fancy_out("Create BountyClaim Submission Attempt records")
-
 
     fancy_out("Create Portfolio records")
 
-    
     fancy_out("Complete!")
-
