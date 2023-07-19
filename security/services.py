@@ -5,7 +5,10 @@ from security.models import OrganisationPerson, Organisation, Person
 logger = logging.getLogger(__name__)
 
 class OrganisationPersonService:
-    def create(person_id, organisation_id, right):
+    def __init__(self):
+        pass
+
+    def create(self, person_id: int, organisation_id: int, right: int) -> tuple[OrganisationPerson, bool]:
         try:
             person = Person.objects.get(id=person_id)
             organisation = Organisation.objects.get(id=organisation_id)
@@ -19,7 +22,7 @@ class OrganisationPersonService:
             logger.error(f"Failed to create OrganisationPerson due to: {e}")
             return None, False
 
-    def update(organisation_person_id, person_id, organisation_id, right):
+    def update(self, organisation_person_id: int, person_id: int, organisation_id: int, right: int) -> tuple[OrganisationPerson, bool]:
         try:
             organisation_person = OrganisationPerson.objects.get(pk=organisation_person_id)
             person = Person.objects.get(id=person_id)
@@ -35,7 +38,7 @@ class OrganisationPersonService:
             logger.error(f"Failed to update OrganisationPerson due to: {e}")
             return None, False
 
-    def delete(organisation_person_id):
+    def delete(self, organisation_person_id: int) -> bool:
         try:
             organisation_person = OrganisationPerson.objects.get(pk=organisation_person_id)
             organisation_person.delete()

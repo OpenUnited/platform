@@ -13,7 +13,7 @@ class OrganisationService:
         pass
 
     @transaction.atomic
-    def create(name: str) -> Organisation:
+    def create(self, name: str) -> Organisation:
         try:
             organisation = Organisation(name=name)
             organisation.save()
@@ -23,7 +23,7 @@ class OrganisationService:
             return None
 
     @transaction.atomic
-    def update(id: int, name: str) -> Organisation:
+    def update(self, id: int, name: str) -> Organisation:
         try:
             organisation = Organisation.objects.get(pk=id)
             organisation.name = name
@@ -34,7 +34,7 @@ class OrganisationService:
             return None
 
     @transaction.atomic
-    def delete(id: int) -> bool:
+    def delete(self, id: int) -> bool:
         try:
             organisation = Organisation.objects.get(pk=id)
             organisation.delete()
