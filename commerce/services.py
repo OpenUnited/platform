@@ -1,13 +1,18 @@
 import logging
+import datetime
 from django.db import transaction
 from django.db.models import Sum
 
+from talent.models import Person
+from commerce.utils import CurrencyTypes, PaymentTypes
 from .models import (
     Organisation,
     OrganisationAccount,
     OrganisationAccountCredit,
     OrganisationAccountCreditReasons,
     PointTypes,
+    Cart,
+    PointPriceConfiguration,
 )
 
 
@@ -170,3 +175,60 @@ class OrganisationAccountCreditService:
         except OrganisationAccountCredit.DoesNotExist as e:
             logger.error(f"Failed to delete OrganisationAccountCredit due to: {e}")
             return False
+
+
+class CartService:
+    @transaction.atomic
+    def create(
+        self,
+        organisation_account: OrganisationAccount,
+        creator: Person,
+        number_of_points: int,
+        currency_of_payment: CurrencyTypes,
+        payment_type: PaymentTypes,
+    ) -> Cart:
+        price_per_point_in_cents = self._get_point_inbound_price_in_cents(
+            currency_of_payment
+        )
+        subtotal_in_cents = number_of_points * price_per_point_in_cents
+        sales_tax_in_cents = 0  # TODO: create logic for sales tax based on org account
+        total_payable_in_cents = subtotal_in_cents + sales_tax_in_cents
+
+        cart = Cart(
+            organisation_account=organisation_account,
+            creator=creator,
+            number_of_points=number_of_points,
+            currency_of_payment=currency_of_payment,
+            payment_type=payment_type,
+            price_per_point_in_cents=price_per_point_in_cents,
+            subtotal_in_cents=subtotal_in_cents,
+            sales_tax_in_cents=sales_tax_in_cents,
+            total_payable_in_cents=total_payable_in_cents,
+        )
+
+        return cart
+
+    @transaction.atomic
+    def delete(self, id: int) -> bool:
+        try:
+            cart = Cart.objects.get(pk=id)
+            cart.delete()
+            return True
+        except Cart.DoesNotExist as e:
+            logger.error(f"Failed to delete OrganisationAccountCredit due to: {e}")
+            return False
+
+    def _get_point_inbound_price_in_cents(self, currency: CurrencyTypes) -> int:
+        conversion_rate_queryset = PointPriceConfiguration.objects.filter(
+            applicable_from_date__lte=datetime.date.today()
+        ).order_by("-created_at")
+        conversion_rates = conversion_rate_queryset.first()
+
+        if currency == CurrencyTypes.USD:
+            return conversion_rates.usd_point_inbound_price_in_cents
+        elif currency == CurrencyTypes.EUR:
+            return conversion_rates.eur_point_inbound_price_in_cents
+        elif currency == CurrencyTypes.GBP:
+            return conversion_rates.gbp_point_inbound_price_in_cents
+        else:
+            raise ValueError("No conversion rate for given currency.", currency)

@@ -65,27 +65,6 @@ class Cart(TimeStampMixin, UUIDMixin):
     total_payable_in_cents = models.PositiveBigIntegerField()
     payment_type = models.IntegerField(choices=PaymentTypes.choices(), default=PaymentTypes.ONLINE)
 
-    @staticmethod
-    def new(organisation_account, creator, number_of_points, currency_of_payment, payment_type):  
-        price_per_point_in_cents = PointPriceConfiguration.get_point_inbound_price_in_cents(currency_of_payment)
-        subtotal_in_cents = number_of_points * price_per_point_in_cents
-        sales_tax_in_cents = 0 #TODO: create logic for sales tax based on org account
-        total_payable_in_cents = subtotal_in_cents + sales_tax_in_cents
-
-        cart = Cart.objects.create(
-            organisation_account = organisation_account,
-            creator = creator,
-            number_of_points = number_of_points,
-            currency_of_payment = currency_of_payment,
-            payment_type = payment_type,
-            price_per_point_in_cents = price_per_point_in_cents,
-            subtotal_in_cents = subtotal_in_cents,
-            sales_tax_in_cents = sales_tax_in_cents, 
-            total_payable_in_cents = total_payable_in_cents
-        )
-
-        return cart
-
 
 class Grant(models.Model):
     organisation_account = models.ForeignKey(OrganisationAccount, on_delete=models.CASCADE)
@@ -281,20 +260,3 @@ class PointPriceConfiguration(TimeStampMixin, UUIDMixin):
     usd_point_outbound_price_in_cents = models.IntegerField()
     eur_point_outbound_price_in_cents = models.IntegerField()
     gbp_point_outbound_price_in_cents = models.IntegerField()
-
-
-    @staticmethod
-    def get_point_inbound_price_in_cents(currency):
-        conversion_rate_queryset = PointPriceConfiguration.objects.filter(applicable_from_date__lte=datetime.date.today()).order_by('-created_at')
-        conversion_rates = conversion_rate_queryset.first()
-
-        if currency == CurrencyTypes.USD:
-            return conversion_rates.usd_point_inbound_price_in_cents
-        elif currency == CurrencyTypes.EUR:
-            return conversion_rates.eur_point_inbound_price_in_cents
-        elif currency == CurrencyTypes.GBP:
-            return conversion_rates.gbp_point_inbound_price_in_cents
-        else:
-            raise ValueError('No conversion rate for given currency.', currency)
-
-
