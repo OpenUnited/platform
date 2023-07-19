@@ -15,7 +15,7 @@ from openunited.mixins import TimeStampMixin, UUIDMixin
 from engagement.models import Notification
 from talent.models import Person
 from product_management.models import Bounty
-from .services import OrganisationAccountService
+
 
 class Organisation(TimeStampMixin):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -132,6 +132,7 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
         return sales_order
 
     def register_payment(self, currency_of_payment, amount_paid_in_cents, detail):
+        from .services import OrganisationAccountService
         payment = InboundPayment.objects.create(
             sales_order = self,
             payment_type = self.payment_type,
@@ -144,7 +145,6 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
             self.save
             #credit points to organisation account
             OrganisationAccountService.credit(self)
-            # self.organisation_account.credit(self)
             
         return payment
 
