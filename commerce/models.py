@@ -15,6 +15,7 @@ from openunited.mixins import TimeStampMixin, UUIDMixin
 from engagement.models import Notification
 from talent.models import Person
 from product_management.models import Bounty
+from .services import OrganisationAccountService
 
 class Organisation(TimeStampMixin):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -51,35 +52,6 @@ class OrganisationAccount(models.Model):
     organisation = models.ForeignKey(to="Organisation", on_delete=models.CASCADE)
     liquid_points_balance = models.PositiveBigIntegerField()
     nonliquid_points_balance = models.PositiveBigIntegerField()
-
-    def credit(self, granting_object):
-        credit_reason = OrganisationAccountCreditReasons.GRANT
-        type_of_points = PointTypes.NONLIQUID
-        if(granting_object.__class__.__name__.lower()) == "salesorder":
-            credit_reason = OrganisationAccountCreditReasons.SALE
-            type_of_points = PointTypes.LIQUID
-
-        #only grant points if granting_object has no existing related credit
-        if not granting_object.organisation_account_credit:
-            credit = OrganisationAccountCredit.objects.create(
-                        organisation_account = self,
-                        number_of_points = granting_object.number_of_points,
-                        credit_reason = credit_reason,
-                        type_of_points = type_of_points,
-                    )
-            self.recalculate_balances()
-            granting_object.mark_points_as_granted(credit)
-
-    def recalculate_balances(self):
-        nonliquid_credits = OrganisationAccountCredit.objects.filter(organisation_account=self, type_of_points=PointTypes.NONLIQUID).aggregate(Sum('number_of_points'))['number_of_points__sum'] or 0
-        nonliquid_debits = 0
-        self.nonliquid_points_balance = nonliquid_credits - nonliquid_debits
-
-        liquid_credits = OrganisationAccountCredit.objects.filter(organisation_account=self, type_of_points=PointTypes.LIQUID).aggregate(Sum('number_of_points'))['number_of_points__sum'] or 0
-        liquid_debits = 0
-        self.liquid_points_balance = liquid_credits - liquid_debits
-
-        self.save()
 
 
 class Cart(TimeStampMixin, UUIDMixin):
@@ -171,7 +143,8 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
             self.payment_status = PaymentStatusOptions.PAID
             self.save
             #credit points to organisation account
-            self.organisation_account.credit(self)
+            OrganisationAccountService.credit(self)
+            # self.organisation_account.credit(self)
             
         return payment
 
