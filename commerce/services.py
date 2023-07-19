@@ -4,7 +4,12 @@ from django.db import transaction
 from django.db.models import Sum
 
 from talent.models import Person
-from commerce.utils import CurrencyTypes, PaymentTypes
+from commerce.utils import (
+    CurrencyTypes,
+    PaymentTypes,
+    PaymentStatusOptions,
+    LifecycleStatusOptions,
+)
 from .models import (
     Organisation,
     OrganisationAccount,
@@ -13,6 +18,8 @@ from .models import (
     PointTypes,
     Cart,
     PointPriceConfiguration,
+    SalesOrder,
+    InboundPayment,
 )
 
 
@@ -166,6 +173,7 @@ class OrganisationAccountCreditService:
         org_acc_credit.number_of_points = number_of_points
         org_acc_credit.type_of_points = type_of_points
         org_acc_credit.credit_reason = credit_reason
+        org_acc_credit.save()
 
     @transaction.atomic
     def delete(self, id: int) -> bool:
@@ -205,6 +213,7 @@ class CartService:
             sales_tax_in_cents=sales_tax_in_cents,
             total_payable_in_cents=total_payable_in_cents,
         )
+        cart.save()
 
         return cart
 
@@ -232,3 +241,142 @@ class CartService:
             return conversion_rates.gbp_point_inbound_price_in_cents
         else:
             raise ValueError("No conversion rate for given currency.", currency)
+
+
+class SalesOrderService:
+    @transaction.atomic
+    def create(
+        self,
+        organisation_account: OrganisationAccount,
+        organisation_account_credit: OrganisationAccountCredit,
+        cart: Cart,
+        number_of_points: int,
+        currency_of_payments: CurrencyTypes,
+        price_per_point_in_cents: int,
+        subtotal_in_cents: int,
+        sales_tax_in_cents: int,
+        total_payable_in_cents: int,
+        payment_type: PaymentTypes,
+        payment_status: PaymentStatusOptions,
+        process_status: LifecycleStatusOptions,
+    ) -> SalesOrder:
+        sales_order = SalesOrder(
+            organisation_account=organisation_account,
+            organisation_account_credit=organisation_account_credit,
+            cart=cart,
+            number_of_points=number_of_points,
+            currency_of_payments=currency_of_payments,
+            price_per_point_in_cents=price_per_point_in_cents,
+            subtotal_in_cents=subtotal_in_cents,
+            sales_tax_in_cents=sales_tax_in_cents,
+            total_payable_in_cents=total_payable_in_cents,
+            payment_type=payment_type,
+            payment_status=payment_status,
+            process_status=process_status,
+        )
+        sales_order.save()
+
+        return sales_order
+
+    @transaction.atomic
+    def update(
+        self,
+        id: int,
+        organisation_account: OrganisationAccount,
+        organisation_account_credit: OrganisationAccountCredit,
+        cart: Cart,
+        number_of_points: int,
+        currency_of_payments: CurrencyTypes,
+        price_per_point_in_cents: int,
+        subtotal_in_cents: int,
+        sales_tax_in_cents: int,
+        total_payable_in_cents: int,
+        payment_type: PaymentTypes,
+        payment_status: PaymentStatusOptions,
+        process_status: LifecycleStatusOptions,
+    ) -> SalesOrder:
+        try:
+            sales_order = SalesOrder.objects.get(pk=id)
+            sales_order.organisation_account = organisation_account
+            sales_order.organisation_account_credit = organisation_account_credit
+            sales_order.cart = cart
+            sales_order.number_of_points = number_of_points
+            sales_order.currency_of_payments = currency_of_payments
+            sales_order.price_per_point_in_cents = price_per_point_in_cents
+            sales_order.subtotal_in_cents = subtotal_in_cents
+            sales_order.sales_tax_in_cents = sales_tax_in_cents
+            sales_order.total_payable_in_cents = total_payable_in_cents
+            sales_order.payment_type = payment_type
+            sales_order.payment_status = payment_status
+            sales_order.process_status = process_status
+
+            sales_order.save()
+
+            return sales_order
+        except SalesOrder.DoesNotExist as e:
+            logger.error(f"Failed to update SalesOrder due to: {e}")
+            return None
+
+    @transaction.atomic
+    def create_from_cart(self, cart: Cart) -> SalesOrder:
+        sales_order = SalesOrder(
+            organisation_account=cart.organisation_account,
+            cart=cart,
+            number_of_points=cart.number_of_points,
+            currency_of_payment=cart.currency_of_payment,
+            price_per_point_in_cents=cart.price_per_point_in_cents,
+            subtotal_in_cents=cart.subtotal_in_cents,
+            payment_type=cart.payment_type,
+            sales_tax_in_cents=cart.sales_tax_in_cents,
+            total_payable_in_cents=cart.total_payable_in_cents,
+        )
+        sales_order.save()
+
+        return sales_order
+
+    @transaction.atomic
+    def delete(self, id: int) -> bool:
+        try:
+            sales_order = SalesOrder.objects.get(pk=id)
+            sales_order.delete()
+        except SalesOrder.DoesNotExist as e:
+            logger.error(f"Failed to delete SalesOrder due to: {e}")
+
+    def register_payment(
+        self,
+        sales_order: SalesOrder,
+        currency_of_payment: CurrencyTypes,
+        amount_paid_in_cents: int,
+        detail: str,
+    ):
+        payment = InboundPayment.objects.create(
+            sales_order=sales_order,
+            payment_type=sales_order.payment_type,
+            currency_of_payment=currency_of_payment,
+            amount_paid_in_cents=amount_paid_in_cents,
+            transaction_detail=detail,
+        )
+        if self._is_paid_in_full(sales_order, currency_of_payment):
+            sales_order.payment_status = PaymentStatusOptions.PAID
+            sales_order.save
+            # credit points to organisation account
+            OrganisationAccountService.credit(self)
+
+        return payment
+
+    def _is_paid_in_full(
+        self, sales_order: SalesOrder, currency_of_payment: CurrencyTypes
+    ) -> bool:
+        total_paid_in_cents = InboundPayment.objects.filter(
+            sales_order=sales_order, currency_of_payment=currency_of_payment
+        ).aggregate(Sum("amount_paid_in_cents"))["amount_paid_in_cents__sum"]
+        if total_paid_in_cents == self.total_payable_in_cents:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def mark_points_as_granted(self, sales_order, credit):
+        sales_order.organisation_account_credit = credit
+        sales_order.process_status = LifecycleStatusOptions.COMPLETE
+        sales_order.save()
