@@ -1,4 +1,5 @@
 import os
+import datetime
 import django
 from django.apps import apps
 import json
@@ -8,12 +9,14 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
 from talent.models import Person, Skill, Expertise, PersonSkill
+from commerce.utils import CurrencyTypes, PaymentTypes
 from security.models import User
-from commerce.models import Organisation, OrganisationAccount, OrganisationAccountCredit
 from commerce.services import (
     OrganisationService,
     OrganisationAccountService,
     OrganisationAccountCreditService,
+    CartService,
+    PointPriceConfigurationService,
 )
 
 
@@ -52,6 +55,7 @@ else:
         "Organisation": "commerce",
         "OrganisationAccount": "commerce",
         "OrganisationAccountCredit": "commerce",
+        "Cart": "commerce",
         "Person": "talent",
         "User": "security",
     }
@@ -132,6 +136,34 @@ else:
         organisation_account_credits.append(
             organisation_account_credit_service.create(organisation_account, 0)
         )
+
+    fancy_out("Create a PointPriceConfiguration record")
+
+    point_price_conf_service = PointPriceConfigurationService()
+    point_price_conf_service.create(
+        applicable_from_date=datetime.date.today(),
+        usd_point_inbound_price_in_cents=1,
+        eur_point_inbound_price_in_cents=1,
+        gbp_point_inbound_price_in_cents=1,
+        usd_point_outbound_price_in_cents=2,
+        eur_point_outbound_price_in_cents=2,
+        gbp_point_outbound_price_in_cents=2,
+    )
+
+    fancy_out("Create Cart records")
+
+    carts = []
+    cart_service = CartService()
+    for organisation_account in organisation_accounts:
+        cart = cart_service.create(
+            organisation_account,
+            gary,
+            0,  # TODO: replace 0 with something meaningful
+            CurrencyTypes.EUR,
+            PaymentTypes.ONLINE,
+        )
+
+        carts.append(cart)
 
     fancy_out("Create Product records")
 
