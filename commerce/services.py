@@ -394,6 +394,19 @@ class PointPriceConfigurationService:
         eur_point_outbound_price_in_cents: int,
         gbp_point_outbound_price_in_cents: int,
     ) -> PointPriceConfiguration:
+        if not self._is_profitable(
+            usd_point_inbound_price_in_cents,
+            usd_point_outbound_price_in_cents,
+            eur_point_inbound_price_in_cents,
+            eur_point_outbound_price_in_cents,
+            gbp_point_inbound_price_in_cents,
+            gbp_point_outbound_price_in_cents,
+        ):
+            logger.error(
+                f"A non-profitable PointPriceConfiguration is tried to be created. No configuration is created."
+            )
+            return None
+
         point_price_config = PointPriceConfiguration(
             applicable_from_date=applicable_from_date,
             usd_point_inbound_price_in_cents=usd_point_inbound_price_in_cents,
@@ -422,6 +435,19 @@ class PointPriceConfigurationService:
             point_price_config = self.get(id)
         except PointPriceConfiguration.DoesNotExist as e:
             logger.error(f"Failed to update SalesOrder due to: {e}")
+            return None
+
+        if not self._is_profitable(
+            usd_point_inbound_price_in_cents,
+            usd_point_outbound_price_in_cents,
+            eur_point_inbound_price_in_cents,
+            eur_point_outbound_price_in_cents,
+            gbp_point_inbound_price_in_cents,
+            gbp_point_outbound_price_in_cents,
+        ):
+            logger.error(
+                f"A non-profitable PointPriceConfiguration is tried to be updated. No configuration is updated."
+            )
             return None
 
         if applicable_from_date is not None:
@@ -453,6 +479,27 @@ class PointPriceConfigurationService:
 
         point_price_config.save()
         return point_price_config
+
+    def _is_profitable(
+        self,
+        usd_point_inbound_price_in_cents,
+        usd_point_outbound_price_in_cents,
+        eur_point_inbound_price_in_cents,
+        eur_point_outbound_price_in_cents,
+        gbp_point_inbound_price_in_cents,
+        gbp_point_outbound_price_in_cents,
+    ):
+        profitable = True
+        if usd_point_inbound_price_in_cents < usd_point_outbound_price_in_cents:
+            profitable = False
+
+        if eur_point_inbound_price_in_cents < eur_point_outbound_price_in_cents:
+            profitable = False
+
+        if gbp_point_inbound_price_in_cents < gbp_point_outbound_price_in_cents:
+            profitable = False
+
+        return profitable
 
     @transaction.atomic
     def delete(self, id):
