@@ -1,9 +1,0 @@
-Django==4.2.2
-django-debug-toolbar
-Pillow
-python-dotenv
-psycopg2-binary
-django-treebeard
-django-notifications-hq
-#-e git+https://github.com/MoveBigRocks/core-utils.git#egg=core-utils
-#-e git+https://github.com/MoveBigRocks/entitlements.git#egg=entitlements
