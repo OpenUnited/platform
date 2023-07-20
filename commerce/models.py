@@ -95,51 +95,6 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
     payment_status = models.IntegerField(choices=PaymentStatusOptions.choices(), default=PaymentStatusOptions.PENDING)
     process_status = models.IntegerField(choices=LifecycleStatusOptions.choices(), default=LifecycleStatusOptions.NEW)
 
-    @staticmethod
-    def create_from_cart(cart):
-        sales_order = SalesOrder.objects.create(
-            organisation_account = cart.organisation_account,
-            cart = cart,
-            number_of_points = cart.number_of_points,
-            currency_of_payment = cart.currency_of_payment,
-            price_per_point_in_cents = cart.price_per_point_in_cents,
-            subtotal_in_cents = cart.subtotal_in_cents,
-            payment_type = cart.payment_type,
-            sales_tax_in_cents = cart.sales_tax_in_cents, 
-            total_payable_in_cents = cart.total_payable_in_cents,
-        )
-        return sales_order
-
-    def register_payment(self, currency_of_payment, amount_paid_in_cents, detail):
-        from .services import OrganisationAccountService
-        payment = InboundPayment.objects.create(
-            sales_order = self,
-            payment_type = self.payment_type,
-            currency_of_payment = currency_of_payment,
-            amount_paid_in_cents = amount_paid_in_cents,
-            transaction_detail = detail
-        )
-        if self.is_paid_in_full():
-            self.payment_status = PaymentStatusOptions.PAID
-            self.save
-            #credit points to organisation account
-            OrganisationAccountService.credit(self)
-            
-        return payment
-
-
-    def is_paid_in_full(self):
-        total_paid_in_cents = InboundPayment.objects.filter(sales_order=self, currency_of_payment=self.currency_of_payment).aggregate(Sum('amount_paid_in_cents'))['amount_paid_in_cents__sum']
-        if total_paid_in_cents == self.total_payable_in_cents:
-            return True
-        else:
-            return False
-
-    def mark_points_as_granted(self, credit):
-            self.organisation_account_credit = credit
-            self.process_status = LifecycleStatusOptions.COMPLETE
-            self.save()
-
 
 class InboundPayment(TimeStampMixin, UUIDMixin):
     sales_order = models.ForeignKey(SalesOrder, on_delete=models.CASCADE)

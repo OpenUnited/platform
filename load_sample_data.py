@@ -1,4 +1,5 @@
 import os
+import datetime
 import django
 from django.apps import apps
 import json
@@ -8,13 +9,17 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
 django.setup()
 
 from talent.models import Person, Skill, Expertise, PersonSkill
+from commerce.utils import CurrencyTypes, PaymentTypes
 from security.models import User
-from commerce.models import Organisation, OrganisationAccount, OrganisationAccountCredit
 from commerce.services import (
     OrganisationService,
     OrganisationAccountService,
     OrganisationAccountCreditService,
+    CartService,
+    PointPriceConfigurationService,
 )
+from security.services import UserService
+from talent.services import PersonService
 
 
 def load_reference_data(classname):
@@ -46,60 +51,92 @@ if proceed[0] != "y":
     fancy_out("Stopped at your request")
     exit()
 else:
-    fancy_out("Create User & Person records")
-
     d = {
         "Organisation": "commerce",
         "OrganisationAccount": "commerce",
         "OrganisationAccountCredit": "commerce",
+        "Cart": "commerce",
         "Person": "talent",
         "User": "security",
     }
 
+    fancy_out(f"Delete all the records of the following models: {d.keys()}")
     # Deletes all the existing records before populating sample data according to the dictionary
     clear_rows_by_model_name(d)
 
-    gary_user = User(email="test+gary@openunited.com", username="garyg")
-    gary_user.save()
-    gary = Person(
-        user=gary_user,
-        full_name="Gary Garner",
-        preferred_name="Gary",
-        headline="I am Gary",
-        test_user=True,
-    )
-    gary.save()
+    fancy_out("Create User & Person records")
 
-    shirley_user = User(email="test+shirley@openunited.com", username="shirleyaghost")
-    shirley_user.save()
-    shirley = Person(
-        user=shirley_user,
-        full_name="Shirley Ghostman",
-        preferred_name="Shirl",
-        headline="Shirley Ghostman here",
-        test_user=True,
-    )
-    shirley.save()
+    user_datas = [
+        {
+            "email": "test+gary@openunited.com",
+            "username": "garyg",
+            "password": "123456789",
+        },
+        {
+            "email": "test+shirley@openunited.com",
+            "username": "shirleyaghost",
+            "password": "123456789",
+        },
+    ]
 
-    fancy_out("Setup Skills & Expertise records")
+    users = []
+    user_service = UserService()
+    for user_data in user_datas:
+        user = user_service.create(
+            email=user_data.get("email"),
+            username=user_data.get("username"),
+            password=user_data.get("password"),
+        )
 
-    load_reference_data("skill")
-    load_reference_data("expertise")
+        users.append(user)
 
-    fancy_out("Create PersonSkill records")
+    person_datas = [
+        {
+            "full_name": "Gary Test",
+            "preferred_name": "Gary",
+            "headline": "Lorem ipsum sit amet",
+        },
+        {
+            "full_name": "Shirley Test",
+            "preferred_name": "Shirley",
+            "headline": "Lorem ipsum sit amet",
+        },
+    ]
 
-    # Skill: Full-stack Development
-    full_stack_development = Skill.objects.get(pk=106)
+    # len(person_datas) and len(user_datas) must be equal
+    persons = []
+    person_service = PersonService()
+    for index, person_data in enumerate(person_datas):
+        person = person_service.create(
+            user=users[index],
+            full_name=person_data.get("full_name"),
+            preferred_name=person_data.get("preferred_name"),
+            headline=person_data.get("headline"),
+            send_me_bounties=False,
+            test_user=True,
+        )
 
-    # Expertise: Django
-    django_expertise = Expertise.objects.get(pk=33)
+    # Temporarily commented-out
 
-    gary_skill = PersonSkill(
-        person=gary,
-        skill=full_stack_development.ancestry(),
-        expertise=django_expertise.ancestry(),
-    )
-    gary_skill.save()
+    # fancy_out("Setup Skills & Expertise records")
+
+    # load_reference_data("skill")
+    # load_reference_data("expertise")
+
+    # fancy_out("Create PersonSkill records")
+
+    # # Skill: Full-stack Development
+    # full_stack_development = Skill.objects.get(pk=106)
+
+    # # Expertise: Django
+    # django_expertise = Expertise.objects.get(pk=33)
+
+    # gary_skill = PersonSkill(
+    #     person=gary,
+    #     skill=full_stack_development.ancestry(),
+    #     expertise=django_expertise.ancestry(),
+    # )
+    # gary_skill.save()
 
     fancy_out("Create Organisation records")
 
@@ -132,6 +169,36 @@ else:
         organisation_account_credits.append(
             organisation_account_credit_service.create(organisation_account, 0)
         )
+
+    fancy_out("Create a PointPriceConfiguration record")
+
+    point_price_conf_service = PointPriceConfigurationService()
+    point_price_conf_service.create(
+        applicable_from_date=datetime.date.today(),
+        usd_point_inbound_price_in_cents=1,
+        eur_point_inbound_price_in_cents=1,
+        gbp_point_inbound_price_in_cents=1,
+        usd_point_outbound_price_in_cents=2,
+        eur_point_outbound_price_in_cents=2,
+        gbp_point_outbound_price_in_cents=2,
+    )
+
+    fancy_out("Create Cart records")
+
+    carts = []
+    cart_service = CartService()
+    for index, organisation_account in enumerate(organisation_accounts):
+        person_index = index % len(persons)
+
+        cart = cart_service.create(
+            organisation_account,
+            persons[person_index],
+            0,  # TODO: replace 0 with something meaningful
+            CurrencyTypes.EUR,
+            PaymentTypes.ONLINE,
+        )
+
+        carts.append(cart)
 
     fancy_out("Create Product records")
 
