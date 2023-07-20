@@ -376,7 +376,88 @@ class SalesOrderService:
             return False
 
     @staticmethod
-    def mark_points_as_granted(self, sales_order, credit):
+    def mark_points_as_granted(sales_order, credit):
         sales_order.organisation_account_credit = credit
         sales_order.process_status = LifecycleStatusOptions.COMPLETE
         sales_order.save()
+
+
+class PointPriceConfigurationService:
+    @transaction.atomic
+    def create(
+        self,
+        applicable_from_date: datetime.date,
+        usd_point_inbound_price_in_cents: int,
+        eur_point_inbound_price_in_cents: int,
+        gbp_point_inbound_price_in_cents: int,
+        usd_point_outbound_price_in_cents: int,
+        eur_point_outbound_price_in_cents: int,
+        gbp_point_outbound_price_in_cents: int,
+    ) -> PointPriceConfiguration:
+        point_price_config = PointPriceConfiguration(
+            applicable_from_date=applicable_from_date,
+            usd_point_inbound_price_in_cents=usd_point_inbound_price_in_cents,
+            eur_point_inbound_price_in_cents=eur_point_inbound_price_in_cents,
+            gbp_point_inbound_price_in_cents=gbp_point_inbound_price_in_cents,
+            usd_point_outbound_price_in_cents=usd_point_outbound_price_in_cents,
+            eur_point_outbound_price_in_cents=eur_point_outbound_price_in_cents,
+            gbp_point_outbound_price_in_cents=gbp_point_outbound_price_in_cents,
+        )
+        point_price_config.save()
+        return point_price_config
+
+    @transaction.atomic
+    def update(
+        self,
+        id: int,
+        applicable_from_date: datetime.date = None,
+        usd_point_inbound_price_in_cents: int = None,
+        eur_point_inbound_price_in_cents: int = None,
+        gbp_point_inbound_price_in_cents: int = None,
+        usd_point_outbound_price_in_cents: int = None,
+        eur_point_outbound_price_in_cents: int = None,
+        gbp_point_outbound_price_in_cents: int = None,
+    ) -> PointPriceConfiguration:
+        try:
+            point_price_config = self.get(id)
+        except PointPriceConfiguration.DoesNotExist as e:
+            logger.error(f"Failed to update SalesOrder due to: {e}")
+            return None
+
+        if applicable_from_date is not None:
+            point_price_config.applicable_from_date = applicable_from_date
+        if usd_point_inbound_price_in_cents is not None:
+            point_price_config.usd_point_inbound_price_in_cents = (
+                usd_point_inbound_price_in_cents
+            )
+        if eur_point_inbound_price_in_cents is not None:
+            point_price_config.eur_point_inbound_price_in_cents = (
+                eur_point_inbound_price_in_cents
+            )
+        if gbp_point_inbound_price_in_cents is not None:
+            point_price_config.gbp_point_inbound_price_in_cents = (
+                gbp_point_inbound_price_in_cents
+            )
+        if usd_point_outbound_price_in_cents is not None:
+            point_price_config.usd_point_outbound_price_in_cents = (
+                usd_point_outbound_price_in_cents
+            )
+        if eur_point_outbound_price_in_cents is not None:
+            point_price_config.eur_point_outbound_price_in_cents = (
+                eur_point_outbound_price_in_cents
+            )
+        if gbp_point_outbound_price_in_cents is not None:
+            point_price_config.gbp_point_outbound_price_in_cents = (
+                gbp_point_outbound_price_in_cents
+            )
+
+        point_price_config.save()
+        return point_price_config
+
+    @transaction.atomic
+    def delete(self, id):
+        point_price_config = self.get(id)
+        if point_price_config is not None:
+            point_price_config.delete()
+            return True
+        return False
