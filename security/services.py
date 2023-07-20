@@ -70,10 +70,10 @@ class UserService:
         username: str,
         email: str,
         password: str,
-        is_active: bool,
-        is_staff: bool,
-        is_superuser: bool,
-        is_logged: bool,
+        is_active: bool = True,
+        is_staff: bool = False,
+        is_superuser: bool = False,
+        is_logged: bool = False,
     ) -> User:
         user = User(
             username=username,
