@@ -66,7 +66,7 @@ else:
 
     fancy_out("Create User & Person records")
 
-    user_datas = [
+    user_data = [
         {
             "email": "test+gary@openunited.com",
             "username": "garyg",
@@ -81,16 +81,16 @@ else:
 
     users = []
     user_service = UserService()
-    for user_data in user_datas:
+    for ud in user_data:
         user = user_service.create(
-            email=user_data.get("email"),
-            username=user_data.get("username"),
-            password=user_data.get("password"),
+            email=ud.get("email"),
+            username=ud.get("username"),
+            password=ud.get("password"),
         )
 
         users.append(user)
 
-    person_datas = [
+    person_data = [
         {
             "full_name": "Gary Test",
             "preferred_name": "Gary",
@@ -103,18 +103,20 @@ else:
         },
     ]
 
-    # len(person_datas) and len(user_datas) must be equal
+    # len(person_data) and len(user_datas) must be equal
     persons = []
     person_service = PersonService()
-    for index, person_data in enumerate(person_datas):
+    for index, pd in enumerate(person_data):
         person = person_service.create(
             user=users[index],
-            full_name=person_data.get("full_name"),
-            preferred_name=person_data.get("preferred_name"),
-            headline=person_data.get("headline"),
+            full_name=pd.get("full_name"),
+            preferred_name=pd.get("preferred_name"),
+            headline=pd.get("headline"),
             send_me_bounties=False,
             test_user=True,
         )
+
+        persons.append(person)
 
     # Temporarily commented-out
 
@@ -188,7 +190,10 @@ else:
     carts = []
     cart_service = CartService()
     for index, organisation_account in enumerate(organisation_accounts):
-        person_index = index % len(persons)
+        if index == 0:
+            person_index = 0
+        else:
+            person_index = index % len(persons)
 
         cart = cart_service.create(
             organisation_account,
