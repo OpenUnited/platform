@@ -34,7 +34,7 @@ class OrganisationService:
             organisation.save()
             return organisation
         except Exception as e:
-            logger.error(f"Failed to create OrganisationPerson due to: {e}")
+            logger.error(f"Failed to create Organisation due to: {e}")
             return None
 
     @transaction.atomic
