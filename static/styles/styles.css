@@ -248,7 +248,7 @@
   width: 20px;
   min-width: 20px;
   height: 20px;
-  transition: border .15s,background .15s;
+  transition: border .15s, background .15s;
   border: 1px solid #b6babf;
   border-radius: 2px;
 }

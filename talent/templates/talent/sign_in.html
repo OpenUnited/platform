@@ -27,9 +27,12 @@
               </div>
               {% endfor %}
               {% if form.non_field_errors %}
-                <p style="color: red">{{ form.non_field_errors }}</p>
+                {% for error in form.non_field_errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
               {% endif %}
-              <button class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit" type="submit">Sign In</button>
+
+              <button class="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit" type="submit">Sign In</button>
             </form>
           </div>
         </div>
