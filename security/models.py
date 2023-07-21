@@ -82,7 +82,7 @@ class User(AbstractBaseUser):
         validators=[
             RegexValidator(
                 regex="^[a-z0-9]*$",
-                message="Username may only contain letters and numbers",
+                message="Username may only contain letters and numbers without any spaces",
                 code="invalid_username",
             )
         ],
