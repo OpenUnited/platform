@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Sign In - Splash{% endblock %}
+{% block content %}
+
+<div class="relative isolate w-full flex flex-col h-full grow xl:justify-center">
+  <svg class="absolute inset-x-0 top-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]" aria-hidden="true">
+    ...
+  </svg>
+  
+  <div class="overflow-hidden">
+    <div class="mx-auto w-full max-w-7xl pb-24 sm:pb-32 pt-4 sm:pt-20 sm:px-6 lg:px-0 xl:px-8 lg:pt-14">
+      <div class="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+        <div class="w-full max-w-xl lg:shrink-0">
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Sign In.</h1>
+          <p class="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">Enter your credentials to continue.</p>
+          
+          <div class="mt-10">
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+              <div>
+                <label>{{ field.label_tag }}</label>
+                {{ field }}
+                {% for error in field.errors %}
+                  <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              </div>
+              {% endfor %}
+              {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              <button class="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit" type="submit">Sign In</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
