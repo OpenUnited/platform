@@ -1,0 +1,312 @@
+.menu-wrap .menu-overlay,
+.menu-wrap .menu {
+  right: -100%;
+  transition: right 0.35s ease-in-out;
+}
+
+.menu-wrap.menu-open .menu-overlay,
+.menu-wrap.menu-open .menu {
+  right: 0px;
+}
+
+.ideas-list__text a {
+  word-break: break-all;
+}
+
+.nested-item__wrap>.nested-item:first-child>.nested-item__label {
+  border-top: 0px !important;
+  padding-top: 0px !important;
+}
+
+.choices__list--multiple .choices__item {
+  min-height: 24px;
+  line-height: 1.2;
+  background: #f5f5f5;
+  border: 1px solid #f0f0f0;
+  border-radius: 2px;
+  cursor: default;
+  transition: font-size 0.3s, line-height 0.3s, height 0.3s;
+  user-select: none;
+  margin-inline-end: 4px;
+  padding-inline-start: 8px;
+  padding-inline-end: 4px;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 2px;
+}
+
+.choices__list--multiple .choices__item[data-deletable]:focus-visible {
+  outline-color: #e6f7ff;
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+  background-color: #e6f7ff;
+  border-color: #e6f7ff;
+}
+
+.choices[data-type*=select-multiple] .choices__button,
+.choices[data-type*=text] .choices__button {
+  border-left: 0px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' data-icon='close' width='1em' height='1em' fill='currentColor' aria-hidden='true'%3E%3Cpath d='M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.choices[data-type*=select-multiple] .choices__inner {
+  padding-bottom: 0px;
+}
+
+.choices__inner {
+  background-color: #fff;
+  border-color: #d9d9d9;
+  padding: 2px 24px 2px 4px;
+  min-height: 30px;
+}
+
+/* .choices__inner:hover {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-right-width: 1px;
+} */
+
+.choices__input {
+  background-color: #fff;
+  margin-bottom: 2px;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+  background-color: #f5f5f5;
+}
+
+.choices[data-type*=select-one] .choices__inner {
+  padding-bottom: 2px;
+}
+
+.choices[data-type*=select-one]::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: translate(0%, -50%);
+  top: 50%;
+  margin-top: 0px;
+  border: 0px;
+  width: 24px;
+  height: 24px;
+}
+
+.choices[data-type*=select-one].is-open:after {
+  margin-top: 0px;
+}
+
+.choices__list--single {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  height: 100%;
+}
+
+.choices__list--single .choices__item {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.heart {
+  position: relative;
+  width: 10px;
+  height: 10px;
+}
+
+.heart__checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: absolute;
+  top: calc(10px * -.4);
+  left: calc(10px * -.2);
+  width: calc(10px * 1.5);
+  height: calc(10px * 1.5);
+  z-index: 2;
+  cursor: pointer;
+  transform: scale(1) rotate(45deg);
+}
+
+.heart__checkbox:focus {
+  outline: none;
+}
+
+.heart__checkbox:hover~.heart__icon {
+  transform: scale(1.1) rotate(45deg);
+}
+
+.heart__checkbox:checked~.heart__icon {
+  -webkit-animation: heartAnimation forwards 1s;
+  animation: heartAnimation forwards 1s;
+}
+
+.heart__icon {
+  width: 10px;
+  height: 10px;
+  background: lightpink;
+  transform: scale(1) rotate(45deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 200ms ease-out;
+}
+
+.heart__icon::before,
+.heart__icon::after {
+  content: "";
+  display: block;
+  background: inherit;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.heart__icon::before {
+  top: 0;
+  left: -50%;
+}
+
+.heart__icon::after {
+  left: 0;
+  top: -50%;
+}
+
+@-webkit-keyframes heartAnimation {
+  0% {
+    transform: scale(1.1) rotate(45deg);
+  }
+
+  25% {
+    transform: scale(0.7) rotate(45deg);
+  }
+
+  45% {
+    transform: scale(1.4) rotate(45deg);
+    background: red;
+  }
+
+  70% {
+    transform: scale(1) rotate(45deg);
+    background: red;
+  }
+
+  100% {
+    transform: scale(1.1) rotate(45deg);
+    background: red;
+  }
+}
+
+@keyframes heartAnimation {
+  0% {
+    transform: scale(1.1) rotate(45deg);
+  }
+
+  25% {
+    transform: scale(0.7) rotate(45deg);
+  }
+
+  45% {
+    transform: scale(1.4) rotate(45deg);
+    background: red;
+  }
+
+  70% {
+    transform: scale(1) rotate(45deg);
+    background: red;
+  }
+
+  100% {
+    transform: scale(1.1) rotate(45deg);
+    background: red;
+  }
+}
+
+.checkbox__input {
+  display: none;
+}
+
+.checkbox__wrap input:not([type="range"]):not([type="color"]) {
+  writing-mode: horizontal-tb !important;
+}
+
+.checkbox__label {
+  display: flex;
+  align-items: center;
+  transition: color .15s;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.checkbox__faces {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  transition: border .15s,background .15s;
+  border: 1px solid #b6babf;
+  border-radius: 2px;
+}
+
+.checkbox__icon {
+  display: flex;
+  width: 12px;
+  height: 10px;
+  transition: opacity .15s;
+  fill: #fff;
+}
+
+.checkbox__wrap .icon {
+  display: inline-block;
+}
+
+.checkbox__wrap svg {
+  vertical-align: top;
+}
+
+.checkbox__text {
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+.checkbox__input:checked~.checkbox__label .checkbox__faces {
+  border-color: #60a5fa;
+  background: #60a5fa;
+}
+
+.checkbox__wrap .checkbox__input:not(:checked)~.checkbox__label:hover {
+  color: #60a5fa;
+}
+
+.tab-content .tab-body {
+  display: none;
+}
+
+.tab-content .tab-body.active {
+  display: block;
+}
+
+.tab-link.active {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.tab-link.active:hover {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.tab-link.active span {
+  color: #60a5fa;
+  background-color: #f9fafb;
+}
+
+.tab-link.active:hover span {
+  color: #60a5fa;
+  background-color: #f9fafb;
+}
