@@ -19,6 +19,7 @@ class Talent(AbstractUser):
     is_test_user = models.BooleanField(_("Test User"), default=False)
 
     class Meta:
+        db_table = "talent_talent"
         verbose_name_plural = "Talents"
 
     def __str__(self):

@@ -15,6 +15,7 @@ class TalentAdmin(admin.ModelAdmin):
                     "last_name",
                     "username",
                     "email",
+                    "password",
                 )
             },
         ),
