@@ -7,7 +7,7 @@ This is the Django-based platform that powers OpenUnited. Django apps are used t
 - Commerce (Organisation, Points & Payments etc.)
 - Engagement (Notifications etc.)
 
-Each app/domain has a services.py file that implements the services that comprise the interface use by other apps.
+Each app/domain has a services.py file that implements the services that comprise the interface used by other apps.
 
 This repo contains the full platform including the frontend (which is "deliberately simple"*), however in the workflow we prototype and specify the target UX as code in the [UX Prototype repo](https://github.com/OpenUnited/ux-prototype)
 
