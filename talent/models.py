@@ -18,6 +18,9 @@ class Talent(AbstractUser):
     send_me_bounties = models.BooleanField(default=True)
     is_test_user = models.BooleanField(_("Test User"), default=False)
 
+    class Meta:
+        verbose_name_plural = "Talents"
+
     def __str__(self):
         return self.get_full_name()
 
