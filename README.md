@@ -9,7 +9,9 @@ This is the Django-based platform that powers OpenUnited. Django apps are used t
 
 Each app/domain has a services.py file that implements the services that comprise the interface use by other apps.
 
-This repo contains the full platform including the frontend (which is deliberately simple), however in the workflow we prototype and specify the target UX as code in the [UX Prototype repo](https://github.com/OpenUnited/ux-prototype)
+This repo contains the full platform including the frontend (which is "deliberately simple"*), however in the workflow we prototype and specify the target UX as code in the [UX Prototype repo](https://github.com/OpenUnited/ux-prototype)
+
+Regarding the deliberately simple frontend, we use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, [TailwindCSS](https://tailwindcss.com/), [TailwindUI](https://tailwindui.com/), plain javascript, and a sprinkle of [HTMX](https://htmx.org/).
 
 ## Getting started / how to run this app
 
