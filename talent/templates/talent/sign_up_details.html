@@ -1,0 +1,89 @@
+{% load static %}
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- tailwind version 3.3.2 -->
+  <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
+
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+
+<body>
+    <div class="max-w-3xl mx-auto bg-white p-5 rounded-md shadow-sm mt-5">
+
+            <div class="text-center">
+                <h2 class="text-4xl font-extrabold text-gray-900 my-5">Tells us about yourself</h2>
+                <p class="font-normal text-gray-600 text-sm">We would like you to answer a few questions</p>
+            </div>
+
+        <div class="m-7">
+            <form method="POST">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="text-red-600">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="my-2">
+                    <label for="{{ form.headline.id_for_label }}" class="block mb-2 text-gray-600">
+                        {{ form.headline.label }}
+                    </label>
+                    {{ form.headline }}
+                    {% if form.headline.errors %}
+                        <div class="text-red-600">
+                            {{ form.headline.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="my-2">
+                    <label for="{{ form.overview.id_for_label }}" class="block mb-2 text-gray-600">
+                        {{ form.overview.label }}
+                    </label>
+                    {{ form.overview }}
+                    {% if form.overview.errors %}
+                        <div class="text-red-600">
+                            {{ form.overview.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="my-2">
+                    <label for="{{ form.photo.id_for_label }}" class="block mb-2 text-gray-600">
+                        {{ form.photo.label }}
+                    </label>
+                    {{ form.photo }}
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG, JPG or JPEG</p>
+                    {% if form.photo.errors %}
+                        <div class="text-red-600">
+                            {{ form.photo.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="w-full px-3 py-4 text-white bg-indigo-500 rounded-md focus:bg-indigo-600 focus:outline-none">Let's Go!</button>
+                    </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+
+    <script type="text/javascript" src="{% static 'scripts/main.js' %}"></script>
+
+</body>
+
+
+</html>

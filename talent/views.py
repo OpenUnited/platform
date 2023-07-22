@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
-from .forms import SignUpForm, SignInForm
+from .models import Talent
+from .forms import SignUpForm, SignInForm, TalentDetailsForm
 
 
 def sign_in(request):
@@ -21,6 +23,24 @@ def sign_in(request):
     return render(request, "talent/sign_in.html", {"form": form})
 
 
+# TODO: add unauthorized page when someone tries to reach this view
+# TODO: saving photos does not work right now, fix it
+@login_required
+def complete_profile(request):
+    if request.method == "POST":
+        form = TalentDetailsForm(request.POST)
+        if form.is_valid():
+            username = request.user.username
+            talent = Talent.objects.get(username=username)
+            talent.headline = form.cleaned_data.get("headline")
+            talent.overview = form.cleaned_data.get("overview")
+            talent.photo = form.cleaned_data.get("photo")
+            talent.save()
+
+            return redirect("home")
+    return render(request, "talent/sign_up_details.html", {"form": TalentDetailsForm()})
+
+
 def sign_up(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
@@ -30,7 +50,7 @@ def sign_up(request):
             raw_password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect("home")
+            return redirect("complete_profile")
         else:
             return render(request, "talent/sign_up.html", {"form": form})
 
