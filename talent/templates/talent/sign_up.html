@@ -1,38 +1,124 @@
-{% extends 'base.html' %}
-{% block title %}Sign Up - Splash{% endblock %}
-{% block content %}
+{% load static %}
+<html>
 
-<div class="relative isolate w-full flex flex-col h-full grow xl:justify-center">
-  <svg class="absolute inset-x-0 top-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]" aria-hidden="true">
-    ...
-  </svg>
-  
-  <div class="overflow-hidden">
-    <div class="mx-auto w-full max-w-7xl pb-24 sm:pb-32 pt-4 sm:pt-20 sm:px-6 lg:px-0 xl:px-8 lg:pt-14">
-      <div class="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
-        <div class="w-full max-w-xl lg:shrink-0">
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Sign Up.</h1>
-          <p class="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">Create a new account to get started.</p>
-          
-          <div class="mt-10">
-            <form method="post">
-              {% csrf_token %}
-              {% for field in form %}
-              <div>
-                <label>{{ field.label_tag }}</label>
-                {{ field }}
-                {% for error in field.errors %}
-                <p style="color: red">{{ error }}</p>
-              {% endfor %}
-              </div>
-              {% endfor %}
-              <button class="mt-4 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit" type="submit">Sign Up</button>
-            </form>
-          </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- tailwind version 3.3.2 -->
+  <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
+
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+
+<body>
+    <div class="max-w-lg mx-auto bg-white p-5 rounded-md shadow-sm mt-5">
+        <div class="text-center">
+            <h1 class="my-3 text-3xl font-semibold text-gray-700">Sign Up</h1>
+            <p class="text-gray-600">Start your open-source journey</p>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+        <div class="m-7">
+            <form method="POST">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="text-red-600">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                    <div class="grid gap-4 grid-cols-2">
+                        <div class="my-2">
+                            <label for="{{ form.first_name.id_for_label }}" class="block mb-2 text-sm text-gray-600">
+                                {{ form.first_name.label }}
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-red-600">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+            
+                        <div class="my-2">
+                            <label for="{{ form.last_name.id_for_label }}" class="block mb-2 text-sm text-gray-600">
+                                {{ form.last_name.label }}
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-red-600">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="my-2">
+                        <label for="{{ form.username.id_for_label }}" class="block mb-2 text-sm text-gray-600">
+                            {{ form.username.label }}
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-red-600">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+        
+                    <div class="my-2">
+                        <label for="{{ form.email.id_for_label }}" class="block mb-2 text-sm text-gray-600">
+                            {{ form.email.label }}
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-red-600">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+        
+                    <div class="my-2">
+                        <label for="{{ form.password1.id_for_label }}" class="block mb-2 text-sm text-gray-600">
+                            {{ form.password1.label }}
+                        </label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="text-red-600">
+                                {{ form.password1.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+        
+                    <div class="my-2">
+                        <label for="{{ form.password2.id_for_label }}" class="block mb-2 text-sm text-gray-600">
+                            {{ form.password2.label }}
+                        </label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="text-red-600">
+                                {{ form.password2.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+        
+                    <div class="mt-4">
+                        <button type="submit" class="w-full px-3 py-4 text-white bg-indigo-500 rounded-md focus:bg-indigo-600 focus:outline-none">Sign Up</button>
+                    </div>    
+            </form>
+        </div>
 
-{% endblock %}
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+
+    <script type="text/javascript" src="{% static 'scripts/main.js' %}"></script>
+
+</body>
+
+
+</html>

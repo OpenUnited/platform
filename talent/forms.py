@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from security.models import User
+from talent.models import Talent
 
 
 def styled_input(input_type, placeholder):
@@ -41,15 +41,26 @@ def styled_input_new(input_type, placeholder):
 class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
-        self.fields["password1"].widget = styled_input("password", "Password")
-        self.fields["password2"].widget = styled_input("password", "Confirm Password")
+        self.fields["password1"].widget = styled_input_new("password", "Password")
+        self.fields["password2"].widget = styled_input_new(
+            "password", "Confirm Password"
+        )
 
     class Meta:
-        model = User
-        fields = ("username", "email", "password1", "password2")
+        model = Talent
+        fields = (
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "password1",
+            "password2",
+        )
         widgets = {
-            "username": styled_input("text", "Username"),
-            "email": styled_input("email", "Email"),
+            "first_name": styled_input_new("first_name", "First Name"),
+            "last_name": styled_input_new("last_name", "Last Name"),
+            "username": styled_input_new("text", "Username"),
+            "email": styled_input_new("email", "Email"),
         }
 
 
