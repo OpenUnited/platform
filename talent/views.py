@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 
 from .forms import SignUpForm, SignInForm
@@ -41,3 +41,9 @@ def sign_up(request):
 def log_out(request):
     logout(request)
     return redirect("home")
+
+
+def reset_password(request):
+    return HttpResponse(
+        "Implement this page. Check if Django provides the necessary functions"
+    )

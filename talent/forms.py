@@ -21,6 +21,23 @@ def styled_input(input_type, placeholder):
         return forms.TextInput(attrs=attrs)
 
 
+def styled_input_new(input_type, placeholder):
+    """
+    This function returns a TextInput or PasswordInput widget with predefined style.
+    """
+    attrs = {
+        "class": "w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300",
+        "placeholder": placeholder,
+    }
+
+    if input_type == "password":
+        return forms.PasswordInput(attrs=attrs)
+    elif input_type == "email":
+        return forms.EmailInput(attrs=attrs)
+    else:
+        return forms.TextInput(attrs=attrs)
+
+
 class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
@@ -38,10 +55,8 @@ class SignUpForm(UserCreationForm):
 
 class SignInForm(forms.Form):
     username = forms.CharField(
-        max_length=150,
-        widget=styled_input("text", "Username"),
+        max_length=150, widget=styled_input_new("username", "Enter your username")
     )
     password = forms.CharField(
-        max_length=128,
-        widget=styled_input("password", "Password"),
+        max_length=128, widget=styled_input_new("password", "Enter your password")
     )
