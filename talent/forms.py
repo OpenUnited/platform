@@ -38,10 +38,10 @@ class SignUpForm(UserCreationForm):
 
 class SignInForm(forms.Form):
     username = forms.CharField(
-        max_length=65,
+        max_length=150,
         widget=styled_input("text", "Username"),
     )
     password = forms.CharField(
-        max_length=65,
+        max_length=128,
         widget=styled_input("password", "Password"),
     )
