@@ -1,6 +1,6 @@
 # platform
 
-This is the Django-based platform that powers OpenUnited. Apps are used to create separate domains:
+This is the Django-based platform that powers OpenUnited. [Apps](https://docs.djangoproject.com/en/4.2/ref/applications/) are used to create separate domains:
 
 - Product Management (Product, Capability, Initiative, Challenge, Bounty etc.)
 - Talent (Person, Skill, BountyClaim etc.)
