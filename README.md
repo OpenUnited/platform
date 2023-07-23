@@ -11,7 +11,7 @@ Each app/domain has a services.py file that implements the services interface fo
 
 This repo contains the full platform including the frontend (which is "deliberately simple"*), however in the workflow we prototype and specify the target UX as code in the [UX Prototype repo](https://github.com/OpenUnited/ux-prototype)
 
-Regarding the deliberately simple frontend, we use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, [TailwindCSS](https://tailwindcss.com/), [TailwindUI](https://tailwindui.com/), plain javascript, and a sprinkle of [HTMX](https://htmx.org/).
+Regarding the deliberately simple frontend; we use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, [TailwindCSS](https://tailwindcss.com/), [TailwindUI](https://tailwindui.com/), plain javascript, and a sprinkle of [HTMX](https://htmx.org/). Earlier we had a separate ReactJS frontend and a GraphQL API layer, however this fanciness ultimately slowed us down - so we decided to keep the frontend simple.
 
 ## Getting started / how to run this app
 
