@@ -28,3 +28,7 @@ python load_sample_data.py
 python manage.py runserver
 ```
 
+Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your browser.
+
+Not working? Please check [the Django docs](https://docs.djangoproject.com/en/4.2/intro/tutorial01/) and make sure you have [PostgreSQL installed](https://www.google.com/search?q=how+to+install+postgresql)
+
