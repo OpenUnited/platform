@@ -1,13 +1,13 @@
 # platform
 
-This is the Django-based platform that powers OpenUnited. Django apps are used to create separate domains:
+This is the Django-based platform that powers OpenUnited. Apps are used to create separate domains:
 
 - Product Management (Product, Capability, Initiative, Challenge, Bounty etc.)
 - Talent (Person, Skill, BountyClaim etc.)
 - Commerce (Organisation, Points & Payments etc.)
 - Engagement (Notifications etc.)
 
-Each app/domain has a services.py file that implements the services that comprise the interface used by other apps.
+Each app/domain has a services.py file that implements the services interface for that app/domain.
 
 This repo contains the full platform including the frontend (which is "deliberately simple"*), however in the workflow we prototype and specify the target UX as code in the [UX Prototype repo](https://github.com/OpenUnited/ux-prototype)
 
