@@ -11,7 +11,7 @@ import engagement
 from treebeard.mp_tree import MP_Node
 
 
-class Profile(AbstractUser):
+class Profile(AbstractUser, TimeStampMixin):
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)

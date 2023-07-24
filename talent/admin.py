@@ -5,7 +5,11 @@ from .models import Profile
 
 @admin.register(Profile)
 class TalentAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_joined",)
+    readonly_fields = (
+        "date_joined",
+        "created_at",
+        "updated_at",
+    )
     fieldsets = (
         (
             "General Information",
@@ -28,6 +32,8 @@ class TalentAdmin(admin.ModelAdmin):
                     "photo",
                     "send_me_bounties",
                     "date_joined",
+                    "created_at",
+                    "updated_at",
                 ),
             },
         ),
