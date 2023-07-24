@@ -31,6 +31,9 @@ def styled_input(input_type, placeholder):
 class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
+        self.fields["first_name"].required = True
+        self.fields["last_name"].required = True
+        self.fields["email"].required = True
         self.fields["password1"].widget = styled_input("password", "Password")
         self.fields["password2"].widget = styled_input("password", "Confirm Password")
 
@@ -52,7 +55,7 @@ class SignUpForm(UserCreationForm):
         }
 
 
-class TalentDetailsForm(forms.ModelForm):
+class ProfileDetailsForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = (

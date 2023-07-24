@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .models import Profile
-from .forms import SignUpForm, SignInForm, TalentDetailsForm
+from .forms import SignUpForm, SignInForm, ProfileDetailsForm
 
 
 def sign_in(request):
@@ -28,7 +28,7 @@ def sign_in(request):
 @login_required
 def complete_profile(request):
     if request.method == "POST":
-        form = TalentDetailsForm(request.POST)
+        form = ProfileDetailsForm(request.POST)
         if form.is_valid():
             username = request.user.username
             talent = Profile.objects.get(username=username)
@@ -38,7 +38,9 @@ def complete_profile(request):
             talent.save()
 
             return redirect("home")
-    return render(request, "talent/sign_up_details.html", {"form": TalentDetailsForm()})
+    return render(
+        request, "talent/sign_up_details.html", {"form": ProfileDetailsForm()}
+    )
 
 
 def sign_up(request):
