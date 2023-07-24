@@ -17,7 +17,11 @@ Profile = get_user_model()
 class ProfileService:
     @staticmethod
     def create(**kwargs):
-        profile = Profile.objects.create(**kwargs)
+        password = kwargs.pop("password", None)
+        profile = Profile(**kwargs)
+        if password:
+            profile.set_password(password)
+        profile.save()
         return profile
 
     @staticmethod
@@ -27,8 +31,17 @@ class ProfileService:
 
     @staticmethod
     def update(id, **kwargs):
-        Profile.objects.filter(id=id).update(**kwargs)
-        return Profile.objects.get(id=id)
+        try:
+            profile = Profile.objects.get(id=id)
+            password = kwargs.pop("password", None)
+            for key, value in kwargs.items():
+                setattr(profile, key, value)
+            if password:
+                profile.set_password(password)
+            profile.save()
+            return profile
+        except Profile.DoesNotExist:
+            return None
 
     @staticmethod
     def delete(id):
