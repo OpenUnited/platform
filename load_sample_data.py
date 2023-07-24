@@ -69,6 +69,17 @@ else:
 
     profile_data = [
         {
+            "first_name": "Doğukan",
+            "last_name": "Teber",
+            "email": "dogukan@example.com",
+            "username": "dogukan",
+            "password": "dogukan",
+            "headline": "Super lorem ipsum sit amet",
+            "overview": "Super user",
+            "is_staff": True,
+            "is_superuser": True,
+        },
+        {
             "first_name": "Gary",
             "last_name": "Test",
             "email": "test+gary@openunited.com",
