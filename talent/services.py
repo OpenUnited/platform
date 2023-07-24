@@ -25,23 +25,21 @@ class ProfileService:
         return profile
 
     @staticmethod
-    def get(id):
+    def get_by_id(id):
         profile = Profile.objects.get(id=id)
         return profile
 
     @staticmethod
-    def update(id, **kwargs):
-        try:
-            profile = Profile.objects.get(id=id)
-            password = kwargs.pop("password", None)
-            for key, value in kwargs.items():
-                setattr(profile, key, value)
-            if password:
-                profile.set_password(password)
-            profile.save()
-            return profile
-        except Profile.DoesNotExist:
-            return None
+    def get_by_username(username: str) -> Profile:
+        return Profile.objects.get(username=username)
+
+    @staticmethod
+    def update(profile: Profile, **kwargs):
+        for key, value in kwargs.items():
+            setattr(profile, key, value)
+
+        profile.save()
+        return profile
 
     @staticmethod
     def delete(id):

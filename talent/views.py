@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Profile
 from .forms import SignUpForm, SignInForm, ProfileDetailsForm
+from .services import ProfileService
 
 
 def sign_in(request):
@@ -30,12 +31,8 @@ def complete_profile(request):
     if request.method == "POST":
         form = ProfileDetailsForm(request.POST)
         if form.is_valid():
-            username = request.user.username
-            talent = Profile.objects.get(username=username)
-            talent.headline = form.cleaned_data.get("headline")
-            talent.overview = form.cleaned_data.get("overview")
-            talent.photo = form.cleaned_data.get("photo")
-            talent.save()
+            profile = ProfileService.get_by_username(request.user.username)
+            ProfileService.update(profile=profile, **form.cleaned_data)
 
             return redirect("home")
     return render(
