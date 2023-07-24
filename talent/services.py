@@ -1,16 +1,55 @@
 import logging
+from django.contrib.auth import get_user_model
+from django.db import transaction
+
 
 from talent.models import Person, BountyClaim, BountyDeliveryAttempt
 from security.models import User
-from product_management.models import Bounty, Challenge
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.conf import settings
-from django.db import transaction
+from product_management.models import Bounty
 
 
 logger = logging.getLogger(__name__)
 
 
+Profile = get_user_model()
+
+
+class ProfileService:
+    @staticmethod
+    def create(**kwargs):
+        profile = Profile.objects.create(**kwargs)
+        return profile
+
+    @staticmethod
+    def get(id):
+        profile = Profile.objects.get(id=id)
+        return profile
+
+    @staticmethod
+    def update(id, **kwargs):
+        Profile.objects.filter(id=id).update(**kwargs)
+        return Profile.objects.get(id=id)
+
+    @staticmethod
+    def delete(id):
+        Profile.objects.get(id=id).delete()
+
+    @staticmethod
+    def toggle_bounties(id):
+        profile = Profile.objects.get(id=id)
+        profile.send_me_bounties = not profile.send_me_bounties
+        profile.save()
+        return profile
+
+    @staticmethod
+    def make_test_user(id):
+        profile = Profile.objects.get(id=id)
+        profile.is_test_user = True
+        profile.save()
+        return profile
+
+
+# TODO: This service will be deleted once ProfileService is done
 class PersonService:
     @transaction.atomic
     def create(

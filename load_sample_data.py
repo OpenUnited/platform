@@ -19,7 +19,7 @@ from commerce.services import (
     PointPriceConfigurationService,
 )
 from security.services import UserService
-from talent.services import PersonService
+from talent.services import PersonService, ProfileService
 
 
 def load_reference_data(classname):
@@ -58,65 +58,39 @@ else:
         "Cart": "commerce",
         "Person": "talent",
         "User": "security",
+        "Profile": "talent",
     }
 
-    fancy_out(f"Delete all the records of the following models: {d.keys()}")
+    print(f"Delete all the records of the following models: {d.keys()}")
     # Deletes all the existing records before populating sample data according to the dictionary
     clear_rows_by_model_name(d)
 
-    fancy_out("Create User & Person records")
+    fancy_out("Create Profile records")
 
-    user_data = [
+    profile_data = [
         {
+            "first_name": "Gary",
+            "last_name": "Test",
             "email": "test+gary@openunited.com",
             "username": "garyg",
             "password": "123456789",
+            "headline": "Lorem ipsum sit amet",
+            "overview": "Test test test",
         },
         {
+            "first_name": "Shirley",
+            "last_name": "Test",
             "email": "test+shirley@openunited.com",
             "username": "shirleyaghost",
             "password": "123456789",
+            "headline": "Lorem ipsum sit amet",
+            "overview": "Test test test",
         },
     ]
 
-    users = []
-    user_service = UserService()
-    for ud in user_data:
-        user = user_service.create(
-            email=ud.get("email"),
-            username=ud.get("username"),
-            password=ud.get("password"),
-        )
-
-        users.append(user)
-
-    person_data = [
-        {
-            "full_name": "Gary Test",
-            "preferred_name": "Gary",
-            "headline": "Lorem ipsum sit amet",
-        },
-        {
-            "full_name": "Shirley Test",
-            "preferred_name": "Shirley",
-            "headline": "Lorem ipsum sit amet",
-        },
-    ]
-
-    # len(person_data) and len(user_datas) must be equal
-    persons = []
-    person_service = PersonService()
-    for index, pd in enumerate(person_data):
-        person = person_service.create(
-            user=users[index],
-            full_name=pd.get("full_name"),
-            preferred_name=pd.get("preferred_name"),
-            headline=pd.get("headline"),
-            send_me_bounties=False,
-            test_user=True,
-        )
-
-        persons.append(person)
+    profiles = []
+    for pd in profile_data:
+        profiles.append(ProfileService.create(**pd))
 
     # Temporarily commented-out
 
@@ -177,50 +151,52 @@ else:
     point_price_conf_service = PointPriceConfigurationService()
     point_price_conf_service.create(
         applicable_from_date=datetime.date.today(),
-        usd_point_inbound_price_in_cents=1,
-        eur_point_inbound_price_in_cents=1,
-        gbp_point_inbound_price_in_cents=1,
-        usd_point_outbound_price_in_cents=2,
-        eur_point_outbound_price_in_cents=2,
-        gbp_point_outbound_price_in_cents=2,
+        usd_point_inbound_price_in_cents=2,
+        eur_point_inbound_price_in_cents=2,
+        gbp_point_inbound_price_in_cents=2,
+        usd_point_outbound_price_in_cents=1,
+        eur_point_outbound_price_in_cents=1,
+        gbp_point_outbound_price_in_cents=1,
     )
 
-    fancy_out("Create Cart records")
+    # Temporarily commented out
 
-    carts = []
-    cart_service = CartService()
-    for index, organisation_account in enumerate(organisation_accounts):
-        if index == 0:
-            person_index = 0
-        else:
-            person_index = index % len(persons)
+    # fancy_out("Create Cart records")
 
-        cart = cart_service.create(
-            organisation_account,
-            persons[person_index],
-            0,  # TODO: replace 0 with something meaningful
-            CurrencyTypes.EUR,
-            PaymentTypes.ONLINE,
-        )
+    # carts = []
+    # cart_service = CartService()
+    # for index, organisation_account in enumerate(organisation_accounts):
+    #     if index == 0:
+    #         person_index = 0
+    #     else:
+    #         person_index = index % len(persons)
 
-        carts.append(cart)
+    #     cart = cart_service.create(
+    #         organisation_account,
+    #         persons[person_index],
+    #         0,  # TODO: replace 0 with something meaningful
+    #         CurrencyTypes.EUR,
+    #         PaymentTypes.ONLINE,
+    #     )
 
-    fancy_out("Create Product records")
+    #     carts.append(cart)
 
-    fancy_out("Create ProductRole records")
+    # fancy_out("Create Product records")
 
-    fancy_out("Create Capability records")
+    # fancy_out("Create ProductRole records")
 
-    fancy_out("Create Challenge records")
+    # fancy_out("Create Capability records")
 
-    fancy_out("Create Challenge Dependency records")
+    # fancy_out("Create Challenge records")
 
-    fancy_out("Create Bounty records")
+    # fancy_out("Create Challenge Dependency records")
 
-    fancy_out("Create BountyClaim records")
+    # fancy_out("Create Bounty records")
 
-    fancy_out("Create BountyClaim Submission Attempt records")
+    # fancy_out("Create BountyClaim records")
 
-    fancy_out("Create Portfolio records")
+    # fancy_out("Create BountyClaim Submission Attempt records")
+
+    # fancy_out("Create Portfolio records")
 
     fancy_out("Complete!")
