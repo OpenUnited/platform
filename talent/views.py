@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .models import Profile
 from .forms import SignUpForm, SignInForm, ProfileDetailsForm
 from .services import ProfileService
 
