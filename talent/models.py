@@ -11,7 +11,7 @@ import engagement
 from treebeard.mp_tree import MP_Node
 
 
-class Talent(AbstractUser):
+class Profile(AbstractUser):
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
@@ -19,13 +19,14 @@ class Talent(AbstractUser):
     is_test_user = models.BooleanField(_("Test User"), default=False)
 
     class Meta:
-        db_table = "talent_talent"
-        verbose_name_plural = "Talents"
+        db_table = "talent_profile"
+        verbose_name_plural = "Profiles"
 
     def __str__(self):
         return self.get_full_name()
 
 
+# Deprecated, use Profile model
 class Person(TimeStampMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     full_name = models.CharField(max_length=250)

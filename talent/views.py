@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .models import Talent
+from .models import Profile
 from .forms import SignUpForm, SignInForm, TalentDetailsForm
 
 
@@ -31,7 +31,7 @@ def complete_profile(request):
         form = TalentDetailsForm(request.POST)
         if form.is_valid():
             username = request.user.username
-            talent = Talent.objects.get(username=username)
+            talent = Profile.objects.get(username=username)
             talent.headline = form.cleaned_data.get("headline")
             talent.overview = form.cleaned_data.get("overview")
             talent.photo = form.cleaned_data.get("photo")
