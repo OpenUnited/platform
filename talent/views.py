@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from .models import Talent
-from .forms import SignUpForm, SignInForm, TalentDetailsForm
+from .forms import SignUpForm, SignInForm, PersonDetailsForm
+from .services import PersonService
 
 
 def sign_in(request):
@@ -28,17 +28,13 @@ def sign_in(request):
 @login_required
 def complete_profile(request):
     if request.method == "POST":
-        form = TalentDetailsForm(request.POST)
+        form = PersonDetailsForm(request.POST)
         if form.is_valid():
-            username = request.user.username
-            talent = Talent.objects.get(username=username)
-            talent.headline = form.cleaned_data.get("headline")
-            talent.overview = form.cleaned_data.get("overview")
-            talent.photo = form.cleaned_data.get("photo")
-            talent.save()
+            profile = PersonService.get_by_username(request.user.username)
+            PersonService.update(profile=profile, **form.cleaned_data)
 
             return redirect("home")
-    return render(request, "talent/sign_up_details.html", {"form": TalentDetailsForm()})
+    return render(request, "talent/sign_up_details.html", {"form": PersonDetailsForm()})
 
 
 def sign_up(request):

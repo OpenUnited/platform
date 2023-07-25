@@ -1,11 +1,15 @@
 from django.contrib import admin
 
-from .models import Talent
+from .models import Person
 
 
-@admin.register(Talent)
+@admin.register(Person)
 class TalentAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_joined",)
+    readonly_fields = (
+        "date_joined",
+        "created_at",
+        "updated_at",
+    )
     fieldsets = (
         (
             "General Information",
@@ -20,7 +24,7 @@ class TalentAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Talent Details",
+            "Person Details",
             {
                 "fields": (
                     "headline",
@@ -28,6 +32,8 @@ class TalentAdmin(admin.ModelAdmin):
                     "photo",
                     "send_me_bounties",
                     "date_joined",
+                    "created_at",
+                    "updated_at",
                 ),
             },
         ),

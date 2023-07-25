@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
@@ -11,7 +9,7 @@ import engagement
 from treebeard.mp_tree import MP_Node
 
 
-class Talent(AbstractUser):
+class Person(AbstractUser, TimeStampMixin):
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
@@ -19,39 +17,40 @@ class Talent(AbstractUser):
     is_test_user = models.BooleanField(_("Test User"), default=False)
 
     class Meta:
-        db_table = "talent_talent"
-        verbose_name_plural = "Talents"
+        db_table = "talent_person"
+        verbose_name_plural = "People"
 
     def __str__(self):
         return self.get_full_name()
 
 
-class Person(TimeStampMixin):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    full_name = models.CharField(max_length=250)
-    preferred_name = models.CharField(max_length=150)
-    photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
-    headline = models.TextField()
-    user = models.ForeignKey(to="security.User", on_delete=models.CASCADE, default=None)
-    test_user = models.BooleanField(default=False, blank=True)
-    overview = models.TextField(blank=True)
-    send_me_bounties = models.BooleanField(default=True)
+# Deprecated, use Profile model
+# class Person(TimeStampMixin):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+#     full_name = models.CharField(max_length=250)
+#     preferred_name = models.CharField(max_length=150)
+#     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
+#     headline = models.TextField()
+#     user = models.ForeignKey(to="security.User", on_delete=models.CASCADE, default=None)
+#     test_user = models.BooleanField(default=False, blank=True)
+#     overview = models.TextField(blank=True)
+#     send_me_bounties = models.BooleanField(default=True)
 
-    class Meta:
-        verbose_name_plural = "People"
+#     class Meta:
+#         verbose_name_plural = "People"
 
-    def __str__(self):
-        return self.full_name
+#     def __str__(self):
+#         return self.full_name
 
-    def get_username(self):
-        if not self.user.username:
-            raise AttributeError
-        return self.user.username
+#     def get_username(self):
+#         if not self.user.username:
+#             raise AttributeError
+#         return self.user.username
 
-    def get_email(self):
-        if not self.user.email:
-            raise AttributeError
-        return self.user.email
+#     def get_email(self):
+#         if not self.user.email:
+#             raise AttributeError
+#         return self.user.email
 
 
 class PersonWebsite(models.Model):
