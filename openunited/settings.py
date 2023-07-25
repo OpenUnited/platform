@@ -94,7 +94,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "talent.Profile"
+AUTH_USER_MODEL = "talent.Person"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

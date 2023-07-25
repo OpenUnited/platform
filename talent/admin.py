@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from .models import Profile
+from .models import Person
 
 
-@admin.register(Profile)
+@admin.register(Person)
 class TalentAdmin(admin.ModelAdmin):
     readonly_fields = (
         "date_joined",
@@ -24,7 +24,7 @@ class TalentAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Profile Details",
+            "Person Details",
             {
                 "fields": (
                     "headline",

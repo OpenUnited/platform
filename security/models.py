@@ -68,7 +68,7 @@ class BlacklistedUsernames(models.Model):
         db_table = "black_listed_usernames"
 
 
-# Deprecated, please use Talent.Profile
+# Deprecated, please use talent.Person
 class User(AbstractBaseUser):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     is_active = models.BooleanField(default=True)

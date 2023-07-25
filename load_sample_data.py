@@ -19,7 +19,7 @@ from commerce.services import (
     PointPriceConfigurationService,
 )
 from security.services import UserService
-from talent.services import PersonService, ProfileService
+from talent.services import PersonService
 
 
 def load_reference_data(classname):
@@ -58,16 +58,16 @@ else:
         "Cart": "commerce",
         "Person": "talent",
         "User": "security",
-        "Profile": "talent",
+        "Person": "talent",
     }
 
     print(f"Delete all the records of the following models: {d.keys()}")
     # Deletes all the existing records before populating sample data according to the dictionary
     clear_rows_by_model_name(d)
 
-    fancy_out("Create Profile records")
+    fancy_out("Create Person records")
 
-    profile_data = [
+    person_data = [
         {
             "first_name": "Doğukan",
             "last_name": "Teber",
@@ -99,9 +99,9 @@ else:
         },
     ]
 
-    profiles = []
-    for pd in profile_data:
-        profiles.append(ProfileService.create(**pd))
+    people = []
+    for pd in person_data:
+        people.append(PersonService.create(**pd))
 
     # Temporarily commented-out
 

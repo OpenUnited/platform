@@ -2,10 +2,10 @@ import factory
 from factory.django import DjangoModelFactory
 from django.core.files.base import ContentFile
 
-from talent.models import Profile
+from talent.models import Person
 
 
-class ProfileFactory(DjangoModelFactory):
+class PersonFactory(DjangoModelFactory):
     first_name = factory.Sequence(lambda n: f"first_name{n}")
     last_name = factory.Sequence(lambda n: f"last_name{n}")
     username = factory.Sequence(lambda n: f"username{n}")
@@ -20,4 +20,4 @@ class ProfileFactory(DjangoModelFactory):
     )
 
     class Meta:
-        model = Profile
+        model = Person

@@ -2,8 +2,8 @@ from django import forms
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from talent.forms import SignInForm, SignUpForm, ProfileDetailsForm
-from .factories import ProfileFactory
+from talent.forms import SignInForm, SignUpForm, PersonDetailsForm
+from .factories import PersonFactory
 
 
 class SignInFormTest(TestCase):
@@ -103,20 +103,20 @@ class SignUpFormTest(TestCase):
 
 
 # TODO: test photo uploading
-class ProfileDetailsFormTest(TestCase):
+class PersonDetailsFormTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = ProfileFactory()
+        cls.user = PersonFactory()
 
     def test_form_fields(self):
-        form = ProfileDetailsForm(instance=self.user)
+        form = PersonDetailsForm(instance=self.user)
 
         self.assertIn("headline", form.fields)
         self.assertIn("overview", form.fields)
         self.assertIn("photo", form.fields)
 
     def test_form_validation(self):
-        form = ProfileDetailsForm(
+        form = PersonDetailsForm(
             {
                 "headline": "A great headline",
                 "overview": "An interesting overview",
@@ -128,7 +128,7 @@ class ProfileDetailsFormTest(TestCase):
         )
         self.assertTrue(form.is_valid())
 
-        form = ProfileDetailsForm(
+        form = PersonDetailsForm(
             {
                 "overview": "An interesting overview",
                 "photo": SimpleUploadedFile(
@@ -140,8 +140,8 @@ class ProfileDetailsFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("headline", form.errors)
 
-    def test_profile_update(self):
-        form = ProfileDetailsForm(
+    def test_person_update(self):
+        form = PersonDetailsForm(
             {
                 "headline": "A great headline",
                 "overview": "An interesting overview",
@@ -154,7 +154,7 @@ class ProfileDetailsFormTest(TestCase):
 
         self.assertTrue(form.is_valid())
 
-        profile = form.save()
-        self.assertEqual(profile.headline, "A great headline")
-        self.assertEqual(profile.overview, "An interesting overview")
-        # self.assertEqual(profile.photo.name, "file.jpg")
+        person = form.save()
+        self.assertEqual(person.headline, "A great headline")
+        self.assertEqual(person.overview, "An interesting overview")
+        # self.assertEqual(person.photo.name, "file.jpg")
