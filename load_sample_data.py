@@ -10,7 +10,6 @@ django.setup()
 
 from talent.models import Person, Skill, Expertise, PersonSkill
 from commerce.utils import CurrencyTypes, PaymentTypes
-from security.models import User
 from commerce.services import (
     OrganisationService,
     OrganisationAccountService,
@@ -18,7 +17,6 @@ from commerce.services import (
     CartService,
     PointPriceConfigurationService,
 )
-from security.services import UserService
 from talent.services import PersonService
 
 
@@ -57,7 +55,6 @@ else:
         "OrganisationAccountCredit": "commerce",
         "Cart": "commerce",
         "Person": "talent",
-        "User": "security",
         "Person": "talent",
     }
 
@@ -87,6 +84,7 @@ else:
             "password": "123456789",
             "headline": "Lorem ipsum sit amet",
             "overview": "Test test test",
+            "is_test_user": True,
         },
         {
             "first_name": "Shirley",
@@ -96,6 +94,7 @@ else:
             "password": "123456789",
             "headline": "Lorem ipsum sit amet",
             "overview": "Test test test",
+            "is_test_user": True,
         },
     ]
 
