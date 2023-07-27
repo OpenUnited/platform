@@ -350,151 +350,151 @@ class Challenge(TimeStampMixin, UUIDMixin):
             return None
 
 
-@receiver(post_save, sender=Challenge)
-def save_challenge(sender, instance, created, **kwargs):
-    # If challenge changed status to available/claimed/done
-    try:
-        reviewer = instance.reviewer
+# @receiver(post_save, sender=Challenge)
+# def save_challenge(sender, instance, created, **kwargs):
+#     # If challenge changed status to available/claimed/done
+#     try:
+#         reviewer = instance.reviewer
 
-        # set contributor role for user if task is done
-        if (
-            instance.status == Challenge.CHALLENGE_STATUS_DONE
-            and instance.tracker.previous("status") != Challenge.CHALLENGE_STATUS_DONE
-        ):
-            try:
-                bounty_claim = instance.taskclaim_set.filter(kind=0).first()
-                if bounty_claim:
-                    product_person_data = dict(
-                        product_id=instance.product.id, person_id=bounty_claim.person.id
-                    )
-                    if not ProductRole.objects.filter(
-                        **product_person_data,
-                        right__in=[
-                            ProductRole.CONTRIBUTOR,
-                            ProductRole.PRODUCT_ADMIN,
-                            ProductRole.PRODUCT_MANAGER,
-                        ],
-                    ).exists():
-                        with transaction.atomic():
-                            ProductRole.objects.create(
-                                **product_person_data, right=ProductRole.CONTRIBUTOR
-                            )
-            except Exception as e:
-                print("Failed to change a user role", e, flush=True)
+#         # set contributor role for user if task is done
+#         if (
+#             instance.status == Challenge.CHALLENGE_STATUS_DONE
+#             and instance.tracker.previous("status") != Challenge.CHALLENGE_STATUS_DONE
+#         ):
+#             try:
+#                 bounty_claim = instance.taskclaim_set.filter(kind=0).first()
+#                 if bounty_claim:
+#                     product_person_data = dict(
+#                         product_id=instance.product.id, person_id=bounty_claim.person.id
+#                     )
+#                     if not ProductRole.objects.filter(
+#                         **product_person_data,
+#                         right__in=[
+#                             ProductRole.CONTRIBUTOR,
+#                             ProductRole.PRODUCT_ADMIN,
+#                             ProductRole.PRODUCT_MANAGER,
+#                         ],
+#                     ).exists():
+#                         with transaction.atomic():
+#                             ProductRole.objects.create(
+#                                 **product_person_data, right=ProductRole.CONTRIBUTOR
+#                             )
+#             except Exception as e:
+#                 print("Failed to change a user role", e, flush=True)
 
-        if (
-            instance.tracker.previous("status") != instance.status
-            and instance.status == Challenge.CHALLENGE_STATUS_CLAIMED
-            and reviewer
-        ):
-            engagement.tasks.send_notification.delay(
-                [Notification.Type.EMAIL],
-                Notification.EventType.TASK_STATUS_CHANGED,
-                receivers=[reviewer.id],
-                title=instance.title,
-                link=instance.get_challenge_link(),
-            )
-    except Person.DoesNotExist:
-        pass
+#         if (
+#             instance.tracker.previous("status") != instance.status
+#             and instance.status == Challenge.CHALLENGE_STATUS_CLAIMED
+#             and reviewer
+#         ):
+#             engagement.tasks.send_notification.delay(
+#                 [Notification.Type.EMAIL],
+#                 Notification.EventType.TASK_STATUS_CHANGED,
+#                 receivers=[reviewer.id],
+#                 title=instance.title,
+#                 link=instance.get_challenge_link(),
+#             )
+#     except Person.DoesNotExist:
+#         pass
 
-    has_bountyclaim_in_review = False
-    for bounty in instance.bounty_set.all():
-        if bounty.bountyclaim_set.filter(kind=0).count() > 0:
-            has_bountyclaim_in_review = True
+#     has_bountyclaim_in_review = False
+#     for bounty in instance.bounty_set.all():
+#         if bounty.bountyclaim_set.filter(kind=0).count() > 0:
+#             has_bountyclaim_in_review = True
 
-    challenge_listing_data = dict(
-        title=instance.title,
-        description=instance.description,
-        short_description=instance.short_description,
-        status=instance.status,
-        tags=list(instance.tag.all().values_list("name", flat=True)),
-        blocked=instance.blocked,
-        featured=instance.featured,
-        priority=instance.priority,
-        published_id=instance.published_id,
-        auto_approve_task_claims=instance.auto_approve_task_claims,
-        task_creator_id=str(instance.created_by.id) if instance.created_by.id else None,
-        created_by=get_person_data(instance.created_by),
-        updated_by=get_person_data(instance.updated_by),
-        reviewer=get_person_data(instance.reviewer) if instance.reviewer else None,
-        product_data={
-            "name": instance.product.name,
-            "slug": instance.product.slug,
-            "owner": instance.product.get_product_owner().username,
-            "website": instance.product.website,
-            "detail_url": instance.product.detail_url,
-            "video_url": instance.product.video_url,
-        }
-        if instance.product
-        else None,
-        product=instance.product,
-        has_active_depends=Challenge.objects.filter(
-            challengedepend__challenge=instance.id
-        )
-        .exclude(status=Challenge.CHALLENGE_STATUS_DONE)
-        .exists(),
-        initiative_id=instance.initiative.id if instance.initiative else None,
-        initiative_data=to_dict(instance.initiative) if instance.initiative else None,
-        capability_id=instance.capability.id
-        if instance.capability is not None
-        else None,
-        capability_data=to_dict(instance.capability) if instance.capability else None,
-        in_review=has_bountyclaim_in_review,
-        video_url=instance.video_url,
-    )
+#     challenge_listing_data = dict(
+#         title=instance.title,
+#         description=instance.description,
+#         short_description=instance.short_description,
+#         status=instance.status,
+#         tags=list(instance.tag.all().values_list("name", flat=True)),
+#         blocked=instance.blocked,
+#         featured=instance.featured,
+#         priority=instance.priority,
+#         published_id=instance.published_id,
+#         auto_approve_task_claims=instance.auto_approve_task_claims,
+#         task_creator_id=str(instance.created_by.id) if instance.created_by.id else None,
+#         created_by=get_person_data(instance.created_by),
+#         updated_by=get_person_data(instance.updated_by),
+#         reviewer=get_person_data(instance.reviewer) if instance.reviewer else None,
+#         product_data={
+#             "name": instance.product.name,
+#             "slug": instance.product.slug,
+#             "owner": instance.product.get_product_owner().username,
+#             "website": instance.product.website,
+#             "detail_url": instance.product.detail_url,
+#             "video_url": instance.product.video_url,
+#         }
+#         if instance.product
+#         else None,
+#         product=instance.product,
+#         has_active_depends=Challenge.objects.filter(
+#             challengedepend__challenge=instance.id
+#         )
+#         .exclude(status=Challenge.CHALLENGE_STATUS_DONE)
+#         .exists(),
+#         initiative_id=instance.initiative.id if instance.initiative else None,
+#         initiative_data=to_dict(instance.initiative) if instance.initiative else None,
+#         capability_id=instance.capability.id
+#         if instance.capability is not None
+#         else None,
+#         capability_data=to_dict(instance.capability) if instance.capability else None,
+#         in_review=has_bountyclaim_in_review,
+#         video_url=instance.video_url,
+#     )
 
-    # task_claim = instance.taskclaim_set.filter(kind__in=[0, 1]).first()
-    all_bounty_claim = []
-    for bounty in instance.bounty_set.all():
-        bounty_claim = bounty.bountyclaim_set.filter(kind__in=[0, 1]).first()
-        if bounty_claim:
-            all_bounty_claim.append(
-                {
-                    "bounty_claim": bounty_claim.id,
-                    "person": get_person_data(bounty_claim.person),
-                    "person_id": "%s" % bounty_claim.person.id,
-                }
-            )
+#     # task_claim = instance.taskclaim_set.filter(kind__in=[0, 1]).first()
+#     all_bounty_claim = []
+#     for bounty in instance.bounty_set.all():
+#         bounty_claim = bounty.bountyclaim_set.filter(kind__in=[0, 1]).first()
+#         if bounty_claim:
+#             all_bounty_claim.append(
+#                 {
+#                     "bounty_claim": bounty_claim.id,
+#                     "person": get_person_data(bounty_claim.person),
+#                     "person_id": "%s" % bounty_claim.person.id,
+#                 }
+#             )
 
-    if len(all_bounty_claim) > 0:
-        challenge_listing_data["task_claim"] = all_bounty_claim
-        # challenge_listing_data["assigned_to_data"] = get_person_data(task_claim.person)
-        # challenge_listing_data["assigned_to_person_id"] = task_claim.person.id if task_claim.person else None
-        challenge_listing_data["assigned_to_data"] = None
-        challenge_listing_data["assigned_to_person_id"] = None
-    else:
-        challenge_listing_data["task_claim"] = None
-        challenge_listing_data["assigned_to_data"] = None
-        challenge_listing_data["assigned_to_person_id"] = None
+#     if len(all_bounty_claim) > 0:
+#         challenge_listing_data["task_claim"] = all_bounty_claim
+#         # challenge_listing_data["assigned_to_data"] = get_person_data(task_claim.person)
+#         # challenge_listing_data["assigned_to_person_id"] = task_claim.person.id if task_claim.person else None
+#         challenge_listing_data["assigned_to_data"] = None
+#         challenge_listing_data["assigned_to_person_id"] = None
+#     else:
+#         challenge_listing_data["task_claim"] = None
+#         challenge_listing_data["assigned_to_data"] = None
+#         challenge_listing_data["assigned_to_person_id"] = None
 
-    if created:
-        product = instance.product
-        last_product_challenge = None
-        if product:
-            last_product_challenge = (
-                Challenge.objects.filter(productchallenge__product=product)
-                .order_by("-published_id")
-                .last()
-            )
-        published_id = (
-            last_product_challenge.published_id + 1 if last_product_challenge else 1
-        )
-        instance.published_id = published_id
-        instance.save()
+#     if created:
+#         product = instance.product
+#         last_product_challenge = None
+#         if product:
+#             last_product_challenge = (
+#                 Challenge.objects.filter(productchallenge__product=product)
+#                 .order_by("-published_id")
+#                 .last()
+#             )
+#         published_id = (
+#             last_product_challenge.published_id + 1 if last_product_challenge else 1
+#         )
+#         instance.published_id = published_id
+#         instance.save()
 
-        challenge_listing_data["published_id"] = published_id
+#         challenge_listing_data["published_id"] = published_id
 
-    # create TaskListing object
-    challengelisting_exist = ChallengeListing.objects.filter(
-        challenge=instance
-    ).exists()
+#     # create TaskListing object
+#     challengelisting_exist = ChallengeListing.objects.filter(
+#         challenge=instance
+#     ).exists()
 
-    if challengelisting_exist:
-        ChallengeListing.objects.filter(challenge=instance).update(
-            **challenge_listing_data
-        )
-    else:
-        ChallengeListing.objects.create(challenge=instance, **challenge_listing_data)
+#     if challengelisting_exist:
+#         ChallengeListing.objects.filter(challenge=instance).update(
+#             **challenge_listing_data
+#         )
+#     else:
+#         ChallengeListing.objects.create(challenge=instance, **challenge_listing_data)
 
 
 class Bounty(TimeStampMixin):

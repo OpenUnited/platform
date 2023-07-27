@@ -7,23 +7,6 @@ import json
 from utility.utils import *
 
 
-from commerce.services import (
-    OrganisationService,
-    OrganisationAccountService,
-    OrganisationAccountCreditService,
-    CartService,
-    PointPriceConfigurationService,
-)
-from product_management.models import Capability
-from talent.services import PersonService, SkillService, ExpertiseService
-from product_management.services import (
-    InitiativeService,
-    TagService,
-    ProductService,
-    ChallengeService,
-)
-
-
 # Utility function to clear rows by model name
 # Deletes all the existing records before populating sample data according to the dictionary
 def clear_rows_by_model_name(model_names_mapping: dict) -> None:
@@ -81,9 +64,26 @@ def generate_sample_data():
     for pd in person_data:
         people.append(PersonService.create(**pd))
 
-    product_data = read_json_data("sample_data/product.json", "product")
+    # Create Organisation model instances
+    organisation_data = read_json_data("sample_data/organisation.json", "organisation")
+
+    organisations = []
+    for org_data in organisation_data:
+        organisations.append(OrganisationService.create(**org_data))
+
+    # Create ProductOwner model instances
+    product_owners = []
+    for person, organisation in zip(people, organisations):
+        product_owners.append(
+            ProductOwnerService.create(person=person, organisation=organisation)
+        )
 
     # Create Product model instances
+    product_data = read_json_data("sample_data/product.json", "product")
+
+    for pd in product_data:
+        pd["owner"] = choice(product_owners)
+
     products = []
     for pd in product_data:
         products.append(ProductService.create(**pd))
@@ -139,13 +139,6 @@ def generate_sample_data():
         challenge = ChallengeService.create(**cd)
         challenge.expertise.set(sample(expertise, k=randint(1, 3)))
         challenges.append(challenge)
-
-    # Create Organisation model instances
-    organisation_data = read_json_data("sample_data/organisation.json", "organisation")
-
-    organisations = []
-    for org_data in organisation_data:
-        organisations.append(OrganisationService.create(**org_data))
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -216,5 +209,22 @@ def run_data_generation():
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
     django.setup()
+
+    from commerce.services import (
+        OrganisationService,
+        OrganisationAccountService,
+        OrganisationAccountCreditService,
+        CartService,
+        PointPriceConfigurationService,
+    )
+    from security.services import ProductOwnerService
+    from product_management.models import Capability
+    from talent.services import PersonService, SkillService, ExpertiseService
+    from product_management.services import (
+        InitiativeService,
+        TagService,
+        ProductService,
+        ChallengeService,
+    )
 
     run_data_generation()
