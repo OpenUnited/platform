@@ -1,0 +1,56 @@
+[
+    {
+        "number_of_points": 1000,
+        "currency_of_payment": 1,
+        "price_per_point_in_cents": 100,
+        "subtotal_in_cents": 10,
+        "sales_tax_in_cents": 19,
+        "total_payable_in_cents": 29,
+        "payment_type": 1
+    },
+    {
+        "number_of_points": 1000,
+        "currency_of_payment": 1,
+        "price_per_point_in_cents": 200,
+        "subtotal_in_cents": 10,
+        "sales_tax_in_cents": 19,
+        "total_payable_in_cents": 29,
+        "payment_type": 1
+    },
+    {
+        "number_of_points": 2000,
+        "currency_of_payment": 2,
+        "price_per_point_in_cents": 300,
+        "subtotal_in_cents": 20,
+        "sales_tax_in_cents": 29,
+        "total_payable_in_cents": 39,
+        "payment_type": 1
+    },
+    {
+        "number_of_points": 2000,
+        "currency_of_payment": 2,
+        "price_per_point_in_cents": 100,
+        "subtotal_in_cents": 20,
+        "sales_tax_in_cents": 29,
+        "total_payable_in_cents": 39,
+        "payment_type": 1
+    },
+    {
+        "number_of_points": 3000,
+        "currency_of_payment": 3,
+        "price_per_point_in_cents": 200,
+        "subtotal_in_cents": 30,
+        "sales_tax_in_cents": 39,
+        "total_payable_in_cents": 49,
+        "payment_type": 1
+    },
+    {
+        "number_of_points": 3000,
+        "currency_of_payment": 3,
+        "price_per_point_in_cents": 300,
+        "subtotal_in_cents": 30,
+        "sales_tax_in_cents": 39,
+        "total_payable_in_cents": 49,
+        "payment_type": 1
+    }
+]

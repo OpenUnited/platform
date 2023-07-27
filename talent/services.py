@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 
 
-from talent.models import Person, BountyClaim, BountyDeliveryAttempt
+from talent.models import Person, Skill, Expertise, BountyClaim, BountyDeliveryAttempt
 from security.models import User
 from product_management.models import Bounty
 
@@ -58,6 +58,24 @@ class PersonService:
         person.is_test_user = True
         person.save()
         return person
+
+
+class SkillService:
+    @staticmethod
+    def create(**kwargs):
+        skill = Skill(**kwargs)
+        skill.save()
+
+        return skill
+
+
+class ExpertiseService:
+    @staticmethod
+    def create(**kwargs):
+        expertise = Expertise(**kwargs)
+        expertise.save()
+
+        return expertise
 
 
 # TODO: This service will be deleted once ProfileService is done

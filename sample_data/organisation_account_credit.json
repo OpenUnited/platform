@@ -1,0 +1,32 @@
+[
+    {
+        "number_of_points": 10,
+        "type_of_points": 1,
+        "credit_reason": 1
+    },
+    {
+        "number_of_points": 20,
+        "type_of_points": 1,
+        "credit_reason": 1
+    },
+    {
+        "number_of_points": 30,
+        "type_of_points": 1,
+        "credit_reason": 1
+    },
+    {
+        "number_of_points": 40,
+        "type_of_points": 2,
+        "credit_reason": 2
+    },
+    {
+        "number_of_points": 50,
+        "type_of_points": 2,
+        "credit_reason": 2
+    },
+    {
+        "number_of_points": 60,
+        "type_of_points": 2,
+        "credit_reason": 2
+    }
+]

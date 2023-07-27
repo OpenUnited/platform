@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from security.models import OrganisationPerson, Organisation, Person
 
-from .models import User
+from .models import User, ProductOwner
 
 logger = logging.getLogger(__name__)
 
@@ -129,3 +129,12 @@ class UserService:
         except User.DoesNotExist as e:
             logger.error(f"Failed to delete User due to: {e}")
             return False
+
+
+class ProductOwnerService:
+    @staticmethod
+    def create(**kwargs):
+        product_owner = ProductOwner(**kwargs)
+        product_owner.save()
+
+        return product_owner

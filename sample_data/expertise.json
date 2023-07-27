@@ -1,0 +1,247 @@
+[
+    {
+        "id": 1,
+        "selectable": false,
+        "name": "tools",
+        "parent_id": null,
+        "skill_id": 92
+    },
+    {
+        "id": 2,
+        "selectable": true,
+        "name": "figma",
+        "parent_id": 1,
+        "skill_id": 92
+    },
+    {
+        "id": 3,
+        "selectable": false,
+        "name": "activities",
+        "parent_id": null,
+        "skill_id": 93
+    },
+    {
+        "id": 4,
+        "selectable": true,
+        "name": "interviews",
+        "parent_id": 3,
+        "skill_id": 93
+    },
+    {
+        "id": 5,
+        "selectable": false,
+        "name": "tools",
+        "parent_id": null,
+        "skill_id": 94
+    },
+    {
+        "id": 6,
+        "selectable": true,
+        "name": "figma",
+        "parent_id": 5,
+        "skill_id": 94
+    },
+    {
+        "id": 7,
+        "selectable": true,
+        "name": "adobe xd",
+        "parent_id": 5,
+        "skill_id": 94
+    },
+    {
+        "id": 8,
+        "selectable": true,
+        "name": "invision",
+        "parent_id": 5,
+        "skill_id": 94
+    },
+    {
+        "id": 9,
+        "selectable": false,
+        "name": "design-systems",
+        "parent_id": null,
+        "skill_id": 94
+    },
+    {
+        "id": 10,
+        "selectable": true,
+        "name": "ant-design",
+        "parent_id": 9,
+        "skill_id": 94
+    },
+    {
+        "id": 11,
+        "selectable": true,
+        "name": "material-design",
+        "parent_id": 9,
+        "skill_id": 94
+    },
+    {
+        "id": 12,
+        "selectable": false,
+        "name": "python ecosystem",
+        "parent_id": null,
+        "skill_id": 97
+    },
+    {
+        "id": 13,
+        "selectable": true,
+        "name": "django",
+        "parent_id": 12,
+        "skill_id": 97
+    },
+    {
+        "id": 14,
+        "selectable": true,
+        "name": "flask",
+        "parent_id": 12,
+        "skill_id": 97
+    },
+    {
+        "id": 15,
+        "selectable": false,
+        "name": "java ecosystem",
+        "parent_id": null,
+        "skill_id": 97
+    },
+    {
+        "id": 16,
+        "selectable": true,
+        "name": "java",
+        "parent_id": 15,
+        "skill_id": 97
+    },
+    {
+        "id": 17,
+        "selectable": true,
+        "name": "spring-boot",
+        "parent_id": 15,
+        "skill_id": 97
+    },
+    {
+        "id": 18,
+        "selectable": false,
+        "name": "languages",
+        "parent_id": null,
+        "skill_id": 97
+    },
+    {
+        "id": 19,
+        "selectable": true,
+        "name": "golang",
+        "parent_id": 18,
+        "skill_id": 97
+    },
+    {
+        "id": 20,
+        "selectable": true,
+        "name": "python",
+        "parent_id": 18,
+        "skill_id": 97
+    },
+    {
+        "id": 21,
+        "selectable": true,
+        "name": "java",
+        "parent_id": 18,
+        "skill_id": 97
+    },
+    {
+        "id": 22,
+        "selectable": false,
+        "name": "libraries",
+        "parent_id": null,
+        "skill_id": 105
+    },
+    {
+        "id": 23,
+        "selectable": true,
+        "name": "react",
+        "parent_id": 22,
+        "skill_id": 105
+    },
+    {
+        "id": 24,
+        "selectable": true,
+        "name": "redux",
+        "parent_id": 22,
+        "skill_id": 105
+    },
+    {
+        "id": 25,
+        "selectable": true,
+        "name": "vue",
+        "parent_id": 22,
+        "skill_id": 105
+    },
+    {
+        "id": 26,
+        "selectable": false,
+        "name": "languages",
+        "parent_id": null,
+        "skill_id": 105
+    },
+    {
+        "id": 27,
+        "selectable": true,
+        "name": "javascript",
+        "parent_id": 26,
+        "skill_id": 105
+    },
+    {
+        "id": 28,
+        "selectable": true,
+        "name": "typescript",
+        "parent_id": 26,
+        "skill_id": 105
+    },
+    {
+        "id": 29,
+        "selectable": false,
+        "name": "technologies",
+        "parent_id": null,
+        "skill_id": 105
+    },
+    {
+        "id": 30,
+        "selectable": true,
+        "name": "graphql",
+        "parent_id": 29,
+        "skill_id": 105
+    },
+    {
+        "id": 31,
+        "selectable": true,
+        "name": "rest",
+        "parent_id": 29,
+        "skill_id": 105
+    },
+    {
+        "id": 32,
+        "selectable": false,
+        "name": "frameworks",
+        "parent_id": null,
+        "skill_id": 106
+    },
+    {
+        "id": 33,
+        "selectable": true,
+        "name": "django",
+        "parent_id": 32,
+        "skill_id": 106
+    },
+    {
+        "id": 34,
+        "selectable": false,
+        "name": "frameworks",
+        "parent_id": null,
+        "skill_id": 114
+    },
+    {
+        "id": 35,
+        "selectable": true,
+        "name": "cypress",
+        "parent_id": 34,
+        "skill_id": 114
+    }
+]

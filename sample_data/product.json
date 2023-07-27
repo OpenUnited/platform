@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Product 1",
+        "short_description": "Product Short Description 1",
+        "full_description": "Product Full Description 1",
+        "website": "http://www.invalid_product_website.com",
+        "detail_url": "http://detail_url",
+        "video_url": "http://video_url"
+    },
+    {
+        "name": "Product 2",
+        "short_description": "Product Short Description 2",
+        "full_description": "Product Full Description 2",
+        "website": "http://www.invalid_product_website.com",
+        "detail_url": "http://detail_url",
+        "video_url": "http://video_url"
+    },
+    {
+        "name": "Product 3",
+        "short_description": "Product Short Description 3",
+        "full_description": "Product Full Description 3",
+        "website": "http://www.invalid_product_website.com",
+        "detail_url": "http://detail_url",
+        "video_url": "http://video_url"
+    },
+    {
+        "name": "Product 4",
+        "short_description": "Product Short Description 4",
+        "full_description": "Product Full Description 4",
+        "website": "http://www.invalid_product_website.com",
+        "detail_url": "http://detail_url",
+        "video_url": "http://video_url"
+    },
+    {
+        "name": "Product 5",
+        "short_description": "Product Short Description 5",
+        "full_description": "Product Full Description 5",
+        "website": "http://www.invalid_product_website.com",
+        "detail_url": "http://detail_url",
+        "video_url": "http://video_url"
+    }
+]
