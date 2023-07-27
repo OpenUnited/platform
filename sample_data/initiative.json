@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Initiative 1",
+        "description": "Initiative Description 1",
+        "status": 1,
+        "video_url": "http://www.invalid_initiative_url.com"
+    },
+    {
+        "name": "Initiative 2",
+        "description": "Initiative Description 2",
+        "status": 2,
+        "video_url": "http://www.invalid_initiative_url.com"
+    },
+    {
+        "name": "Initiative 3",
+        "description": "Initiative Description 3",
+        "status": 3,
+        "video_url": "http://www.invalid_initiative_url.com"
+    },
+    {
+        "name": "Initiative 4",
+        "description": "Initiative Description 4",
+        "status": 4,
+        "video_url": "http://www.invalid_initiative_url.com"
+    },
+    {
+        "name": "Initiative 5",
+        "description": "Initiative Description 5",
+        "status": 1,
+        "video_url": "http://www.invalid_initiative_url.com"
+    }
+]

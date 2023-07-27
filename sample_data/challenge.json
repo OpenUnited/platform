@@ -1,0 +1,42 @@
+[
+    {
+        "title": "Challenge 1",
+        "short_description": "Short Description 1",
+        "description": "Description 1",
+        "status": 2,
+        "published_id": 1,
+        "video_url": "",
+        "skill_mode": 0,
+        "reward_type": 0
+    },
+    {
+        "title": "Challenge 2",
+        "short_description": "Short Description 2",
+        "description": "Description 2",
+        "status": 2,
+        "published_id": 2,
+        "video_url": "",
+        "skill_mode": 0,
+        "reward_type": 0
+    },
+    {
+        "title": "Challenge 3",
+        "short_description": "Short Description 3",
+        "description": "Description 3",
+        "status": 2,
+        "published_id": 3,
+        "video_url": "",
+        "skill_mode": 0,
+        "reward_type": 0
+    },
+    {
+        "title": "Challenge 4",
+        "short_description": "Short Description 4",
+        "description": "Description 4",
+        "status": 2,
+        "published_id": 4,
+        "video_url": "",
+        "skill_mode": 0,
+        "reward_type": 0
+    }
+]

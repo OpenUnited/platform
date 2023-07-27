@@ -1,0 +1,14 @@
+{
+    "Organisation": "commerce",
+    "OrganisationAccount": "commerce",
+    "OrganisationAccountCredit": "commerce",
+    "Cart": "commerce",
+    "Person": "talent",
+    "Skill": "talent",
+    "Expertise": "talent",
+    "Product": "product_management",
+    "Initiative": "product_management",
+    "Capability": "product_management",
+    "Challenge": "product_management",
+    "Tag": "product_management"
+}

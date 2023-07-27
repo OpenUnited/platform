@@ -1,0 +1,26 @@
+[
+    {
+        "liquid_points_balance": 10,
+        "nonliquid_points_balance": 10
+    },
+    {
+        "liquid_points_balance": 20,
+        "nonliquid_points_balance": 20
+    },
+    {
+        "liquid_points_balance": 30,
+        "nonliquid_points_balance": 30
+    },
+    {
+        "liquid_points_balance": 40,
+        "nonliquid_points_balance": 40
+    },
+    {
+        "liquid_points_balance": 50,
+        "nonliquid_points_balance": 50
+    },
+    {
+        "liquid_points_balance": 60,
+        "nonliquid_points_balance": 60
+    }
+]

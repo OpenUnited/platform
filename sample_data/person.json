@@ -1,0 +1,33 @@
+[
+    {
+        "first_name": "Doğukan",
+        "last_name": "Teber",
+        "email": "dogukan@example.com",
+        "username": "dogukan",
+        "password": "dogukan",
+        "headline": "Super lorem ipsum sit amet",
+        "overview": "Super user",
+        "is_staff": true,
+        "is_superuser": true
+    },
+    {
+        "first_name": "Gary",
+        "last_name": "Test",
+        "email": "test+gary@openunited.com",
+        "username": "garyg",
+        "password": "123456789",
+        "headline": "Lorem ipsum sit amet",
+        "overview": "Test test test",
+        "is_test_user": true
+    },
+    {
+        "first_name": "Shirley",
+        "last_name": "Test",
+        "email": "test+shirley@openunited.com",
+        "username": "shirleyaghost",
+        "password": "123456789",
+        "headline": "Lorem ipsum sit amet",
+        "overview": "Test test test",
+        "is_test_user": true
+    }
+]

@@ -27,15 +27,12 @@ logger = logging.getLogger(__name__)
 
 
 class OrganisationService:
-    @transaction.atomic
-    def create(self, username: str, name: str) -> Organisation:
-        try:
-            organisation = Organisation(username=username, name=name)
-            organisation.save()
-            return organisation
-        except Exception as e:
-            logger.error(f"Failed to create Organisation due to: {e}")
-            return None
+    @staticmethod
+    def create(**kwargs):
+        organisation = Organisation(**kwargs)
+        organisation.save()
+
+        return organisation
 
     @transaction.atomic
     def update(self, id: int, name: str) -> Organisation:
@@ -60,20 +57,27 @@ class OrganisationService:
 
 
 class OrganisationAccountService:
-    @transaction.atomic
-    def create(
-        self,
-        organisation: Organisation,
-        liquid_points_balance: int,
-        nonliquid_points_balance: int,
-    ) -> OrganisationAccount:
-        organisation_account = OrganisationAccount(
-            organisation=organisation,
-            liquid_points_balance=liquid_points_balance,
-            nonliquid_points_balance=nonliquid_points_balance,
-        )
+    @staticmethod
+    def create(**kwargs):
+        organisation_account = OrganisationAccount(**kwargs)
         organisation_account.save()
+
         return organisation_account
+
+    # @transaction.atomic
+    # def create(
+    #     self,
+    #     organisation: Organisation,
+    #     liquid_points_balance: int,
+    #     nonliquid_points_balance: int,
+    # ) -> OrganisationAccount:
+    #     organisation_account = OrganisationAccount(
+    #         organisation=organisation,
+    #         liquid_points_balance=liquid_points_balance,
+    #         nonliquid_points_balance=nonliquid_points_balance,
+    #     )
+    #     organisation_account.save()
+    #     return organisation_account
 
     @transaction.atomic
     def update(
@@ -149,15 +153,22 @@ class OrganisationAccountService:
 
 
 class OrganisationAccountCreditService:
-    @transaction.atomic
-    def create(
-        self, organisation_account: OrganisationAccount, number_of_points: int
-    ) -> OrganisationAccountCredit:
-        org_acc_credit = OrganisationAccountCredit(
-            organisation_account=organisation_account, number_of_points=number_of_points
-        )
+    @staticmethod
+    def create(**kwargs):
+        org_acc_credit = OrganisationAccountCredit(**kwargs)
         org_acc_credit.save()
+
         return org_acc_credit
+
+    # @transaction.atomic
+    # def create(
+    #     self, organisation_account: OrganisationAccount, number_of_points: int
+    # ) -> OrganisationAccountCredit:
+    #     org_acc_credit = OrganisationAccountCredit(
+    #         organisation_account=organisation_account, number_of_points=number_of_points
+    #     )
+    #     org_acc_credit.save()
+    #     return org_acc_credit
 
     @transaction.atomic
     def update(
@@ -186,36 +197,64 @@ class OrganisationAccountCreditService:
 
 
 class CartService:
-    @transaction.atomic
-    def create(
-        self,
-        organisation_account: OrganisationAccount,
-        creator: Person,
-        number_of_points: int,
-        currency_of_payment: CurrencyTypes,
-        payment_type: PaymentTypes,
-    ) -> Cart:
-        price_per_point_in_cents = self._get_point_inbound_price_in_cents(
+    @staticmethod
+    def create(**kwargs):
+        currency_of_payment = kwargs.get("current_of_payment", None)
+        if not currency_of_payment:
+            currency_of_payment = Cart.currency_of_payment.field.default
+
+        price_per_point_in_cents = CartService._get_point_inbound_price_in_cents(
             currency_of_payment
         )
+
+        number_of_points = kwargs.get("number_of_points", None)
+        if not number_of_points:
+            number_of_points = Cart.number_of_points.field.default
+
         subtotal_in_cents = number_of_points * price_per_point_in_cents
         sales_tax_in_cents = 0  # TODO: create logic for sales tax based on org account
         total_payable_in_cents = subtotal_in_cents + sales_tax_in_cents
 
-        cart = Cart(
-            organisation_account=organisation_account,
-            creator=creator,
-            number_of_points=number_of_points,
-            currency_of_payment=currency_of_payment,
-            payment_type=payment_type,
-            price_per_point_in_cents=price_per_point_in_cents,
-            subtotal_in_cents=subtotal_in_cents,
-            sales_tax_in_cents=sales_tax_in_cents,
-            total_payable_in_cents=total_payable_in_cents,
-        )
+        kwargs["subtotal_in_cents"] = subtotal_in_cents
+        kwargs["sales_tax_in_cents"] = sales_tax_in_cents
+        kwargs["total_payable_in_cents"] = total_payable_in_cents
+        kwargs["price_per_point_in_cents"] = price_per_point_in_cents
+
+        cart = Cart(**kwargs)
         cart.save()
 
         return cart
+
+    # @transaction.atomic
+    # def create(
+    #     self,
+    #     organisation_account: OrganisationAccount,
+    #     creator: Person,
+    #     number_of_points: int,
+    #     currency_of_payment: CurrencyTypes,
+    #     payment_type: PaymentTypes,
+    # ) -> Cart:
+    #     price_per_point_in_cents = self._get_point_inbound_price_in_cents(
+    #         currency_of_payment
+    #     )
+    #     subtotal_in_cents = number_of_points * price_per_point_in_cents
+    #     sales_tax_in_cents = 0  # TODO: create logic for sales tax based on org account
+    #     total_payable_in_cents = subtotal_in_cents + sales_tax_in_cents
+
+    #     cart = Cart(
+    #         organisation_account=organisation_account,
+    #         creator=creator,
+    #         number_of_points=number_of_points,
+    #         currency_of_payment=currency_of_payment,
+    #         payment_type=payment_type,
+    #         price_per_point_in_cents=price_per_point_in_cents,
+    #         subtotal_in_cents=subtotal_in_cents,
+    #         sales_tax_in_cents=sales_tax_in_cents,
+    #         total_payable_in_cents=total_payable_in_cents,
+    #     )
+    #     cart.save()
+
+    #     return cart
 
     @transaction.atomic
     def delete(self, id: int) -> bool:
@@ -227,7 +266,8 @@ class CartService:
             logger.error(f"Failed to delete OrganisationAccountCredit due to: {e}")
             return False
 
-    def _get_point_inbound_price_in_cents(self, currency: CurrencyTypes) -> int:
+    @staticmethod
+    def _get_point_inbound_price_in_cents(currency: CurrencyTypes) -> int:
         conversion_rate_queryset = PointPriceConfiguration.objects.filter(
             applicable_from_date__lte=datetime.date.today()
         ).order_by("-created_at")
