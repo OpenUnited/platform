@@ -6,8 +6,6 @@ from django.apps import apps
 import json
 from utility.utils import *
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
-django.setup()
 
 from commerce.services import (
     OrganisationService,
@@ -26,24 +24,15 @@ from product_management.services import (
 )
 
 
-def load_reference_data(classname):
-    klass = eval(classname.capitalize())
-    klass.objects.all().delete()
-    file = os.path.abspath("utility/reference_data/" + classname + ".json")
-    with open(file) as json_file:
-        data_set = json.load(json_file)
-        for data in data_set:
-            obj = klass(**data)
-            obj.save()
-
-
+# Utility function to clear rows by model name
+# Deletes all the existing records before populating sample data according to the dictionary
 def clear_rows_by_model_name(model_names_mapping: dict) -> None:
     for model_name, app_name in model_names_mapping.items():
         model = apps.get_model(app_name, model_name)
         model.objects.all().delete()
 
 
-def create_capabilities():
+def create_capabilities() -> list:
     fancy_out("Create Capability records")
     get = lambda node_id: Capability.objects.get(pk=node_id)
     root = Capability.add_root(
@@ -71,31 +60,21 @@ def create_capabilities():
     return Capability.objects.all()
 
 
-def read_json_data(file_name, model_name=None):
+# Function to read data from a JSON file
+def read_json_data(file_name: str, model_name: str = None) -> dict | list:
     if model_name:
         fancy_out(f"Create {model_name.title()} records")
     with open(file_name, "r") as json_file:
         return json.load(json_file)
 
 
-proceed = input(
-    "Running this script will replace all your current data. Ok? (Y/N)"
-).lower()
-
-if len(proceed) == 0:
-    fancy_out("Execution Abandoned")
-    exit()
-
-if proceed[0] != "y":
-    fancy_out("Stopped at your request")
-    exit()
-else:
+# Generate sample data for various models and populate the database
+def generate_sample_data():
     model_app_mapping = read_json_data("sample_data/model_app_mapping.json")
 
-    print(f"Delete all the records of the following models: {model_app_mapping.keys()}")
-    # Deletes all the existing records before populating sample data according to the dictionary
     clear_rows_by_model_name(model_app_mapping)
 
+    # Create Person model instances
     person_data = read_json_data("sample_data/person.json", "person")
 
     people = []
@@ -104,10 +83,12 @@ else:
 
     product_data = read_json_data("sample_data/product.json", "product")
 
+    # Create Product model instances
     products = []
     for pd in product_data:
         products.append(ProductService.create(**pd))
 
+    # Create Initiative model instances
     initiative_data = read_json_data("sample_data/initiative.json", "initiative")
 
     for elem in initiative_data:
@@ -117,26 +98,31 @@ else:
     for i_data in initiative_data:
         initiatives.append(InitiativeService.create(**i_data))
 
+    # Create Capability model instances
     capabilities = create_capabilities()
 
+    # Create Skill model instances
     skill_data = read_json_data("sample_data/skill.json", "skill")
 
     skills = []
     for sk in skill_data:
         skills.append(SkillService.create(**sk))
 
+    # Create Expertise model instances
     expertise_data = read_json_data("sample_data/expertise.json", "expertise")
 
     expertise = []
     for exp in expertise_data:
         expertise.append(ExpertiseService.create(**exp))
 
+    # Create Tag model instances
     tag_data = read_json_data("sample_data/tag.json", "tag")
 
     tags = []
     for tag in tag_data:
         tags.append(TagService.create(**tag))
 
+    # Create Challenge model instances
     challenge_data = read_json_data("sample_data/challenge.json", "challenge")
 
     for elem in challenge_data:
@@ -154,12 +140,14 @@ else:
         challenge.expertise.set(sample(expertise, k=randint(1, 3)))
         challenges.append(challenge)
 
+    # Create Organisation model instances
     organisation_data = read_json_data("sample_data/organisation.json", "organisation")
 
     organisations = []
     for org_data in organisation_data:
         organisations.append(OrganisationService.create(**org_data))
 
+    # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
         "sample_data/organisation_account.json", "organisation account"
     )
@@ -171,6 +159,7 @@ else:
     for oad in organisation_account_data:
         organisation_accounts.append(OrganisationAccountService.create(**oad))
 
+    # Create OrganisationAccountCredit model instances
     organisation_account_credit_data = read_json_data(
         "sample_data/organisation_account_credit.json", "organisation account credit"
     )
@@ -184,6 +173,18 @@ else:
             OrganisationAccountCreditService.create(**oacd)
         )
 
+    # Create Cart model instances
+    cart_data = read_json_data("sample_data/cart.json", "cart")
+
+    for index, cd in enumerate(cart_data):
+        cd["creator"] = choice(people)
+        cd["organisation_account"] = organisation_accounts[index]
+
+    carts = []
+    for cd in cart_data:
+        carts.append(CartService.create(**cd))
+
+    # Create PointPriceConfiguration instance
     fancy_out("Create a PointPriceConfiguration record")
 
     point_price_conf_service = PointPriceConfigurationService()
@@ -197,14 +198,23 @@ else:
         gbp_point_outbound_price_in_cents=1,
     )
 
-    cart_data = read_json_data("sample_data/cart.json", "cart")
-
-    for index, cd in enumerate(cart_data):
-        cd["creator"] = choice(people)
-        cd["organisation_account"] = organisation_accounts[index]
-
-    carts = []
-    for cd in cart_data:
-        carts.append(CartService.create(**cd))
-
     fancy_out("Complete!")
+
+
+def run_data_generation():
+    proceed = input(
+        "Running this script will replace all your current data. Ok? (Y/N)"
+    ).lower()
+
+    if not proceed or proceed[0] != "y":
+        fancy_out("Execution Abandoned")
+        exit()
+
+    generate_sample_data()
+
+
+if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
+    django.setup()
+
+    run_data_generation()
