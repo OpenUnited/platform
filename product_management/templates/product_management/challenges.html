@@ -25,7 +25,7 @@
       {% for challenge in challenges %}
       <li class="overflow-hidden rounded-xl border border-gray-200">
         <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-4">
-          <a href="/{{ challenge.product.owner.get_username() }}/{{ challenge.product.slug }}/challenges/{{ challenge.published_id }}"
+          <a href="/{{ challenge.product.owner.organisation.username }}/{{ challenge.product.slug }}/challenge/{{ challenge.published_id }}"
             class="text-lg font-medium leading-6 text-blue-400">{{ challenge.title }}</a>
         </div>
         <div class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
@@ -37,7 +37,7 @@
           <div class="py-3">
             <div class="w-full font-semibold text-gray-500">Product</div>
             <div class="flex justify-between gap-x-2">
-              {% if challenge.product.videoUrl %}
+              {% if challenge.product.video_url %}
               <button class="flex flex-none items-center cursor-pointer">
                 <svg class="h-4 w-4 flex-none" viewBox="64 64 896 896" focusable="false" data-icon="play-square"
                   fill="currentColor" aria-hidden="true">
@@ -97,7 +97,7 @@
                 challenge.assignedToPerson.firstName }}</a>
               {% elif TASK_TYPES[challenge.status] == 'In Review' %}
               In Review <a class="text-blue-400" href="/{{ challenge.reviewer.username }}">{{
-                challenge.reviewer.firstName }}</a>
+                challenge.reviewer.first_name }}</a>
               {% else %}
               {{ TASK_TYPES[challenge.status] }}
               {% endif %}

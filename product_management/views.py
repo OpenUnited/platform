@@ -1,3 +1,4 @@
+from django.shortcuts import HttpResponse
 from django.views.generic import ListView
 
 from .models import Challenge, Product
@@ -18,6 +19,11 @@ class ChallengeListView(ListView):
         response = super().get(request, *args, **kwargs)
 
         return response
+
+
+def challenge_detail(request, organisation_username, product_slug, challenge_id):
+    # check if the organisation, product and challenge exist
+    return HttpResponse(f"{organisation_username} {product_slug} {challenge_id}")
 
 
 class ProductListView(ListView):
