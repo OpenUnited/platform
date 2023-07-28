@@ -15,11 +15,15 @@ This repo contains the full platform including the frontend - which is "delibera
 
 ## Getting started / how to run the OpenUnited platform locally
 
-Database: please ensure you have postgresql running. If you haven't already, you can [download and install PostgreSQL](https://www.postgresql.org/download/) 
-By default, the OpenUnited platform will look for a database named "ou_db" and use "postgres" as both the username and password. To override this, you can copy .env.example to .env locally and set the values you want.
+### Database setup
+
+Please ensure you have a PostgreSQL server running. If you haven't already, you can [download and install PostgreSQL](https://www.postgresql.org/download/) 
+
+By default, the OpenUnited platform will look for a database named "ou_db" and use "postgres" as both the username and password. For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: ou_db. To override the database settings, you can copy .env.example to .env and set the values you want.
+
+### Running the platform locally
 
 Please fork this repo, then depending on your local environment, do something like the following with "OpenUnited" changed for your own GitHub username.
-
 
 ```
 git clone git@github.com:OpenUnited/platform.git
