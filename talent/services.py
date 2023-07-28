@@ -4,7 +4,6 @@ from django.db import transaction
 
 
 from talent.models import Person, Skill, Expertise, BountyClaim, BountyDeliveryAttempt
-from security.models import User
 from product_management.models import Bounty
 
 

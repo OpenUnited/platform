@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from security.models import OrganisationPerson, Organisation, Person
 
-from .models import User, ProductOwner
+from .models import ProductOwner
 
 logger = logging.getLogger(__name__)
 
@@ -60,74 +60,6 @@ class OrganisationPersonService:
             return True
         except OrganisationPerson.DoesNotExist as e:
             logger.error(f"Failed to delete OrganisationPerson due to: {e}")
-            return False
-
-
-class UserService:
-    @transaction.atomic
-    def create(
-        self,
-        username: str,
-        email: str,
-        password: str,
-        is_active: bool = True,
-        is_staff: bool = False,
-        is_superuser: bool = False,
-        is_logged: bool = False,
-    ) -> User:
-        user = User(
-            username=username,
-            email=email,
-            password=password,
-            is_active=is_active,
-            is_staff=is_staff,
-            is_superuser=is_superuser,
-            is_logged=is_logged,
-        )
-        user.save()
-        return user
-
-    # Note that this method does not update the password.
-    @transaction.atomic
-    def update(
-        self,
-        username: str = None,
-        email: str = None,
-        password: str = None,
-        is_active: bool = None,
-        is_staff: bool = None,
-        is_superuser: bool = None,
-        is_logged: bool = None,
-    ) -> User:
-        try:
-            user = User.objects.get(username=username)
-
-            if username is not None:
-                user.username = username
-            if email is not None:
-                user.email = email
-            if is_active is not None:
-                user.is_active = is_active
-            if is_staff is not None:
-                user.is_staff = is_staff
-            if is_superuser is not None:
-                user.is_superuser = is_superuser
-            if is_logged is not None:
-                user.is_logged = is_logged
-
-            user.save()
-            return user
-        except User.DoesNotExist as e:
-            logger.error(f"Failed to delete OrganisationPerson due to: {e}")
-            return None
-
-    def delete(self, username: str) -> bool:
-        try:
-            user = User.objects.get(username=username)
-            user.delete()
-            return True
-        except User.DoesNotExist as e:
-            logger.error(f"Failed to delete User due to: {e}")
             return False
 
 
