@@ -171,17 +171,6 @@ def generate_sample_data():
             OrganisationAccountCreditService.create(**oacd)
         )
 
-    # Create Cart model instances
-    cart_data = read_json_data("utility/sample_data/cart.json", "cart")
-
-    for index, cd in enumerate(cart_data):
-        cd["creator"] = choice(people)
-        cd["organisation_account"] = organisation_accounts[index]
-
-    carts = []
-    for cd in cart_data:
-        carts.append(CartService.create(**cd))
-
     # Create PointPriceConfiguration instance
     fancy_out("Create a PointPriceConfiguration record")
 
@@ -195,6 +184,17 @@ def generate_sample_data():
         eur_point_outbound_price_in_cents=1,
         gbp_point_outbound_price_in_cents=1,
     )
+
+    # Create Cart model instances
+    cart_data = read_json_data("utility/sample_data/cart.json", "cart")
+
+    for index, cd in enumerate(cart_data):
+        cd["creator"] = choice(people)
+        cd["organisation_account"] = organisation_accounts[index]
+
+    carts = []
+    for cd in cart_data:
+        carts.append(CartService.create(**cd))
 
     fancy_out("Complete!")
 

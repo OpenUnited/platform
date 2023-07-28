@@ -3,6 +3,7 @@
     "OrganisationAccount": "commerce",
     "OrganisationAccountCredit": "commerce",
     "Cart": "commerce",
+    "PointPriceConfiguration": "commerce",
     "Person": "talent",
     "Skill": "talent",
     "Expertise": "talent",
