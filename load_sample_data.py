@@ -53,19 +53,21 @@ def read_json_data(file_name: str, model_name: str = None) -> dict | list:
 
 # Generate sample data for various models and populate the database
 def generate_sample_data():
-    model_app_mapping = read_json_data("sample_data/model_app_mapping.json")
+    model_app_mapping = read_json_data("utility/sample_data/model_app_mapping.json")
 
     clear_rows_by_model_name(model_app_mapping)
 
     # Create Person model instances
-    person_data = read_json_data("sample_data/person.json", "person")
+    person_data = read_json_data("utility/sample_data/person.json", "person")
 
     people = []
     for pd in person_data:
         people.append(PersonService.create(**pd))
 
     # Create Organisation model instances
-    organisation_data = read_json_data("sample_data/organisation.json", "organisation")
+    organisation_data = read_json_data(
+        "utility/sample_data/organisation.json", "organisation"
+    )
 
     organisations = []
     for org_data in organisation_data:
@@ -79,7 +81,7 @@ def generate_sample_data():
         )
 
     # Create Product model instances
-    product_data = read_json_data("sample_data/product.json", "product")
+    product_data = read_json_data("utility/sample_data/product.json", "product")
 
     for pd in product_data:
         pd["owner"] = choice(product_owners)
@@ -89,7 +91,9 @@ def generate_sample_data():
         products.append(ProductService.create(**pd))
 
     # Create Initiative model instances
-    initiative_data = read_json_data("sample_data/initiative.json", "initiative")
+    initiative_data = read_json_data(
+        "utility/sample_data/initiative.json", "initiative"
+    )
 
     for elem in initiative_data:
         elem["product"] = choice(products)
@@ -102,28 +106,28 @@ def generate_sample_data():
     capabilities = create_capabilities()
 
     # Create Skill model instances
-    skill_data = read_json_data("sample_data/skill.json", "skill")
+    skill_data = read_json_data("utility/sample_data/skill.json", "skill")
 
     skills = []
     for sk in skill_data:
         skills.append(SkillService.create(**sk))
 
     # Create Expertise model instances
-    expertise_data = read_json_data("sample_data/expertise.json", "expertise")
+    expertise_data = read_json_data("utility/sample_data/expertise.json", "expertise")
 
     expertise = []
     for exp in expertise_data:
         expertise.append(ExpertiseService.create(**exp))
 
     # Create Tag model instances
-    tag_data = read_json_data("sample_data/tag.json", "tag")
+    tag_data = read_json_data("utility/sample_data/tag.json", "tag")
 
     tags = []
     for tag in tag_data:
         tags.append(TagService.create(**tag))
 
     # Create Challenge model instances
-    challenge_data = read_json_data("sample_data/challenge.json", "challenge")
+    challenge_data = read_json_data("utility/sample_data/challenge.json", "challenge")
 
     for elem in challenge_data:
         elem["initiative"] = choice(initiatives)
@@ -142,7 +146,7 @@ def generate_sample_data():
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
-        "sample_data/organisation_account.json", "organisation account"
+        "utility/sample_data/organisation_account.json", "organisation account"
     )
 
     for index, oad in enumerate(organisation_account_data):
@@ -154,7 +158,8 @@ def generate_sample_data():
 
     # Create OrganisationAccountCredit model instances
     organisation_account_credit_data = read_json_data(
-        "sample_data/organisation_account_credit.json", "organisation account credit"
+        "utility/sample_data/organisation_account_credit.json",
+        "organisation account credit",
     )
 
     for index, oac in enumerate(organisation_account_credit_data):
@@ -167,7 +172,7 @@ def generate_sample_data():
         )
 
     # Create Cart model instances
-    cart_data = read_json_data("sample_data/cart.json", "cart")
+    cart_data = read_json_data("utility/sample_data/cart.json", "cart")
 
     for index, cd in enumerate(cart_data):
         cd["creator"] = choice(people)
