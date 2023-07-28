@@ -13,9 +13,12 @@ This repo contains the full platform including the frontend - which is "delibera
 
 \* Our "deliberately simple" frontend means that we use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, [TailwindCSS](https://tailwindcss.com/), [TailwindUI](https://tailwindui.com/), plain javascript, and a sprinkle of [HTMX](https://htmx.org/). Earlier we had a separate ReactJS frontend and a GraphQL API layer, however [such fanciness](https://www.youtube.com/watch?v=Uo3cL4nrGOk) failed to deliver the expected value, whilst creating complexity/friction... therefore, we now have a deliberately simple frontend.
 
-## Getting started / how to run this app
+## Getting started / how to run the OpenUnited platform locally
 
-Good if you fork this repo, then depending on your local environment, do something like the following with "OpenUnited" changed for your own GitHub username:
+Good if you fork this repo, then depending on your local environment, do something like the following with "OpenUnited" changed for your own GitHub username.
+
+Database: please ensure you have postgresql running. If you haven't already, you can [download and install PostgreSQL](https://www.postgresql.org/download/) 
+By default, the OpenUnited platform will look for a database named "ou_db" and use "postgres" as both the username and password. To override this, you can copy .env.example to .env locally and set the values you want.
 
 ```
 git clone git@github.com:OpenUnited/platform.git
