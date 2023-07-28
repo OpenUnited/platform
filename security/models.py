@@ -1,16 +1,9 @@
-import re
-import uuid
-
-from django.contrib import auth
-from django.contrib.auth.models import AbstractBaseUser
-from django.core.validators import RegexValidator
 from django.db import models
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from talent.models import Person
 from product_management.models import ProductRole
 from commerce.models import Organisation
 from django.core.exceptions import ValidationError
-from .managers import UserManager
 
 
 class OrganisationPerson(TimeStampMixin, UUIDMixin):
@@ -66,57 +59,3 @@ class BlacklistedUsernames(models.Model):
 
     class Meta:
         db_table = "black_listed_usernames"
-
-
-# Deprecated, please use talent.Person
-class User(AbstractBaseUser):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_logged = models.BooleanField(default=False)
-    email = models.EmailField(unique=True)
-    username = models.CharField(
-        max_length=39,
-        unique=True,
-        default="",
-        validators=[
-            RegexValidator(
-                regex="^[a-z0-9]*$",
-                message="Username may only contain letters and numbers without any spaces",
-                code="invalid_username",
-            )
-        ],
-    )
-
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email"]
-
-    def has_perm(self, perm, obj=None):
-        # this only needed for django admin
-        return self.is_active and self.is_staff and self.is_superuser
-
-    def has_module_perms(self, app_label):
-        # this only needed for django admin
-        return self.is_active and self.is_staff and self.is_superuser
-
-    def get_all_permissions(self, obj=None):
-        return _user_get_permissions(self, obj, "all")
-
-    objects = UserManager()
-
-    def __str__(self):
-        return self.username
-
-    class Meta:
-        db_table = "users_user"
-
-
-# A few helper functions for common logic between User and AnonymousUser.
-def _user_get_permissions(user, obj, from_name):
-    permissions = set()
-    name = "get_%s_permissions" % from_name
-    for backend in auth.get_backends():
-        if hasattr(backend, name):
-            permissions.update(getattr(backend, name)(user, obj))
-    return permissions
