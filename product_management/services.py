@@ -44,3 +44,7 @@ class ProductService:
         product.save()
 
         return product
+
+    @staticmethod
+    def convert_youtube_link_to_embed(url: str):
+        return url.replace("watch?v=", "embed/")

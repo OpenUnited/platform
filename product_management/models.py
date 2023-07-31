@@ -6,7 +6,6 @@ from django.dispatch import receiver
 from model_utils import FieldTracker
 from treebeard.mp_tree import MP_Node
 
-import engagement.tasks
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from product_management.mixins import ProductMixin
 from engagement.models import Notification
@@ -98,6 +97,14 @@ class Product(ProductMixin):
             if product_owner.organisation
             else product_owner.person.user
         )
+
+    def save(self, *args, **kwargs):
+        # We show the preview of the video in ProductListing. Therefore, we have to
+        # convert the given URL to an embed
+        from .services import ProductService
+
+        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
+        super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
