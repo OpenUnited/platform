@@ -163,6 +163,13 @@ class Initiative(TimeStampMixin, UUIDMixin):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        # TODO: move the below method to a utility class
+        from .services import ProductService
+
+        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
+        super(Initiative, self).save(*args, **kwargs)
+
     def get_available_challenges_count(self):
         return self.challenge_set.filter(
             status=Challenge.CHALLENGE_STATUS_AVAILABLE

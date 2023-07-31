@@ -2,7 +2,7 @@ from django.shortcuts import HttpResponse, render, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
-from .models import Challenge, Product
+from .models import Challenge, Product, Initiative
 
 
 class ChallengeListView(ListView):
@@ -73,12 +73,16 @@ def product_summary(request, organisation_username, product_slug):
 
 
 def product_initiatives(request, organisation_username, product_slug):
+    product = Product.objects.get(slug=product_slug)
+    initiatives = Initiative.objects.filter(product=product)
     return render(
         request,
-        "product_management/product_detail_base.html",
+        "product_management/product_initiatives.html",
         context={
             "organisation_username": organisation_username,
             "product_slug": product_slug,
+            "product": product,
+            "initiatives": initiatives,
         },
     )
 
@@ -125,3 +129,7 @@ def product_people(request, organisation_username, product_slug):
             "product_slug": product_slug,
         },
     )
+
+
+def initiative_details(request, organisation_username, product_slug, initiative_id):
+    return HttpResponse(f"{organisation_username} - {product_slug} - {initiative_id}")

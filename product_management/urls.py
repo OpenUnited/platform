@@ -4,7 +4,6 @@ from .views import (
     ChallengeListView,
     ProductListView,
     challenge_detail,
-    product_detail,
     product_redirect,
     product_summary,
     product_initiatives,
@@ -12,6 +11,7 @@ from .views import (
     product_ideas_bugs,
     product_tree,
     product_people,
+    initiative_details,
 )
 
 urlpatterns = [
@@ -37,7 +37,7 @@ urlpatterns = [
         name="product_initiatives",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/challenge",
+        "<str:organisation_username>/<str:product_slug>/challenges",
         product_challenges,
         name="product_challenges",
     ),
@@ -55,5 +55,10 @@ urlpatterns = [
         "<str:organisation_username>/<str:product_slug>/people",
         product_people,
         name="product_people",
+    ),
+    path(
+        "<str:organisation_username>/<str:product_slug>/initiative/<int:initiative_id>",
+        initiative_details,
+        name="initiative_details",
     ),
 ]

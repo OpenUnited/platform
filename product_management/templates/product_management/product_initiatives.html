@@ -1,0 +1,61 @@
+{% extends 'product_management/product_detail_base.html' %}
+
+{% block title %}Product - Initiatives{% endblock %}
+{% block product_content %}
+
+<div class="flex flex-col">
+    <div class="flex sm:items-center sm:justify-between flex-col sm:flex-row">
+        <div class="flex items-center mb-4 sm:mb-0">
+            <h2 class="text-xl tracking-tight text-gray-900">Explore {{ initiatives|length }} Initiatives</h2>
+        </div>
+        <button type="button"
+            class="appearance-none w-fit flex items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50">
+            <span class="flex items-center justify-center shrink-0 w-3.5 h-3.5 mr-2">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none">
+                    <path
+                        d="M6.58984 2.07812H7.41016C7.48307 2.07812 7.51953 2.11458 7.51953 2.1875V11.8125C7.51953 11.8854 7.48307 11.9219 7.41016 11.9219H6.58984C6.51693 11.9219 6.48047 11.8854 6.48047 11.8125V2.1875C6.48047 2.11458 6.51693 2.07812 6.58984 2.07812Z"
+                        fill="#111827" />
+                    <path
+                        d="M2.40625 6.48047H11.5938C11.6667 6.48047 11.7031 6.51693 11.7031 6.58984V7.41016C11.7031 7.48307 11.6667 7.51953 11.5938 7.51953H2.40625C2.33333 7.51953 2.29688 7.48307 2.29688 7.41016V6.58984C2.29688 6.51693 2.33333 6.48047 2.40625 6.48047Z"
+                        fill="#111827" />
+                </svg>
+            </span>
+            Propose new initiative</button>
+    </div>
+
+    <div class="mt-6 grid gap-y-4 gap-x-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        {% for initiative in initiatives %}
+        <div class="group relative border border-solid border-[#D9D9D9] rounded flex flex-col">
+            <div class="w-full h-[172px] group-hover:opacity-90 rounded-t p-px">
+                <iframe class="rounded-t" width="100%" height="100%"
+                    src="{{ initiative.video_url }}?autoplay=0&mute=0&controls=0&origin=https%3A%2F%2Fopenunited.com&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1"
+                    title="OpenUnited Short Explainer Contributor Focus" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+            </div>
+            <div class="py-3 px-4 flex flex-col grow">
+                <div class="flex flex-wrap mb-1.5">
+                    {% for initiative_tag in initiative.tags %}
+                    <div
+                        class="mb-1.5 mr-1.5 px-2 text-xs leading-5 text-neutral-800 rounded border border-solid border-[#D9D9D9] bg-[#F5F5F5]">
+                        {{ initiative_tag.name }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-auto space-y-3 flex flex-col">
+                    <a href="{{ url('initiative_details', args=(organisation_username, product_slug, 1)) }}"
+                        class="text-base text-black transition-all hover:text-blue-400">
+                        {{ initiative.name }}
+                    </a>
+                    <p class="text-sm text-gray-500">
+                        <!-- TODO: storiesAmount will be calculated based on bounties -->
+                        <span class="mr-0.5">{{ initiative.storiesAmount }}</span> Available Stories
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
