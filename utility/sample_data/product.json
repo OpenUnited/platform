@@ -5,7 +5,7 @@
         "full_description": "Product Full Description 1",
         "website": "http://www.invalid_product_website.com",
         "detail_url": "http://detail_url",
-        "video_url": "http://video_url"
+        "video_url": "https://www.youtube.com/watch?v=TlP5WIxVirU"
     },
     {
         "name": "Product 2",
@@ -13,7 +13,7 @@
         "full_description": "Product Full Description 2",
         "website": "http://www.invalid_product_website.com",
         "detail_url": "http://detail_url",
-        "video_url": "http://video_url"
+        "video_url": "https://www.youtube.com/watch?v=h9MujYgW1mw"
     },
     {
         "name": "Product 3",
@@ -21,7 +21,7 @@
         "full_description": "Product Full Description 3",
         "website": "http://www.invalid_product_website.com",
         "detail_url": "http://detail_url",
-        "video_url": "http://video_url"
+        "video_url": "https://www.youtube.com/watch?v=h9MujYgW1mw"
     },
     {
         "name": "Product 4",
@@ -29,7 +29,7 @@
         "full_description": "Product Full Description 4",
         "website": "http://www.invalid_product_website.com",
         "detail_url": "http://detail_url",
-        "video_url": "http://video_url"
+        "video_url": "https://www.youtube.com/watch?v=h9MujYgW1mw"
     },
     {
         "name": "Product 5",
@@ -37,6 +37,6 @@
         "full_description": "Product Full Description 5",
         "website": "http://www.invalid_product_website.com",
         "detail_url": "http://detail_url",
-        "video_url": "http://video_url"
+        "video_url": "https://www.youtube.com/watch?v=h9MujYgW1mw"
     }
 ]
