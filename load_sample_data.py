@@ -144,6 +144,19 @@ def generate_sample_data():
         challenge.expertise.set(sample(expertise, k=randint(1, 3)))
         challenges.append(challenge)
 
+    # Create Bounty model instances
+    bounty_data = read_json_data("utility/sample_data/bounty.json", "bounty")
+
+    for elem in bounty_data:
+        elem["challenge"] = choice(challenges)
+        elem["skill"] = choice(skills)
+
+    bounties = []
+    for bd in bounty_data:
+        bounty = BountyService.create(**bd)
+        bounty.expertise.set(sample(expertise, k=randint(1, 4)))
+        bounties.append(bounty)
+
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
         "utility/sample_data/organisation_account.json", "organisation account"
@@ -230,6 +243,7 @@ if __name__ == "__main__":
         TagService,
         ProductService,
         ChallengeService,
+        BountyService,
     )
 
     run_data_generation()

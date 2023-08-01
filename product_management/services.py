@@ -1,4 +1,4 @@
-from .models import Challenge, Initiative, Capability, Tag, Product
+from .models import Challenge, Initiative, Capability, Tag, Product, Bounty
 
 
 class ChallengeService:
@@ -48,3 +48,12 @@ class ProductService:
     @staticmethod
     def convert_youtube_link_to_embed(url: str):
         return url.replace("watch?v=", "embed/")
+
+
+class BountyService:
+    @staticmethod
+    def create(**kwargs):
+        bounty = Bounty(**kwargs)
+        bounty.save()
+
+        return bounty
