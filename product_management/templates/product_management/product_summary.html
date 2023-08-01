@@ -113,15 +113,17 @@
         </div>
     </div>
     <div class="flex border-y border-solid border-gray-300 mt-3 mb-4 pt-4 pb-5 font-semibold text-sm md:text-base">
-        {% set available_challenges = product.challenge_set.all()|length %}
-        {% if available_challenges == 0 %}
-        <p class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">No available challenge is
+        {% set challenge_count = challenges|length %}
+        {% if challenge_count == 0 %}
+        <p class="transition-all delay-600 text-red-400 hover:text-red-400/[0.85]">No available challenge is
             found.</p>
-        {% elif available_challenges == 1 %}
-        <a href="#" class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
+        {% elif challenge_count == 1 %}
+        <a href="{{ url('product_challenges', args=(organisation_username, product_slug)) }}"
+            class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
             Available Challenge </a>
         {% else %}
-        <a href="#" class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ available_challenges }}
+        <a href="{{ url('product_challenges', args=(organisation_username, product_slug)) }}"
+            class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ challenge_count }}
             Available Challenges</a>
         {% endif %}
     </div>

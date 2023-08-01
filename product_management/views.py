@@ -1,8 +1,10 @@
 from django.shortcuts import HttpResponse, render, redirect
 from django.urls import reverse
+from django.db.models import Sum
+from django.db import models
 from django.views.generic import ListView
 
-from .models import Challenge, Product, Initiative
+from .models import Challenge, Product, Initiative, Bounty
 
 
 class ChallengeListView(ListView):
@@ -24,7 +26,7 @@ class ChallengeListView(ListView):
 
 def challenge_detail(request, organisation_username, product_slug, challenge_id):
     # check if the organisation, product and challenge exist
-    return HttpResponse(f"{organisation_username} {product_slug} {challenge_id}")
+    return render(request, "product_management/challenge_detail.html")
 
 
 class ProductListView(ListView):
@@ -61,6 +63,8 @@ def product_detail(request, organisation_username, product_slug):
 
 def product_summary(request, organisation_username, product_slug):
     product = Product.objects.get(slug=product_slug)
+    challenges = Challenge.objects.filter(product=product)
+
     return render(
         request,
         "product_management/product_summary.html",
@@ -68,6 +72,7 @@ def product_summary(request, organisation_username, product_slug):
             "organisation_username": organisation_username,
             "product_slug": product_slug,
             "product": product,
+            "challenges": challenges,
         },
     )
 
@@ -75,6 +80,16 @@ def product_summary(request, organisation_username, product_slug):
 def product_initiatives(request, organisation_username, product_slug):
     product = Product.objects.get(slug=product_slug)
     initiatives = Initiative.objects.filter(product=product)
+
+    # Query to calculate total points for each Initiative, considering only active Bounties with status "Available"
+    initiatives = initiatives.annotate(
+        total_points=Sum(
+            "challenge__bounty__points",
+            filter=models.Q(challenge__bounty__status=Bounty.BOUNTY_STATUS_AVAILABLE)
+            & models.Q(challenge__bounty__is_active=True),
+        )
+    )
+
     return render(
         request,
         "product_management/product_initiatives.html",
@@ -88,12 +103,15 @@ def product_initiatives(request, organisation_username, product_slug):
 
 
 def product_challenges(request, organisation_username, product_slug):
+    product = Product.objects.get(slug=product_slug)
+    challenges = Challenge.objects.filter(product=product)
     return render(
         request,
-        "product_management/product_detail_base.html",
+        "product_management/product_challenges.html",
         context={
             "organisation_username": organisation_username,
             "product_slug": product_slug,
+            "challenges": challenges,
         },
     )
 
@@ -112,7 +130,7 @@ def product_tree(request, organisation_username, product_slug):
 def product_ideas_bugs(request, organisation_username, product_slug):
     return render(
         request,
-        "product_management/product_detail_base.html",
+        "product_management/product_ideas.html",
         context={
             "organisation_username": organisation_username,
             "product_slug": product_slug,
@@ -123,7 +141,7 @@ def product_ideas_bugs(request, organisation_username, product_slug):
 def product_people(request, organisation_username, product_slug):
     return render(
         request,
-        "product_management/product_detail_base.html",
+        "product_management/product_people.html",
         context={
             "organisation_username": organisation_username,
             "product_slug": product_slug,

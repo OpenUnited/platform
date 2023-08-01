@@ -42,6 +42,11 @@ urlpatterns = [
         name="product_challenges",
     ),
     path(
+        "<str:organisation_username>/<str:product_slug>/challenge/<int:challenge_id>",
+        challenge_detail,
+        name="challenge_detail",
+    ),
+    path(
         "<str:organisation_username>/<str:product_slug>/tree",
         product_tree,
         name="product_tree",

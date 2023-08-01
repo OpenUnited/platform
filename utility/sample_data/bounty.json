@@ -1,0 +1,27 @@
+[
+    {
+        "points": 19,
+        "status": 3,
+        "is_active": true
+    },
+    {
+        "points": 20,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 37,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 43,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 51,
+        "status": 4,
+        "is_active": true
+    }
+]
