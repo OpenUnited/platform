@@ -103,12 +103,15 @@ def product_initiatives(request, organisation_username, product_slug):
 
 
 def product_challenges(request, organisation_username, product_slug):
+    product = Product.objects.get(slug=product_slug)
+    challenges = Challenge.objects.filter(product=product)
     return render(
         request,
         "product_management/product_challenges.html",
         context={
             "organisation_username": organisation_username,
             "product_slug": product_slug,
+            "challenges": challenges,
         },
     )
 
