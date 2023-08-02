@@ -124,28 +124,6 @@ def save_product(sender, instance, created, **kwargs):
         )
 
 
-class ProductRole(TimeStampMixin, UUIDMixin):
-    FOLLOWER = 0
-    PRODUCT_ADMIN = 1
-    PRODUCT_MANAGER = 2
-    CONTRIBUTOR = 3
-
-    RIGHTS = (
-        (FOLLOWER, "Follower"),
-        (PRODUCT_ADMIN, "Admin"),
-        (PRODUCT_MANAGER, "Manager"),
-        (CONTRIBUTOR, "Contributor"),
-    )
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    product = models.ForeignKey("product_management.Product", on_delete=models.CASCADE)
-    role = models.IntegerField(choices=RIGHTS, default=0)
-
-    def __str__(self):
-        return "{} is {} of {}".format(
-            self.person.user.username, self.get_right_display(), self.product
-        )
-
-
 class Initiative(TimeStampMixin, UUIDMixin):
     INITIATIVE_STATUS = (
         (1, "Active"),

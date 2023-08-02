@@ -1,18 +1,37 @@
 from django.db import models
-from openunited.mixins import TimeStampMixin, UUIDMixin
-from talent.models import Person
-from product_management.models import ProductRole
-from commerce.models import Organisation
 from django.core.exceptions import ValidationError
 
+from openunited.mixins import TimeStampMixin, UUIDMixin
+from talent.models import Person
+from commerce.models import Organisation
 
-class OrganisationPerson(TimeStampMixin, UUIDMixin):
-    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    right = models.IntegerField(choices=ProductRole.RIGHTS, default=0)
+
+class ProductPerson(TimeStampMixin, UUIDMixin):
+    FOLLOWER = 0
+    PRODUCT_ADMIN = 1
+    PRODUCT_MANAGER = 2
+    CONTRIBUTOR = 3
+
+    ROLE = (
+        (FOLLOWER, "Follower"),
+        (PRODUCT_ADMIN, "Admin"),
+        (PRODUCT_MANAGER, "Manager"),
+        (CONTRIBUTOR, "Contributor"),
+    )
+    person = models.OneToOneField(Person, on_delete=models.CASCADE)
+    product = models.ForeignKey("product_management.Product", on_delete=models.CASCADE)
+    role = models.IntegerField(choices=ROLE, default=0)
+    organisation = models.ForeignKey(
+        "commerce.Organisation", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
-        return "{} is {} of {}".format(self.person, self.right, self.organisation)
+        return f"{self.person} {self.get_role_display()} {self.product}"
+
+    def clean(self):
+        from security.services import ProductPersonService
+
+        ProductPersonService.is_organisation_provided(self)
 
 
 class ProductOwner(TimeStampMixin, UUIDMixin):
