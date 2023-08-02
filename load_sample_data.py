@@ -109,6 +109,17 @@ def generate_sample_data():
     for pd in product_data:
         products.append(ProductService.create(**pd))
 
+    # Create Idea model instances
+    idea_data = read_json_data("utility/sample_data/idea.json", "idea")
+
+    for elem in idea_data:
+        elem["product"] = choice(products)
+        elem["person"] = choice(people)
+
+    ideas = []
+    for i_data in idea_data:
+        ideas.append(IdeaService.create(**i_data))
+
     # Create Initiative model instances
     initiative_data = read_json_data(
         "utility/sample_data/initiative.json", "initiative"
@@ -263,6 +274,7 @@ if __name__ == "__main__":
         ProductService,
         ChallengeService,
         BountyService,
+        IdeaService,
     )
 
     run_data_generation()
