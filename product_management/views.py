@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.db import models
 from django.views.generic import ListView, TemplateView, RedirectView
 
-from .models import Challenge, Product, Initiative, Bounty, Capability
+from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
 
 
@@ -143,6 +143,14 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_ideas.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = context["product"]
+
+        context.update({"ideas": Idea.objects.filter(product=product), "bugs": []})
+
+        return context
 
 
 class ProductPeopleView(BaseProductDetailView, TemplateView):
