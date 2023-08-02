@@ -1,10 +1,10 @@
 from typing import Any, Dict
-from django.shortcuts import HttpResponse, render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.db import models
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, RedirectView
 
 from .models import Challenge, Product, Initiative, Bounty, Capability
 
@@ -37,7 +37,7 @@ class ProductListView(ListView):
         return response
 
 
-class BaseProductDetailView(TemplateView):
+class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -51,7 +51,14 @@ class BaseProductDetailView(TemplateView):
         return context
 
 
-class ProductSummaryView(BaseProductDetailView):
+class ProductRedirectView(BaseProductDetailView, RedirectView):
+    def get(self, request, *args, **kwargs):
+        url = reverse("product_summary", kwargs=kwargs)
+
+        return redirect(url)
+
+
+class ProductSummaryView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_summary.html"
 
     def get_context_data(self, **kwargs):
@@ -68,7 +75,7 @@ class ProductSummaryView(BaseProductDetailView):
         return context
 
 
-class ProductChallengesView(BaseProductDetailView):
+class ProductChallengesView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_challenges.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -84,7 +91,7 @@ class ProductChallengesView(BaseProductDetailView):
         return context
 
 
-class ProductInitiativesView(BaseProductDetailView):
+class ProductInitiativesView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_initiatives.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -113,7 +120,7 @@ class ProductInitiativesView(BaseProductDetailView):
         return context
 
 
-class ProductTreeView(BaseProductDetailView):
+class ProductTreeView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
@@ -125,39 +132,24 @@ class ProductTreeView(BaseProductDetailView):
             }
         )
 
-        print(context)
-
         return context
 
 
-class ProductIdeasAndBugsView(BaseProductDetailView):
+class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_ideas.html"
 
 
-class ProductPeopleView(BaseProductDetailView):
+class ProductPeopleView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_people.html"
 
 
-def initiative_details(request, organisation_username, product_slug, initiative_id):
-    return HttpResponse(f"{organisation_username} - {product_slug} - {initiative_id}")
+class ChallengeDetailView(BaseProductDetailView, TemplateView):
+    template_name = "product_management/challenge_detail.html"
 
 
-def capability_detail(request, organisation_username, product_slug, capability_id):
-    return HttpResponse(
-        f"TODO: Implement this page: {organisation_username} - {product_slug} - {capability_id}"
-    )
+class InitiativeDetailView(BaseProductDetailView, TemplateView):
+    template_name = "product_management/initiative_detail.html"
 
 
-def challenge_detail(request, organisation_username, product_slug, challenge_id):
-    # check if the organisation, product and challenge exist
-    return render(request, "product_management/challenge_detail.html")
-
-
-def product_redirect(request, organisation_username, product_slug):
-    kwargs = {
-        "organisation_username": organisation_username,
-        "product_slug": product_slug,
-    }
-    url = reverse("product_summary", kwargs=kwargs)
-
-    return redirect(url)
+class CapabilityDetailView(BaseProductDetailView, TemplateView):
+    template_name = "product_management/capability_detail.html"
