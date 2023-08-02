@@ -20,6 +20,7 @@ class Tag(TimeStampMixin):
         return self.name
 
 
+# ProductTree is made up from Capabilities
 class Capability(MP_Node):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, default="")

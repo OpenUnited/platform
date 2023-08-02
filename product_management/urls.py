@@ -12,6 +12,7 @@ from .views import (
     product_tree,
     product_people,
     initiative_details,
+    capability_detail,
 )
 
 urlpatterns = [
@@ -65,5 +66,10 @@ urlpatterns = [
         "<str:organisation_username>/<str:product_slug>/initiative/<int:initiative_id>",
         initiative_details,
         name="initiative_details",
+    ),
+    path(
+        "<str:organisation_username>/<str:product_slug>/capability/<int:capability_id>",
+        capability_detail,
+        name="capability_detail",
     ),
 ]

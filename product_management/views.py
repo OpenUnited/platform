@@ -4,7 +4,7 @@ from django.db.models import Sum
 from django.db import models
 from django.views.generic import ListView
 
-from .models import Challenge, Product, Initiative, Bounty
+from .models import Challenge, Product, Initiative, Bounty, Capability
 
 
 class ChallengeListView(ListView):
@@ -73,6 +73,7 @@ def product_summary(request, organisation_username, product_slug):
             "product_slug": product_slug,
             "product": product,
             "challenges": challenges,
+            "capabilities": Capability.get_root_nodes(),
         },
     )
 
@@ -119,10 +120,11 @@ def product_challenges(request, organisation_username, product_slug):
 def product_tree(request, organisation_username, product_slug):
     return render(
         request,
-        "product_management/product_detail_base.html",
+        "product_management/product_tree.html",
         context={
             "organisation_username": organisation_username,
             "product_slug": product_slug,
+            "capabilities": Capability.get_root_nodes(),
         },
     )
 
@@ -151,3 +153,9 @@ def product_people(request, organisation_username, product_slug):
 
 def initiative_details(request, organisation_username, product_slug, initiative_id):
     return HttpResponse(f"{organisation_username} - {product_slug} - {initiative_id}")
+
+
+def capability_detail(request, organisation_username, product_slug, capability_id):
+    return HttpResponse(
+        f"TODO: Implement this page: {organisation_username} - {product_slug} - {capability_id}"
+    )

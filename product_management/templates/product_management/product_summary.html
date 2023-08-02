@@ -1,94 +1,7 @@
-{% extends 'product_management/product_detail_base.html' %}
+{% extends 'product_management/product_detail_base_with_macro.html' %}
 
 {% block title %}Product - Summary{% endblock %}
 {% block product_content %}
-
-{% macro generate_summary_structure(data, depth = 0) %}
-{% for item in data %}
-{% if depth == 0 %}
-<div class="sm:px-4 md:px-0 py-5 lg:py-6 sm:grid sm:grid-cols-3 sm:gap-4">
-    <dt class="text-sm font-medium leading-6 text-gray-900">
-        <span class="flex flex-col">
-            <span class="flex flex-wrap items-center font-semibold">
-                <a href="{{item['link']}}" class="mr-2">{{item['name']}}</a>
-                <button
-                    class="btn-video__open appearance-none transition px-1.5 py-0.5 bg-[#F5F5F5] rounded border border-solid border-[#D9D9D9] flex items-center whitespace-nowrap"
-                    data-video="{{item['linkYoutubeVideo']}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 border border-solid border-white"
-                        viewBox="0 0 12 12" fill="none">
-                        <path
-                            d="M0.875 11.125H11.125V0.875H0.875V11.125ZM4.625 3.55156C4.625 3.40469 4.79531 3.32188 4.91094 3.41406L8.02656 5.8625C8.04736 5.87888 8.06418 5.89976 8.07574 5.92358C8.0873 5.94739 8.09331 5.97353 8.09331 6C8.09331 6.02647 8.0873 6.0526 8.07574 6.07642C8.06418 6.10024 8.04736 6.12112 8.02656 6.1375L4.91094 8.5875C4.79531 8.67812 4.625 8.59687 4.625 8.45V3.55156Z"
-                            fill="#FA541C" />
-                    </svg>
-                    <span class="text-neutral-950 text-xs ml-1 font-normal">
-                        {{item['nameToutubeVideo']}} <span class="text-gray-500">{{item['durationYoutubeVideo']}}</span>
-                    </span>
-                </button>
-            </span>
-            <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
-                {{item['description']}}
-            </span>
-        </span>
-    </dt>
-    <dd class="mt-1 flex text-sm leading-6 text-gray-700 font-normal sm:col-span-2 sm:mt-0 ">
-        <span class="flex flex-col grow nested-item__wrap">
-            {{ generate_summary_structure(item["children"], depth + 1) }}
-        </span>
-    </dd>
-</div>
-{% endif %}
-
-{% if not depth == 0 %}
-<div class="nested-item flex flex-col {% if depth > 1 %}pl-4 lg:pl-8{% endif %}">
-    <div class="nested-item__label flex items-start py-1.5 border-t border-solid border-gray-100">
-
-        <button type="button"
-            class="{% if not item["children"] %}opacity-0 pointer-events-none{% endif %} nested-item__label-icon h-[22px] w-4 mr-1 flex items-center justify-center shrink-0 rounded-full focus:outline-none focus:ring-0 p-0.5 appearance-none">
-            <div class="w-full h-4 text-[#1890FF] category-close-btn">
-                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 495 495" xml:space="preserve">
-                    <polygon class="fill-[#1890FF]"
-                        points="495,227.5 267.5,227.5 267.5,0 227.5,0 227.5,227.5 0,227.5 0,267.5 227.5,267.5 227.5,495   267.5,495 267.5,267.5 495,267.5 " />
-                </svg>
-            </div>
-            <div class="w-full h-4 text-[#1890FF] category-open-btn hidden">
-                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 495 495" xml:space="preserve">
-                    <rect class="fill-[#1890FF]" y="227.5" width="495" height="40" />
-                </svg>
-            </div>
-        </button>
-        <span class="flex flex-col">
-            <span class="flex flex-wrap items-center font-semibold">
-                <a href="{{item['link']}}" class="mr-2">{{item['name']}}</a>
-                <button
-                    class="btn-video__open appearance-none transition px-1.5 py-0.5 bg-[#F5F5F5] rounded border border-solid border-[#D9D9D9] flex items-center whitespace-nowrap"
-                    data-video="{{item['linkYoutubeVideo']}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 border border-solid border-white"
-                        viewBox="0 0 12 12" fill="none">
-                        <path
-                            d="M0.875 11.125H11.125V0.875H0.875V11.125ZM4.625 3.55156C4.625 3.40469 4.79531 3.32188 4.91094 3.41406L8.02656 5.8625C8.04736 5.87888 8.06418 5.89976 8.07574 5.92358C8.0873 5.94739 8.09331 5.97353 8.09331 6C8.09331 6.02647 8.0873 6.0526 8.07574 6.07642C8.06418 6.10024 8.04736 6.12112 8.02656 6.1375L4.91094 8.5875C4.79531 8.67812 4.625 8.59687 4.625 8.45V3.55156Z"
-                            fill="#FA541C" />
-                    </svg>
-                    <span class="text-neutral-950 text-xs ml-1 font-normal">
-                        {{item['nameToutubeVideo']}} <span class="text-gray-500">{{item['durationYoutubeVideo']}}</span>
-                    </span>
-                </button>
-            </span>
-            <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
-                {{item['description']}}
-            </span>
-        </span>
-    </div>
-    {% if item["children"] %}
-    <div class="nested-item__child hidden">
-        {{ generate_summary_structure(item["children"], depth + 1) }}
-    </div>
-    {% endif %}
-</div>
-{% endif %}
-{% endfor %}
-{% endmacro %}
 
 <div class="flex flex-col">
     <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900">About {{ product.name  }}</h2>
@@ -147,7 +60,7 @@
         <div class="flex flex-col flex-grow">
             <div class="mt-4 lg:mt-6 border-t border-gray-100">
                 <dl class="divide-y divide-gray-100">
-                    {{ generate_summary_structure(product_summary_listings) }}
+                    {{ generate_summary_structure(capabilities) }}
                 </dl>
             </div>
         </div>
