@@ -698,3 +698,14 @@ class ContributorGuide(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Idea(models.Model):
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    vote_count = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.person} - {self.title}"
