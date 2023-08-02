@@ -29,5 +29,35 @@
         "headline": "Lorem ipsum sit amet",
         "overview": "Test test test",
         "is_test_user": true
+    },
+    {
+        "first_name": "John",
+        "last_name": "Test",
+        "email": "test+john@openunited.com",
+        "username": "johnj",
+        "password": "123456789",
+        "headline": "Lorem ipsum sit amet",
+        "overview": "Test test test",
+        "is_test_user": true
+    },
+    {
+        "first_name": "Jane",
+        "last_name": "Test",
+        "email": "test+jane@openunited.com",
+        "username": "janej",
+        "password": "123456789",
+        "headline": "Lorem ipsum sit amet",
+        "overview": "Test test test",
+        "is_test_user": true
+    },
+    {
+        "first_name": "Micheal",
+        "last_name": "Test",
+        "email": "test+micheal@openunited.com",
+        "username": "michealm",
+        "password": "123456789",
+        "headline": "Lorem ipsum sit amet",
+        "overview": "Test test test",
+        "is_test_user": true
     }
 ]
