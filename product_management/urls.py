@@ -5,12 +5,12 @@ from .views import (
     ProductListView,
     challenge_detail,
     product_redirect,
-    product_summary,
-    product_initiatives,
-    product_challenges,
-    product_ideas_bugs,
-    product_tree,
-    product_people,
+    ProductSummaryView,
+    ProductInitiativesView,
+    ProductTreeView,
+    ProductIdeasAndBugsView,
+    ProductChallengesView,
+    ProductPeopleView,
     initiative_details,
     capability_detail,
 )
@@ -29,17 +29,17 @@ urlpatterns = [
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/summary",
-        product_summary,
+        ProductSummaryView.as_view(),
         name="product_summary",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/initiatives",
-        product_initiatives,
+        ProductInitiativesView.as_view(),
         name="product_initiatives",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/challenges",
-        product_challenges,
+        ProductChallengesView.as_view(),
         name="product_challenges",
     ),
     path(
@@ -49,17 +49,17 @@ urlpatterns = [
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/tree",
-        product_tree,
+        ProductTreeView.as_view(),
         name="product_tree",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/ideas",
-        product_ideas_bugs,
+        ProductIdeasAndBugsView.as_view(),
         name="product_ideas_bugs",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/people",
-        product_people,
+        ProductPeopleView.as_view(),
         name="product_people",
     ),
     path(
