@@ -8,6 +8,7 @@ from django.views.generic import ListView, TemplateView, RedirectView
 
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
+from security.models import ProductPerson
 
 
 class ChallengeListView(ListView):
@@ -155,6 +156,18 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
 
 class ProductPeopleView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_people.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = context["product"]
+
+        context.update(
+            {
+                "product_people": ProductPerson.objects.filter(product=product),
+            }
+        )
+
+        return context
 
 
 class ChallengeDetailView(BaseProductDetailView, TemplateView):

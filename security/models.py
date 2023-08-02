@@ -12,7 +12,7 @@ class ProductPerson(TimeStampMixin, UUIDMixin):
     PRODUCT_MANAGER = 2
     CONTRIBUTOR = 3
 
-    ROLE = (
+    ROLES = (
         (FOLLOWER, "Follower"),
         (PRODUCT_ADMIN, "Admin"),
         (PRODUCT_MANAGER, "Manager"),
@@ -20,7 +20,7 @@ class ProductPerson(TimeStampMixin, UUIDMixin):
     )
     person = models.OneToOneField(Person, on_delete=models.CASCADE)
     product = models.ForeignKey("product_management.Product", on_delete=models.CASCADE)
-    role = models.IntegerField(choices=ROLE, default=0)
+    role = models.IntegerField(choices=ROLES, default=0)
     organisation = models.ForeignKey(
         "commerce.Organisation", on_delete=models.CASCADE, null=True, blank=True
     )

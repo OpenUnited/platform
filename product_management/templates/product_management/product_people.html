@@ -3,26 +3,26 @@
 {% block title %}Product - People{% endblock %}
 {% block product_content %}
 
+{% set grouped_product_people = product_people|groupby('role') %}
 
 <div class="flex flex-col divide-y divide-slate-900/5">
-    {% for product_people in product_people_listings %}
-
+    {% for role, product_people in grouped_product_people %}
     <div class="flex flex-col py-[30px] first:pt-0">
         <div class="flex items-center text-xl tracking-tight text-gray-900">
-            {{ product_people.category }} {{ product_people.subcategories|length }}
+            {{ role|display_role }} - {{ product_people|length }}
         </div>
         <div class="mt-[30px] grid gap-x-4 gap-y-12 grid-cols-1 md:grid-cols-2">
-            {% for product_person in product_people.subcategories %}
+            {% for product_person in product_people %}
 
             <div class="flex items-start">
                 <div class="w-16 h-16 mr-2.5 flex items-center justify-center">
-                    <img class="w-full h-full rounded-full object-cover object-center" src="{{ product_person.image }}"
-                        alt="Adrian">
+                    <img class="w-full h-full rounded-full object-cover object-center"
+                        src="{{ product_person.person.photo }}" alt="Profile Photo">
                 </div>
                 <div class="flex flex-col grow">
                     <h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900 mb-1">
-                        {{ product_person.name }}</h3>
-                    <p class="text-base leading-7 text-gray-600">{{ product_person.position }}</p>
+                        {{ product_person.person.get_full_name() }}</h3>
+                    <p class="text-base leading-7 text-gray-600">{{ product_person.get_role_display() }}</p>
                     <p class="text-base leading-7 text-gray-600">{{ product_person.subposition }}</p>
                     <ul role="list" class="mt-[14px] flex gap-x-6">
                         {% if product_person.twitterLink %}
@@ -53,11 +53,9 @@
                     </ul>
                 </div>
             </div>
-
             {% endfor %}
         </div>
     </div>
-
     {% endfor %}
 </div>
 
