@@ -1,4 +1,4 @@
-from .models import Challenge, Initiative, Capability, Tag, Product, Bounty
+from .models import Challenge, Initiative, Capability, Tag, Product, Bounty, Idea
 
 
 class ChallengeService:
@@ -57,3 +57,12 @@ class BountyService:
         bounty.save()
 
         return bounty
+
+
+class IdeaService:
+    @staticmethod
+    def create(**kwargs):
+        idea = Idea(**kwargs)
+        idea.save()
+
+        return idea

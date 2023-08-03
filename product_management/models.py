@@ -20,6 +20,7 @@ class Tag(TimeStampMixin):
         return self.name
 
 
+# ProductTree is made up from Capabilities
 class Capability(MP_Node):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, default="")
@@ -120,28 +121,6 @@ def save_product(sender, instance, created, **kwargs):
                 slug=instance.slug,
                 owner=instance.get_product_owner().username,
             )
-        )
-
-
-class ProductRole(TimeStampMixin, UUIDMixin):
-    FOLLOWER = 0
-    PRODUCT_ADMIN = 1
-    PRODUCT_MANAGER = 2
-    CONTRIBUTOR = 3
-
-    RIGHTS = (
-        (FOLLOWER, "Follower"),
-        (PRODUCT_ADMIN, "Admin"),
-        (PRODUCT_MANAGER, "Manager"),
-        (CONTRIBUTOR, "Contributor"),
-    )
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    product = models.ForeignKey("product_management.Product", on_delete=models.CASCADE)
-    role = models.IntegerField(choices=RIGHTS, default=0)
-
-    def __str__(self):
-        return "{} is {} of {}".format(
-            self.person.user.username, self.get_right_display(), self.product
         )
 
 
@@ -697,3 +676,14 @@ class ContributorGuide(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Idea(models.Model):
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    vote_count = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.person} - {self.title}"
