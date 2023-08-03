@@ -18,10 +18,29 @@ def clear_rows_by_model_name(model_names_mapping: dict) -> None:
 def create_capabilities() -> list:
     fancy_out("Create Capability records")
     get = lambda node_id: Capability.objects.get(pk=node_id)
-    root = Capability.add_root(
-        name="Capability 1", description="Description of Capability 1"
+    root_1 = Capability.add_root(
+        name="Root Capability 1", description="Root Description of Capability 1"
     )
-    node = get(root.pk).add_child(
+    root_2 = Capability.add_root(
+        name="Root Capability 2", description="Root Description of Capability 2"
+    )
+    node_root_2 = get(root_2.pk).add_child(
+        name="Child of a Root Capability 2",
+        description="Child Description of Capability 2",
+    )
+    get(node_root_2.pk).add_sibling(
+        name="Sibling of Child of Root Capability 1",
+        description="Sibling Description of Child of Root Capability 1",
+    )
+    get(node_root_2.pk).add_sibling(
+        name="Sibling of Child of Root Capability 2",
+        description="Sibling Description of Child of Root Capability 2",
+    )
+    get(node_root_2.pk).add_child(
+        name="Sibling of Child of Root Capability 3",
+        description="Sibling Description of Child of Root Capability 3",
+    )
+    node = get(root_1.pk).add_child(
         name="Capability 2", description="Description of Capability 2"
     )
     get(node.pk).add_sibling(
@@ -89,6 +108,35 @@ def generate_sample_data():
     products = []
     for pd in product_data:
         products.append(ProductService.create(**pd))
+
+    # Create ProductPerson model instances
+    product_person_data = read_json_data(
+        "utility/sample_data/product_person.json", "product_person"
+    )
+
+    copy_people = people.copy()
+    for ppd in product_person_data:
+        p = choice(copy_people)
+        copy_people.remove(p)
+        ppd["person"] = p
+        ppd["product"] = choice(products)
+        if ppd["role"] in [ProductPerson.PRODUCT_ADMIN, ProductPerson.PRODUCT_MANAGER]:
+            ppd["organisation"] = choice(organisations)
+
+    product_people = []
+    for ppd in product_person_data:
+        product_people.append(ProductPersonService.create(**ppd))
+
+    # Create Idea model instances
+    idea_data = read_json_data("utility/sample_data/idea.json", "idea")
+
+    for elem in idea_data:
+        elem["product"] = choice(products)
+        elem["person"] = choice(people)
+
+    ideas = []
+    for i_data in idea_data:
+        ideas.append(IdeaService.create(**i_data))
 
     # Create Initiative model instances
     initiative_data = read_json_data(
@@ -228,6 +276,7 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
     django.setup()
 
+    from security.models import ProductPerson
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,
@@ -235,7 +284,7 @@ if __name__ == "__main__":
         CartService,
         PointPriceConfigurationService,
     )
-    from security.services import ProductOwnerService
+    from security.services import ProductPersonService, ProductOwnerService
     from product_management.models import Capability
     from talent.services import PersonService, SkillService, ExpertiseService
     from product_management.services import (
@@ -244,6 +293,7 @@ if __name__ == "__main__":
         ProductService,
         ChallengeService,
         BountyService,
+        IdeaService,
     )
 
     run_data_generation()

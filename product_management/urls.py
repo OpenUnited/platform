@@ -3,67 +3,84 @@ from django.urls import path
 from .views import (
     ChallengeListView,
     ProductListView,
-    challenge_detail,
-    product_redirect,
-    product_summary,
-    product_initiatives,
-    product_challenges,
-    product_ideas_bugs,
-    product_tree,
-    product_people,
-    initiative_details,
+    ProductRedirectView,
+    ProductSummaryView,
+    ProductInitiativesView,
+    ProductTreeView,
+    ProductIdeasAndBugsView,
+    ProductChallengesView,
+    ProductPeopleView,
+    ChallengeDetailView,
+    InitiativeDetailView,
+    CapabilityDetailView,
 )
 
+# Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
+# It looked too ugly when putting every path into a single list.
+#
+# If a new path requires to be added, add it to their corresponding part. If it does not fit
+# any of the existing groups, you can add an additional group.
+
+
+# URL patterns for challenge and product list views
 urlpatterns = [
     path("challenges/", ChallengeListView.as_view(), name="challenges"),
     path("products/", ProductListView.as_view(), name="products"),
-    path(
-        "<str:organisation_username>/<str:product_slug>/challenge/<int:challenge_id>",
-        challenge_detail,
-        name="challenge_detail",
-    ),
+]
+
+# URL patterns for various product views
+urlpatterns += [
     path(
         "<str:organisation_username>/<str:product_slug>/",
-        product_redirect,
+        ProductRedirectView.as_view(),
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/summary",
-        product_summary,
+        ProductSummaryView.as_view(),
         name="product_summary",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/initiatives",
-        product_initiatives,
+        ProductInitiativesView.as_view(),
         name="product_initiatives",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/challenges",
-        product_challenges,
+        ProductChallengesView.as_view(),
         name="product_challenges",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/challenge/<int:challenge_id>",
-        challenge_detail,
-        name="challenge_detail",
-    ),
-    path(
         "<str:organisation_username>/<str:product_slug>/tree",
-        product_tree,
+        ProductTreeView.as_view(),
         name="product_tree",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/ideas",
-        product_ideas_bugs,
+        ProductIdeasAndBugsView.as_view(),
         name="product_ideas_bugs",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/people",
-        product_people,
+        ProductPeopleView.as_view(),
         name="product_people",
     ),
+]
+
+# URL patterns for initiative, capability, and challenge detail views
+urlpatterns += [
     path(
         "<str:organisation_username>/<str:product_slug>/initiative/<int:initiative_id>",
-        initiative_details,
+        InitiativeDetailView.as_view(),
         name="initiative_details",
+    ),
+    path(
+        "<str:organisation_username>/<str:product_slug>/capability/<int:capability_id>",
+        CapabilityDetailView.as_view(),
+        name="capability_detail",
+    ),
+    path(
+        "<str:organisation_username>/<str:product_slug>/challenge/<int:challenge_id>",
+        ChallengeDetailView.as_view(),
+        name="challenge_detail",
     ),
 ]

@@ -1,0 +1,32 @@
+[
+    {
+        "title": "Task Roulette",
+        "description": "Visit the homepage, click on \"Task Roulette\" and get presented with the summary of a random task from a random product in a modal. You can then click into the task for more info or press \"Spin Again\" and get another random task. ",
+        "vote_count": 0
+    },
+    {
+        "title": "Ability to download Product Data Sheet (PDF)",
+        "description": "The ability to enable a link \"download Data Sheet (PDF)\" on the product page that creates an attractive PDF summary of the products and its capabilities at that point in time. This will help to ensure the information on products / capabilities is complete and enable people, including less technical users of openunited, to get an overview of a product that they can read in a familiar format.\nSome examples to illustrate what can be produced:\n\nhttps://www.slideshare.net/TDSmaker/software-datasheet-template\n\nhttps://www.prosoft-technology.com/content/download/4307/30796/version/1/file/EZ_ASCE_Datasheet.pdf",
+        "vote_count": 1
+    },
+    {
+        "title": "Cloned synced capabilities in the Product Tree",
+        "description": "In some products, certain capabilities might need to appear in different part of the product tree. For instance, email capability which is needed under login and registration capabilities as well as marketing, payment confirmation and other areas of the tree. In such cases, it should be possible to create a synced capability by cloning an existing capability and assigned the cloned one to another part of the tree. Changes to a synced capability is synchronized across all synced capabilities.",
+        "vote_count": 5
+    },
+    {
+        "title": "Initiative Leadership",
+        "description": "The convention should be that the Initiative Manager has to make sure one task flows to the next within that Initiative frame of reference and we should have a principle that one task connects with another and the inputs and outputs are actionable.\nI think we need to have vacancies for like Initiative Manager and Initiative UX Lead for now and then manually invite / promote people from Initiative leadership product leadership. Once you are proven in product leadership, you can get equity invited. \nAlso, we should indeed learn and not over structure but we also need to think/recommend and be opinionated in terms of how we are going to manage/scale even just with the three products we have and it also is necessary to drive our valuation that we have a way of doing things, a scalable model etc",
+        "vote_count": 9
+    },
+    {
+        "title": "Add Initiatives tab to homepage",
+        "description": "Currently we have Tasks, Products as tabs on the homepage. Adding Initiatives as a tab to the homepage may help to improve discoverability of meaningful tasks?",
+        "vote_count": 10
+    },
+    {
+        "title": "Show contribution checklist upon contribution submission",
+        "description": "For each task category, there can be a checklist submitted by the product team and when a contributor is trying to submit a contribution for review, they will be prompt to go through the checklist and confirm that they have done what was expected before submitting their contribution. As an example, for a development task, the contribution checklist could look like:\nI confirm that:\n\nI wrote unit test for my contribution (if applicable)\nI followed the project's style-guide in my code\nI made a PR against staging\nThe developer would have to check these off before submitting their contribution. The checklist could appear in a modal upon clicking on submit for review CTA.",
+        "vote_count": 99
+    }
+]
