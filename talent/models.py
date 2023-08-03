@@ -14,6 +14,8 @@ class Person(AbstractUser, TimeStampMixin):
     headline = models.TextField()
     overview = models.TextField(blank=True)
     send_me_bounties = models.BooleanField(default=True)
+    twitter_link = models.URLField(null=True, blank=True)
+    linkedin_link = models.URLField(null=True, blank=True)
     is_test_user = models.BooleanField(_("Test User"), default=False)
 
     class Meta:
