@@ -3,7 +3,7 @@
 {% block title %}Product - People{% endblock %}
 {% block product_content %}
 
-{% set grouped_product_people = product_people|groupby('role') %}
+{% set grouped_product_people = product_people|groupby('role')|reverse %}
 
 <div class="flex flex-col divide-y divide-slate-900/5">
     {% for role, product_people in grouped_product_people %}

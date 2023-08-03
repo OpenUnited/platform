@@ -8,15 +8,15 @@ from commerce.models import Organisation
 
 class ProductPerson(TimeStampMixin, UUIDMixin):
     FOLLOWER = 0
-    PRODUCT_ADMIN = 1
+    CONTRIBUTOR = 1
     PRODUCT_MANAGER = 2
-    CONTRIBUTOR = 3
+    PRODUCT_ADMIN = 3
 
     ROLES = (
         (FOLLOWER, "Follower"),
-        (PRODUCT_ADMIN, "Admin"),
-        (PRODUCT_MANAGER, "Manager"),
         (CONTRIBUTOR, "Contributor"),
+        (PRODUCT_MANAGER, "Manager"),
+        (PRODUCT_ADMIN, "Admin"),
     )
     person = models.OneToOneField(Person, on_delete=models.CASCADE)
     product = models.ForeignKey("product_management.Product", on_delete=models.CASCADE)
