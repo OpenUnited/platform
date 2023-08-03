@@ -31,6 +31,7 @@ class ChallengeListView(ListView):
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
+    queryset = Product.objects.filter(is_private=False)
     template_name = "product_management/products.html"
 
     def get(self, request, *args, **kwargs):
