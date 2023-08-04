@@ -9,14 +9,6 @@ import engagement
 from treebeard.mp_tree import MP_Node
 
 
-class PersonDraft(TimeStampMixin):
-    full_name = models.CharField()
-    email = models.EmailField()
-
-    def __str__(self):
-        return f"{self.full_name} - {self.email}"
-
-
 class Person(AbstractUser, TimeStampMixin):
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
     headline = models.TextField()
