@@ -1,5 +1,3 @@
-<p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
-
 <form class="space-y-6 mb-0" method="POST">
     {% csrf_token %}
     {{ wizard.management_form }}
