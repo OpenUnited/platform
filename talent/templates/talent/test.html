@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- tailwind version 3.3.2 -->
+    <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="{{ static('styles/styles.css') }}">
+
+    <title>Document</title>
+
+    {{ wizard.form.media }}
+
+</head>
+
+<body>
+
+    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+
+        {% if wizard.steps.current == '0' %}
+        <label for="">full name</label>
+        {{ wizard.form.full_name }}
+        <label for="">email</label>
+        {{ wizard.form.email }}
+
+        {% elif wizard.steps.current == '1' %}
+        <label for="">verification code</label>
+        {{ wizard.form.verification_code }}
+
+        {% elif wizard.steps.current == '2' %}
+        <label for="">username</label>
+        {{ wizard.form.username }}
+        <label for="">password1</label>
+        {{ wizard.form.password1 }}
+        <label for="">password2</label>
+        {{ wizard.form.password2 }}
+        {% endif %}
+
+        <input type="submit" value="submit" />
+    </form>
+
+</body>
+
+</html>
