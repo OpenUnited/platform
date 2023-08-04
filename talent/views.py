@@ -1,34 +1,19 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import logout
 from formtools.wizard.views import SessionWizardView
 
-from .models import Person
-from .forms import PersonDraftForm, EmailVerificationCodeForm, UsernameAndPasswordForm
-
-
-def does_email_exist(wizard):
-    cleaned_data = wizard.get_cleaned_data_for_step("0") or {}
-    email = cleaned_data.get("email")
-
-    return Person.objects.filter(email=email).exists()
+from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from security.services import SignUpRequestService
 
 
 class SignUpWizard(SessionWizardView):
-    form_list = [PersonDraftForm, EmailVerificationCodeForm, UsernameAndPasswordForm]
+    form_list = [SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm]
     template_name = "talent/sign_up.html"
 
     def done(self, form_list, **kwargs):
-        import ipdb
+        SignUpRequestService.create_from_steps_form(form_list)
 
-        ipdb.set_trace()
-        print(form_list)
-        return HttpResponse("test wizard success!")
-
-
-def test(request):
-    return HttpResponse("aaaaaa")
+        return render(self.request, "product_management/challenges.html")
 
 
 def sign_in(request):
