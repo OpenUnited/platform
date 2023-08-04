@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "commerce",
     "django_extensions",
     "django_jinja",
+    "formtools",
 ]
 
 MIDDLEWARE = [
