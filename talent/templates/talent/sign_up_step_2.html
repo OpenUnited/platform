@@ -1,5 +1,15 @@
-<div class="active register-content flex-col">
+<div class="flex flex-col">
     <div class="space-y-6 mb-0">
+        {% if wizard.form.password1.errors %}
+        <div
+            class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+            <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
+                <img src="{{ static('images/error.svg') }}" alt="Error Icon">
+            </span>
+            {{ wizard.form.password1.errors }}
+        </div>
+        {% endif %}
+
         <div
             class="w-fit mx-auto text-center flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#00B400] text-sm text-black/[0.85] bg-[#DBFFDB]">
             Email verified! Please set your username and password.
