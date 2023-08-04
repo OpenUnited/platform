@@ -1,13 +1,15 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.password_validation import validate_password
 
-from .models import PersonDraft
+
+from .models import Person
 
 
-class PersonDraftForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["full_name"].widget.attrs.update(
-            {
+class SignUpStepOneForm(forms.Form):
+    full_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
                 "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
                 "placeholder": "Enter your full name",
                 "autocomplete": "full-name",
@@ -15,27 +17,33 @@ class PersonDraftForm(forms.ModelForm):
                 "autocapitalize": "none",
             }
         )
-        self.fields["email"].widget.attrs.update(
-            {
+    )
+    email = forms.CharField(
+        widget=forms.EmailInput(
+            attrs={
                 "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
                 "placeholder": "Enter your email",
                 "autocomplete": "email",
                 "required": True,
             }
         )
+    )
 
-    class Meta:
-        model = PersonDraft
-        fields = [
-            "full_name",
-            "email",
-        ]
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if Person.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                _("That email isn't available, please try another")
+            )
+
+        return email
 
 
-class EmailVerificationCodeForm(forms.Form):
+class SignUpStepTwoForm(forms.Form):
     verification_code = forms.CharField(
         widget=forms.TextInput(
             attrs={
+                "autofocus": True,
                 "autocomplete": "one-time-code",
                 "inputmode": "numeric",
                 "maxlength": "6",
@@ -45,7 +53,7 @@ class EmailVerificationCodeForm(forms.Form):
     )
 
 
-class UsernameAndPasswordForm(forms.Form):
+class SignUpStepThreeForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -57,7 +65,7 @@ class UsernameAndPasswordForm(forms.Form):
             }
         )
     )
-    password1 = forms.CharField(
+    password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
@@ -68,7 +76,7 @@ class UsernameAndPasswordForm(forms.Form):
             }
         )
     )
-    password2 = forms.CharField(
+    password_confirm = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
@@ -79,3 +87,17 @@ class UsernameAndPasswordForm(forms.Form):
             }
         )
     )
+
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+
+        validate_password(password)
+        return password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
+
+        if password != password_confirm:
+            raise forms.ValidationError(_("Passwords have to match"))

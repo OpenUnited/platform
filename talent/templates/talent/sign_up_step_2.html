@@ -1,19 +1,25 @@
 <div class="flex flex-col">
     <div class="space-y-6 mb-0">
-        {% if wizard.form.password1.errors %}
+        {% set password_field_errors = wizard.form.password.errors %}
+        {% set non_field_errors = wizard.form.non_field_errors() %}
+        {% if password_field_errors or non_field_errors %}
         <div
             class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
             <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
                 <img src="{{ static('images/error.svg') }}" alt="Error Icon">
             </span>
-            {{ wizard.form.password1.errors }}
+            <ul>
+                {% for error in non_field_errors|list + password_field_errors|list %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
         </div>
-        {% endif %}
-
+        {% else %}
         <div
             class="w-fit mx-auto text-center flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#00B400] text-sm text-black/[0.85] bg-[#DBFFDB]">
             Email verified! Please set your username and password.
         </div>
+        {% endif %}
 
         <div>
             <label for="{{ wizard.form.username.id_for_label }}"
@@ -24,10 +30,10 @@
         </div>
 
         <div>
-            <label for="{{ wizard.form.password1.id_for_label }}"
-                class="block text-sm font-medium leading-6 text-gray-900">{{ wizard.form.password1.label }}</label>
+            <label for="{{ wizard.form.password.id_for_label }}"
+                class="block text-sm font-medium leading-6 text-gray-900">{{ wizard.form.password.label }}</label>
             <div class="mt-2">
-                {{ wizard.form.password1 }}
+                {{ wizard.form.password }}
             </div>
 
             <div class="password-checker flex flex-col mt-3">
@@ -43,10 +49,10 @@
         </div>
 
         <div>
-            <label for="{{ wizard.form.password2.id_for_label }}"
-                class="block text-sm font-medium leading-6 text-gray-900">{{ wizard.form.password2.label }}</label>
+            <label for="{{ wizard.form.password_confirm.id_for_label }}"
+                class="block text-sm font-medium leading-6 text-gray-900">{{ wizard.form.password_confirm.label }}</label>
             <div class="mt-2">
-                {{ wizard.form.password2 }}
+                {{ wizard.form.password_confirm }}
             </div>
         </div>
 
