@@ -1,6 +1,6 @@
 # platform
 
-This is the Django-based platform that powers OpenUnited. [Apps](https://docs.djangoproject.com/en/4.2/ref/applications/) are used to create "bounded contexts":
+This is the platform that powers OpenUnited. [Apps](https://docs.djangoproject.com/en/4.2/ref/applications/) are used to create "bounded contexts":
 
 - Product Management (Product, Capability, Initiative, Challenge, Bounty etc.)
 - Talent (Person, Skill, BountyClaim etc.)
