@@ -6,6 +6,13 @@ from talent.models import Person
 from commerce.models import Organisation
 
 
+class VerificationCode(models.Model):
+    verification_code = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.verification_code
+
+
 class SignUpRequest(TimeStampMixin):
     full_name = models.CharField(max_length=256)
     email = models.EmailField()
