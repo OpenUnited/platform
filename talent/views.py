@@ -1,29 +1,21 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import logout
-from django.core.mail import send_mail
-from random import randrange
 from formtools.wizard.views import SessionWizardView
 
-from security.models import VerificationCode
 from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
-from security.services import SignUpRequestService
-
-import ipdb
+from security.services import SignUpRequestService, VerificationCodeService
+from .services import create_and_send_verification_code
 
 
 class SignUpWizard(SessionWizardView):
     form_list = [SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm]
     template_name = "talent/sign_up.html"
-    initial_dict = {
-        "0": {},
-        "1": {},
-    }
+    initial_dict = {"0": {}, "1": {}, "2": {}}
 
     def get_context_data(self, form, **kwargs):
         ctx = super().get_context_data(form=form, **kwargs)
 
         if self.steps.current == "1":
-            ipdb.set_trace()
             cleaned_data = self.get_cleaned_data_for_step("0")
             email = cleaned_data.get("email")
 
@@ -38,27 +30,18 @@ class SignUpWizard(SessionWizardView):
                     {"verification_code_id": previous_code_id}
                 )
             else:
-                six_digit_number = randrange(100_000, 1_000_000)
-                code = VerificationCode.objects.create(
-                    verification_code=six_digit_number
-                )
-                self.initial_dict.get("1").update({"verification_code_id": code.id})
-                print(code.id, six_digit_number)
-
-            # send_mail(
-            #     "Verification Code",
-            #     f"Code: {verification_code}",
-            #     None,
-            #     ["dogukanteber1@hotmail.com"],
-            # )
+                code_id = create_and_send_verification_code(email)
+                self.initial_dict.get("1").update({"verification_code_id": code_id})
 
         return ctx
 
     def done(self, form_list, **kwargs):
         SignUpRequestService.create_from_steps_form(form_list)
 
+        # Deleting the temporarily created VerificationCode instance
+        # since this object is only needed for sign up
         code_id = self.storage.extra_data.get("verification_code_id")
-        VerificationCode.objects.filter(id=code_id).delete()
+        VerificationCodeService.delete(code_id)
 
         return render(self.request, "product_management/challenges.html")
 

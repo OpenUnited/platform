@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
+from random import randrange
+from django.core.mail import send_mail
 
 from talent.models import Person, Skill, Expertise
+from security.models import VerificationCode
 
 
 Person = get_user_model()
@@ -68,3 +71,27 @@ class ExpertiseService:
         expertise.save()
 
         return expertise
+
+
+def create_and_send_verification_code(email: str) -> int:
+    """
+    Generate a random six-digit verification code, create a VerificationCode object with
+    the generated code, and send the code to the provided email address.
+
+    Parameters:
+        email (str): The email address to which the verification code will be sent.
+
+    Returns:
+        int: The ID of the created VerificationCode object.
+    """
+    six_digit_number = randrange(100_000, 1_000_000)
+    code = VerificationCode.objects.create(verification_code=six_digit_number)
+
+    send_mail(
+        "Verification Code",
+        f"Code: {six_digit_number}",
+        None,
+        [email],
+    )
+
+    return code.id

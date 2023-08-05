@@ -2,9 +2,15 @@ import logging
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 
-from .models import SignUpRequest, ProductPerson, ProductOwner
+from .models import SignUpRequest, ProductPerson, ProductOwner, VerificationCode
 
 logger = logging.getLogger(__name__)
+
+
+class VerificationCodeService:
+    @staticmethod
+    def delete(id: int):
+        VerificationCode.objects.filter(id=id).delete()
 
 
 class SignUpRequestService:

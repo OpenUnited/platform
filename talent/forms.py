@@ -3,9 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.password_validation import validate_password
 from django.forms import ValidationError
 
-
 from .models import Person
-from security.models import VerificationCode
+from security.models import VerificationCode, SignUpRequest
 
 
 class SignUpStepOneForm(forms.Form):
@@ -33,15 +32,15 @@ class SignUpStepOneForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
-        if Person.objects.filter(email=email).exists():
+        if (
+            Person.objects.filter(email=email).exists()
+            or SignUpRequest.objects.filter(email=email).exists()
+        ):
             raise forms.ValidationError(
                 _("That email isn't available, please try another")
             )
 
         return email
-
-
-import ipdb
 
 
 class SignUpStepTwoForm(forms.Form):
@@ -63,12 +62,10 @@ class SignUpStepTwoForm(forms.Form):
     )
 
     def clean(self):
-        # ipdb.set_trace()
         cleaned_data = super().clean()
         verification_code = cleaned_data.get("verification_code")
 
         code_id = self.initial.get("verification_code_id")
-        print(code_id)
 
         actual_verification_code = VerificationCode.objects.get(id=code_id)
 
@@ -77,18 +74,6 @@ class SignUpStepTwoForm(forms.Form):
             raise ValidationError(_("Invalid verification code. Please try again."))
 
         return cleaned_data
-
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     verification_code = cleaned_data.get("verification_code")
-
-    #     actual_code_id = self.wizard.storage.extra_data.get("verification_code_id")
-    #     actual_verification_code = SignUpRequest.objects.get(id=actual_code_id)
-
-    #     if verification_code != actual_verification_code:
-    #         raise ValidationError(_("Invalid verification code. Please try again."))
-
-    #     return cleaned_data
 
 
 class SignUpStepThreeForm(forms.Form):

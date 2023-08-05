@@ -13,12 +13,12 @@
                 {% endfor %}
             </ul>
         </div>
-        {% endif %}
-
+        {% else %}
         <div
             class="w-fit mx-auto text-center flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#1890ff] text-sm text-black/[0.85] bg-[#e6f7ff]">
             Please check your email for six-digit code
         </div>
+        {% endif %}
 
         <label class="flex flex-col items-center digit-code">
             <div class="text-sm text-black/[0.85] mb-2">
