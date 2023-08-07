@@ -6,6 +6,27 @@ from talent.models import Person
 from commerce.models import Organisation
 
 
+class VerificationCode(models.Model):
+    verification_code = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.verification_code
+
+
+class SignUpRequest(TimeStampMixin):
+    full_name = models.CharField(max_length=256)
+    email = models.EmailField()
+    verification_code = models.CharField(max_length=6)
+    username = models.CharField(max_length=128)
+    password = models.CharField()
+    person = models.OneToOneField(
+        Person, on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"{self.full_name} - {self.username}"
+
+
 class ProductPerson(TimeStampMixin, UUIDMixin):
     FOLLOWER = 0
     CONTRIBUTOR = 1

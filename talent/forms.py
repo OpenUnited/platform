@@ -1,80 +1,126 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.password_validation import validate_password
+from django.forms import ValidationError
 
-from talent.models import Person
-
-
-def styled_input(input_type, placeholder):
-    """
-    This function returns a TextInput or PasswordInput widget with predefined style.
-    """
-    attrs = {
-        "class": "w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300",
-        "placeholder": placeholder,
-    }
-
-    if input_type == "password":
-        return forms.PasswordInput(attrs=attrs)
-    elif input_type == "email":
-        return forms.EmailInput(attrs=attrs)
-    elif input_type == "textarea":
-        return forms.Textarea(attrs=attrs)
-    elif input_type == "file":
-        attrs[
-            "class"
-        ] = "relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:file:bg-neutral-700 dark:file:text-neutral-100 dark:focus:border-primary"
-        return forms.FileInput(attrs=attrs)
-    else:
-        return forms.TextInput(attrs=attrs)
+from .models import Person
+from security.models import VerificationCode, SignUpRequest
 
 
-class SignUpForm(UserCreationForm):
+class SignUpStepOneForm(forms.Form):
+    full_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "placeholder": "Enter your full name",
+                "autocomplete": "full-name",
+                "required": True,
+                "autocapitalize": "none",
+            }
+        )
+    )
+    email = forms.CharField(
+        widget=forms.EmailInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "placeholder": "Enter your email",
+                "autocomplete": "email",
+                "required": True,
+            }
+        )
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if (
+            Person.objects.filter(email=email).exists()
+            or SignUpRequest.objects.filter(email=email).exists()
+        ):
+            raise forms.ValidationError(
+                _("That email isn't available, please try another")
+            )
+
+        return email
+
+
+class SignUpStepTwoForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(SignUpForm, self).__init__(*args, **kwargs)
-        self.fields["first_name"].required = True
-        self.fields["last_name"].required = True
-        self.fields["email"].required = True
-        self.fields["password1"].widget = styled_input("password", "Password")
-        self.fields["password2"].widget = styled_input("password", "Confirm Password")
+        verification_code_id = kwargs.pop("verification_code_id", None)
+        super().__init__(*args, **kwargs)
+        self.verification_code_id = verification_code_id
 
-    class Meta:
-        model = Person
-        fields = (
-            "first_name",
-            "last_name",
-            "username",
-            "email",
-            "password1",
-            "password2",
+    verification_code = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "autofocus": True,
+                "autocomplete": "one-time-code",
+                "inputmode": "numeric",
+                "maxlength": "6",
+                "pattern": "\d{6}",
+            }
         )
-        widgets = {
-            "first_name": styled_input("first_name", "First Name"),
-            "last_name": styled_input("last_name", "Last Name"),
-            "username": styled_input("text", "Username"),
-            "email": styled_input("email", "Email"),
-        }
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        verification_code = cleaned_data.get("verification_code")
+
+        code_id = self.initial.get("verification_code_id")
+
+        actual_verification_code = VerificationCode.objects.get(id=code_id)
+
+        if verification_code != actual_verification_code.verification_code:
+            print(verification_code, actual_verification_code.verification_code)
+            raise ValidationError(_("Invalid verification code. Please try again."))
+
+        return cleaned_data
 
 
-class PersonDetailsForm(forms.ModelForm):
-    class Meta:
-        model = Person
-        fields = (
-            "headline",
-            "overview",
-            "photo",
-        )
-
-        widgets = {
-            "headline": styled_input("headline", "Insert something"),
-            "overview": styled_input("textarea", "Lorem ipsum sit amet"),
-            "photo": styled_input("file", ""),
-        }
-
-
-class SignInForm(forms.Form):
+class SignUpStepThreeForm(forms.Form):
     username = forms.CharField(
-        max_length=150, widget=styled_input("username", "Enter your username")
+        widget=forms.TextInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "name": "username",
+                "required": True,
+                "placeholder": "Enter your username",
+                "autocapitalize": "none",
+            }
+        )
     )
     password = forms.CharField(
-        max_length=128, widget=styled_input("password", "Enter your password")
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "placeholder": "••••••",
+                "name": "password",
+                "required": True,
+                "autocapitalize": "none",
+            }
+        )
     )
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "placeholder": "••••••",
+                "name": "password",
+                "required": True,
+                "autocapitalize": "none",
+            }
+        )
+    )
+
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+
+        validate_password(password)
+        return password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirm = cleaned_data.get("password_confirm")
+
+        if password != password_confirm:
+            raise forms.ValidationError(_("Passwords have to match"))

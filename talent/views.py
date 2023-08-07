@@ -1,65 +1,55 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from formtools.wizard.views import SessionWizardView
 
-from .forms import SignUpForm, SignInForm, PersonDetailsForm
-from .services import PersonService
+from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from security.services import SignUpRequestService, VerificationCodeService
+from .services import create_and_send_verification_code
+
+
+class SignUpWizard(SessionWizardView):
+    form_list = [SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm]
+    template_name = "talent/sign_up.html"
+    initial_dict = {"0": {}, "1": {}, "2": {}}
+
+    def get_context_data(self, form, **kwargs):
+        ctx = super().get_context_data(form=form, **kwargs)
+
+        if self.steps.current == "1":
+            cleaned_data = self.get_cleaned_data_for_step("0")
+            email = cleaned_data.get("email")
+
+            initial_form_data = self.initial_dict.get("1", None)
+
+            previous_code_id = None
+            if initial_form_data:
+                previous_code_id = initial_form_data.get("verification_code_id")
+
+            if previous_code_id:
+                self.initial_dict.get("1").update(
+                    {"verification_code_id": previous_code_id}
+                )
+            else:
+                code_id = create_and_send_verification_code(email)
+                self.initial_dict.get("1").update({"verification_code_id": code_id})
+
+        return ctx
+
+    def done(self, form_list, **kwargs):
+        SignUpRequestService.create_from_steps_form(form_list)
+
+        # Deleting the temporarily created VerificationCode instance
+        # since this object is only needed for sign up
+        code_id = self.storage.extra_data.get("verification_code_id")
+        VerificationCodeService.delete(code_id)
+
+        return render(self.request, "product_management/challenges.html")
 
 
 def sign_in(request):
-    if request.method == "POST":
-        form = SignInForm(request.POST)
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("home")
-        else:
-            form.add_error(None, "Invalid credentials")
-    else:
-        form = SignInForm()
-
-    return render(request, "talent/sign_in.html", {"form": form})
-
-
-# TODO: add unauthorized page when someone tries to reach this view
-# TODO: saving photos does not work right now, fix it
-@login_required
-def complete_profile(request):
-    if request.method == "POST":
-        form = PersonDetailsForm(request.POST)
-        if form.is_valid():
-            profile = PersonService.get_by_username(request.user.username)
-            PersonService.update(profile=profile, **form.cleaned_data)
-
-            return redirect("home")
-    return render(request, "talent/sign_up_details.html", {"form": PersonDetailsForm()})
-
-
-def sign_up(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            raw_password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect("complete_profile")
-        else:
-            return render(request, "talent/sign_up.html", {"form": form})
-
-    form = SignUpForm()
-    return render(request, "talent/sign_up.html", {"form": form})
+    return HttpResponse("jlkşfslkdfsd")
 
 
 def log_out(request):
     logout(request)
     return redirect("home")
-
-
-def reset_password(request):
-    return HttpResponse(
-        "Implement this page. Check if Django provides the necessary functions"
-    )

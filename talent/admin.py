@@ -4,7 +4,7 @@ from .models import Person
 
 
 @admin.register(Person)
-class TalentAdmin(admin.ModelAdmin):
+class PersonAdmin(admin.ModelAdmin):
     readonly_fields = (
         "date_joined",
         "created_at",
