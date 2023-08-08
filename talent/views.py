@@ -3,8 +3,9 @@ from django.contrib.auth import logout
 from formtools.wizard.views import SessionWizardView
 
 from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
-from security.services import SignUpRequestService, VerificationCodeService
+from security.services import SignUpRequestService
 from .services import create_and_send_verification_code
+from .constants import SIGN_UP_REQUEST_ID
 
 
 class SignUpWizard(SessionWizardView):
@@ -21,27 +22,20 @@ class SignUpWizard(SessionWizardView):
 
             initial_form_data = self.initial_dict.get("1", None)
 
-            previous_code_id = None
+            req_id = None
             if initial_form_data:
-                previous_code_id = initial_form_data.get("verification_code_id")
+                req_id = initial_form_data.get(SIGN_UP_REQUEST_ID)
 
-            if previous_code_id:
-                self.initial_dict.get("1").update(
-                    {"verification_code_id": previous_code_id}
-                )
-            else:
-                code_id = create_and_send_verification_code(email)
-                self.initial_dict.get("1").update({"verification_code_id": code_id})
+            if not req_id:
+                req_id = create_and_send_verification_code(email)
+
+            self.initial_dict.get("1").update({SIGN_UP_REQUEST_ID: req_id})
 
         return ctx
 
     def done(self, form_list, **kwargs):
-        SignUpRequestService.create_from_steps_form(form_list)
-
-        # Deleting the temporarily created VerificationCode instance
-        # since this object is only needed for sign up
-        code_id = self.storage.extra_data.get("verification_code_id")
-        VerificationCodeService.delete(code_id)
+        sign_up_req_id = self.initial_dict.get("1").get(SIGN_UP_REQUEST_ID)
+        SignUpRequestService.create_from_steps_form(form_list, sign_up_req_id)
 
         return render(self.request, "product_management/challenges.html")
 
