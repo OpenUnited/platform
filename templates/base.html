@@ -49,9 +49,9 @@
             class="text-sm font-semibold leading-6 transition-all delay-600 rounded bg-indigo-600 px-3.5 py-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Log
             out</a>
           {% else %}
-          <a href="{{ url('sign_in') }}" class="text-sm font-semibold leading-6 text-gray-900">Sign in <span
+          <a href="{{ url('sign-in') }}" class="text-sm font-semibold leading-6 text-gray-900">Sign in <span
               aria-hidden="true">&rarr;</span></a>
-          <a href="{{ url('sign_up') }}"
+          <a href="{{ url('sign-up') }}"
             class="text-sm font-semibold leading-6 transition-all delay-600 rounded bg-indigo-600 px-3.5 py-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign
             up</a>
           {% endif %}
@@ -85,20 +85,23 @@
           </div>
           <ul class="space-y-5 flex flex-col pt-20 sm:pt-[30%] pb-10">
             <li class="flex">
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Find a Challenge</a>
+              <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">
+                Find a Challenge
+              </a>
             </li>
             <li class="flex">
               <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Explainer Video</a>
             </li>
             <li class="flex">
-              <a href="#" class="text-sm font-semibold leading-6 text-gray-900">
+              <a href="{{ url('sign-in') }}" class="text-sm font-semibold leading-6 text-gray-900">
                 Sign in <span aria-hidden="true">&rarr;</span>
               </a>
             </li>
             <li class="flex">
-              <a href="#"
-                class="text-sm font-semibold leading-6 text-gray-900 transition-all delay-600 rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign
-                up</a>
+              <a href="{{ url('sign-up') }}"
+                class="text-sm font-semibold leading-6 text-gray-900 transition-all delay-600 rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Sign up
+              </a>
             </li>
           </ul>
         </div>
