@@ -121,3 +121,8 @@ class SignUpStepThreeForm(forms.Form):
 
         if password != password_confirm:
             raise forms.ValidationError(_("Passwords have to match"))
+
+
+class SignInForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(attrs={}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={}))
