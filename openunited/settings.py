@@ -71,7 +71,7 @@ TEMPLATES = [
         "OPTIONS": {
             "environment": "openunited.jinja2.environment",
             "match_extension": ".html",
-            "match_regex": r"^(?!admin/).*",
+            "match_regex": r"^(?!admin/|registration/).*",
             # Can be set to "jinja2.Undefined" or any other subclass.
             "newstyle_gettext": True,
             "extensions": [
@@ -175,9 +175,9 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = 587
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
