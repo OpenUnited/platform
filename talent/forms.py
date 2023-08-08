@@ -124,5 +124,24 @@ class SignUpStepThreeForm(forms.Form):
 
 
 class SignInForm(forms.Form):
-    email = forms.EmailField(widget=forms.TextInput(attrs={}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={}))
+    email = forms.EmailField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "placeholder": "Enter your email",
+                "autocomplete": "email",
+                "required": True,
+                "autocapitalize": "none",
+            }
+        )
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
+                "placeholder": "••••••",
+                "required": True,
+                "autocapitalize": "none",
+            }
+        )
+    )
