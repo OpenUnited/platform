@@ -4,7 +4,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.forms import ValidationError
 
 from .models import Person
-from security.models import VerificationCode, SignUpRequest
+from .constants import SIGN_UP_REQUEST_ID
+from security.models import SignUpRequest
 
 
 class SignUpStepOneForm(forms.Form):
@@ -44,11 +45,6 @@ class SignUpStepOneForm(forms.Form):
 
 
 class SignUpStepTwoForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        verification_code_id = kwargs.pop("verification_code_id", None)
-        super().__init__(*args, **kwargs)
-        self.verification_code_id = verification_code_id
-
     verification_code = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -65,9 +61,9 @@ class SignUpStepTwoForm(forms.Form):
         cleaned_data = super().clean()
         verification_code = cleaned_data.get("verification_code")
 
-        code_id = self.initial.get("verification_code_id")
+        req_id = self.initial.get(SIGN_UP_REQUEST_ID)
 
-        actual_verification_code = VerificationCode.objects.get(id=code_id)
+        actual_verification_code = SignUpRequest.objects.get(id=req_id)
 
         if verification_code != actual_verification_code.verification_code:
             print(verification_code, actual_verification_code.verification_code)
@@ -91,6 +87,7 @@ class SignUpStepThreeForm(forms.Form):
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
+                "id": "password-checker-field",
                 "class": "block w-full h-10 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-300 sm:text-sm sm:leading-6 focus-visible:outline-transparent",
                 "placeholder": "••••••",
                 "name": "password",

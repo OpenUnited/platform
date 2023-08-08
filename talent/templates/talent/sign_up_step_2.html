@@ -32,19 +32,20 @@
         <div>
             <label for="{{ wizard.form.password.id_for_label }}"
                 class="block text-sm font-medium leading-6 text-gray-900">{{ wizard.form.password.label }}</label>
+            <!-- Note that the below password field is assigned to an id in talent/forms.py
+                which will be used in Javascript to check the password strength-->
             <div class="mt-2">
                 {{ wizard.form.password }}
             </div>
 
-            <div class="password-checker flex flex-col mt-3">
-                <ul class="medium w-full grid grid-cols-4 gap-[3px]">
+            <div class="flex flex-col mt-3">
+                <ul id="password-strength-list" class="medium w-full grid grid-cols-4 gap-[3px]">
                     <li class="h-1 bg-[#c4c4c4]"></li>
                     <li class="h-1 bg-[#c4c4c4]"></li>
                     <li class="h-1 bg-[#c4c4c4]"></li>
                     <li class="h-1 bg-[#c4c4c4]"></li>
                 </ul>
-                <div class="title text-[10px] leading-3 title-medium mt-1 text-right">
-                    medium</div>
+                <div id="password-checker-result" class="text-[10px] leading-3 title-medium mt-1 text-right"></div>
             </div>
         </div>
 
@@ -63,3 +64,60 @@
 
     </div>
 </div>
+
+<script>
+    const PASSWORD_CRITERIA = [
+        /^(?=.{8,})/, // At least 8 characters
+        /(?=.*[A-Z])/, // At least one uppercase letter
+        /(?=.*[a-z])/, // At least one lowercase letter
+        /(?=.*\d)/, // At least one digit
+        /(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>/?])/ // At least one special character
+    ];
+
+    const colorCode = "bg-[#38f32f]"
+    const passwordStrengthList = document.getElementById("password-strength-list");
+    const passwordStrength = document.getElementById("password-checker-result")
+    const listItemCount = passwordStrengthList.childElementCount;
+    const passwordField = document.getElementById("password-checker-field");
+
+    passwordField.addEventListener("input", () => {
+        const password = passwordField.value;
+        let score = 0;
+
+        if (password === "") {
+            for (let i = 0; i < listItemCount; i++) {
+                passwordStrengthList.children[i].classList.remove(colorCode);
+            }
+            return;
+        }
+
+        for (const criteria of PASSWORD_CRITERIA) {
+            if (criteria.test(password)) {
+                score += 1;
+            }
+        }
+
+        // Ensure the score is within the range of 1 to listItemCount
+        score = Math.min(score, listItemCount);
+
+        if (score <= 1) {
+            passwordStrength.innerHTML = "weak"
+        } else if (score > 1 && score < 3) {
+            if (password.length > 6) {
+                passwordStrength.innerHTML = "medium"
+            }
+        } else {
+            if (password.length > 8) {
+                passwordStrength.innerHTML = "strong"
+            }
+        }
+
+        for (let i = 0; i < listItemCount; i++) {
+            if (i < score) {
+                passwordStrengthList.children[i].classList.add(colorCode);
+            } else {
+                passwordStrengthList.children[i].classList.remove(colorCode);
+            }
+        }
+    });
+</script>
