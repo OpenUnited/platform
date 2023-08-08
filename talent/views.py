@@ -4,8 +4,11 @@ from django.views.generic import TemplateView
 from formtools.wizard.views import SessionWizardView
 
 from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm, SignInForm
+<<<<<<< Updated upstream
 from security.services import SignUpRequestService
+=======
 from security.services import SignUpRequestService, VerificationCodeService
+>>>>>>> Stashed changes
 from .services import create_and_send_verification_code
 from .constants import SIGN_UP_REQUEST_ID
 
