@@ -1,11 +1,11 @@
 <form class="space-y-6 mb-0" method="POST">
     {% csrf_token %}
     <div>
-        <label for="{{ form.email.id_for_email }}" class="block text-sm font-medium leading-6 text-gray-900">
-            {{ form.email.label }}
+        <label for="{{ form.username.id_for_username }}" class="block text-sm font-medium leading-6 text-gray-900">
+            {{ form.username.label }}
         </label>
         <div class="mt-2">
-            {{ form.email }}
+            {{ form.username }}
         </div>
     </div>
 

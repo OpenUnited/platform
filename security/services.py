@@ -2,6 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 
 from .models import SignUpRequest, ProductPerson, ProductOwner
+from talent.services import PersonService
 
 
 class SignUpRequestService:
@@ -56,16 +57,31 @@ class SignUpRequestService:
             sign_up_request = SignUpRequest()
 
         first_form_data = form_list[0].cleaned_data
-
-        sign_up_request.full_name = first_form_data.get("full_name")
-        sign_up_request.email = first_form_data.get("email")
-
         third_form_data = form_list[2].cleaned_data
 
-        sign_up_request.username = third_form_data.get("username")
-        sign_up_request.password = make_password(third_form_data.get("password"))
+        full_name = first_form_data.get("full_name")
+        email = first_form_data.get("email")
+        username = third_form_data.get("username")
+        password = third_form_data.get("password")
+
+        sign_up_request.full_name = full_name
+        sign_up_request.email = email
+
+        sign_up_request.username = username
+        sign_up_request.password = make_password(password)
 
         sign_up_request.save()
+
+        # note: we are ignoring the middle name, if any
+        first_name = full_name.split(" ")[0]
+        last_name = full_name.split(" ")[-1]
+        PersonService.create(
+            first_name=first_name.title(),
+            last_name=last_name.title(),
+            username=username,
+            email=email,
+            password=password,
+        )
 
 
 class ProductPersonService:

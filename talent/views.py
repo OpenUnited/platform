@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
 from formtools.wizard.views import SessionWizardView
 
@@ -52,8 +52,17 @@ class SignInView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
+
         if form.is_valid():
-            return HttpResponse("home")
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return HttpResponse("home")
+            else:
+                print("unauthenticated")
 
         return render(request, self.template_name, {"form": form})
 
