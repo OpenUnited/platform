@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import logout
+from django.views.generic import TemplateView
 from formtools.wizard.views import SessionWizardView
 
-from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from .forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm, SignInForm
 from security.services import SignUpRequestService
+from security.services import SignUpRequestService, VerificationCodeService
 from .services import create_and_send_verification_code
 from .constants import SIGN_UP_REQUEST_ID
 
@@ -40,8 +42,25 @@ class SignUpWizard(SessionWizardView):
         return render(self.request, "product_management/challenges.html")
 
 
-def sign_in(request):
-    return HttpResponse("jlkşfslkdfsd")
+class SignInView(TemplateView):
+    form_class = SignInForm
+    initial = {}
+    template_name = "talent/sign_in.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            return HttpResponse("home")
+
+        return render(request, self.template_name, {"form": form})
+
+
+def reset_password(request):
+    return HttpResponse("reset password")
 
 
 def log_out(request):
