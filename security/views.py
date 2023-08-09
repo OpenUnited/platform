@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
 from django.utils.translation import gettext_lazy as _
 from formtools.wizard.views import SessionWizardView
-from django.urls import reverse_lazy
 from django.contrib.auth.views import (
     LogoutView,
     PasswordResetView,
@@ -12,7 +11,7 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
 )
 
-from .forms import ResetPasswordForm
+from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
 from .services import SignUpRequestService, create_and_send_verification_code
@@ -77,10 +76,9 @@ class SignInView(TemplateView):
         return render(request, self.template_name, {"form": form})
 
 
-class ResetPasswordView(PasswordResetView):
-    form_class = ResetPasswordForm
-    template_name = "security/reset_password.html"
-    success_url = reverse_lazy("home")
+class PasswordResetView(PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = "security/password_reset.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -97,3 +95,17 @@ class ResetPasswordView(PasswordResetView):
                 form.add_error(None, _("This e-mail does not exist"))
 
         return render(request, self.template_name, {"form": form})
+
+
+class PasswordResetDoneView(PasswordResetDoneView):
+    template_name = "security/password_reset_done.html"
+
+
+# The URL contains NA in <uidb64>. Find out why
+class PasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "security/password_reset_confirm.html"
+    form_class = SetPasswordForm
+
+
+class PasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = "security/password_reset_complete.html"
