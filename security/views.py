@@ -1,9 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
 from django.utils.translation import gettext_lazy as _
 from formtools.wizard.views import SessionWizardView
+from django.contrib.auth.views import (
+    LogoutView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+)
 
+from .forms import PasswordResetForm, SetPasswordForm
+from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
 from .services import SignUpRequestService, create_and_send_verification_code
 from .constants import SIGN_UP_REQUEST_ID
@@ -11,7 +20,7 @@ from .constants import SIGN_UP_REQUEST_ID
 
 class SignUpWizard(SessionWizardView):
     form_list = [SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm]
-    template_name = "security/sign_up.html"
+    template_name = "security/sign_up/sign_up.html"
     initial_dict = {"0": {}, "1": {}, "2": {}}
 
     def get_context_data(self, form, **kwargs):
@@ -44,7 +53,7 @@ class SignUpWizard(SessionWizardView):
 class SignInView(TemplateView):
     form_class = SignInForm
     initial = {}
-    template_name = "security/sign_in.html"
+    template_name = "security/sign_in/sign_in.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -65,3 +74,37 @@ class SignInView(TemplateView):
                 form.add_error(None, _("Username or password is not correct"))
 
         return render(request, self.template_name, {"form": form})
+
+
+class PasswordResetView(PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = "security/password_reset/password_reset.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            if User.objects.filter(email=email).exists():
+                return self.form_valid(form)
+            else:
+                form.add_error(None, _("This e-mail does not exist"))
+
+        return render(request, self.template_name, {"form": form})
+
+
+class PasswordResetDoneView(PasswordResetDoneView):
+    template_name = "security/password_reset/password_reset_done.html"
+
+
+class PasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "security/password_reset/password_reset_confirm.html"
+    form_class = SetPasswordForm
+
+
+class PasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = "security/password_reset/password_reset_complete.html"
