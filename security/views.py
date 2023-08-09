@@ -93,7 +93,7 @@ class ResetPasswordView(PasswordResetView):
             email = form.cleaned_data["email"]
             if User.objects.filter(email=email).exists():
                 return self.form_valid(form)
-        else:
-            form.add_error(None, _("TODO: add an error message"))
+            else:
+                form.add_error(None, _("This e-mail does not exist"))
 
         return render(request, self.template_name, {"form": form})
