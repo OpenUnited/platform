@@ -7,6 +7,7 @@ from talent.models import Person
 from commerce.models import Organisation
 
 
+# This model will be used for advanced authentication methods
 class User(AbstractUser, TimeStampMixin):
     pass
 
