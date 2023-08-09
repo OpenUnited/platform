@@ -1,0 +1,28 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- tailwind version 3.3.2 -->
+    <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="{{ static('styles/styles.css') }}">
+
+    {% block head %}{% endblock %}
+
+    <title>
+        {% block title %}OpenUnited{% endblock %}
+    </title>
+</head>
+
+<body>
+
+    <div class="flex flex-col min-h-full flex-col grow py-12 sm:px-6 lg:px-8">
+        <div class="max-w-[1280px] w-full mx-auto flex flex-col grow">
+            {% block content %}{% endblock %}
+
+            {% include 'footer.html' %}
+        </div>
+    </div>
+
+    <script type="module" src="{{ static('scripts/main.js') }}"></script>
+</body>
