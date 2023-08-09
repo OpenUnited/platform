@@ -3,7 +3,6 @@ import datetime
 from django.db import transaction
 from django.db.models import Sum
 
-from talent.models import Person
 from commerce.utils import (
     CurrencyTypes,
     PaymentTypes,
