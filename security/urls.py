@@ -12,6 +12,9 @@ from .views import (
 urlpatterns = [
     path("sign-up/", SignUpWizard.as_view(), name="sign-up"),
     path("sign-in/", SignInView.as_view(), name="sign-in"),
+]
+
+urlpatterns += [
     path(
         "password-reset/",
         PasswordResetView.as_view(),
