@@ -13,7 +13,6 @@ from model_utils import FieldTracker
 import engagement.tasks
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from engagement.models import Notification
-from talent.models import Person
 from product_management.models import Bounty
 
 

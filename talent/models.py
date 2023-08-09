@@ -1,15 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from treebeard.mp_tree import MP_Node
+
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 from engagement.models import Notification
 import engagement
-from treebeard.mp_tree import MP_Node
 
 
-class Person(AbstractUser, TimeStampMixin):
+class Person(TimeStampMixin):
+    user = models.OneToOneField(
+        "security.User", on_delete=models.CASCADE, related_name="security_user"
+    )
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
@@ -24,7 +27,7 @@ class Person(AbstractUser, TimeStampMixin):
         verbose_name_plural = "People"
 
     def __str__(self):
-        return self.get_full_name()
+        return self.user.get_full_name()
 
 
 class PersonWebsite(models.Model):

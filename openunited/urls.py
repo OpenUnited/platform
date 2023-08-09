@@ -26,4 +26,5 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("talent/", include("talent.urls")),
     path("", include("product_management.urls")),
+    path("", include("security.urls")),
 ]

@@ -1,0 +1,55 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- tailwind version 3.3.2 -->
+    <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="{{ static('styles/styles.css') }}">
+
+    <title>
+        Sign In OpenUnited
+    </title>
+</head>
+
+<body>
+
+    <div class="flex flex-col min-h-full flex-col grow py-12 sm:px-6 lg:px-8">
+        <div class="max-w-[1280px] w-full mx-auto flex flex-col grow">
+            <a href="/" class="absolute top-0 right-1/2 max-w-[248px] w-full pt-[30px] pb-[22px] translate-x-1/2">
+                <img class="w-full h-8 object-contain object-center" src="{{ static('images/logo.svg') }}"
+                    alt="OpenUnited">
+            </a>
+
+            <div class="flex flex-col-reverse lg:flex-row grow items-center justify-center py-8 lg:py-14 sm:gap-8">
+                <div class="w-full lg:w-1/2">
+                    <div class="flex items-center justify-center w-full h-[320px] lg:h-auto">
+                        <img src="{{ static('images/login-ai-preview.png') }}"
+                            class="w-full h-full object-cover lg:object-contain object-center sm:rounded-lg"
+                            alt="Cover Image">
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/2">
+                    <div class="flex flex-col sm:mx-auto sm:w-full sm:max-w-[512px]">
+                        <div class="bg-white px-6 py-8 sm:shadow sm:rounded-lg sm:px-8">
+                            <div class="text-xl text-black/[0.85] inline-flex font-semibold mb-6">Welcome back</div>
+                            {% include 'security/sign_in_form.html' %}
+
+                            <p class="mt-6 text-left text-sm text-gray-500">
+                                Don’t have an account yet?
+                                <a href="{{ url('sign-up') }}"
+                                    class="font-medium leading-6 text-[#1890ff] transition-all hover:text-text-[#1890ff] hover:underline underline-offset-2">
+                                    Sign up here
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% include 'footer.html' %}
+        </div>
+    </div>
+
+    <script type="module" src="{{ static('scripts/main.js') }}"></script>
+</body>

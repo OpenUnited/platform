@@ -1,7 +1,18 @@
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from random import randrange
 
-from .models import SignUpRequest, ProductPerson, ProductOwner
+from .models import SignUpRequest, ProductPerson, ProductOwner, User
+
+
+class UserService:
+    @staticmethod
+    def create(**kwargs):
+        user = User(**kwargs)
+        user.save()
+
+        return user
 
 
 class SignUpRequestService:
@@ -56,15 +67,31 @@ class SignUpRequestService:
             sign_up_request = SignUpRequest()
 
         first_form_data = form_list[0].cleaned_data
-
-        sign_up_request.full_name = first_form_data.get("full_name")
-        sign_up_request.email = first_form_data.get("email")
-
         third_form_data = form_list[2].cleaned_data
 
-        sign_up_request.username = third_form_data.get("username")
-        sign_up_request.password = make_password(third_form_data.get("password"))
+        full_name = first_form_data.get("full_name")
+        email = first_form_data.get("email")
+        username = third_form_data.get("username")
+        password = third_form_data.get("password")
 
+        sign_up_request.full_name = full_name
+        sign_up_request.email = email
+
+        sign_up_request.username = username
+        sign_up_request.password = make_password(password)
+
+        # note: we are ignoring the middle name, if any
+        first_name = full_name.split(" ")[0]
+        last_name = full_name.split(" ")[-1]
+        user = UserService.create(
+            first_name=first_name.title(),
+            last_name=last_name.title(),
+            username=username,
+            email=email,
+            password=password,
+        )
+
+        sign_up_request.user = user
         sign_up_request.save()
 
 
@@ -95,3 +122,29 @@ class ProductOwnerService:
         product_owner.save()
 
         return product_owner
+
+
+def create_and_send_verification_code(email: str) -> int:
+    """
+    Generate a random six-digit verification code, create a SignUpRequest object with
+    the generated code, and send the code to the provided email address.
+
+    Parameters:
+        email (str): The email address to which the verification code will be sent.
+
+    Returns:
+        int: The ID of the created SignUpRequest object.
+    """
+    six_digit_number = randrange(100_000, 1_000_000)
+    sign_up_request = SignUpRequest.objects.create(
+        verification_code=str(six_digit_number)
+    )
+
+    send_mail(
+        "Verification Code",
+        f"Code: {six_digit_number}",
+        None,
+        [email],
+    )
+
+    return sign_up_request.id
