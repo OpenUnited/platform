@@ -11,7 +11,7 @@ from .constants import SIGN_UP_REQUEST_ID
 
 class SignUpWizard(SessionWizardView):
     form_list = [SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm]
-    template_name = "talent/sign_up.html"
+    template_name = "security/sign_up.html"
     initial_dict = {"0": {}, "1": {}, "2": {}}
 
     def get_context_data(self, form, **kwargs):
@@ -38,13 +38,13 @@ class SignUpWizard(SessionWizardView):
         sign_up_req_id = self.initial_dict.get("1").get(SIGN_UP_REQUEST_ID)
         SignUpRequestService.create_from_steps_form(form_list, sign_up_req_id)
 
-        return render(self.request, "product_management/challenges.html")
+        return redirect("challenges")
 
 
 class SignInView(TemplateView):
     form_class = SignInForm
     initial = {}
-    template_name = "talent/sign_in.html"
+    template_name = "security/sign_in.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
