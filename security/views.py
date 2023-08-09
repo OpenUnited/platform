@@ -3,7 +3,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
 from django.utils.translation import gettext_lazy as _
 from formtools.wizard.views import SessionWizardView
+from django.urls import reverse_lazy
+from django.contrib.auth.views import (
+    LogoutView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+)
 
+from .forms import ResetPasswordForm
+from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
 from .services import SignUpRequestService, create_and_send_verification_code
 from .constants import SIGN_UP_REQUEST_ID
@@ -63,5 +73,27 @@ class SignInView(TemplateView):
                 return redirect("home")
             else:
                 form.add_error(None, _("Username or password is not correct"))
+
+        return render(request, self.template_name, {"form": form})
+
+
+class ResetPasswordView(PasswordResetView):
+    form_class = ResetPasswordForm
+    template_name = "security/reset_password.html"
+    success_url = reverse_lazy("home")
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            if User.objects.filter(email=email).exists():
+                return self.form_valid(form)
+        else:
+            form.add_error(None, _("TODO: add an error message"))
 
         return render(request, self.template_name, {"form": form})
