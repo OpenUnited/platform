@@ -20,7 +20,7 @@ from .constants import SIGN_UP_REQUEST_ID
 
 class SignUpWizard(SessionWizardView):
     form_list = [SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm]
-    template_name = "security/sign_up.html"
+    template_name = "security/sign_up/sign_up.html"
     initial_dict = {"0": {}, "1": {}, "2": {}}
 
     def get_context_data(self, form, **kwargs):
@@ -53,7 +53,7 @@ class SignUpWizard(SessionWizardView):
 class SignInView(TemplateView):
     form_class = SignInForm
     initial = {}
-    template_name = "security/sign_in.html"
+    template_name = "security/sign_in/sign_in.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -78,7 +78,7 @@ class SignInView(TemplateView):
 
 class PasswordResetView(PasswordResetView):
     form_class = PasswordResetForm
-    template_name = "security/password_reset.html"
+    template_name = "security/password_reset/password_reset.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -98,14 +98,13 @@ class PasswordResetView(PasswordResetView):
 
 
 class PasswordResetDoneView(PasswordResetDoneView):
-    template_name = "security/password_reset_done.html"
+    template_name = "security/password_reset/password_reset_done.html"
 
 
-# The URL contains NA in <uidb64>. Find out why
 class PasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = "security/password_reset_confirm.html"
+    template_name = "security/password_reset/password_reset_confirm.html"
     form_class = SetPasswordForm
 
 
 class PasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = "security/password_reset_complete.html"
+    template_name = "security/password_reset/password_reset_complete.html"
