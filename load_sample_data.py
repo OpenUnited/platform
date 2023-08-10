@@ -76,8 +76,20 @@ def generate_sample_data():
 
     clear_rows_by_model_name(model_app_mapping)
 
+    # Create User model instances
+    user_data = read_json_data("utility/sample_data/user.json", "user")
+
+    users = []
+    for ud in user_data:
+        users.append(UserService.create(**ud))
+
     # Create Person model instances
     person_data = read_json_data("utility/sample_data/person.json", "person")
+
+    # Person model has a non-nullable OneToOneField to User model. Make sure the length of `user.json`
+    # and `person.json` are the same. Otherwise, the script throws an error
+    for index, pd in enumerate(person_data):
+        pd["user"] = users[index]
 
     people = []
     for pd in person_data:
@@ -284,7 +296,7 @@ if __name__ == "__main__":
         CartService,
         PointPriceConfigurationService,
     )
-    from security.services import ProductPersonService, ProductOwnerService
+    from security.services import ProductPersonService, ProductOwnerService, UserService
     from product_management.models import Capability
     from talent.services import PersonService, SkillService, ExpertiseService
     from product_management.services import (
