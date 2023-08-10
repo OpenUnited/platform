@@ -67,6 +67,10 @@ class SignUpRequestService:
             sign_up_request = SignUpRequest()
 
         first_form_data = form_list[0].cleaned_data
+
+        # Note that we are ignoring the second form because it contains
+        # a temporary verification code.
+
         third_form_data = form_list[2].cleaned_data
 
         full_name = first_form_data.get("full_name")

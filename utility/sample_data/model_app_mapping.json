@@ -13,5 +13,6 @@
     "Challenge": "product_management",
     "Tag": "product_management",
     "Idea": "product_management",
-    "ProductPerson": "security"
+    "ProductPerson": "security",
+    "User": "security"
 }
