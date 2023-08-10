@@ -7,11 +7,13 @@ from .views import (
     PasswordResetDoneView,
     PasswordResetConfirmView,
     PasswordResetCompleteView,
+    LogoutView,
 )
 
 urlpatterns = [
     path("sign-up/", SignUpWizard.as_view(), name="sign-up"),
     path("sign-in/", SignInView.as_view(), name="sign-in"),
+    path("logout/", LogoutView.as_view(), name="logout"),
 ]
 
 urlpatterns += [
