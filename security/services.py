@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from random import randrange
 
 from .models import SignUpRequest, ProductPerson, ProductOwner, User
+from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
 
 
 class UserService:
@@ -13,6 +14,20 @@ class UserService:
         user.save()
 
         return user
+
+    @staticmethod
+    def reset_remaining_budget_for_failed_logins(user: User) -> None:
+        user.remaining_budget_for_failed_logins = DEFAULT_LOGIN_ATTEMPT_BUDGET
+        user.save()
+
+    @staticmethod
+    def update_failed_login_budget_and_check_reset(user: User) -> None:
+        user.remaining_budget_for_failed_logins -= 1
+
+        if user.remaining_budget_for_failed_logins == 0:
+            user.password_reset_required = True
+
+        user.save()
 
 
 class SignUpRequestService:
@@ -90,8 +105,8 @@ class SignUpRequestService:
             full_name=full_name,
             preferred_name=preferred_name,
             username=username,
+            password=make_password(password),
             email=email,
-            password=password,
         )
 
         sign_up_request.user = user

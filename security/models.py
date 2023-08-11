@@ -5,12 +5,17 @@ from django.core.exceptions import ValidationError
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from talent.models import Person
 from commerce.models import Organisation
+from .managers import UserManager
 
 
 # This model will be used for advanced authentication methods
 class User(AbstractUser, TimeStampMixin):
     full_name = models.CharField(max_length=256)
     preferred_name = models.CharField(max_length=128)
+    remaining_budget_for_failed_logins = models.PositiveSmallIntegerField(default=3)
+    password_reset_required = models.BooleanField(default=False)
+
+    objects = UserManager()
 
     def get_full_name(self):
         return self.full_name
