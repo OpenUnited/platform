@@ -1,7 +1,7 @@
 [
     {
-        "first_name": "Doğukan",
-        "last_name": "Teber",
+        "preferred_name": "Doğukan",
+        "full_name": "Doğukan Teber",
         "email": "dogukan@example.com",
         "username": "dogukan",
         "password": "dogukan",
@@ -9,260 +9,260 @@
         "is_superuser": true
     },
     {
-        "first_name": "John",
-        "last_name": "Doe",
+        "preferred_name": "John",
+        "full_name": "John Doe",
         "email": "john.doe@example.com",
         "username": "johndoe",
         "password": "johndoe123"
     },
     {
-        "first_name": "Emily",
-        "last_name": "Smith",
+        "preferred_name": "Emily",
+        "full_name": "Emily Smith",
         "email": "emily.smith@example.com",
         "username": "emilysmith",
         "password": "emily123"
     },
     {
-        "first_name": "Michael",
-        "last_name": "Johnson",
+        "preferred_name": "Michael",
+        "full_name": "Michael Johnson",
         "email": "michael.johnson@example.com",
         "username": "michaeljohnson",
         "password": "michael123"
     },
     {
-        "first_name": "Sophia",
-        "last_name": "Garcia",
+        "preferred_name": "Sophia",
+        "full_name": "Sophia Garcia",
         "email": "sophia.garcia@example.com",
         "username": "sophiagarcia",
         "password": "sophia123"
     },
     {
-        "first_name": "William",
-        "last_name": "Anderson",
+        "preferred_name": "William",
+        "full_name": "William Anderson",
         "email": "william.anderson@example.com",
         "username": "williamanderson",
         "password": "william123"
     },
     {
-        "first_name": "Olivia",
-        "last_name": "Brown",
+        "preferred_name": "Olivia",
+        "full_name": "Olivia Brown",
         "email": "olivia.brown@example.com",
         "username": "oliviabrown",
         "password": "olivia123"
     },
     {
-        "first_name": "James",
-        "last_name": "Wilson",
+        "preferred_name": "James",
+        "full_name": "James Wilson",
         "email": "james.wilson@example.com",
         "username": "jameswilson",
         "password": "james123"
     },
     {
-        "first_name": "Emma",
-        "last_name": "Lee",
+        "preferred_name": "Emma",
+        "full_name": "Emma Lee",
         "email": "emma.lee@example.com",
         "username": "emmalee",
         "password": "emma123"
     },
     {
-        "first_name": "David",
-        "last_name": "Nguyen",
+        "preferred_name": "David",
+        "full_name": "David Nguyen",
         "email": "david.nguyen@example.com",
         "username": "davidnguyen",
         "password": "david123"
     },
     {
-        "first_name": "Sarah",
-        "last_name": "Graham",
+        "preferred_name": "Sarah",
+        "full_name": "Sarah Graham",
         "email": "sarah.graham@example.com",
         "username": "sarahgraham",
         "password": "sarah123"
     },
     {
-        "first_name": "Kevin",
-        "last_name": "Miller",
+        "preferred_name": "Kevin",
+        "full_name": "Kevin Miller",
         "email": "kevin.miller@example.com",
         "username": "kevinmiller",
         "password": "kevin123"
     },
     {
-        "first_name": "Jessica",
-        "last_name": "Lopez",
+        "preferred_name": "Jessica",
+        "full_name": "Jessica Lopez",
         "email": "jessica.lopez@example.com",
         "username": "jessicalopez",
         "password": "jessica123"
     },
     {
-        "first_name": "Alex",
-        "last_name": "Robinson",
+        "preferred_name": "Alex",
+        "full_name": "Alex Robinson",
         "email": "alex.robinson@example.com",
         "username": "alexrobinson",
         "password": "alex123"
     },
     {
-        "first_name": "Amanda",
-        "last_name": "Baker",
+        "preferred_name": "Amanda",
+        "full_name": "Amanda Baker",
         "email": "amanda.baker@example.com",
         "username": "amandabaker",
         "password": "amanda123"
     },
     {
-        "first_name": "Mark",
-        "last_name": "Taylor",
+        "preferred_name": "Mark",
+        "full_name": "Mark Taylor",
         "email": "mark.taylor@example.com",
         "username": "marktaylor",
         "password": "mark123"
     },
     {
-        "first_name": "Grace",
-        "last_name": "Hernandez",
+        "preferred_name": "Grace",
+        "full_name": "Grace Hernandez",
         "email": "grace.hernandez@example.com",
         "username": "gracehernandez",
         "password": "grace123"
     },
     {
-        "first_name": "Robert",
-        "last_name": "Allen",
+        "preferred_name": "Robert",
+        "full_name": "Robert Allen",
         "email": "robert.allen@example.com",
         "username": "robertallen",
         "password": "robert123"
     },
     {
-        "first_name": "Rachel",
-        "last_name": "Thomas",
+        "preferred_name": "Rachel",
+        "full_name": "Rachel Thomas",
         "email": "rachel.thomas@example.com",
         "username": "rachelthomas",
         "password": "rachel123"
     },
     {
-        "first_name": "Daniel",
-        "last_name": "Wilson",
+        "preferred_name": "Daniel",
+        "full_name": "Daniel Wilson",
         "email": "daniel.wilson@example.com",
         "username": "danielwilson",
         "password": "daniel123"
     },
     {
-        "first_name": "Michelle",
-        "last_name": "Carter",
+        "preferred_name": "Michelle",
+        "full_name": "Michelle Carter",
         "email": "michelle.carter@example.com",
         "username": "michellecarter",
         "password": "michelle123"
     },
     {
-        "first_name": "Andrew",
-        "last_name": "Wong",
+        "preferred_name": "Andrew",
+        "full_name": "Andrew Wong",
         "email": "andrew.wong@example.com",
         "username": "andrewwong",
         "password": "andrew123"
     },
     {
-        "first_name": "Natalie",
-        "last_name": "Parker",
+        "preferred_name": "Natalie",
+        "full_name": "Natalie Parker",
         "email": "natalie.parker@example.com",
         "username": "natalieparker",
         "password": "natalie123"
     },
     {
-        "first_name": "Jason",
-        "last_name": "Miller",
+        "preferred_name": "Jason",
+        "full_name": "Jason Miller",
         "email": "jason.miller@example.com",
         "username": "jasonmiller",
         "password": "jason123"
     },
     {
-        "first_name": "Samantha",
-        "last_name": "White",
+        "preferred_name": "Samantha",
+        "full_name": "Samantha White",
         "email": "samantha.white@example.com",
         "username": "samanthawhite",
         "password": "samantha123"
     },
     {
-        "first_name": "Christopher",
-        "last_name": "Lee",
+        "preferred_name": "Christopher",
+        "full_name": "Christopher Lee",
         "email": "christopher.lee@example.com",
         "username": "christopherlee",
         "password": "christopher123"
     },
     {
-        "first_name": "Melissa",
-        "last_name": "Chen",
+        "preferred_name": "Melissa",
+        "full_name": "Melissa Chen",
         "email": "melissa.chen@example.com",
         "username": "melissachen",
         "password": "melissa123"
     },
     {
-        "first_name": "Jonathan",
-        "last_name": "Murphy",
+        "preferred_name": "Jonathan",
+        "full_name": "Jonathan Murphy",
         "email": "jonathan.murphy@example.com",
         "username": "jonathanmurphy",
         "password": "jonathan123"
     },
     {
-        "first_name": "Stephanie",
-        "last_name": "Allen",
+        "preferred_name": "Stephanie",
+        "full_name": "Stephanie Allen",
         "email": "stephanie.allen@example.com",
         "username": "stephanieallen",
         "password": "stephanie123"
     },
     {
-        "first_name": "Brandon",
-        "last_name": "Perez",
+        "preferred_name": "Brandon",
+        "full_name": "Brandon Perez",
         "email": "brandon.perez@example.com",
         "username": "brandonperez",
         "password": "brandon123"
     },
     {
-        "first_name": "Amy",
-        "last_name": "Turner",
+        "preferred_name": "Amy",
+        "full_name": "Amy Turner",
         "email": "amy.turner@example.com",
         "username": "amyturner",
         "password": "amy123"
     },
     {
-        "first_name": "Ryan",
-        "last_name": "Flores",
+        "preferred_name": "Ryan",
+        "full_name": "Ryan Flores",
         "email": "ryan.flores@example.com",
         "username": "ryanflores",
         "password": "ryan123"
     },
     {
-        "first_name": "Lauren",
-        "last_name": "Barnes",
+        "preferred_name": "Lauren",
+        "full_name": "Lauren Barnes",
         "email": "lauren.barnes@example.com",
         "username": "laurenbarnes",
         "password": "lauren123"
     },
     {
-        "first_name": "Eric",
-        "last_name": "Rivera",
+        "preferred_name": "Eric",
+        "full_name": "Eric Rivera",
         "email": "eric.rivera@example.com",
         "username": "ericrivera",
         "password": "eric123"
     },
     {
-        "first_name": "Hannah",
-        "last_name": "Cooper",
+        "preferred_name": "Hannah",
+        "full_name": "Hannah Cooper",
         "email": "hannah.cooper@example.com",
         "username": "hannahcooper",
         "password": "hannah123"
     },
     {
-        "first_name": "Patrick",
-        "last_name": "Young",
+        "preferred_name": "Patrick",
+        "full_name": "Patrick Young",
         "email": "patrick.young@example.com",
         "username": "patrickyoung",
         "password": "patrick123"
     },
     {
-        "first_name": "Olivia",
-        "last_name": "Hill",
+        "preferred_name": "Olivia",
+        "full_name": "Olivia Hill",
         "email": "olivia.hill@example.com",
         "username": "oliviahill",
         "password": "olivia123"
     },
     {
-        "first_name": "Matthew",
-        "last_name": "Martin",
+        "preferred_name": "Matthew",
+        "full_name": "Matthew Martin",
         "email": "matthew.martin@example.com",
         "username": "matthewmartin",
         "password": "matthew123"

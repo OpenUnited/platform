@@ -9,7 +9,14 @@ from commerce.models import Organisation
 
 # This model will be used for advanced authentication methods
 class User(AbstractUser, TimeStampMixin):
-    pass
+    full_name = models.CharField(max_length=256)
+    preferred_name = models.CharField(max_length=128)
+
+    def get_full_name(self):
+        return self.full_name
+
+    def get_short_name(self):
+        return self.preferred_name
 
 
 class SignUpRequest(TimeStampMixin):
