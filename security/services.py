@@ -74,22 +74,21 @@ class SignUpRequestService:
         third_form_data = form_list[2].cleaned_data
 
         full_name = first_form_data.get("full_name")
+        preferred_name = first_form_data.get("preferred_name")
         email = first_form_data.get("email")
         username = third_form_data.get("username")
         password = third_form_data.get("password")
 
         sign_up_request.full_name = full_name
         sign_up_request.email = email
+        sign_up_request.preferred_name = preferred_name
 
         sign_up_request.username = username
         sign_up_request.password = make_password(password)
 
-        # note: we are ignoring the middle name, if any
-        first_name = full_name.split(" ")[0]
-        last_name = full_name.split(" ")[-1]
         user = UserService.create(
-            first_name=first_name.title(),
-            last_name=last_name.title(),
+            full_name=full_name,
+            preferred_name=preferred_name,
             username=username,
             email=email,
             password=password,

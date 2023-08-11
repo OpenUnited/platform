@@ -21,6 +21,7 @@ class User(AbstractUser, TimeStampMixin):
 
 class SignUpRequest(TimeStampMixin):
     full_name = models.CharField(max_length=256)
+    preferred_name = models.CharField(max_length=128)
     email = models.EmailField()
     verification_code = models.CharField(max_length=6)
     username = models.CharField(max_length=128)
