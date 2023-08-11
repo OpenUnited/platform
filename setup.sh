@@ -9,4 +9,6 @@ python reset_database.py
 
 python manage.py makemigrations
 
+python manage.py migrate
+
 echo "Y" | python load_sample_data.py
