@@ -37,6 +37,18 @@ class SignUpRequest(TimeStampMixin):
         return f"{self.full_name} - {self.username}"
 
 
+class SignInAttempt(TimeStampMixin):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    device_hash = models.CharField(max_length=64, null=True, blank=True)
+    country = models.CharField(max_length=64, null=True, blank=True)
+    region_code = models.CharField(max_length=8, null=True, blank=True)
+    city = models.CharField(max_length=128, null=True, blank=True)
+    successful = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.region_code} - {self.city} - {self.country}"
+
+
 class ProductPerson(TimeStampMixin, UUIDMixin):
     FOLLOWER = 0
     CONTRIBUTOR = 1

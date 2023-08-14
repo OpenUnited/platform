@@ -81,7 +81,7 @@ class SignInView(TemplateView):
 
             user = authenticate(request, username=username, password=password)
 
-            # create SignInAttempt for the both cases
+            # TODO: create SignInAttempt for the both cases
             if user is not None:
                 login(request, user)
                 return redirect("home")
