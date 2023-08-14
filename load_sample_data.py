@@ -95,6 +95,21 @@ def generate_sample_data():
     for pd in person_data:
         people.append(PersonService.create(**pd))
 
+    # Create ProductRoleAssignment model instances
+    product_role_assignment_data = read_json_data(
+        "utility/sample_data/product_role_assignment.json", "product_role_assignment"
+    )
+
+    copy_people = people.copy()
+    for ppd in product_role_assignment_data:
+        p = choice(copy_people)
+        copy_people.remove(p)
+        ppd["person"] = p
+
+    product_people = []
+    for ppd in product_role_assignment_data:
+        product_people.append(ProductRoleAssignmentService.create(**ppd))
+
     # Create Organisation model instances
     organisation_data = read_json_data(
         "utility/sample_data/organisation.json", "organisation"
@@ -104,40 +119,13 @@ def generate_sample_data():
     for org_data in organisation_data:
         organisations.append(OrganisationService.create(**org_data))
 
-    # Create ProductOwner model instances
-    product_owners = []
-    for person, organisation in zip(people, organisations):
-        product_owners.append(
-            ProductOwnerService.create(person=person, organisation=organisation)
-        )
-
     # Create Product model instances
     product_data = read_json_data("utility/sample_data/product.json", "product")
 
-    for pd in product_data:
-        pd["owner"] = choice(product_owners)
-
     products = []
     for pd in product_data:
+        pd["owner"] = choice(organisations)
         products.append(ProductService.create(**pd))
-
-    # Create ProductPerson model instances
-    product_person_data = read_json_data(
-        "utility/sample_data/product_person.json", "product_person"
-    )
-
-    copy_people = people.copy()
-    for ppd in product_person_data:
-        p = choice(copy_people)
-        copy_people.remove(p)
-        ppd["person"] = p
-        ppd["product"] = choice(products)
-        if ppd["role"] in [ProductPerson.PRODUCT_ADMIN, ProductPerson.PRODUCT_MANAGER]:
-            ppd["organisation"] = choice(organisations)
-
-    product_people = []
-    for ppd in product_person_data:
-        product_people.append(ProductPersonService.create(**ppd))
 
     # Create Idea model instances
     idea_data = read_json_data("utility/sample_data/idea.json", "idea")
@@ -288,7 +276,6 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
     django.setup()
 
-    from security.models import ProductPerson
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,
@@ -296,7 +283,7 @@ if __name__ == "__main__":
         CartService,
         PointPriceConfigurationService,
     )
-    from security.services import ProductPersonService, ProductOwnerService, UserService
+    from security.services import ProductRoleAssignmentService, UserService
     from product_management.models import Capability
     from talent.services import PersonService, SkillService, ExpertiseService
     from product_management.services import (
