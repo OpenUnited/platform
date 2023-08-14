@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from random import randrange
 
-from .models import SignUpRequest, ProductPerson, ProductOwner, User
+from .models import SignUpRequest, ProductPerson, User
 from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
 
 
@@ -131,15 +131,6 @@ class ProductPersonService:
             raise ValidationError(
                 "Organisation field must be filled for Product Admins and Managers."
             )
-
-
-class ProductOwnerService:
-    @staticmethod
-    def create(**kwargs):
-        product_owner = ProductOwner(**kwargs)
-        product_owner.save()
-
-        return product_owner
 
 
 def create_and_send_verification_code(email: str) -> int:

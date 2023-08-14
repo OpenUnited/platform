@@ -104,18 +104,8 @@ def generate_sample_data():
     for org_data in organisation_data:
         organisations.append(OrganisationService.create(**org_data))
 
-    # Create ProductOwner model instances
-    product_owners = []
-    for person, organisation in zip(people, organisations):
-        product_owners.append(
-            ProductOwnerService.create(person=person, organisation=organisation)
-        )
-
     # Create Product model instances
     product_data = read_json_data("utility/sample_data/product.json", "product")
-
-    for pd in product_data:
-        pd["owner"] = choice(product_owners)
 
     products = []
     for pd in product_data:
@@ -296,7 +286,7 @@ if __name__ == "__main__":
         CartService,
         PointPriceConfigurationService,
     )
-    from security.services import ProductPersonService, ProductOwnerService, UserService
+    from security.services import ProductPersonService, UserService
     from product_management.models import Capability
     from talent.services import PersonService, SkillService, ExpertiseService
     from product_management.services import (
