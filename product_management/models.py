@@ -76,6 +76,7 @@ class Product(ProductMixin):
     capability_start = models.ForeignKey(
         Capability, on_delete=models.CASCADE, null=True, editable=False
     )
+    owner = models.ForeignKey("commerce.Organisation", on_delete=models.CASCADE, blank=True, null=True)
 
     def get_members_emails(self):
         return self.productrole_set.all().values_list(

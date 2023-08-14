@@ -9,7 +9,7 @@ from .views import (
     ProductTreeView,
     ProductIdeasAndBugsView,
     ProductChallengesView,
-    ProductPeopleView,
+    ProductRoleAssignmentView,
     ChallengeDetailView,
     InitiativeDetailView,
     CapabilityDetailView,
@@ -61,7 +61,7 @@ urlpatterns += [
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/people",
-        ProductPeopleView.as_view(),
+        ProductRoleAssignmentView.as_view(),
         name="product_people",
     ),
 ]

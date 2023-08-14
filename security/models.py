@@ -47,7 +47,7 @@ class SignInAttempt(TimeStampMixin):
         return f"{self.region_code} - {self.city} - {self.country}"
 
 
-class ProductPerson(TimeStampMixin, UUIDMixin):
+class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
     CONTRIBUTOR = 0
     PRODUCT_MANAGER = 1
     PRODUCT_ADMIN = 2
@@ -58,19 +58,15 @@ class ProductPerson(TimeStampMixin, UUIDMixin):
         (PRODUCT_ADMIN, "Admin"),
     )
     person = models.OneToOneField(Person, on_delete=models.CASCADE)
-    product = models.ForeignKey("product_management.Product", on_delete=models.CASCADE)
     role = models.IntegerField(choices=ROLES, default=0)
-    organisation = models.ForeignKey(
-        "commerce.Organisation", on_delete=models.CASCADE, null=True, blank=True
-    )
 
     def __str__(self):
-        return f"{self.person} {self.get_role_display()} {self.product}"
+        return f"{self.person} - {self.get_role_display()}"
 
     def clean(self):
-        from security.services import ProductPersonService
+        from security.services import ProductRoleAssignmentService
 
-        ProductPersonService.is_organisation_provided(self)
+        ProductRoleAssignmentService.is_organisation_provided(self)
 
 
 class BlacklistedUsernames(models.Model):
