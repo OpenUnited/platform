@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from random import randrange
 
 from .models import SignUpRequest, ProductPerson, ProductOwner, User
+from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
 
 
 class UserService:
@@ -13,6 +14,20 @@ class UserService:
         user.save()
 
         return user
+
+    @staticmethod
+    def reset_remaining_budget_for_failed_logins(user: User) -> None:
+        user.remaining_budget_for_failed_logins = DEFAULT_LOGIN_ATTEMPT_BUDGET
+        user.save()
+
+    @staticmethod
+    def update_failed_login_budget_and_check_reset(user: User) -> None:
+        user.remaining_budget_for_failed_logins -= 1
+
+        if user.remaining_budget_for_failed_logins == 0:
+            user.password_reset_required = True
+
+        user.save()
 
 
 class SignUpRequestService:
@@ -74,25 +89,24 @@ class SignUpRequestService:
         third_form_data = form_list[2].cleaned_data
 
         full_name = first_form_data.get("full_name")
+        preferred_name = first_form_data.get("preferred_name")
         email = first_form_data.get("email")
         username = third_form_data.get("username")
         password = third_form_data.get("password")
 
         sign_up_request.full_name = full_name
         sign_up_request.email = email
+        sign_up_request.preferred_name = preferred_name
 
         sign_up_request.username = username
         sign_up_request.password = make_password(password)
 
-        # note: we are ignoring the middle name, if any
-        first_name = full_name.split(" ")[0]
-        last_name = full_name.split(" ")[-1]
         user = UserService.create(
-            first_name=first_name.title(),
-            last_name=last_name.title(),
+            full_name=full_name,
+            preferred_name=preferred_name,
             username=username,
+            password=make_password(password),
             email=email,
-            password=password,
         )
 
         sign_up_request.user = user

@@ -14,7 +14,11 @@ from django.contrib.auth.views import (
 from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
-from .services import SignUpRequestService, create_and_send_verification_code
+from .services import (
+    UserService,
+    SignUpRequestService,
+    create_and_send_verification_code,
+)
 from .constants import SIGN_UP_REQUEST_ID
 
 
@@ -47,7 +51,7 @@ class SignUpWizard(SessionWizardView):
         sign_up_req_id = self.initial_dict.get("1").get(SIGN_UP_REQUEST_ID)
         SignUpRequestService.create_from_steps_form(form_list, sign_up_req_id)
 
-        return redirect("challenges")
+        return redirect("sign_in")
 
 
 class SignInView(TemplateView):
@@ -65,15 +69,31 @@ class SignInView(TemplateView):
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
+
+            user_obj = User.objects.get_or_none(username=username)
+            if user_obj:
+                if user_obj.password_reset_required:
+                    return redirect("password_reset_required")
+
+            else:
+                form.add_error(None, _("This username is not registered"))
+                return render(request, self.template_name, {"form": form})
+
             user = authenticate(request, username=username, password=password)
 
+            # TODO: create SignInAttempt for the both cases
             if user is not None:
                 login(request, user)
                 return redirect("home")
             else:
+                UserService.update_failed_login_budget_and_check_reset(user_obj)
                 form.add_error(None, _("Username or password is not correct"))
 
         return render(request, self.template_name, {"form": form})
+
+
+class PasswordResetRequiredView(TemplateView):
+    template_name = "security/sign_in/password_reset_required.html"
 
 
 class PasswordResetView(PasswordResetView):

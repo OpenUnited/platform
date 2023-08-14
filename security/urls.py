@@ -8,12 +8,18 @@ from .views import (
     PasswordResetConfirmView,
     PasswordResetCompleteView,
     LogoutView,
+    PasswordResetRequiredView,
 )
 
 urlpatterns = [
     path("sign-up/", SignUpWizard.as_view(), name="sign-up"),
-    path("sign-in/", SignInView.as_view(), name="sign-in"),
-    path("logout/", LogoutView.as_view(), name="logout"),
+    path("sign-in/", SignInView.as_view(), name="sign_in"),
+    path("log-out/", LogoutView.as_view(), name="log_out"),
+    path(
+        "password-reset-required/",
+        PasswordResetRequiredView.as_view(),
+        name="password_reset_required",
+    ),
 ]
 
 urlpatterns += [
