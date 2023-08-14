@@ -24,21 +24,21 @@
         </div>
 
         <div>
+            <label for="{{ wizard.form.email.id_for_label }}" class="block text-sm font-medium leading-6 text-gray-900">
+                {{ wizard.form.email.label }}
+            </label>
+            <div class="mt-2">
+                {{ wizard.form.email }}
+            </div>
+        </div>
+
+        <div>
             <label for="{{ wizard.form.preferred_name.id_for_label }}"
                 class="block text-sm font-medium leading-6 text-gray-900">
                 {{ wizard.form.preferred_name.label }}
             </label>
             <div class="mt-2">
                 {{ wizard.form.preferred_name }}
-            </div>
-        </div>
-
-        <div>
-            <label for="{{ wizard.form.email.id_for_label }}" class="block text-sm font-medium leading-6 text-gray-900">
-                {{ wizard.form.email.label }}
-            </label>
-            <div class="mt-2">
-                {{ wizard.form.email }}
             </div>
         </div>
 
