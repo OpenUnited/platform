@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-import settings
+from openunited import settings
 from . import views
 
 handler404 = views.custom_404_view
