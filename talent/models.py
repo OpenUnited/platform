@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
@@ -10,6 +9,8 @@ import engagement
 
 
 class Person(TimeStampMixin):
+    full_name = models.CharField(max_length=256)
+    preferred_name = models.CharField(max_length=128)
     user = models.OneToOneField(
         "security.User", on_delete=models.CASCADE, related_name="security_user"
     )
@@ -20,14 +21,16 @@ class Person(TimeStampMixin):
     current_position = models.CharField(max_length=256, null=True, blank=True)
     twitter_link = models.URLField(null=True, blank=True)
     linkedin_link = models.URLField(null=True, blank=True)
-    is_test_user = models.BooleanField(_("Test User"), default=False)
 
     class Meta:
         db_table = "talent_person"
         verbose_name_plural = "People"
 
+    def get_short_name(self):
+        return self.preferred_name
+
     def __str__(self):
-        return self.user.get_full_name()
+        return self.full_name
 
 
 class PersonWebsite(models.Model):
