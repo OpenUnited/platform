@@ -19,8 +19,10 @@ class Person(TimeStampMixin):
     overview = models.TextField(blank=True)
     send_me_bounties = models.BooleanField(default=True)
     current_position = models.CharField(max_length=256, null=True, blank=True)
-    twitter_link = models.URLField(null=True, blank=True)
+    twitter_link = models.URLField(null=True, blank=True, default="")
     linkedin_link = models.URLField(null=True, blank=True)
+    github_link = models.URLField(null=True, blank=True)
+    website_link = models.URLField(null=True, blank=True)
 
     class Meta:
         db_table = "talent_person"

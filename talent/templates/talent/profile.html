@@ -3,197 +3,196 @@
 {% block content %}
 
 <div class="flex flex-col lg:flex-row grow justify-center lg:pt-[50px] space-y-6 lg:space-y-0 lg:space-x-12">
-  <div class="flex items-center shrink-0 flex-col lg:w-[244px]">
-    <div class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover"
-      style="background-image: url('{{ static("images/profile-empty.png") }}')">
-    </div>
-    <div class="flex flex-col items-center">
-      <label for="file-upload"
-        class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
-        <input id="file-upload" type="file" class="hidden" />
-        <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M5.25 3.96564H6.40469V9.25157C6.40469 9.32032 6.46094 9.37657 6.52969 9.37657H7.46719C7.53594 9.37657 7.59219 9.32032 7.59219 9.25157V3.96564H8.75C8.85469 3.96564 8.9125 3.84532 8.84844 3.76407L7.09844 1.54845C7.08674 1.53351 7.0718 1.52143 7.05475 1.51312C7.03769 1.50481 7.01897 1.50049 7 1.50049C6.98103 1.50049 6.96231 1.50481 6.94525 1.51312C6.92819 1.52143 6.91326 1.53351 6.90156 1.54845L5.15156 3.76251C5.0875 3.84532 5.14531 3.96564 5.25 3.96564ZM12.7188 8.78282H11.7812C11.7125 8.78282 11.6562 8.83907 11.6562 8.90782V11.3141H2.34375V8.90782C2.34375 8.83907 2.2875 8.78282 2.21875 8.78282H1.28125C1.2125 8.78282 1.15625 8.83907 1.15625 8.90782V12.0016C1.15625 12.2781 1.37969 12.5016 1.65625 12.5016H12.3438C12.6203 12.5016 12.8438 12.2781 12.8438 12.0016V8.90782C12.8438 8.83907 12.7875 8.78282 12.7188 8.78282Z"
-              class="fill-current" />
-          </svg>
-        </span>
-        Upload
-      </label>
+    <div class="flex items-center shrink-0 flex-col lg:w-[244px]">
+        <div class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover"
+            style="background-image: url('{{ static("images/user.png") }}')">
+        </div>
+        <div class="flex flex-col items-center">
+            <label for="file-upload"
+                class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                <input id="file-upload" type="file" class="hidden" />
+                <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path
+                            d="M5.25 3.96564H6.40469V9.25157C6.40469 9.32032 6.46094 9.37657 6.52969 9.37657H7.46719C7.53594 9.37657 7.59219 9.32032 7.59219 9.25157V3.96564H8.75C8.85469 3.96564 8.9125 3.84532 8.84844 3.76407L7.09844 1.54845C7.08674 1.53351 7.0718 1.52143 7.05475 1.51312C7.03769 1.50481 7.01897 1.50049 7 1.50049C6.98103 1.50049 6.96231 1.50481 6.94525 1.51312C6.92819 1.52143 6.91326 1.53351 6.90156 1.54845L5.15156 3.76251C5.0875 3.84532 5.14531 3.96564 5.25 3.96564ZM12.7188 8.78282H11.7812C11.7125 8.78282 11.6562 8.83907 11.6562 8.90782V11.3141H2.34375V8.90782C2.34375 8.83907 2.2875 8.78282 2.21875 8.78282H1.28125C1.2125 8.78282 1.15625 8.83907 1.15625 8.90782V12.0016C1.15625 12.2781 1.37969 12.5016 1.65625 12.5016H12.3438C12.6203 12.5016 12.8438 12.2781 12.8438 12.0016V8.90782C12.8438 8.83907 12.7875 8.78282 12.7188 8.78282Z"
+                            class="fill-current" />
+                    </svg>
+                </span>
+                Upload
+            </label>
 
-      <div class="hidden flex items-center space-x-[18px] mt-4">
-        <button type="button"
-          class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
-          <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <g clip-path="url(#clip0_201_4079)">
-                <g clip-path="url(#clip1_201_4079)">
-                  <path
-                    d="M3.02681 10.7502C3.05806 10.7502 3.08931 10.7471 3.12056 10.7424L5.74868 10.2815C5.77993 10.2752 5.80962 10.2612 5.83149 10.2377L12.4549 3.61428C12.4694 3.59982 12.4809 3.58265 12.4888 3.56375C12.4966 3.54485 12.5006 3.52458 12.5006 3.50412C12.5006 3.48366 12.4966 3.46339 12.4888 3.44449C12.4809 3.42559 12.4694 3.40842 12.4549 3.39396L9.85806 0.795526C9.82837 0.765839 9.78931 0.750214 9.74712 0.750214C9.70493 0.750214 9.66587 0.765839 9.63618 0.795526L3.01274 7.41896C2.98931 7.4424 2.97524 7.47053 2.96899 7.50178L2.50806 10.1299C2.49286 10.2136 2.49829 10.2998 2.52388 10.3809C2.54947 10.462 2.59445 10.5357 2.65493 10.5955C2.75806 10.6955 2.88774 10.7502 3.02681 10.7502ZM4.07993 8.02521L9.74712 2.35959L10.8924 3.5049L5.22524 9.17053L3.83618 9.41584L4.07993 8.02521ZM12.7502 12.0627H1.25024C0.973682 12.0627 0.750244 12.2862 0.750244 12.5627V13.1252C0.750244 13.194 0.806494 13.2502 0.875244 13.2502H13.1252C13.194 13.2502 13.2502 13.194 13.2502 13.1252V12.5627C13.2502 12.2862 13.0268 12.0627 12.7502 12.0627Z"
-                    class="fill-current" />
-                </g>
-              </g>
-              <defs>
-                <clipPath id="clip0_201_4079">
-                  <rect width="14" height="14" fill="white" />
-                </clipPath>
-                <clipPath id="clip1_201_4079">
-                  <rect width="14" height="14" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
-          </span>
-          Change
-        </button>
-        <button type="button"
-          class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
-          <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="14" viewBox="0 0 13 14" fill="none">
-              <path
-                d="M4.01643 1.51526H3.87793C3.95411 1.51526 4.01643 1.45356 4.01643 1.37815V1.51526H9.27934V1.37815C9.27934 1.45356 9.34167 1.51526 9.41784 1.51526H9.27934V2.74928H10.5258V1.37815C10.5258 0.773142 10.029 0.28125 9.41784 0.28125H3.87793C3.26681 0.28125 2.76995 0.773142 2.76995 1.37815V2.74928H4.01643V1.51526ZM12.7418 2.74928H0.553991C0.247565 2.74928 0 2.99437 0 3.29773V3.84618C0 3.92159 0.0623239 3.98329 0.138498 3.98329H1.18415L1.61177 12.947C1.63947 13.5315 2.12767 13.9925 2.71802 13.9925H10.5778C11.1698 13.9925 11.6563 13.5332 11.684 12.947L12.1116 3.98329H13.1573C13.2334 3.98329 13.2958 3.92159 13.2958 3.84618V3.29773C13.2958 2.99437 13.0482 2.74928 12.7418 2.74928ZM10.4445 12.7585H2.85132L2.43236 3.98329H10.8634L10.4445 12.7585Z"
-                class="fill-current" />
-            </svg>
-          </span>
-          Remove
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="flex flex-col grow lg:max-w-[668px] w-full">
-    <div class="grid md:grid-cols-2 gap-4 md:gap-7">
-      <div class="flex flex-col">
-        <label for="firstname" class="text-lg text-black/[0.85] mb-2 font-semibold">First Name</label>
-        <input type="text" id="first-name" name="first-name" autocomplete="given-name" autocapitalize="none"
-          class="py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm focus:outline-none"
-          placeholder="Type your First Name">
-      </div>
-      <div class="flex flex-col">
-        <label for="last-name" class="text-lg text-black/[0.85] mb-2 font-semibold">Last Name</label>
-        <input type="text" id="last-name" name="last-name" autocomplete="family-name" autocapitalize="none"
-          class="py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm focus:outline-none"
-          placeholder="Type your First Name">
-      </div>
-      <div class="md:col-span-2">
-        <label for="bio-info" class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">Bio</label>
-        <textarea name="bio-info" id="bio-info"
-          class="pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm"
-          placeholder="Lorem ipsum dolor sit, amet consectetur adipisicing elit."></textarea>
-      </div>
-    </div>
-    <div class="flex flex-col mt-6">
-      <label for="skills-profile" class="text-lg text-black/[0.85] inline-flex font-semibold">
-        Skills
-      </label>
-      <div class="text-sm">These skills are featured on your profile and can also be used to match you with tasks.</div>
-      <div class="mt-3">
-        <div class="treeselect-skills focus-visible:outline-transparent"></div>
-      </div>
-      <div class="mt-2 text-base text-black/[0.85]">No skill selected yet</div>
-    </div>
-    <div class="flex flex-col mt-6">
-      <div class="text-lg text-black/[0.85] inline-flex font-semibold">Expertise</div>
-      <div class="text-sm">For each Skill selected in the previous step, please select your related expertise.</div>
-      <div class="mt-3 flow-root max-w-[742px] w-full">
-        <table class="min-w-full">
-          <colgroup>
-            <col class="w-1/2">
-            <col class="w-1/2">
-          </colgroup>
-          <thead class="border-b border-gray-300 text-gray-900">
-            <tr>
-              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Skill</th>
-              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Expertise
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="border-b border-gray-200">
-              <td colspan="2" class="max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0">
-                <div class="font-medium text-gray-900 text-base">No selections available</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="flex flex-col mt-6 md:mt-[34px]">
-      <div class="text-lg text-black/[0.85] inline-flex font-semibold">Websites</div>
-      <div class="text-sm">Add the URL links here:</div>
-      <div class="space-y-[14px] mt-[14px] container-website max-w-[380px] md:max-w-[742px] w-full">
-        <div class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
-          <div class="grow">
-            <div class="relative h-9 flex items-center w-full">
-              <div class="py-1.5 w-[68px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
-              shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
-                http://</div>
-              <input type="text" name="website" id="website" autocomplete="website" class="block w-full h-full max-w-full rounded-r-sm shadow-none border border-solid border-[#D9D9D9] py-1.5 px-3 text-gray-900 text-sm ring-0 
-                placeholder:text-gray-400 focus:ring-0 focus-visible:outline-none sm:text-sm sm:leading-6 h-9"
-                placeholder="janesmith">
+            <div class="hidden flex items-center space-x-[18px] mt-4">
+                <button type="button"
+                    class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                    <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <g clip-path="url(#clip0_201_4079)">
+                                <g clip-path="url(#clip1_201_4079)">
+                                    <path
+                                        d="M3.02681 10.7502C3.05806 10.7502 3.08931 10.7471 3.12056 10.7424L5.74868 10.2815C5.77993 10.2752 5.80962 10.2612 5.83149 10.2377L12.4549 3.61428C12.4694 3.59982 12.4809 3.58265 12.4888 3.56375C12.4966 3.54485 12.5006 3.52458 12.5006 3.50412C12.5006 3.48366 12.4966 3.46339 12.4888 3.44449C12.4809 3.42559 12.4694 3.40842 12.4549 3.39396L9.85806 0.795526C9.82837 0.765839 9.78931 0.750214 9.74712 0.750214C9.70493 0.750214 9.66587 0.765839 9.63618 0.795526L3.01274 7.41896C2.98931 7.4424 2.97524 7.47053 2.96899 7.50178L2.50806 10.1299C2.49286 10.2136 2.49829 10.2998 2.52388 10.3809C2.54947 10.462 2.59445 10.5357 2.65493 10.5955C2.75806 10.6955 2.88774 10.7502 3.02681 10.7502ZM4.07993 8.02521L9.74712 2.35959L10.8924 3.5049L5.22524 9.17053L3.83618 9.41584L4.07993 8.02521ZM12.7502 12.0627H1.25024C0.973682 12.0627 0.750244 12.2862 0.750244 12.5627V13.1252C0.750244 13.194 0.806494 13.2502 0.875244 13.2502H13.1252C13.194 13.2502 13.2502 13.194 13.2502 13.1252V12.5627C13.2502 12.2862 13.0268 12.0627 12.7502 12.0627Z"
+                                        class="fill-current" />
+                                </g>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_201_4079">
+                                    <rect width="14" height="14" fill="white" />
+                                </clipPath>
+                                <clipPath id="clip1_201_4079">
+                                    <rect width="14" height="14" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </span>
+                    Change
+                </button>
+                <button type="button"
+                    class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                    <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="14" viewBox="0 0 13 14" fill="none">
+                            <path
+                                d="M4.01643 1.51526H3.87793C3.95411 1.51526 4.01643 1.45356 4.01643 1.37815V1.51526H9.27934V1.37815C9.27934 1.45356 9.34167 1.51526 9.41784 1.51526H9.27934V2.74928H10.5258V1.37815C10.5258 0.773142 10.029 0.28125 9.41784 0.28125H3.87793C3.26681 0.28125 2.76995 0.773142 2.76995 1.37815V2.74928H4.01643V1.51526ZM12.7418 2.74928H0.553991C0.247565 2.74928 0 2.99437 0 3.29773V3.84618C0 3.92159 0.0623239 3.98329 0.138498 3.98329H1.18415L1.61177 12.947C1.63947 13.5315 2.12767 13.9925 2.71802 13.9925H10.5778C11.1698 13.9925 11.6563 13.5332 11.684 12.947L12.1116 3.98329H13.1573C13.2334 3.98329 13.2958 3.92159 13.2958 3.84618V3.29773C13.2958 2.99437 13.0482 2.74928 12.7418 2.74928ZM10.4445 12.7585H2.85132L2.43236 3.98329H10.8634L10.4445 12.7585Z"
+                                class="fill-current" />
+                        </svg>
+                    </span>
+                    Remove
+                </button>
             </div>
-          </div>
-          <div class="w-full md:w-[220px]">
-            <div class="js-choice relative">
-              <select id="type-of-website" name="type-of-website"
-                class="type-of-website appearance-none block w-full rounded-sm border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-[#1890ff] focus-visible:outline-0 text-sm sm:leading-6 text-gray-500">
-                <option value="">Make your choose</option>
-                <option value="1">
-                  Personal
-                </option>
-                <option value="2">
-                  Company
-                </option>
-              </select>
-            </div>
-          </div>
         </div>
-        <div class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
-          <div class="grow">
-            <div class="relative h-9 flex items-center w-full">
-              <div class="py-1.5 w-[68px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
-              shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
-                http://</div>
-              <input type="text" name="website" id="website" autocomplete="website" class="block w-full h-full max-w-full rounded-r-sm shadow-none border border-solid border-[#D9D9D9] py-1.5 px-3 text-gray-900 text-sm ring-0 
-                placeholder:text-gray-400 focus:ring-0 focus-visible:outline-none sm:text-sm sm:leading-6 h-9"
-                placeholder="janesmith">
-            </div>
-          </div>
-          <div class="w-full md:w-[220px]">
-            <div class="js-choice relative">
-              <select id="type-of-website" name="type-of-website"
-                class="type-of-website appearance-none block w-full rounded-sm border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-[#1890ff] focus-visible:outline-0 text-sm sm:leading-6 text-gray-500">
-                <option value="">Make your choose</option>
-                <option value="1">
-                  Personal
-                </option>
-                <option value="2">
-                  Company
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="w-full flex items-center justify-start">
-          <button type="button" id="add-website"
-            class="text-xs leading-5 text-[#1890FF] transition-all no-underline underline-offset-2 hover:underline inline-flex items-center">
-            <span class="w-[10px] h-[10px] inline-flex shrink-0 items-center justify-center mr-1">
-              <img src="{{ static('images/plus.svg') }}" alt="Plus Icon">
-            </span>
-            Add website
-          </button>
-        </div>
-      </div>
     </div>
-    <div class="mt-8 md:mt-14 flex items-center space-x-4 md:space-x-7">
-      <button type="button"
-        class="skills-modal__open min-w-[96px] appearance-none w-fit md:min-w-[96px] bg-[#1890ff] text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 cursor-pointer">
-        Save
-      </button>
-      <button type="button"
-        class="min-w-[96px] appearance-none w-fit md:min-w-[96px] bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
-        Cancel
-      </button>
-    </div>
-  </div>
-</div>
+    <div class="flex flex-col grow lg:max-w-[668px] w-full">
+        <div class="grid md:grid-cols-2 gap-4 md:gap-7">
+            <div class="flex flex-col">
+                <label for="{{ form.full_name.id_for_label }}"
+                    class="text-lg text-black/[0.85] mb-2 font-semibold">{{ form.full_name.label }}</label>
+                {{ form.full_name }}
+            </div>
+            <div class="flex flex-col">
+                <label for="{{ form.preferred_name.id_for_label }}"
+                    class="text-lg text-black/[0.85] mb-2 font-semibold">{{ form.preferred_name.label }}</label>
+                {{ form.preferred_name }}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.headline.id_for_label }}"
+                    class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">{{ form.headline.label }}</label>
+                {{ form.headline }}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.overview.id_for_label }}"
+                    class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">{{ form.overview.label }}</label>
+                {{ form.overview }}
+            </div>
+        </div>
+        <div class="flex flex-col mt-6">
+            <label for="skills-profile" class="text-lg text-black/[0.85] inline-flex font-semibold">
+                Skills
+            </label>
+            <div class="text-sm">These skills are featured on your profile and can also be used to match you with tasks.
+            </div>
+            <div class="mt-3">
+                <div class="treeselect-skills focus-visible:outline-transparent"></div>
+            </div>
+            <div class="mt-2 text-base text-black/[0.85]">No skill selected yet</div>
+        </div>
+        <div class="flex flex-col mt-6">
+            <div class="text-lg text-black/[0.85] inline-flex font-semibold">Expertise</div>
+            <div class="text-sm">For each Skill selected in the previous step, please select your related expertise.
+            </div>
+            <div class="mt-3 flow-root max-w-[742px] w-full">
+                <table class="min-w-full">
+                    <colgroup>
+                        <col class="w-1/2">
+                        <col class="w-1/2">
+                    </colgroup>
+                    <thead class="border-b border-gray-300 text-gray-900">
+                        <tr>
+                            <th scope="col"
+                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Skill
+                            </th>
+                            <th scope="col"
+                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Expertise
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-200">
+                            <td colspan="2" class="max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0">
+                                <div class="font-medium text-gray-900 text-base">No selections available</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="flex flex-col mt-6 md:mt-[34px]">
+            <div class="text-lg text-black/[0.85] inline-flex font-semibold">Links</div>
+            <div class="text-sm">Add your social links here:</div>
 
-{% endblock %}
+            <div class="space-y-[14px] mt-[14px] container-website max-w-[380px] md:max-w-[742px] w-full">
+                <div
+                    class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="grow">
+                        <div class="relative h-9 flex items-center w-full">
+                            <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+              shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                                <img src="{{ static('images/github-icon.svg') }}" alt="GitHub Icon">
+                            </div>
+                            {{ form.github_link }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div
+                    class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="grow">
+                        <div class="relative h-9 flex items-center w-full">
+                            <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+              shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                                <img src="{{ static('images/twitter-icon.svg') }}" alt="GitHub Icon">
+                            </div>
+                            {{ form.twitter_link }}
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="grow">
+                        <div class="relative h-9 flex items-center w-full">
+                            <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+              shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                                <img src="{{ static('images/linkedin-icon.svg') }}" alt="GitHub Icon">
+                            </div>
+                            {{ form.linkedin_link }}
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+                    <div class="grow">
+                        <div class="relative h-9 flex items-center w-full">
+                            <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+              shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                                <img src="{{ static('images/website-icon.svg') }}" alt="GitHub Icon">
+                            </div>
+                            {{ form.website_link }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mt-8 md:mt-14 flex items-center space-x-4 md:space-x-7">
+                <button type="button"
+                    class="skills-modal__open min-w-[96px] appearance-none w-fit md:min-w-[96px] bg-[#1890ff] text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 cursor-pointer">
+                    Save
+                </button>
+                <button type="button"
+                    class="min-w-[96px] appearance-none w-fit md:min-w-[96px] bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
