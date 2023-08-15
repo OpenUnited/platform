@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from talent.models import Person
@@ -10,31 +11,27 @@ from .managers import UserManager
 
 # This model will be used for advanced authentication methods
 class User(AbstractUser, TimeStampMixin):
-    full_name = models.CharField(max_length=256)
-    preferred_name = models.CharField(max_length=128)
     remaining_budget_for_failed_logins = models.PositiveSmallIntegerField(default=3)
     password_reset_required = models.BooleanField(default=False)
+    is_test_user = models.BooleanField(_("Test User"), default=False)
 
     objects = UserManager()
 
-    def get_full_name(self):
-        return self.full_name
-
-    def get_short_name(self):
-        return self.preferred_name
+    def __str__(self):
+        return f"{self.username} - {self.email}"
 
 
 class SignUpRequest(TimeStampMixin):
-    full_name = models.CharField(max_length=256)
-    preferred_name = models.CharField(max_length=128)
-    email = models.EmailField()
-    verification_code = models.CharField(max_length=6)
-    username = models.CharField(max_length=128)
-    password = models.CharField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    device_hash = models.CharField(max_length=64, null=True, blank=True)
+    country = models.CharField(max_length=64, null=True, blank=True)
+    region_code = models.CharField(max_length=8, null=True, blank=True)
+    city = models.CharField(max_length=128, null=True, blank=True)
+    verification_code = models.CharField(max_length=6)
+    successful = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.full_name} - {self.username}"
+        return f"{self.user} - {self.successful}"
 
 
 class SignInAttempt(TimeStampMixin):

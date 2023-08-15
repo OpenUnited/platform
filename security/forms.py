@@ -47,7 +47,7 @@ class SignUpStepOneForm(forms.Form):
         email = self.cleaned_data.get("email")
         if (
             User.objects.filter(email=email).exists()
-            or SignUpRequest.objects.filter(email=email).exists()
+            or SignUpRequest.objects.filter(user__email=email).exists()
         ):
             raise forms.ValidationError(
                 _("That email isn't available, please try another")
