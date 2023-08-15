@@ -17,11 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from openunited import settings
 from . import views
 
 handler404 = views.custom_404_view
 
-urlpatterns = [
+urlpatterns = []
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]
+
+urlpatterns += [
     path("admin/", admin.site.urls),
     path("", views.home, name="home"),
     path("talent/", include("talent.urls")),

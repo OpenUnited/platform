@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_jinja",
     "formtools",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -58,6 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "openunited.urls"
@@ -71,7 +73,7 @@ TEMPLATES = [
         "OPTIONS": {
             "environment": "openunited.jinja2.environment",
             "match_extension": ".html",
-            "match_regex": r"^(?!admin/|registration/).*",
+            "match_regex": r"^(?!admin/|registration/|debug_toolbar/).*",
             # Can be set to "jinja2.Undefined" or any other subclass.
             "newstyle_gettext": True,
             "extensions": [
@@ -181,3 +183,17 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+if DEBUG:
+    import socket
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
+        "127.0.0.1",
+        "10.0.2.2",
+    ]
