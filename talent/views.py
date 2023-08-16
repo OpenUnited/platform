@@ -1,7 +1,8 @@
+import os
 from django.shortcuts import HttpResponse, render
 from django.views.generic.edit import UpdateView
 
-from openunited.settings import PROFILE_PICTURE_ROOT
+from openunited import settings
 from .models import Person
 from .forms import PersonProfileForm
 
@@ -37,7 +38,9 @@ class ProfileView(UpdateView):
             "current_position": person.current_position,
         }
         context["form"] = PersonProfileForm(initial=initial)
-        image_url = PROFILE_PICTURE_ROOT + "/profile-empty.png"
+        image_url = (
+            settings.MEDIA_URL + settings.PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
+        )
         requires_upload = True
 
         if person.photo:
@@ -46,6 +49,7 @@ class ProfileView(UpdateView):
 
         context["image"] = image_url
         context["requires_upload"] = requires_upload
+        context["pk"] = person.pk
         return context
 
     def post(self, request, *args, **kwargs):
@@ -55,3 +59,36 @@ class ProfileView(UpdateView):
         if form.is_valid():
             form.save()
         return super().post(request, *args, **kwargs)
+
+
+def remove_picture(request, pk):
+    person = request.user.person
+    path = person.photo.path
+    if os.path.exists(path):
+        os.remove(path)
+
+    person.photo.delete(save=True)
+
+    initial = {
+        "full_name": person.full_name,
+        "preferred_name": person.preferred_name,
+        "headline": person.headline,
+        "overview": person.overview,
+        "github_link": person.github_link,
+        "twitter_link": person.twitter_link,
+        "linkedin_link": person.linkedin_link,
+        "website_link": person.website_link,
+        "send_me_bounties": person.send_me_bounties,
+        "current_position": person.current_position,
+    }
+    context = {
+        "requires_upload": True,
+        "image": settings.MEDIA_URL
+        + settings.PERSON_PHOTO_UPLOAD_TO
+        + "profile-empty.png",
+        "pk": person.pk,
+    }
+
+    context["form"] = PersonProfileForm(initial=initial)
+
+    return render(request, "talent/profile_picture.html", context)

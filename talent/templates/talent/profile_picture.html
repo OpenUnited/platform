@@ -1,21 +1,23 @@
-<div class="flex items-center shrink-0 flex-col lg:w-[244px]">
+<div id="profile-picture" class="flex items-center shrink-0 flex-col lg:w-[244px]">
     <div id="profile-picture"
         class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover"
         style="background-image: url('{{ image }}')">
     </div>
     <div class="flex flex-col items-center">
-            <label for="{{ form.photo.id_for_label }}"
-                class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
-                {{ form.photo }}
-                <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <path
-                            d="M5.25 3.96564H6.40469V9.25157C6.40469 9.32032 6.46094 9.37657 6.52969 9.37657H7.46719C7.53594 9.37657 7.59219 9.32032 7.59219 9.25157V3.96564H8.75C8.85469 3.96564 8.9125 3.84532 8.84844 3.76407L7.09844 1.54845C7.08674 1.53351 7.0718 1.52143 7.05475 1.51312C7.03769 1.50481 7.01897 1.50049 7 1.50049C6.98103 1.50049 6.96231 1.50481 6.94525 1.51312C6.92819 1.52143 6.91326 1.53351 6.90156 1.54845L5.15156 3.76251C5.0875 3.84532 5.14531 3.96564 5.25 3.96564ZM12.7188 8.78282H11.7812C11.7125 8.78282 11.6562 8.83907 11.6562 8.90782V11.3141H2.34375V8.90782C2.34375 8.83907 2.2875 8.78282 2.21875 8.78282H1.28125C1.2125 8.78282 1.15625 8.83907 1.15625 8.90782V12.0016C1.15625 12.2781 1.37969 12.5016 1.65625 12.5016H12.3438C12.6203 12.5016 12.8438 12.2781 12.8438 12.0016V8.90782C12.8438 8.83907 12.7875 8.78282 12.7188 8.78282Z"
-                            class="fill-current" />
-                    </svg>
-                </span>
-                Upload
-            </label>
+        {% if requires_upload %}
+        <label for="{{ form.photo.id_for_label }}"
+            class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+            {{ form.photo }}
+            <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path
+                        d="M5.25 3.96564H6.40469V9.25157C6.40469 9.32032 6.46094 9.37657 6.52969 9.37657H7.46719C7.53594 9.37657 7.59219 9.32032 7.59219 9.25157V3.96564H8.75C8.85469 3.96564 8.9125 3.84532 8.84844 3.76407L7.09844 1.54845C7.08674 1.53351 7.0718 1.52143 7.05475 1.51312C7.03769 1.50481 7.01897 1.50049 7 1.50049C6.98103 1.50049 6.96231 1.50481 6.94525 1.51312C6.92819 1.52143 6.91326 1.53351 6.90156 1.54845L5.15156 3.76251C5.0875 3.84532 5.14531 3.96564 5.25 3.96564ZM12.7188 8.78282H11.7812C11.7125 8.78282 11.6562 8.83907 11.6562 8.90782V11.3141H2.34375V8.90782C2.34375 8.83907 2.2875 8.78282 2.21875 8.78282H1.28125C1.2125 8.78282 1.15625 8.83907 1.15625 8.90782V12.0016C1.15625 12.2781 1.37969 12.5016 1.65625 12.5016H12.3438C12.6203 12.5016 12.8438 12.2781 12.8438 12.0016V8.90782C12.8438 8.83907 12.7875 8.78282 12.7188 8.78282Z"
+                        class="fill-current" />
+                </svg>
+            </span>
+            Upload
+        </label>
+        {% else %}
         <div class="flex items-center space-x-[18px] mt-4">
             <button type="button"
                 class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
@@ -40,7 +42,7 @@
                 </span>
                 Change
             </button>
-            <button type="button"
+            <button type="submit" hx-get="{{ url('remove_picture', args=(pk,)) }}" hx-target="#profile-picture"
                 class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
                 <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="14" viewBox="0 0 13 14" fill="none">
@@ -52,5 +54,6 @@
                 Remove
             </button>
         </div>
+        {% endif %}
     </div>
 </div>
