@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from treebeard.mp_tree import MP_Node
 
+from openunited.settings import PERSON_PHOTO_UPLOAD_TO
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 from engagement.models import Notification
 import engagement
@@ -12,15 +13,17 @@ class Person(TimeStampMixin):
     full_name = models.CharField(max_length=256)
     preferred_name = models.CharField(max_length=128)
     user = models.OneToOneField(
-        "security.User", on_delete=models.CASCADE, related_name="security_user"
+        "security.User", on_delete=models.CASCADE, related_name="person"
     )
-    photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    photo = models.ImageField(upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
     send_me_bounties = models.BooleanField(default=True)
     current_position = models.CharField(max_length=256, null=True, blank=True)
-    twitter_link = models.URLField(null=True, blank=True)
+    twitter_link = models.URLField(null=True, blank=True, default="")
     linkedin_link = models.URLField(null=True, blank=True)
+    github_link = models.URLField(null=True, blank=True)
+    website_link = models.URLField(null=True, blank=True)
 
     class Meta:
         db_table = "talent_person"
