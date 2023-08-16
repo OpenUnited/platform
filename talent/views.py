@@ -17,14 +17,9 @@ class ProfileView(UpdateView):
     slug_field = "username"
     slug_url_kwarg = "username"
 
-    def get_queryset(self):
-        # Restrict the queryset to the currently authenticated user
-        queryset = super().get_queryset()
-        return queryset.filter(user__pk=self.request.user.pk)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        person = self.get_queryset().first()
+        person = self.get_object()
         initial = {
             "full_name": person.full_name,
             "preferred_name": person.preferred_name,
@@ -53,6 +48,7 @@ class ProfileView(UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        ipdb.set_trace()
         form = PersonProfileForm(
             request.POST, request.FILES, instance=request.user.person
         )
