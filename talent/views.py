@@ -1,5 +1,6 @@
 from django.shortcuts import HttpResponse, render
 from django.views.generic.detail import DetailView
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 from .models import Person
 from .forms import PersonProfileForm
@@ -33,7 +34,7 @@ class ProfileView(DetailView):
             "current_position": person.current_position,
         }
         context["form"] = PersonProfileForm(initial=initial)
-        image_url = "/media/avatars/profile-empty.png"
+        image_url = staticfiles_storage.url("images/profile-empty.png")
         requires_upload = True
 
         if person.photo:
