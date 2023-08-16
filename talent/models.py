@@ -12,7 +12,7 @@ class Person(TimeStampMixin):
     full_name = models.CharField(max_length=256)
     preferred_name = models.CharField(max_length=128)
     user = models.OneToOneField(
-        "security.User", on_delete=models.CASCADE, related_name="security_user"
+        "security.User", on_delete=models.CASCADE, related_name="person"
     )
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
     headline = models.TextField()
