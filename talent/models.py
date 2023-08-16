@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from treebeard.mp_tree import MP_Node
 
+from openunited.settings import PERSON_PHOTO_UPLOAD_TO
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 from engagement.models import Notification
 import engagement
@@ -14,7 +15,7 @@ class Person(TimeStampMixin):
     user = models.OneToOneField(
         "security.User", on_delete=models.CASCADE, related_name="person"
     )
-    photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    photo = models.ImageField(upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
     send_me_bounties = models.BooleanField(default=True)

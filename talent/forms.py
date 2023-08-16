@@ -6,7 +6,7 @@ from .models import Person
 class PersonProfileForm(forms.ModelForm):
     class Meta:
         model = Person
-        fields = (
+        fields = [
             "full_name",
             "preferred_name",
             "photo",
@@ -18,7 +18,7 @@ class PersonProfileForm(forms.ModelForm):
             "linkedin_link",
             "website_link",
             "send_me_bounties",
-        )
+        ]
         widgets = {
             "full_name": forms.TextInput(
                 attrs={
@@ -32,6 +32,12 @@ class PersonProfileForm(forms.ModelForm):
                     "class": "py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm focus:outline-none",
                     "placeholder": "Your preferred name",
                     "autocapitalize": "none",
+                }
+            ),
+            "photo": forms.FileInput(
+                attrs={
+                    "class": "hidden",
+                    "type": "file",
                 }
             ),
             "current_position": forms.TextInput(

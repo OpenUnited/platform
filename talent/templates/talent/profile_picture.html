@@ -1,0 +1,56 @@
+<div class="flex items-center shrink-0 flex-col lg:w-[244px]">
+    <div id="profile-picture"
+        class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover"
+        style="background-image: url('{{ image }}')">
+    </div>
+    <div class="flex flex-col items-center">
+            <label for="{{ form.photo.id_for_label }}"
+                class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                {{ form.photo }}
+                <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path
+                            d="M5.25 3.96564H6.40469V9.25157C6.40469 9.32032 6.46094 9.37657 6.52969 9.37657H7.46719C7.53594 9.37657 7.59219 9.32032 7.59219 9.25157V3.96564H8.75C8.85469 3.96564 8.9125 3.84532 8.84844 3.76407L7.09844 1.54845C7.08674 1.53351 7.0718 1.52143 7.05475 1.51312C7.03769 1.50481 7.01897 1.50049 7 1.50049C6.98103 1.50049 6.96231 1.50481 6.94525 1.51312C6.92819 1.52143 6.91326 1.53351 6.90156 1.54845L5.15156 3.76251C5.0875 3.84532 5.14531 3.96564 5.25 3.96564ZM12.7188 8.78282H11.7812C11.7125 8.78282 11.6562 8.83907 11.6562 8.90782V11.3141H2.34375V8.90782C2.34375 8.83907 2.2875 8.78282 2.21875 8.78282H1.28125C1.2125 8.78282 1.15625 8.83907 1.15625 8.90782V12.0016C1.15625 12.2781 1.37969 12.5016 1.65625 12.5016H12.3438C12.6203 12.5016 12.8438 12.2781 12.8438 12.0016V8.90782C12.8438 8.83907 12.7875 8.78282 12.7188 8.78282Z"
+                            class="fill-current" />
+                    </svg>
+                </span>
+                Upload
+            </label>
+        <div class="flex items-center space-x-[18px] mt-4">
+            <button type="button"
+                class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <g clip-path="url(#clip0_201_4079)">
+                            <g clip-path="url(#clip1_201_4079)">
+                                <path
+                                    d="M3.02681 10.7502C3.05806 10.7502 3.08931 10.7471 3.12056 10.7424L5.74868 10.2815C5.77993 10.2752 5.80962 10.2612 5.83149 10.2377L12.4549 3.61428C12.4694 3.59982 12.4809 3.58265 12.4888 3.56375C12.4966 3.54485 12.5006 3.52458 12.5006 3.50412C12.5006 3.48366 12.4966 3.46339 12.4888 3.44449C12.4809 3.42559 12.4694 3.40842 12.4549 3.39396L9.85806 0.795526C9.82837 0.765839 9.78931 0.750214 9.74712 0.750214C9.70493 0.750214 9.66587 0.765839 9.63618 0.795526L3.01274 7.41896C2.98931 7.4424 2.97524 7.47053 2.96899 7.50178L2.50806 10.1299C2.49286 10.2136 2.49829 10.2998 2.52388 10.3809C2.54947 10.462 2.59445 10.5357 2.65493 10.5955C2.75806 10.6955 2.88774 10.7502 3.02681 10.7502ZM4.07993 8.02521L9.74712 2.35959L10.8924 3.5049L5.22524 9.17053L3.83618 9.41584L4.07993 8.02521ZM12.7502 12.0627H1.25024C0.973682 12.0627 0.750244 12.2862 0.750244 12.5627V13.1252C0.750244 13.194 0.806494 13.2502 0.875244 13.2502H13.1252C13.194 13.2502 13.2502 13.194 13.2502 13.1252V12.5627C13.2502 12.2862 13.0268 12.0627 12.7502 12.0627Z"
+                                    class="fill-current" />
+                            </g>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_201_4079">
+                                <rect width="14" height="14" fill="white" />
+                            </clipPath>
+                            <clipPath id="clip1_201_4079">
+                                <rect width="14" height="14" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </span>
+                Change
+            </button>
+            <button type="button"
+                class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
+                <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="14" viewBox="0 0 13 14" fill="none">
+                        <path
+                            d="M4.01643 1.51526H3.87793C3.95411 1.51526 4.01643 1.45356 4.01643 1.37815V1.51526H9.27934V1.37815C9.27934 1.45356 9.34167 1.51526 9.41784 1.51526H9.27934V2.74928H10.5258V1.37815C10.5258 0.773142 10.029 0.28125 9.41784 0.28125H3.87793C3.26681 0.28125 2.76995 0.773142 2.76995 1.37815V2.74928H4.01643V1.51526ZM12.7418 2.74928H0.553991C0.247565 2.74928 0 2.99437 0 3.29773V3.84618C0 3.92159 0.0623239 3.98329 0.138498 3.98329H1.18415L1.61177 12.947C1.63947 13.5315 2.12767 13.9925 2.71802 13.9925H10.5778C11.1698 13.9925 11.6563 13.5332 11.684 12.947L12.1116 3.98329H13.1573C13.2334 3.98329 13.2958 3.92159 13.2958 3.84618V3.29773C13.2958 2.99437 13.0482 2.74928 12.7418 2.74928ZM10.4445 12.7585H2.85132L2.43236 3.98329H10.8634L10.4445 12.7585Z"
+                            class="fill-current" />
+                    </svg>
+                </span>
+                Remove
+            </button>
+        </div>
+    </div>
+</div>

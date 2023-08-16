@@ -1,16 +1,19 @@
 from django.shortcuts import HttpResponse, render
-from django.views.generic.detail import DetailView
-from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.generic.edit import UpdateView
 
+from openunited.settings import PROFILE_PICTURE_ROOT
 from .models import Person
 from .forms import PersonProfileForm
 
+import ipdb
 
-class ProfileView(DetailView):
+
+class ProfileView(UpdateView):
     model = Person
     template_name = "talent/profile.html"
+    fields = "__all__"
     context_object_name = "person"
-    slug_field = "username"  # Use the 'username' field to look up the user
+    slug_field = "username"
     slug_url_kwarg = "username"
 
     def get_queryset(self):
@@ -34,7 +37,7 @@ class ProfileView(DetailView):
             "current_position": person.current_position,
         }
         context["form"] = PersonProfileForm(initial=initial)
-        image_url = staticfiles_storage.url("images/profile-empty.png")
+        image_url = PROFILE_PICTURE_ROOT + "/profile-empty.png"
         requires_upload = True
 
         if person.photo:
@@ -44,3 +47,11 @@ class ProfileView(DetailView):
         context["image"] = image_url
         context["requires_upload"] = requires_upload
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = PersonProfileForm(
+            request.POST, request.FILES, instance=request.user.person
+        )
+        if form.is_valid():
+            form.save()
+        return super().post(request, *args, **kwargs)
