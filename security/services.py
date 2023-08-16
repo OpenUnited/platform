@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from random import randrange
 
-from .models import SignUpRequest, ProductPerson, ProductOwner, User
+from .models import SignUpRequest, ProductRoleAssignment, User
 from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
 
 
@@ -75,33 +75,29 @@ class SignUpRequestService:
         sign_up_request.save()
 
 
-class ProductPersonService:
+class ProductRoleAssignmentService:
     @staticmethod
     def create(**kwargs):
-        product_person = ProductPerson(**kwargs)
-        product_person.save()
+        product_role_assignment = ProductRoleAssignment(**kwargs)
+        product_role_assignment.save()
 
-        return product_person
+        return product_role_assignment
 
     @staticmethod
-    def is_organisation_provided(product_person: ProductPerson) -> Exception | None:
+    def is_organisation_provided(
+        product_role_assignment: ProductRoleAssignment,
+    ) -> Exception | None:
         if (
-            product_person.role
-            in [ProductPerson.PRODUCT_ADMIN, ProductPerson.PRODUCT_MANAGER]
-            and not product_person.organisation
+            product_role_assignment.role
+            in [
+                ProductRoleAssignment.PRODUCT_ADMIN,
+                ProductRoleAssignment.PRODUCT_MANAGER,
+            ]
+            and not product_role_assignment.organisation
         ):
             raise ValidationError(
                 "Organisation field must be filled for Product Admins and Managers."
             )
-
-
-class ProductOwnerService:
-    @staticmethod
-    def create(**kwargs):
-        product_owner = ProductOwner(**kwargs)
-        product_owner.save()
-
-        return product_owner
 
 
 def create_and_send_verification_code(email: str) -> int:
