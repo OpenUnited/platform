@@ -29,6 +29,17 @@ class ProfileView(DetailView):
             "twitter_link": person.twitter_link,
             "linkedin_link": person.linkedin_link,
             "website_link": person.website_link,
+            "send_me_bounties": person.send_me_bounties,
+            "current_position": person.current_position,
         }
         context["form"] = PersonProfileForm(initial=initial)
+        image_url = "/media/avatars/profile-empty.png"
+        requires_upload = True
+
+        if person.photo:
+            image_url = person.photo.url
+            requires_upload = False
+
+        context["image"] = image_url
+        context["requires_upload"] = requires_upload
         return context

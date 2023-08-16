@@ -5,9 +5,10 @@
 <div class="flex flex-col lg:flex-row grow justify-center lg:pt-[50px] space-y-6 lg:space-y-0 lg:space-x-12">
     <div class="flex items-center shrink-0 flex-col lg:w-[244px]">
         <div class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover"
-            style="background-image: url('{{ static("images/user.png") }}')">
+            style="background-image: url('{{ image }}')">
         </div>
         <div class="flex flex-col items-center">
+            {% if requires_upload %}
             <label for="file-upload"
                 class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
                 <input id="file-upload" type="file" class="hidden" />
@@ -20,8 +21,8 @@
                 </span>
                 Upload
             </label>
-
-            <div class="hidden flex items-center space-x-[18px] mt-4">
+            {% else %}
+            <div class="flex items-center space-x-[18px] mt-4">
                 <button type="button"
                     class="appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
                     <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
@@ -57,6 +58,7 @@
                     Remove
                 </button>
             </div>
+            {% endif %}
         </div>
     </div>
     <div class="flex flex-col grow lg:max-w-[668px] w-full">
@@ -70,6 +72,11 @@
                 <label for="{{ form.preferred_name.id_for_label }}"
                     class="text-lg text-black/[0.85] mb-2 font-semibold">{{ form.preferred_name.label }}</label>
                 {{ form.preferred_name }}
+            </div>
+            <div class="md:col-span-2">
+                <label for="{{ form.current_position.id_for_label }}"
+                    class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">{{ form.current_position.label }}</label>
+                {{ form.current_position }}
             </div>
             <div class="md:col-span-2">
                 <label for="{{ form.headline.id_for_label }}"
@@ -181,6 +188,11 @@
                     </div>
                 </div>
 
+            </div>
+            <div class="flex items-center pl-4 border mt-5 border-gray-200 rounded dark:border-gray-700">
+                {{ form.send_me_bounties }}
+                <label for="{{ form.send_me_bounties.id_for_label }}"
+                    class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ form.send_me_bounties.label }}</label>
             </div>
             <div class="mt-8 md:mt-14 flex items-center space-x-4 md:space-x-7">
                 <button type="button"
