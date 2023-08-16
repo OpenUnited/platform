@@ -46,7 +46,7 @@
 
             <label for="remove_picture_button"
                 class="mt-4 appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
-                <input id="remove_picture_button" type="submit" hx-get="{{ url('remove_picture', args=(pk,)) }}" hx-target="#profile-picture" hx-confirm="Are you sure to remove the picture?"
+                <input id="remove_picture_button" type="submit" hx-get="{{ url('profile', args=(pk,)) }}" hx-target="#profile-picture" hx-confirm="Are you sure to remove the picture?"
                     class="hidden appearance-none inline-flex items-center w-full sm:w-fit bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-2.5 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8]">
                 <span class="w-[14px] h-[14px] mr-2 inline-flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="14" viewBox="0 0 13 14" fill="none">

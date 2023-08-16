@@ -1,12 +1,9 @@
-import os
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import render
 from django.views.generic.edit import UpdateView
 
-from openunited import settings
 from .models import Person
 from .forms import PersonProfileForm
-
-import ipdb
+from .services import PersonService
 
 
 class ProfileView(UpdateView):
@@ -25,71 +22,38 @@ class ProfileView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         person = self.get_object()
-        initial = {
-            "full_name": person.full_name,
-            "preferred_name": person.preferred_name,
-            "headline": person.headline,
-            "overview": person.overview,
-            "github_link": person.github_link,
-            "twitter_link": person.twitter_link,
-            "linkedin_link": person.linkedin_link,
-            "website_link": person.website_link,
-            "send_me_bounties": person.send_me_bounties,
-            "current_position": person.current_position,
-        }
-        context["form"] = PersonProfileForm(initial=initial)
-        image_url = (
-            settings.MEDIA_URL + settings.PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
+        context["form"] = PersonProfileForm(
+            initial=PersonService.get_initial_data(person)
         )
-        requires_upload = True
+        context["pk"] = person.pk
 
-        if person.photo:
-            image_url = person.photo.url
-            requires_upload = False
-
+        image_url, requires_upload = PersonService.does_require_upload(person)
         context["image"] = image_url
         context["requires_upload"] = requires_upload
-        context["pk"] = person.pk
+
         return context
 
+    def _remove_picture(self, request):
+        person = self.get_object()
+        PersonService.delete_photo(person)
+        context = self.get_context_data()
+
+        return render(request, "talent/profile_picture.html", context)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        trigger = request.headers.get("Hx-Trigger")
+        if trigger == "remove_picture_button":
+            return self._remove_picture(request)
+
+        return super().get(request, *args, **kwargs)
+
+    # TODO: Add a success message under the photo upload field
     def post(self, request, *args, **kwargs):
-        # ipdb.set_trace()
         form = PersonProfileForm(
             request.POST, request.FILES, instance=request.user.person
         )
         if form.is_valid():
             form.save()
         return super().post(request, *args, **kwargs)
-
-
-def remove_picture(request, pk):
-    person = request.user.person
-    path = person.photo.path
-    if os.path.exists(path):
-        os.remove(path)
-
-    person.photo.delete(save=True)
-
-    initial = {
-        "full_name": person.full_name,
-        "preferred_name": person.preferred_name,
-        "headline": person.headline,
-        "overview": person.overview,
-        "github_link": person.github_link,
-        "twitter_link": person.twitter_link,
-        "linkedin_link": person.linkedin_link,
-        "website_link": person.website_link,
-        "send_me_bounties": person.send_me_bounties,
-        "current_position": person.current_position,
-    }
-    context = {
-        "requires_upload": True,
-        "image": settings.MEDIA_URL
-        + settings.PERSON_PHOTO_UPLOAD_TO
-        + "profile-empty.png",
-        "pk": person.pk,
-    }
-
-    context["form"] = PersonProfileForm(initial=initial)
-
-    return render(request, "talent/profile_picture.html", context)
