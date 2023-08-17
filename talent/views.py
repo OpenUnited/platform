@@ -1,7 +1,9 @@
+import json
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
 
-from .models import Person
+from .models import Person, Skill, Expertise
 from .forms import PersonProfileForm
 from .services import PersonService
 
@@ -56,4 +58,24 @@ class ProfileView(UpdateView):
         )
         if form.is_valid():
             form.save()
+
+            # make sure there is at least one skill
+            skill_ids = json.loads(request.POST.get("selected_skills"))
+            print(skill_ids)
+
+            # make sure there is at least one expertise
+            expertise_ids = json.loads(request.POST.get("selected_expertise"))
+            print(expertise_ids)
         return super().post(request, *args, **kwargs)
+
+
+def get_skills(request):
+    skill_queryset = Skill.objects.all().values()
+    skills = list(skill_queryset)
+    return JsonResponse(skills, safe=False)
+
+
+def get_expertise(request):
+    expertise_queryset = Expertise.objects.all().values()
+    expertise = list(expertise_queryset)
+    return JsonResponse(expertise, safe=False)

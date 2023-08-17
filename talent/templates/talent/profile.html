@@ -42,7 +42,9 @@
                 <div class="text-sm">These skills are featured on your profile and can also be used to match you with tasks.
                 </div>
                 <div class="mt-3">
-                    <div class="treeselect-skills focus-visible:outline-transparent"></div>
+                    <div class="treeselect-skills focus-visible:outline-transparent">
+                        <input type="hidden" id="selected_skills" name="selected_skills">
+                    </div>
                 </div>
                 <div class="mt-2 text-base text-black/[0.85]">No skill selected yet</div>
             </div>
@@ -50,6 +52,12 @@
                 <div class="text-lg text-black/[0.85] inline-flex font-semibold">Expertise</div>
                 <div class="text-sm">For each Skill selected in the previous step, please select your related expertise.
                 </div>
+                <div class="mt-3">
+                    <div class="treeselect-expertise focus-visible:outline-transparent">
+                        <input type="hidden" id="selected_expertise" name="selected_expertise">
+                    </div>
+                </div>
+                <div class="mt-2 text-base text-black/[0.85]">No expertise selected yet</div>
                 <div class="mt-3 flow-root max-w-[742px] w-full">
                     <table class="min-w-full">
                         <colgroup>
@@ -147,9 +155,11 @@
             </div>
         </div>
 </form>
+<script src="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.umd.js"></script>
 <script src="https://unpkg.com/htmx.org@1.9.4"
     integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous">
 </script>
 <script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+<script src="{{ static('scripts/tree-select.js') }}"></script>
 
 {% endblock %}
