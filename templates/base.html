@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.css" />
     <link rel="stylesheet" href="{{ static('styles/styles.css') }}">
 
     <title>{% block title %}{% endblock %}</title>
@@ -45,8 +46,9 @@
 
     <!-- https://github.com/Choices-js/Choices -->
     <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.umd.js"></script>
 
-    <script type="text/javascript" src="{{ static('scripts/main.js') }}"></script>
+    <script type="module" src="{{ static('scripts/main.js') }}"></script>
 
 </body>
 
