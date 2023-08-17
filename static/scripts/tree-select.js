@@ -48,41 +48,26 @@ function mapOptionsExpertiseToOptions(optionsExpertise) {
     return newOptions;
 }
 
-function initializeTreeselectForSkills(options, domElement) {
-
+function initializeTreeselect(options, domElement) {
     const treeselect = new Treeselect({
         parentHtmlContainer: domElement,
         value: [],
-        options: mapOptionsExpertiseToOptions(optionsSkills),
-    })
+        options: mapOptionsExpertiseToOptions(options),
+    });
 
     treeselect.srcElement.addEventListener('input', (e) => {
-        console.log('Selected value:', e.detail)
+        console.log('Selected value:', e.detail);
     });
 }
 
-function initializeTreeselectForExpertise(options, domElement) {
-
-    const treeselect = new Treeselect({
-        parentHtmlContainer: domElement,
-        value: [],
-        options: mapOptionsExpertiseToOptions(optionsSkills),
-    })
-
-    treeselect.srcElement.addEventListener('input', (e) => {
-        console.log('Selected value:', e.detail)
-    });
-}
-
-function getSkillOptionsWithAJAX() {
+function getOptionsWithAJAX(url, domElement) {
     let xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == XMLHttpRequest.DONE) {
             if (xmlhttp.status == 200) {
-                optionsSkills = JSON.parse(xmlhttp.responseText);
-
-                initializeTreeselectForSkills(optionsSkills, skillsField);
+                const options = JSON.parse(xmlhttp.responseText);
+                initializeTreeselect(options, domElement);
             } else if (xmlhttp.status == 400) {
                 alert('There was an error 400');
             } else {
@@ -91,30 +76,9 @@ function getSkillOptionsWithAJAX() {
         }
     };
 
-    xmlhttp.open("GET", "/talent/get-skills/", true);
+    xmlhttp.open("GET", url, true);
     xmlhttp.send();
 }
 
-function getExpertiseOptionsWithAJAX() {
-    let xmlhttp = new XMLHttpRequest();
-
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-            if (xmlhttp.status == 200) {
-                optionsSkills = JSON.parse(xmlhttp.responseText);
-                console.log(optionsSkills);
-                initializeTreeselectForExpertise(optionsSkills, expertiseField);
-            } else if (xmlhttp.status == 400) {
-                alert('There was an error 400');
-            } else {
-                alert('Something else other than 200 was returned');
-            }
-        }
-    };
-
-    xmlhttp.open("GET", "/talent/get-expertise/", true);
-    xmlhttp.send();
-}
-
-getSkillOptionsWithAJAX();
-getExpertiseOptionsWithAJAX();
+getOptionsWithAJAX("/talent/get-skills/", skillsField);
+getOptionsWithAJAX("/talent/get-expertise/", expertiseField);
