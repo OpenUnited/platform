@@ -6,7 +6,7 @@ const skillsField = document.querySelector(".treeselect-skills");
 const expertiseField = document.querySelector(".treeselect-expertise")
 
 const hiddenSkillsField = document.getElementById("selected_skills");
-const hiddenExpertiseField = document.getElementById("selected_expertise");
+const hiddenExpertiseField = document.getElementById("selected-expertise");
 
 skillsField.addEventListener("input", e => {
     hiddenSkillsField.value = JSON.stringify(e.detail);

@@ -64,7 +64,7 @@ class ProfileView(UpdateView):
             print(skill_ids)
 
             # make sure there is at least one expertise
-            expertise_ids = json.loads(request.POST.get("selected_expertise"))
+            expertise_ids = json.loads(request.POST.get("selected-expertise"))
             print(expertise_ids)
         return super().post(request, *args, **kwargs)
 
