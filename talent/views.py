@@ -76,6 +76,14 @@ def get_skills(request):
 
 
 def get_expertise(request):
-    expertise_queryset = Expertise.objects.all().values()
-    expertise = list(expertise_queryset)
-    return JsonResponse(expertise, safe=False)
+    selected_skills = request.GET.get("selected_skills")
+    if selected_skills:
+        selected_skill_ids = json.loads(selected_skills)
+        expertise_queryset = Expertise.objects.filter(
+            skill_id__in=selected_skill_ids
+        ).values()
+        expertise = list(expertise_queryset)
+
+        return JsonResponse(expertise, safe=False)
+
+    return JsonResponse([], safe=False)
