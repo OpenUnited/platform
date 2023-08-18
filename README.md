@@ -31,8 +31,7 @@ cd platform
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
-python manage.py migrate
-python load_sample_data.py
+./setup.sh
 python manage.py runserver
 ```
 
