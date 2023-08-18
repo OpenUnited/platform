@@ -70,7 +70,7 @@ class ProfileView(UpdateView):
 
 
 def get_skills(request):
-    skill_queryset = Skill.objects.all().values()
+    skill_queryset = Skill.objects.filter(active=True).values()
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
 
