@@ -90,3 +90,4 @@ db.sqlite3
 /.venv
 
 .vscode/
+openunited/settings/local.py

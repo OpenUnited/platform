@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from treebeard.mp_tree import MP_Node
 
-from openunited.settings import PERSON_PHOTO_UPLOAD_TO
+from openunited.settings.base import PERSON_PHOTO_UPLOAD_TO
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 from engagement.models import Notification
 import engagement
