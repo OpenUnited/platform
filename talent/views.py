@@ -1,7 +1,9 @@
+import json
 from django.shortcuts import render
+from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
 
-from .models import Person
+from .models import Person, Skill, Expertise
 from .forms import PersonProfileForm
 from .services import PersonService
 
@@ -56,4 +58,53 @@ class ProfileView(UpdateView):
         )
         if form.is_valid():
             form.save()
+
+            # make sure there is at least one skill
+            skill_ids = json.loads(request.POST.get("selected_skills"))
+            print(skill_ids)
+
+            # make sure there is at least one expertise
+            expertise_ids = json.loads(request.POST.get("selected-expertise"))
+            print(expertise_ids)
         return super().post(request, *args, **kwargs)
+
+
+def get_skills(request):
+    skill_queryset = Skill.objects.filter(active=True).values()
+    skills = list(skill_queryset)
+    return JsonResponse(skills, safe=False)
+
+
+def get_expertise(request):
+    selected_skills = request.GET.get("selected_skills")
+    if selected_skills:
+        selected_skill_ids = json.loads(selected_skills)
+        expertise_queryset = Expertise.objects.filter(
+            skill_id__in=selected_skill_ids
+        ).values()
+        expertise = list(expertise_queryset)
+
+        return JsonResponse(expertise, safe=False)
+
+    return JsonResponse([], safe=False)
+
+
+def list_skill_and_expertise(request):
+    skills = request.GET.get("skills")
+    expertise = request.GET.get("expertise")
+
+    if skills and expertise:
+        expertise_ids = json.loads(expertise)
+        expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
+
+        skill_expertise_pairs = []
+        for exp in expertise_queryset:
+            pair = {
+                "skill": exp.skill.name,
+                "expertise": exp.name,
+            }
+            skill_expertise_pairs.append(pair)
+
+        return JsonResponse(skill_expertise_pairs, safe=False)
+
+    return JsonResponse([], safe=False)
