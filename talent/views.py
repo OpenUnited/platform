@@ -87,3 +87,24 @@ def get_expertise(request):
         return JsonResponse(expertise, safe=False)
 
     return JsonResponse([], safe=False)
+
+
+def list_skill_and_expertise(request):
+    skills = request.GET.get("skills")
+    expertise = request.GET.get("expertise")
+
+    if skills and expertise:
+        expertise_ids = json.loads(expertise)
+        expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
+
+        skill_expertise_pairs = []
+        for exp in expertise_queryset:
+            pair = {
+                "skill": exp.skill.name,
+                "expertise": exp.name,
+            }
+            skill_expertise_pairs.append(pair)
+
+        return JsonResponse(skill_expertise_pairs, safe=False)
+
+    return JsonResponse([], safe=False)
