@@ -39,3 +39,16 @@ Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your brows
 
 Not working? Please check [the Django docs](https://docs.djangoproject.com/en/4.2/intro/tutorial01/) and make sure you have [PostgreSQL installed](https://www.google.com/search?q=how+to+install+postgresql)
 
+### Running the platform locally using docker
+
+Make sure you have docker install on your machine.
+
+```
+cp .env.example .env
+cp docker.env.example docker.env
+
+# Change them as you need
+
+docker compose --env-file docker.env up --build
+```
+Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your browser.
