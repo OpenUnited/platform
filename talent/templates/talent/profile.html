@@ -39,20 +39,25 @@
                 <label for="skills-profile" class="text-lg text-black/[0.85] inline-flex font-semibold">
                     Skills
                 </label>
-                <div class="text-sm">These skills are featured on your profile and can also be used to match you with
-                    tasks.
+                <div class="text-sm">These skills are featured on your profile and can also be used to match you with tasks.
                 </div>
                 <div class="mt-3">
-                    <div class="treeselect-skills focus-visible:outline-transparent"></div>
+                    <div class="treeselect-skills focus-visible:outline-transparent">
+                        <input type="hidden" id="selected_skills" name="selected_skills">
+                    </div>
                 </div>
-                <div class="mt-2 text-base text-black/[0.85]">No skill selected yet</div>
             </div>
             <div class="flex flex-col mt-6">
                 <div class="text-lg text-black/[0.85] inline-flex font-semibold">Expertise</div>
                 <div class="text-sm">For each Skill selected in the previous step, please select your related expertise.
                 </div>
+                <div class="mt-3">
+                    <div class="treeselect-expertise focus-visible:outline-transparent">
+                        <input type="hidden" id="selected-expertise" name="selected-expertise">
+                    </div>
+                </div>
                 <div class="mt-3 flow-root max-w-[742px] w-full">
-                    <table class="min-w-full">
+                    <table id="skill-expertise-table" class="hidden min-w-full">
                         <colgroup>
                             <col class="w-1/2">
                             <col class="w-1/2">
@@ -64,16 +69,11 @@
                                 </th>
                                 <th scope="col"
                                     class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                    Expertise
-                                </th>
+                                    Expertise</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="border-b border-gray-200">
-                                <td colspan="2" class="max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0">
-                                    <div class="font-medium text-gray-900 text-base">No selections available</div>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -149,9 +149,11 @@
             </div>
         </div>
 </form>
+<script src="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.umd.js"></script>
 <script src="https://unpkg.com/htmx.org@1.9.4"
     integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous">
 </script>
 <script src="https://unpkg.com/htmx.org/dist/ext/debug.js"></script>
+<script src="{{ static('scripts/tree-select.js') }}"></script>
 
 {% endblock %}
