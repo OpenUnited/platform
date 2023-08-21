@@ -32,6 +32,26 @@ python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
 ./setup.sh
+```
+
+Create a `local.py` in `openunited/settings` and import `base.py` or `development.py` as you wish. If you want, you can use `development.py` as well.
+
+Create an environment variable:
+
+```
+export DJANGO_SETTINGS_MODULE=opeunited.settings.<name_of_your_file>
+
+Example:
+
+export DJANGO_SETTINGS_MODULE=opeunited.settings.local`
+```
+
+It is advised to put this line into your bash configuration.
+
+
+Then start the server:
+
+```
 python manage.py runserver
 ```
 
