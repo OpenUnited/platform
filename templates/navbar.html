@@ -24,7 +24,16 @@
     </div>
     <div class="hidden lg:flex lg:items-center lg:justify-end lg:gap-x-5 relative z-[2] ml-auto">
         {% if request.user.is_authenticated %}
-        <span>Welcome, {{ request.user }}</span>
+        <div>
+              <a href="{{ url('profile', args=(request.user.pk,) ) }}">
+                {% set photo_url = "media/avatars/profile-empty.png" %}
+                {% set person = request.user.person %}
+                {% if person.photo %}
+                {% set photo_url = person.photo.url %}
+                {% endif %}
+                <img class="h-8 w-8 rounded-full" src="{{ photo_url }}" alt="Profile Picture">
+              </a>
+          </div>
         <a href="{{ url('log_out') }}"
             class="text-sm font-semibold leading-6 transition-all delay-600 rounded bg-indigo-600 px-3.5 py-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             Log out

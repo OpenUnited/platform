@@ -17,6 +17,7 @@ click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
 decorator==5.1.1
+dj-database-url==2.1.0
 Django==4.2.2
 django-appconf==1.0.5
 django-debug-toolbar==4.1.0

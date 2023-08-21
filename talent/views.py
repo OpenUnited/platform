@@ -59,18 +59,19 @@ class ProfileView(UpdateView):
         if form.is_valid():
             form.save()
 
+            # generate skill and expertise for this person
             # make sure there is at least one skill
-            skill_ids = json.loads(request.POST.get("selected_skills"))
-            print(skill_ids)
+            # skill_ids = json.loads(request.POST.get("selected_skills"))
+            # print(skill_ids)
 
             # make sure there is at least one expertise
-            expertise_ids = json.loads(request.POST.get("selected-expertise"))
-            print(expertise_ids)
+            # expertise_ids = json.loads(request.POST.get("selected-expertise"))
+            # print(expertise_ids)
         return super().post(request, *args, **kwargs)
 
 
 def get_skills(request):
-    skill_queryset = Skill.objects.filter(active=True).values()
+    skill_queryset = Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
 
