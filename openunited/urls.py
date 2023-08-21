@@ -9,7 +9,7 @@ handler404 = views.custom_404_view
 
 urlpatterns = []
 
-if settings.DEBUG:
+if settings.development.DEBUG:
     urlpatterns += [
         path("__debug__/", include("debug_toolbar.urls")),
     ]
@@ -22,4 +22,4 @@ urlpatterns += [
     path("", include("product_management.urls")),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.base.MEDIA_URL, document_root=settings.base.MEDIA_ROOT)
