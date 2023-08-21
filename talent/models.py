@@ -36,6 +36,39 @@ class Person(TimeStampMixin):
         return self.full_name
 
 
+class Status(models.Model):
+    DRONE = "Drone"
+    HONEYBEE = "Honeybee"
+    TRUSTED_BEE = "Trusted Bee"
+    QUEEN_BEE = "Queen Bee"
+    BEEKEEPER = "Beekeeper"
+
+    STATUS_CHOICES = [
+        DRONE,
+        HONEYBEE,
+        TRUSTED_BEE,
+        QUEEN_BEE,
+        BEEKEEPER,
+    ]
+
+    STATUS_POINT_MAPPING = {
+        DRONE: 0,
+        HONEYBEE: 50,
+        TRUSTED_BEE: 500,
+        QUEEN_BEE: 2000,
+        BEEKEEPER: 8000,
+    }
+
+    person = models.OneToOneField(
+        Person, on_delete=models.CASCADE, related_name="status"
+    )
+    name = models.CharField(max_length=20, default=DRONE)
+    points = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.name} - {self.points}"
+
+
 class PersonWebsite(models.Model):
     WebsiteType = ((0, "Personal"), (1, "Company"))
     website = models.CharField(max_length=200)

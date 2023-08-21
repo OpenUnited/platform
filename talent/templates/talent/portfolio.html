@@ -1,0 +1,1072 @@
+{% extends 'base.html' %}
+
+{% block title %} Portfolio {% endblock %}
+{% block content %}
+
+<div class="flex-auto pb-14">
+  <div class="relative z-[1] w-full h-[296px] rounded-md -mb-40 bg-gradient-to-r from-purple-100 to-indigo-400">
+    <!-- <img src="#" class="h-full w-full object-cover object-center rounded-md" alt="#"> -->
+  </div>
+  <div class="relative z-[2] flex flex-col lg:flex-row w-full max-w-[98%] w-full mx-auto">
+    <div class="w-full lg:w-[320px] lg:mr-6 flex flex-col shrink-0">
+      <div class="relative z-[2] w-[272px] sm:w-[306px] h-[272px] sm:h-[306px] mx-auto">
+        <div
+          class="w-full h-full mx-auto rounded-full shadow-xl bg-white flex shrink-0 item-center justify-center">
+          <img src="{{ photo_url }}" class="h-full w-full object-cover object-center rounded-full"
+            alt="Profile Picture">
+        </div>
+        <div class="group absolute rounded-full bg-white py-0.5 px-2 right-2 bottom-10 border border-solid border-green-600 
+        inline-flex shadow-xl text-green-600 text-lg flex shrink-0 items-center justify-center cursor-pointer">
+          {{ person.status.name }}
+          <div class="absolute hidden group-hover:block group-focus:block bottom-8 -left-[116px] sm:left-4 block w-60 p-3 bg-white border border-solid border-gray-300 shadow-md rounded-md">
+            <div class="flex flex-col">
+              <div class="border-b border-solid border-gray-300 pb-1.5 mb-2 flex items-center">
+                <div class="text-sm font-medium leading-6 text-gray-900 mr-1">Points:</div>
+                <div class="text-sm text-gray-500"> =< 8000</div>
+              </div>
+                <div>
+                  <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
+                  <div class="text-sm text-gray-500">Invite new products to openunited.com and grant points</div>
+                </div>
+                <a href="{{ url('status_and_points') }}" class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
+                  Learn more about Status & Points
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white relative -mt-40 rounded-md border border-solid border-[#d0d7de] pt-[190px] pb-6 px-4 relative z-[1]">
+          <div class="text-2xl text-[#4b5563] font-semibold">Felicity Daniels</div>
+          <div class="pb-4 font-light text-xl text-[#6b7280]">@fnthndnls</div>
+          <div class="py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full 
+            border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+            Contact Felicity
+          </div>
+          <div class="pb-1 font-light text-sm text-[#4b5563] font-semibold">Points Earned</div>
+          <div class="mb-4 flex items-center">
+            <a href="#" class="flex items-center text-[#656d76] transition-all hover:text-blue-400 group">
+              <span
+                class="w-4 h-4 flex shrink-0 items-center justify-center mr-1 text-[#4b5563] group-hover:text-blue-400 pt-0.5">
+                <img class="w-full h-full object-contain object-center" src="/static/assets/images/contributors.svg"
+                  alt="#">
+              </span>
+              <strong class="text-[#4b5563] group-hover:text-blue-400 mr-1.5">536</strong> contributor
+            </a>
+            <div class="mx-1.5"> · </div>
+            <a href="#" class="flex items-center text-[#656d76] transition-all hover:text-blue-400 group">
+              <strong class="text-[#4b5563] group-hover:text-blue-400 mr-1.5">7</strong> leadership
+            </a>
+          </div>
+          <div class="space-y-1.5 flex flex-col">
+            <a href="#" class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+              <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                <img src="/static/assets/images/geo.svg" alt="#">
+              </span>
+              City Name
+            </a>
+            <a href="#" class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+              <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                <img src="/static/assets/images/ln.svg" alt="#">
+              </span>
+              ln/test
+            </a>
+            <a href="https://www.google.com/"
+              class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+              <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                <img src="/static/assets/images/link.svg" alt="#">
+              </span>
+              https://www.google.com/
+            </a>
+            <a href="https://twitter.com/"
+              class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+              <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                <img src="/static/assets/images/twitter.svg" alt="#">
+              </span>
+              @jhnthn
+            </a>
+          </div>
+          <div class="pt-4 mt-4 border-t border-solid border-[#d8dee4] flex flex-col">
+            <a href="#" class="text-lg font-semibold text-gray-900">Achievements</a>
+            <div class="flex flex-wrap">
+              <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="1">
+                <div
+                  class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                  <img src="/static/assets/images/achievement-1.svg" class="w-full h-full object-contain object-center"
+                    alt="#">
+                </div>
+                <div
+                  class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                  x3</div>
+                <div
+                  class="hidden group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                  <div
+                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                    <img src="/static/assets/images/achievement-1.svg"
+                      class="w-full h-full object-contain object-center" alt="#">
+                  </div>
+                  <div class="pt-3">
+                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                      Created Challenges 
+                      <div class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">x3</div>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="text-[#656d76] text-xs mb-2">List of created Challenges</div>
+                      <div class="flex flex-col">
+                        <div
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                          Bronze and Silver unlocked
+                        </div>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          Tweak "add product" logic
+                        </a>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          UserInvitation, ProductInvitation and Contributor role
+                        </a>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          Others
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="2">
+                <div
+                  class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                  <img src="/static/assets/images/achievement-2.svg" class="w-full h-full object-contain object-center"
+                    alt="#">
+                </div>
+                <div
+                  class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                  x2</div>
+                <div
+                  class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                  <div
+                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                    <img src="/static/assets/images/achievement-2.svg"
+                      class="w-full h-full object-contain object-center" alt="#">
+                  </div>
+                  <div class="pt-3">
+                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                      Participate in Products <div
+                        class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                        x2</div>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                      <div class="flex flex-col">
+                        <div
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                          Bronze and Silver locked
+                        </div>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          Tweak "add product" logic
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="3">
+                <div
+                  class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                  <img src="/static/assets/images/achievement-3.svg" class="w-full h-full object-contain object-center"
+                    alt="#">
+                </div>
+                <div
+                  class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                  x2</div>
+                <div
+                  class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 -left-[134px] lg:right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                  <div
+                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                    <img src="/static/assets/images/achievement-2.svg"
+                      class="w-full h-full object-contain object-center" alt="#">
+                  </div>
+                  <div class="pt-3">
+                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                      Participate in Products <div
+                        class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                        x2</div>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                      <div class="flex flex-col">
+                        <div
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                          Bronze and Silver locked
+                        </div>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          Tweak "add product" logic
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="4">
+                <div
+                  class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                  <img src="/static/assets/images/achievement-4.svg" class="w-full h-full object-contain object-center"
+                    alt="#">
+                </div>
+                <div
+                  class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                  x2</div>
+                <div
+                  class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                  <div
+                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                    <img src="/static/assets/images/achievement-2.svg"
+                      class="w-full h-full object-contain object-center" alt="#">
+                  </div>
+                  <div class="pt-3">
+                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                      Participate in Products <div
+                        class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                        x2</div>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                      <div class="flex flex-col">
+                        <div
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                          Bronze and Silver locked
+                        </div>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          Tweak "add product" logic
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="5">
+                <div
+                  class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                  <img src="/static/assets/images/achievement-2.svg" class="w-full h-full object-contain object-center"
+                    alt="#">
+                </div>
+                <div
+                  class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                  x2</div>
+                <div
+                  class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                  <div
+                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                    <img src="/static/assets/images/achievement-2.svg"
+                      class="w-full h-full object-contain object-center" alt="#">
+                  </div>
+                  <div class="pt-3">
+                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                      Participate in Products <div
+                        class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                        x2</div>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                      <div class="flex flex-col">
+                        <div
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                          Bronze and Silver locked
+                        </div>
+                        <a href="#"
+                          class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                          Tweak "add product" logic
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grow border border-solid border-[#d0d7de] px-4 py-5 sm:p-6 bg-white rounded-md mt-[54px]">
+        <button type="button" class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
+        border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+          Create a Portfolio like this
+        </button>
+        <div class="flex items-center pb-2.5 mb-4 border-b border-solid border-[#d0d7de]">
+          <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">Hey! Nice to meet you.</h2>
+        </div>
+        <div class="flex flex-col text-sm leading-6 text-gray-500">
+          <p>Welcome to my portfolio!</p>
+          <p>I'm Felicity, Fullstack developer from Nigeria, currently living in Stockholm, Sweden.</p>
+        </div>
+        <div class="text-lg font-semibold mb-2.5 mt-6">My Skills / Expertise</div>
+        <div class="flex items-center flex-wrap">
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/react.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              React
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400"
+              title="People, which approved this skill">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/github.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitHub
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/gitlab.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitLab
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/python.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              Python
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/react.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              React
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400"
+              title="People, which approved this skill">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/github.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitHub
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/gitlab.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitLab
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/python.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              Python
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/react.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              React
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400"
+              title="People, which approved this skill">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/github.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitHub
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/gitlab.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitLab
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/python.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              Python
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/react.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              React
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400"
+              title="People, which approved this skill">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/github.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitHub
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/gitlab.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              GitLab
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+          <div
+            class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+            <div class="flex items-center text-xs font-semibold leading-6">
+              <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                <img src="/static/assets/images/skills/python.svg" class="w-full h-full object-contain object-center"
+                  alt="#">
+              </span>
+              Python
+            </div>
+            <div
+              class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+              3
+            </div>
+          </div>
+        </div>
+        <div class="text-lg font-semibold mb-2.5 mt-6">Open Products I contribute to</div>
+        
+        <div class="relative" id="portfolio-table">
+          <div class="overflow-x-auto pb-4 table-products-contribute">
+            <div class="w-full min-w-[660px] flex flex-col">
+              <div class="grid grid-cols-12 gap-1">
+                <div class="col-span-4 bg-gray-50 border-b border-solid border-[#e4e8f1] 
+                py-2.5 px-2 text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Product</div>
+                <div class="col-span-6 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2 
+                text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Challenges</div>
+                <div class="col-span-2 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2 
+                text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Points Earned</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group" data-table-link="">
+                  <a href="#" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">OpenUnited
+                    Platform</a>
+                  <div class="absolute hidden block w-60 p-3 bg-white border border-solid border-gray-300 shadow-md rounded-md" data-table-popup="">
+                    <div class="flex flex-col">
+                      <div class="border-b border-solid border-gray-300 pb-1.5 mb-2 flex items-center">
+                        <div class="text-sm font-medium leading-6 text-gray-900 mr-1">Points:</div>
+                        <div class="text-sm text-gray-500"> =< 8000</div>
+                      </div>
+                      <div>
+                        <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
+                        <div class="text-sm text-gray-500">Invite new products to openunited.com and grant points</div>
+                      </div>
+                      <div class="w-full h-[100px] mt-3 mb-1">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/h9MujYgW1mw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                      </div>
+                      <a href="{{ url('status_and_points') }}" class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
+                        Learn more about Status & Points
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group" data-table-link="">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio Implement new portfolio</a>
+                  <div class="absolute hidden block w-60 p-3 bg-white border border-solid border-gray-300 shadow-md rounded-md" data-table-popup="">
+                    <div class="flex flex-col">
+                      <div class="border-b border-solid border-gray-300 pb-1.5 mb-2 flex items-center">
+                        <div class="text-sm font-medium leading-6 text-gray-900 mr-1">Points:</div>
+                        <div class="text-sm text-gray-500"> =< 8000</div>
+                      </div>
+                      <div>
+                        <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
+                        <div class="text-sm text-gray-500">Invite new products to openunited.com and grant points</div>
+                      </div>
+                      <a href="{{ url('status_and_points') }}" class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
+                        Learn more about Status & Points
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">50</div>
+              </div>
+
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">150</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+              <div class="grid grid-cols-12 gap-1 table-row hidden">
+                <div class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+    
+                </div>
+                <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                  <a href="{{ url('challenges') }}" class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">Implement
+                    new portfolio</a>
+                </div>
+                <div class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">320</div>
+              </div>
+  
+              <button type="button" class="appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
+              border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500 table-products-contribute__button">Show more</button>
+            </div>
+          </div>
+        </div>
+  
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-2.5 mt-6">
+          <div class="flex flex-col">
+            <h2 class="text-xl font-bold tracking-tight text-gray-900">Reviews</h2>
+            <div class="mt-3 flex items-center">
+              <div>
+                <div class="flex items-center">
+                  <!-- Active: "text-yellow-400", Default: "text-gray-300" -->
+                  <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <svg class="h-5 w-5 flex-shrink-0 text-gray-300" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <p class="sr-only">4 out of 5 stars</p>
+              </div>
+              <p class="ml-2 text-sm text-gray-900">Based on 1624 reviews</p>
+            </div>
+            <div class="mt-6">
+              <dl class="space-y-3">
+                <div class="flex items-center text-sm">
+                  <dt class="flex flex-1 items-center">
+                    <p class="w-3 font-medium text-gray-900">5<span class="sr-only"> star reviews</span></p>
+                    <div aria-hidden="true" class="ml-1 flex flex-1 items-center">
+                      <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                          d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                          clip-rule="evenodd" />
+                      </svg>
+
+                      <div class="relative ml-3 flex-1">
+                        <div class="h-2.5 rounded-full border border-gray-200 bg-gray-100"></div>
+                        <div style="width: calc(1019 / 1624 * 100%)"
+                          class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"></div>
+                      </div>
+                    </div>
+                  </dt>
+                  <dd class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">63%</dd>
+                </div>
+                <div class="flex items-center text-sm">
+                  <dt class="flex flex-1 items-center">
+                    <p class="w-3 font-medium text-gray-900">4<span class="sr-only"> star reviews</span></p>
+                    <div aria-hidden="true" class="ml-1 flex flex-1 items-center">
+                      <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                          d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                          clip-rule="evenodd" />
+                      </svg>
+
+                      <div class="relative ml-3 flex-1">
+                        <div class="h-2.5 rounded-full border border-gray-200 bg-gray-100"></div>
+                        <div style="width: calc(162 / 1624 * 100%)"
+                          class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"></div>
+                      </div>
+                    </div>
+                  </dt>
+                  <dd class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">10%</dd>
+                </div>
+                <div class="flex items-center text-sm">
+                  <dt class="flex flex-1 items-center">
+                    <p class="w-3 font-medium text-gray-900">3<span class="sr-only"> star reviews</span></p>
+                    <div aria-hidden="true" class="ml-1 flex flex-1 items-center">
+                      <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                          d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                          clip-rule="evenodd" />
+                      </svg>
+
+                      <div class="relative ml-3 flex-1">
+                        <div class="h-2.5 rounded-full border border-gray-200 bg-gray-100"></div>
+                        <div style="width: calc(97 / 1624 * 100%)"
+                          class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"></div>
+                      </div>
+                    </div>
+                  </dt>
+                  <dd class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">6%</dd>
+                </div>
+                <div class="flex items-center text-sm">
+                  <dt class="flex flex-1 items-center">
+                    <p class="w-3 font-medium text-gray-900">2<span class="sr-only"> star reviews</span></p>
+                    <div aria-hidden="true" class="ml-1 flex flex-1 items-center">
+                      <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                          d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                          clip-rule="evenodd" />
+                      </svg>
+
+                      <div class="relative ml-3 flex-1">
+                        <div class="h-2.5 rounded-full border border-gray-200 bg-gray-100"></div>
+                        <div style="width: calc(199 / 1624 * 100%)"
+                          class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"></div>
+                      </div>
+                    </div>
+                  </dt>
+                  <dd class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">12%</dd>
+                </div>
+                <div class="flex items-center text-sm">
+                  <dt class="flex flex-1 items-center">
+                    <p class="w-3 font-medium text-gray-900">1<span class="sr-only"> star reviews</span></p>
+                    <div aria-hidden="true" class="ml-1 flex flex-1 items-center">
+                      <svg class="h-5 w-5 flex-shrink-0 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                          d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                          clip-rule="evenodd" />
+                      </svg>
+
+                      <div class="relative ml-3 flex-1">
+                        <div class="h-2.5 rounded-full border border-gray-200 bg-gray-100"></div>
+                        <div style="width: calc(147 / 1624 * 100%)"
+                          class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400"></div>
+                      </div>
+                    </div>
+                  </dt>
+                  <dd class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">9%</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="flex flex-col divide-y divide-gray-200">
+            <div class="flex flex-col py-4 first:pt-0 last:pb-0">
+              <div class="flex items-center">
+                <img
+                  src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+                  alt="Emily Selman." class="h-12 w-12 rounded-full">
+                <div class="ml-4">
+                  <h4 class="text-sm font-bold text-gray-900">Emily Selman</h4>
+                  <div class="mt-1 flex items-center">
+                    <!-- Active: "text-yellow-400", Default: "text-gray-300" -->
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <p class="sr-only">5 out of 5 stars</p>
+                </div>
+              </div>
+
+              <div class="mt-4 space-y-6 text-base italic text-gray-600">
+                <p>Felicity is a super star. Excellent collaboration and discussions about design decisions,
+                  incredibly clean code, always a pleasure!</p>
+              </div>
+            </div>
+            <div class="flex flex-col py-4 first:pt-0 last:pb-0">
+              <div class="flex items-center">
+                <img
+                  src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+                  alt="Emily Selman." class="h-12 w-12 rounded-full">
+                <div class="ml-4">
+                  <h4 class="text-sm font-bold text-gray-900">Emily Selman</h4>
+                  <div class="mt-1 flex items-center">
+                    <!-- Active: "text-yellow-400", Default: "text-gray-300" -->
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                    <svg class="text-yellow-400 h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"
+                      aria-hidden="true">
+                      <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <p class="sr-only">5 out of 5 stars</p>
+                </div>
+              </div>
+
+              <div class="mt-4 space-y-6 text-base italic text-gray-600">
+                <p>Felicity is a super star. Excellent collaboration and discussions about design decisions,
+                  incredibly clean code, always a pleasure!</p>
+              </div>
+            </div>
+
+            <!-- More reviews... -->
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}

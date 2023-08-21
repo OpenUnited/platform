@@ -1,7 +1,16 @@
 import os
 
-from talent.models import Person, Skill, Expertise
+from talent.models import Person, Skill, Expertise, Status
 from openunited import settings
+
+
+class StatusService:
+    @staticmethod
+    def create(**kwargs):
+        status = Status(**kwargs)
+        status.save()
+
+        return status
 
 
 class PersonService:

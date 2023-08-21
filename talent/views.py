@@ -1,7 +1,10 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
+from django.views.generic.base import TemplateView
 
 from .models import Person, Skill, Expertise
 from .forms import PersonProfileForm
@@ -108,3 +111,30 @@ def list_skill_and_expertise(request):
         return JsonResponse(skill_expertise_pairs, safe=False)
 
     return JsonResponse([], safe=False)
+
+
+import ipdb
+
+
+class TalentPortfolio(TemplateView):
+    User = get_user_model()
+    template_name = "talent/portfolio.html"
+
+    def get(self, request, username, *args, **kwargs):
+        # ipdb.set_trace()
+        user = get_object_or_404(self.User, username=username)
+        photo_url = "/media/avatars/profile-empty.png"
+        person = user.person
+        if person.photo:
+            photo_url = person.photo.url
+
+        context = {
+            "user": user,
+            "photo_url": photo_url,
+            "person": person,
+        }
+        return self.render_to_response(context)
+
+
+def status_and_points(request):
+    return HttpResponse("TODO")

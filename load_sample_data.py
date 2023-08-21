@@ -95,6 +95,16 @@ def generate_sample_data():
     for pd in person_data:
         people.append(PersonService.create(**pd))
 
+    # Create Status model instances
+    status_data = read_json_data("utility/sample_data/status.json", "status")
+
+    for index, sd in enumerate(status_data):
+        sd["person"] = people[index]
+
+    statuses = []
+    for sd in status_data:
+        statuses.append(StatusService.create(**sd))
+
     # Create ProductRoleAssignment model instances
     product_role_assignment_data = read_json_data(
         "utility/sample_data/product_role_assignment.json", "product_role_assignment"
@@ -285,7 +295,12 @@ if __name__ == "__main__":
     )
     from security.services import ProductRoleAssignmentService, UserService
     from product_management.models import Capability
-    from talent.services import PersonService, SkillService, ExpertiseService
+    from talent.services import (
+        PersonService,
+        SkillService,
+        ExpertiseService,
+        StatusService,
+    )
     from product_management.services import (
         InitiativeService,
         TagService,
