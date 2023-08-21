@@ -77,6 +77,7 @@ class Skill(AncestryMixin):
     )
     active = models.BooleanField(default=False, db_index=True)
     selectable = models.BooleanField(default=False)
+    display_boost_factor = models.PositiveSmallIntegerField(default=1)
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):

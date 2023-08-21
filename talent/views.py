@@ -71,7 +71,7 @@ class ProfileView(UpdateView):
 
 
 def get_skills(request):
-    skill_queryset = Skill.objects.filter(active=True).values()
+    skill_queryset = Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
 
