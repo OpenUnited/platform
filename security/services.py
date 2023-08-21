@@ -83,22 +83,6 @@ class ProductRoleAssignmentService:
 
         return product_role_assignment
 
-    @staticmethod
-    def is_organisation_provided(
-        product_role_assignment: ProductRoleAssignment,
-    ) -> Exception | None:
-        if (
-            product_role_assignment.role
-            in [
-                ProductRoleAssignment.PRODUCT_ADMIN,
-                ProductRoleAssignment.PRODUCT_MANAGER,
-            ]
-            and not product_role_assignment.organisation
-        ):
-            raise ValidationError(
-                "Organisation field must be filled for Product Admins and Managers."
-            )
-
 
 def create_and_send_verification_code(email: str) -> int:
     """

@@ -29,6 +29,9 @@ class Person(TimeStampMixin):
         db_table = "talent_person"
         verbose_name_plural = "People"
 
+    def get_full_name(self):
+        return self.full_name
+
     def get_short_name(self):
         return self.preferred_name
 
