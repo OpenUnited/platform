@@ -1,6 +1,6 @@
-!/bin/bash
+#!/bin/bash
 
-Reset existing database
+# Reset existing database
 echo "Reset existing database"
 echo "----------------------------------------------------------"
 nohup python reset_database.py
