@@ -167,6 +167,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+STATIC_ROOT = "assets/"
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
