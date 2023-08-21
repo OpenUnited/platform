@@ -18,7 +18,7 @@ class User(AbstractUser, TimeStampMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f"{self.username} - {self.email}"
+        return f"{self.person} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
 
 
 class SignUpRequest(TimeStampMixin):
