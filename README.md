@@ -59,3 +59,22 @@ Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your brows
 
 Not working? Please check [the Django docs](https://docs.djangoproject.com/en/4.2/intro/tutorial01/) and make sure you have [PostgreSQL installed](https://www.google.com/search?q=how+to+install+postgresql)
 
+### Running the platform locally using docker
+
+Make sure you have docker install on your machine.
+
+```
+cp .env.example .env
+cp docker.env.example docker.env
+
+# Change them as you need
+
+docker compose --env-file docker.env up --build
+```
+
+**Notes: Docker Networking**
+- For linux machine you can set the network_name=host in docker.env
+- For docker desktop in Mac or Windows you can set the custom network network_name=custom_network_name in docker.env.
+(N.B. If you facing issue like  network custom_network_name not found You have to create it like docker network create  custom_network_name )
+
+Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your browser.
