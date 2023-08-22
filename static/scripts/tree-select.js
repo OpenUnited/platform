@@ -19,17 +19,11 @@ function makeAjaxRequest(url, callback) {
     xmlhttp.send();
 }
 
-// Function to initialize Treeselect
 function initializeTreeselect(options, domElement) {
     const treeselect = new Treeselect({
         parentHtmlContainer: domElement,
         value: [],
         options: mapOptionsExpertiseToOptions(options),
-    });
-
-    // Kept for debugging purposes
-    treeselect.srcElement.addEventListener('input', e => {
-        console.log('Selected value:', e.detail);
     });
 
     return treeselect;
@@ -65,8 +59,8 @@ function mapOptionsExpertiseToOptions(optionsExpertise) {
 const skillsField = document.querySelector(".treeselect-skills");
 const expertiseField = document.querySelector(".treeselect-expertise");
 
-const hiddenSkillsField = document.getElementById("selected_skills");
-const hiddenExpertiseField = document.getElementById("selected-expertise");
+const hiddenSkillsField = document.getElementById("selected-skills");
+const hiddenExpertiseField = document.getElementById("selected-expert");
 const skillExpertiseTable = document.getElementById("skill-expertise-table");
 
 // Fetch and initialize skills options

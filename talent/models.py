@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
 from openunited.settings.base import PERSON_PHOTO_UPLOAD_TO
@@ -47,11 +48,11 @@ class Status(models.Model):
     BEEKEEPER = "Beekeeper"
 
     STATUS_CHOICES = [
-        DRONE,
-        HONEYBEE,
-        TRUSTED_BEE,
-        QUEEN_BEE,
-        BEEKEEPER,
+        (DRONE, "Drone"),
+        (HONEYBEE, "Honeybee"),
+        (TRUSTED_BEE, "Trusted Bee"),
+        (QUEEN_BEE, "Queen Bee"),
+        (BEEKEEPER, "Beekeeper"),
     ]
 
     STATUS_POINT_MAPPING = {
@@ -62,10 +63,18 @@ class Status(models.Model):
         BEEKEEPER: 8000,
     }
 
+    STATUS_PRIVILEGES_MAPPING = {
+        DRONE: _("Earn points by completing bounties, submitting Ideas & Bugs"),
+        HONEYBEE: _("Earn payment for payment-eligible bounties on openunited.com"),
+        TRUSTED_BEE: _("Early Access to claim top tasks"),
+        QUEEN_BEE: _("A grant of 1000 points for your own open product on OpenUnited"),
+        BEEKEEPER: _("Invite new products to openunited.com and grant points"),
+    }
+
     person = models.OneToOneField(
         Person, on_delete=models.CASCADE, related_name="status"
     )
-    name = models.CharField(max_length=20, default=DRONE)
+    name = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRONE)
     points = models.PositiveIntegerField(default=0)
 
     def __str__(self):

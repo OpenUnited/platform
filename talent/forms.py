@@ -4,6 +4,17 @@ from .models import Person
 
 
 class PersonProfileForm(forms.ModelForm):
+    selected_skill_ids = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={"id": "selected-skills", "name": "selected-skills"}
+        )
+    )
+    selected_expertise_ids = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={"id": "selected-expert", "name": "selected-expert"}
+        )
+    )
+
     class Meta:
         model = Person
         fields = [

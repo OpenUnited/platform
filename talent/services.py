@@ -1,4 +1,6 @@
 import os
+from urllib.parse import urlparse
+
 
 from talent.models import Person, Skill, Expertise, Status
 from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
@@ -20,6 +22,30 @@ class StatusService:
         status.save()
 
         return status
+
+    @staticmethod
+    def get_privileges(status: str) -> str:
+        return Status.STATUS_PRIVILEGES_MAPPING.get(status)
+
+    @staticmethod
+    def get_statuses() -> list:
+        return list(Status.STATUS_POINT_MAPPING.keys())
+
+    @staticmethod
+    def get_display_points(status: str) -> str:
+        statuses = StatusService.get_statuses()
+
+        # if `status` is the last one in `statuses`
+        if status == statuses[-1]:
+            return f">= {StatusService.get_points_for_status(status)}"
+
+        # +1 is to get the next status
+        index = statuses.index(status) + 1
+        return f"< {StatusService.get_points_for_status(statuses[index])}"
+
+    @staticmethod
+    def get_points_for_status(status: str) -> str:
+        return Status.STATUS_POINT_MAPPING.get(status)
 
 
 class PersonService:
@@ -47,6 +73,11 @@ class PersonService:
             "current_position": person.current_position,
         }
         return initial
+
+    @staticmethod
+    def get_path_from_url(url_string):
+        parsed = urlparse(url_string)
+        return parsed.path
 
     @staticmethod
     def does_require_upload(person: Person) -> [str, bool]:

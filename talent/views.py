@@ -8,7 +8,10 @@ from django.views.generic.base import TemplateView
 
 from .models import Person, Skill, Expertise
 from .forms import PersonProfileForm
-from .services import PersonService
+from .services import PersonService, StatusService
+
+
+import ipdb
 
 
 class ProfileView(UpdateView):
@@ -62,19 +65,25 @@ class ProfileView(UpdateView):
         if form.is_valid():
             form.save()
 
-            # generate skill and expertise for this person
-            # make sure there is at least one skill
-            # skill_ids = json.loads(request.POST.get("selected_skills"))
-            # print(skill_ids)
+            skills_queryset = []
+            selected_skills = request.POST.get("selected_skill_ids")
+            if selected_skills:
+                skill_ids = json.loads(selected_skills)
+                skills_queryset = Skill.objects.filter(id__in=skill_ids)
 
-            # make sure there is at least one expertise
-            # expertise_ids = json.loads(request.POST.get("selected-expertise"))
-            # print(expertise_ids)
+            expertise_queryset = []
+            selected_expertise = request.POST.get("selected_expertise_ids")
+            if selected_expertise:
+                expertise_ids = json.loads(selected_expertise)
+                expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
+
         return super().post(request, *args, **kwargs)
 
 
 def get_skills(request):
-    skill_queryset = Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
+    skill_queryset = (
+        Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
+    )
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
 
@@ -114,9 +123,6 @@ def list_skill_and_expertise(request):
     return JsonResponse([], safe=False)
 
 
-import ipdb
-
-
 class TalentPortfolio(TemplateView):
     User = get_user_model()
     template_name = "talent/portfolio.html"
@@ -129,10 +135,14 @@ class TalentPortfolio(TemplateView):
         if person.photo:
             photo_url = person.photo.url
 
+        status = person.status
         context = {
             "user": user,
             "photo_url": photo_url,
             "person": person,
+            "status": status,
+            "PersonService": PersonService,
+            "StatusService": StatusService,
         }
         return self.render_to_response(context)
 
