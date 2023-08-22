@@ -63,6 +63,7 @@ class ProfileView(UpdateView):
             request.POST, request.FILES, instance=request.user.person
         )
         if form.is_valid():
+            ipdb.set_trace()
             form.save()
 
             skills_queryset = []
