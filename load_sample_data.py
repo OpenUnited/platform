@@ -137,6 +137,26 @@ def generate_sample_data():
         pd["owner"] = choice(organisations)
         products.append(ProductService.create(**pd))
 
+    # Create ProductRoleAssignment model instances
+    product_role_assignment_data = read_json_data(
+        "utility/sample_data/product_role_assignment.json", "product_role_assignment"
+    )
+
+    copy_people = people.copy()
+    copy_products = products.copy()
+    for ppd in product_role_assignment_data:
+        p = choice(copy_people)
+        ppd["person"] = p
+        copy_people.remove(p)
+
+        product = choice(copy_products)
+        ppd["product"] = product
+        copy_products.remove(product)
+
+    product_people = []
+    for ppd in product_role_assignment_data:
+        product_people.append(ProductRoleAssignmentService.create(**ppd))
+
     # Create Idea model instances
     idea_data = read_json_data("utility/sample_data/idea.json", "idea")
 
@@ -283,7 +303,9 @@ def run_data_generation():
 
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openunited.settings")
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE", os.environ.get("DJANGO_SETTINGS_MODULE")
+    )
     django.setup()
 
     from commerce.services import (

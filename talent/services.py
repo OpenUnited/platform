@@ -1,7 +1,16 @@
 import os
 
 from talent.models import Person, Skill, Expertise, Status
-from openunited import settings
+from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
+
+
+class StatusService:
+    @staticmethod
+    def create(**kwargs):
+        status = Status(**kwargs)
+        status.save()
+
+        return status
 
 
 class StatusService:
@@ -41,9 +50,7 @@ class PersonService:
 
     @staticmethod
     def does_require_upload(person: Person) -> [str, bool]:
-        image_url = (
-            settings.MEDIA_URL + settings.PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
-        )
+        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
         requires_upload = True
 
         if person.photo:

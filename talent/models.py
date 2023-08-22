@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from treebeard.mp_tree import MP_Node
 
-from openunited.settings import PERSON_PHOTO_UPLOAD_TO
+from openunited.settings.base import PERSON_PHOTO_UPLOAD_TO
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 from engagement.models import Notification
 import engagement
@@ -28,6 +28,9 @@ class Person(TimeStampMixin):
     class Meta:
         db_table = "talent_person"
         verbose_name_plural = "People"
+
+    def get_full_name(self):
+        return self.full_name
 
     def get_short_name(self):
         return self.preferred_name
@@ -107,6 +110,7 @@ class Skill(AncestryMixin):
     )
     active = models.BooleanField(default=False, db_index=True)
     selectable = models.BooleanField(default=False)
+    display_boost_factor = models.PositiveSmallIntegerField(default=1)
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):

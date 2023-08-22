@@ -592,6 +592,7 @@
         "active": true,
         "selectable": false,
         "name": "Product, User Experience & Research",
+        "display_boost_factor": 49,
         "parent_id": null
     },
     {
@@ -634,6 +635,7 @@
         "active": true,
         "selectable": true,
         "name": "Product Management",
+        "display_boost_factor": 50,
         "parent_id": 85
     },
     {
@@ -662,6 +664,7 @@
         "active": true,
         "selectable": false,
         "name": "Software Development (inc. Web, Mobile)",
+        "display_boost_factor": 100,
         "parent_id": null
     },
     {

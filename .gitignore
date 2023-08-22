@@ -86,7 +86,9 @@ __pycache__/
 local_settings.py
 
 .env
+docker.env
 db.sqlite3
 /.venv
 
 .vscode/
+openunited/settings/local.py

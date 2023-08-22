@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from talent.models import Person
+from product_management.models import Product
 from .managers import UserManager
 
 
@@ -18,7 +19,7 @@ class User(AbstractUser, TimeStampMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f"{self.username} - {self.email}"
+        return f"{self.person} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
 
 
 class SignUpRequest(TimeStampMixin):
@@ -57,15 +58,11 @@ class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
         (PRODUCT_ADMIN, "Admin"),
     )
     person = models.OneToOneField(Person, on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, default="")
     role = models.IntegerField(choices=ROLES, default=0)
 
     def __str__(self):
         return f"{self.person} - {self.get_role_display()}"
-
-    def clean(self):
-        from security.services import ProductRoleAssignmentService
-
-        ProductRoleAssignmentService.is_organisation_provided(self)
 
 
 class BlacklistedUsernames(models.Model):
