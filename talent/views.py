@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
 
-from .models import Person, Skill, Expertise
+from .models import Person, Skill, Expertise, PersonSkill
 from .forms import PersonProfileForm
 from .services import PersonService, StatusService
 
@@ -59,24 +59,30 @@ class ProfileView(UpdateView):
 
     # TODO: Add a success message under the photo upload field
     def post(self, request, *args, **kwargs):
-        form = PersonProfileForm(
-            request.POST, request.FILES, instance=request.user.person
-        )
+        person = request.user.person
+        form = PersonProfileForm(request.POST, request.FILES, instance=person)
         if form.is_valid():
-            ipdb.set_trace()
             form.save()
 
+            person_skill = PersonSkill(person=person)
             skills_queryset = []
             selected_skills = request.POST.get("selected_skill_ids")
             if selected_skills:
                 skill_ids = json.loads(selected_skills)
-                skills_queryset = Skill.objects.filter(id__in=skill_ids)
+                skills_queryset = Skill.objects.filter(id__in=skill_ids).values_list(
+                    "name", flat=True
+                )
+                person_skill.skill = list(skills_queryset)
 
             expertise_queryset = []
             selected_expertise = request.POST.get("selected_expertise_ids")
             if selected_expertise:
                 expertise_ids = json.loads(selected_expertise)
-                expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
+                expertise_queryset = Expertise.objects.filter(
+                    id__in=expertise_ids
+                ).values_list("name", flat=True)
+                person_skill.expertise = list(expertise_queryset)
+                person_skill.save()
 
         return super().post(request, *args, **kwargs)
 
@@ -137,6 +143,7 @@ class TalentPortfolio(TemplateView):
             photo_url = person.photo.url
 
         status = person.status
+        person_skill = PersonSkill.objects.get(person=person)
         context = {
             "user": user,
             "photo_url": photo_url,
@@ -144,6 +151,8 @@ class TalentPortfolio(TemplateView):
             "status": status,
             "PersonService": PersonService,
             "StatusService": StatusService,
+            "skills": person_skill.skill,
+            "expertise": person_skill.expertise,
         }
         return self.render_to_response(context)
 
