@@ -237,15 +237,29 @@ def generate_sample_data():
     # Create Bounty model instances
     bounty_data = read_json_data("utility/sample_data/bounty.json", "bounty")
 
-    for elem in bounty_data:
-        elem["challenge"] = choice(challenges)
-        elem["skill"] = choice(skills)
+    # NOTE: len(bounty.json) == len(challenge.json)
+    for index, bd in enumerate(bounty_data):
+        bd["challenge"] = challenges[index]
+        bd["skill"] = choice(skills)
 
     bounties = []
     for bd in bounty_data:
         bounty = BountyService.create(**bd)
         bounty.expertise.set(sample(expertise, k=randint(1, 4)))
         bounties.append(bounty)
+
+    # Create BountyClaim model instances
+    bounty_claim_data = read_json_data(
+        "utility/sample_data/bounty_claim.json", "bounty_claim"
+    )
+
+    MAX_PERSON_INDEX = 5
+    bounty_claims = []
+    # NOTE: len(bounty.json) == len(bounty_claims.json)
+    for i, bcd in enumerate(bounty_claim_data):
+        bcd["person"] = people[i % MAX_PERSON_INDEX]
+        bcd["bounty"] = bounties[i]
+        bounty_claims.append(BountyClaimService.create(**bcd))
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -336,6 +350,7 @@ if __name__ == "__main__":
         ExpertiseService,
         StatusService,
         PersonSkillService,
+        BountyClaimService,
     )
     from product_management.services import (
         InitiativeService,

@@ -190,37 +190,37 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
     def __str__(self):
-        return "{}: {} ({})".format(self.bounty.challenge, self.person, self.kind)
+        return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
 
 
-@receiver(post_save, sender=BountyClaim)
-def save_bounty_claim(sender, instance, created, **kwargs):
-    challenge = instance.bounty.challenge
-    reviewer = getattr(challenge, "reviewer", None)
-    contributor = instance.person
-    contributor_email = contributor.email_address
-    reviewer_user = reviewer.user if reviewer else None
+# @receiver(post_save, sender=BountyClaim)
+# def save_bounty_claim(sender, instance, created, **kwargs):
+#     challenge = instance.bounty.challenge
+#     reviewer = getattr(challenge, "reviewer", None)
+#     contributor = instance.person
+#     contributor_email = contributor.email_address
+#     reviewer_user = reviewer.user if reviewer else None
 
-    if not created:
-        # contributor has submitted the work for review
-        if (
-            instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW
-            and instance.tracker.previous("kind")
-            is not BountyClaim.CLAIM_TYPE_IN_REVIEW
-        ):
-            challenge = instance.bounty.challenge
-            subject = f'The challenge "{challenge.title}" is ready to review'
-            message = (
-                f"You can see the challenge here: {challenge.get_challenge_link()}"
-            )
-            if reviewer:
-                engagement.tasks.send_notification.delay(
-                    [Notification.Type.EMAIL],
-                    Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
-                    receivers=[reviewer.id],
-                    task_title=challenge.title,
-                    task_link=challenge.get_challenge_link(),
-                )
+#     if not created:
+#         # contributor has submitted the work for review
+#         if (
+#             instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW
+#             and instance.tracker.previous("kind")
+#             is not BountyClaim.CLAIM_TYPE_IN_REVIEW
+#         ):
+#             challenge = instance.bounty.challenge
+#             subject = f'The challenge "{challenge.title}" is ready to review'
+#             message = (
+#                 f"You can see the challenge here: {challenge.get_challenge_link()}"
+#             )
+#             if reviewer:
+#                 engagement.tasks.send_notification.delay(
+#                     [Notification.Type.EMAIL],
+#                     Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
+#                     receivers=[reviewer.id],
+#                     task_title=challenge.title,
+#                     task_link=challenge.get_challenge_link(),
+#                 )
 
 
 class Comment(MP_Node):
@@ -316,12 +316,3 @@ def save_bounty_claim_request(sender, instance, created, **kwargs):
                     receivers=[reviewer.id],
                     task_title=bounty_claim.bounty.challenge.title,
                 )
-
-
-# class Review(TimeStampMixin, UUIDMixin):
-#     product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
-#     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-#     initiative = models.ForeignKey('product_management.Initiative', on_delete=models.CASCADE, null=True, blank=True)
-#     score = models.DecimalField(decimal_places=2, max_digits=3)
-#     text = models.TextField()
-#     created_by = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, related_name="given")

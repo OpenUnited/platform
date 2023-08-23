@@ -2,7 +2,7 @@ import os
 from urllib.parse import urlparse
 
 
-from talent.models import Person, Skill, Expertise, Status, PersonSkill
+from talent.models import Person, Skill, Expertise, Status, PersonSkill, BountyClaim
 from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
 
 
@@ -183,3 +183,12 @@ class PersonSkillService:
         person_skill.save()
 
         return person_skill
+
+
+class BountyClaimService:
+    @staticmethod
+    def create(**kwargs):
+        bounty_claim = BountyClaim(**kwargs)
+        bounty_claim.save()
+
+        return bounty_claim
