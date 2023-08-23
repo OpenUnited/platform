@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
 
-from .models import Person, Skill, Expertise, PersonSkill
+from .models import Person, Skill, Expertise, PersonSkill, BountyClaim
+from product_management.models import Challenge
 from .forms import PersonProfileForm
 from .services import PersonService, StatusService
 
@@ -130,12 +131,12 @@ def list_skill_and_expertise(request):
     return JsonResponse([], safe=False)
 
 
+# NOTE: The links in this view are not completed
 class TalentPortfolio(TemplateView):
     User = get_user_model()
     template_name = "talent/portfolio.html"
 
     def get(self, request, username, *args, **kwargs):
-        # ipdb.set_trace()
         user = get_object_or_404(self.User, username=username)
         photo_url = "/media/avatars/profile-empty.png"
         person = user.person
@@ -144,6 +145,10 @@ class TalentPortfolio(TemplateView):
 
         status = person.status
         person_skill = PersonSkill.objects.get(person=person)
+        bounty_claims = BountyClaim.objects.filter(
+            person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
+        )
+
         context = {
             "user": user,
             "photo_url": photo_url,
@@ -153,6 +158,7 @@ class TalentPortfolio(TemplateView):
             "StatusService": StatusService,
             "skills": person_skill.skill,
             "expertise": person_skill.expertise,
+            "bounty_claims": bounty_claims,
         }
         return self.render_to_response(context)
 
