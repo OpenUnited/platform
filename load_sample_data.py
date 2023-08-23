@@ -105,21 +105,6 @@ def generate_sample_data():
     for sd in status_data:
         statuses.append(StatusService.create(**sd))
 
-    # Create ProductRoleAssignment model instances
-    product_role_assignment_data = read_json_data(
-        "utility/sample_data/product_role_assignment.json", "product_role_assignment"
-    )
-
-    copy_people = people.copy()
-    for ppd in product_role_assignment_data:
-        p = choice(copy_people)
-        copy_people.remove(p)
-        ppd["person"] = p
-
-    product_people = []
-    for ppd in product_role_assignment_data:
-        product_people.append(ProductRoleAssignmentService.create(**ppd))
-
     # Create Organisation model instances
     organisation_data = read_json_data(
         "utility/sample_data/organisation.json", "organisation"
