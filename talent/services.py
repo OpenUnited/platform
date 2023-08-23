@@ -95,6 +95,7 @@ class PersonService:
             "website_link": person.website_link,
             "send_me_bounties": person.send_me_bounties,
             "current_position": person.current_position,
+            "location": person.location,
         }
         return initial
 
@@ -104,7 +105,7 @@ class PersonService:
         return parsed.path.strip("/")
 
     @staticmethod
-    def does_require_upload(person: Person) -> [str, bool]:
+    def get_photo_url(person: Person) -> [str, bool]:
         image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
         requires_upload = True
 

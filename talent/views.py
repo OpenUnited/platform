@@ -12,9 +12,6 @@ from .forms import PersonProfileForm
 from .services import PersonService, StatusService
 
 
-import ipdb
-
-
 class ProfileView(UpdateView):
     model = Person
     template_name = "talent/profile.html"
@@ -36,8 +33,8 @@ class ProfileView(UpdateView):
         )
         context["pk"] = person.pk
 
-        image_url, requires_upload = PersonService.does_require_upload(person)
-        context["image"] = image_url
+        image_url, requires_upload = PersonService.get_photo_url(person)
+        context["photo_url"] = image_url
         context["requires_upload"] = requires_upload
 
         return context
@@ -138,10 +135,8 @@ class TalentPortfolio(TemplateView):
 
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(self.User, username=username)
-        photo_url = "/media/avatars/profile-empty.png"
         person = user.person
-        if person.photo:
-            photo_url = person.photo.url
+        photo_url, _ = PersonService.get_photo_url(person)
 
         status = person.status
         person_skill = PersonSkill.objects.get(person=person)
