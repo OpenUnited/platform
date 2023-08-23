@@ -24,6 +24,7 @@ class PersonProfileForm(forms.ModelForm):
             "headline",
             "overview",
             "current_position",
+            "location",
             "github_link",
             "twitter_link",
             "linkedin_link",
@@ -67,6 +68,12 @@ class PersonProfileForm(forms.ModelForm):
                 attrs={
                     "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
                     "placeholder": "Introduce your background",
+                }
+            ),
+            "location": forms.TextInput(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Tokyo, Japan",
                 }
             ),
             "github_link": forms.TextInput(

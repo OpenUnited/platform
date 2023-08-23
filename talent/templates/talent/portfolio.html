@@ -64,12 +64,14 @@
                     </a>
                 </div>
                 <div class="space-y-1.5 flex flex-col">
+                    {% if person.location %}
                     <div class="flex items-center text-[#4b5563] text-sm transition-all">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
                             <img src="{{ static('images/geo.svg') }}" alt="Geolocation Icon">
                         </span>
-                        City Name
+                        {{ person.location }}
                     </div>
+                    {% endif %}
                     {% if person.linkedin_link %}
                     <a href="{{ person.linkedin_link}}"
                         class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">

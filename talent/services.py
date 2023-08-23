@@ -101,7 +101,7 @@ class PersonService:
     @staticmethod
     def get_path_from_url(url_string):
         parsed = urlparse(url_string)
-        return parsed.path
+        return parsed.path.strip("/")
 
     @staticmethod
     def does_require_upload(person: Person) -> [str, bool]:

@@ -25,6 +25,11 @@
                     {{ form.current_position }}
                 </div>
                 <div class="md:col-span-2">
+                    <label for="{{ form.location.id_for_label }}"
+                        class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">{{ form.location.label }}</label>
+                    {{ form.location }}
+                </div>
+                <div class="md:col-span-2">
                     <label for="{{ form.headline.id_for_label }}"
                         class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">{{ form.headline.label }}</label>
                     {{ form.headline }}

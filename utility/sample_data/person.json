@@ -6,7 +6,8 @@
         "overview": "Super user",
         "twitter_link": "https://twitter.com/dogukanteber",
         "linkedin_link": "https://www.linkedin.com/in/dogukanteber/",
-        "current_position": "Python Developer @ OpenUnited"
+        "current_position": "Python Developer @ OpenUnited",
+        "location": "New York City, United States"
     },
     {
         "full_name": "John Doe",
@@ -16,7 +17,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/johndoe",
         "linkedin_link": "https://www.linkedin.com/in/johndoe/",
-        "current_position": "Software Engineer @ Google"
+        "current_position": "Software Engineer @ Google",
+        "location": "Tokyo, Japan"
     },
     {
         "full_name": "Emily Smith",
@@ -26,7 +28,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/emilysmithdesigns",
         "linkedin_link": "https://www.linkedin.com/in/emilysmithdesigns/",
-        "current_position": "Senior Graphic Designer @ Apple"
+        "current_position": "Senior Graphic Designer @ Apple",
+        "location": "London, United Kingdom"
     },
     {
         "full_name": "Michael Johnson",
@@ -36,7 +39,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/mjohnson_cpa",
         "linkedin_link": "https://www.linkedin.com/in/mjohnsoncpa/",
-        "current_position": "Financial Advisor @ Morgan Stanley"
+        "current_position": "Financial Advisor @ Morgan Stanley",
+        "location": "Paris, France"
     },
     {
         "full_name": "Sophia Garcia",
@@ -46,7 +50,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/sophiagarcia_env",
         "linkedin_link": "https://www.linkedin.com/in/sophiagarciaenv/",
-        "current_position": "Environmental Researcher @ World Wildlife Fund"
+        "current_position": "Environmental Researcher @ World Wildlife Fund",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "William Anderson",
@@ -56,7 +61,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/wanderson_photo",
         "linkedin_link": "https://www.linkedin.com/in/williamandersonphoto/",
-        "current_position": "Freelance Photographer"
+        "current_position": "Freelance Photographer",
+        "location": "Sydney, Australia"
     },
     {
         "full_name": "Olivia Brown",
@@ -66,7 +72,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/oliviayoga",
         "linkedin_link": "https://www.linkedin.com/in/oliviayogainstructor/",
-        "current_position": "Yoga Instructor @ Fitness Studio"
+        "current_position": "Yoga Instructor @ Fitness Studio",
+        "location": "Sydney, Australia"
     },
     {
         "full_name": "James Wilson",
@@ -76,7 +83,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/jameswilson_pmp",
         "linkedin_link": "https://www.linkedin.com/in/jameswilsonpmp/",
-        "current_position": "Senior Project Manager @ Microsoft"
+        "current_position": "Senior Project Manager @ Microsoft",
+        "location": "Sydney, Australia"
     },
     {
         "full_name": "Emma Lee",
@@ -86,7 +94,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/emmalee_designs",
         "linkedin_link": "https://www.linkedin.com/in/emmaleeuiux/",
-        "current_position": "UI/UX Designer @ Adobe"
+        "current_position": "UI/UX Designer @ Adobe",
+        "location": "Moscow, Russia"
     },
     {
         "full_name": "David Nguyen",
@@ -96,7 +105,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/davidnguyen_dev",
         "linkedin_link": "https://www.linkedin.com/in/davidnguyendev/",
-        "current_position": "Software Developer @ Amazon"
+        "current_position": "Software Developer @ Amazon",
+        "location": "Moscow, Russia"
     },
     {
         "full_name": "Sarah Graham",
@@ -106,7 +116,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/sarahgraham_founder",
         "linkedin_link": "https://www.linkedin.com/in/sarahgrahamstartup/",
-        "current_position": "Co-founder @ TechRevolution"
+        "current_position": "Co-founder @ TechRevolution",
+        "location": "Moscow, Russia"
     },
     {
         "full_name": "Kevin Miller",
@@ -116,7 +127,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/kevinmiller_pm",
         "linkedin_link": "https://www.linkedin.com/in/kevinmillerpm/",
-        "current_position": "Product Manager @ Facebook"
+        "current_position": "Product Manager @ Facebook",
+        "location": "Stockholm, Sweden"
     },
     {
         "full_name": "Jessica Lopez",
@@ -126,7 +138,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/jessicalopez_ui",
         "linkedin_link": "https://www.linkedin.com/in/jessicalopezuiux/",
-        "current_position": "UI/UX Designer @ Google"
+        "current_position": "UI/UX Designer @ Google",
+        "location": "Stockholm, Sweden"
     },
     {
         "full_name": "Alex Robinson",
@@ -136,7 +149,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/alexrobinson_dev",
         "linkedin_link": "https://www.linkedin.com/in/alexrobinsondev/",
-        "current_position": "Development Manager @ Microsoft"
+        "current_position": "Development Manager @ Microsoft",
+        "location": "Stockholm, Sweden"
     },
     {
         "full_name": "Amanda Baker",
@@ -146,7 +160,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/amandabaker_digmar",
         "linkedin_link": "https://www.linkedin.com/in/amandabakerdigmar/",
-        "current_position": "Digital Marketing Specialist @ Twitter"
+        "current_position": "Digital Marketing Specialist @ Twitter",
+        "location": "Stockholm, Sweden"
     },
     {
         "full_name": "Mark Taylor",
@@ -156,7 +171,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/marktaylor_founder",
         "linkedin_link": "https://www.linkedin.com/in/marktaylorfounder/",
-        "current_position": "Founder & CEO @ ShopNex"
+        "current_position": "Founder & CEO @ ShopNex",
+        "location": "Stockholm, Sweden"
     },
     {
         "full_name": "Grace Hernandez",
@@ -166,7 +182,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/gracehernandez_fe",
         "linkedin_link": "https://www.linkedin.com/in/gracehernandezfe/",
-        "current_position": "Frontend Developer @ Shopify"
+        "current_position": "Frontend Developer @ Shopify",
+        "location": "Vienna, Austria"
     },
     {
         "full_name": "Robert Allen",
@@ -176,7 +193,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/robertallen_bdm",
         "linkedin_link": "https://www.linkedin.com/in/robertallenbdm/",
-        "current_position": "Business Development Manager @ Salesforce"
+        "current_position": "Business Development Manager @ Salesforce",
+        "location": "Vienna, Austria"
     },
     {
         "full_name": "Rachel Thomas",
@@ -186,7 +204,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/rachelthomas_ui",
         "linkedin_link": "https://www.linkedin.com/in/rachelthomasui/",
-        "current_position": "UI Designer @ IBM"
+        "current_position": "UI Designer @ IBM",
+        "location": "Vienna, Austria"
     },
     {
         "full_name": "Daniel Wilson",
@@ -196,7 +215,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/danielwilson_be",
         "linkedin_link": "https://www.linkedin.com/in/danielwilsonbe/",
-        "current_position": "Backend Developer @ Netflix"
+        "current_position": "Backend Developer @ Netflix",
+        "location": "Vienna, Austria"
     },
     {
         "full_name": "Michelle Carter",
@@ -206,7 +226,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/michellecarter_cs",
         "linkedin_link": "https://www.linkedin.com/in/michellecartercs/",
-        "current_position": "Content Strategist @ BuzzFeed"
+        "current_position": "Content Strategist @ BuzzFeed",
+        "location": "Vienna, Austria"
     },
     {
         "full_name": "Andrew Wong",
@@ -216,7 +237,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/andrewwong_datasci",
         "linkedin_link": "https://www.linkedin.com/in/andrewwongdatasci/",
-        "current_position": "Data Scientist @ Airbnb"
+        "current_position": "Data Scientist @ Airbnb",
+        "location": "Prague, Czech Republic"
     },
     {
         "full_name": "Natalie Parker",
@@ -226,7 +248,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/natalieparker_smm",
         "linkedin_link": "https://www.linkedin.com/in/natalieparkersmm/",
-        "current_position": "Social Media Manager @ Coca-Cola"
+        "current_position": "Social Media Manager @ Coca-Cola",
+        "location": "Prague, Czech Republic"
     },
     {
         "full_name": "Jason Miller",
@@ -236,7 +259,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/jasonmiller_fe",
         "linkedin_link": "https://www.linkedin.com/in/jasonmillerfe/",
-        "current_position": "Frontend Developer @ Microsoft"
+        "current_position": "Frontend Developer @ Microsoft",
+        "location": "Prague, Czech Republic"
     },
     {
         "full_name": "Samantha White",
@@ -246,7 +270,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/samanthawhite_mktg",
         "linkedin_link": "https://www.linkedin.com/in/samanthawhitemktg/",
-        "current_position": "Marketing Manager @ Amazon"
+        "current_position": "Marketing Manager @ Amazon",
+        "location": "Prague, Czech Republic"
     },
     {
         "full_name": "Christopher Lee",
@@ -256,7 +281,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/christopherlee_devops",
         "linkedin_link": "https://www.linkedin.com/in/christopherleedevops/",
-        "current_position": "DevOps Engineer @ Google"
+        "current_position": "DevOps Engineer @ Google",
+        "location": "Prague, Czech Republic"
     },
     {
         "full_name": "Melissa Chen",
@@ -266,7 +292,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/melissachen_ux",
         "linkedin_link": "https://www.linkedin.com/in/melissachenux/",
-        "current_position": "UX Researcher @ Apple"
+        "current_position": "UX Researcher @ Apple",
+        "location": "Prague, Czech Republic"
     },
     {
         "full_name": "Jonathan Murphy",
@@ -276,7 +303,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/jonathanmurphy_sales",
         "linkedin_link": "https://www.linkedin.com/in/jonathanmurphysales/",
-        "current_position": "Sales Manager @ Salesforce"
+        "current_position": "Sales Manager @ Salesforce",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "Stephanie Allen",
@@ -286,7 +314,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/stephanieallen_prod",
         "linkedin_link": "https://www.linkedin.com/in/stephanieallenprod/",
-        "current_position": "Product Designer @ Microsoft"
+        "current_position": "Product Designer @ Microsoft",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "Brandon Perez",
@@ -296,7 +325,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/brandonperez_data",
         "linkedin_link": "https://www.linkedin.com/in/brandonperezdata/",
-        "current_position": "Data Engineer @ Netflix"
+        "current_position": "Data Engineer @ Netflix",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "Amy Turner",
@@ -306,7 +336,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/amyturner_writer",
         "linkedin_link": "https://www.linkedin.com/in/amyturnerwriter/",
-        "current_position": "Content Writer @ The New York Times"
+        "current_position": "Content Writer @ The New York Times",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "Ryan Flores",
@@ -316,7 +347,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/ryanflores_arch",
         "linkedin_link": "https://www.linkedin.com/in/ryanfloresarch/",
-        "current_position": "Software Architect @ Microsoft"
+        "current_position": "Software Architect @ Microsoft",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "Lauren Barnes",
@@ -326,7 +358,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/laurenbarnes_ds",
         "linkedin_link": "https://www.linkedin.com/in/laurenbarnesds/",
-        "current_position": "Digital Strategist @ Google"
+        "current_position": "Digital Strategist @ Google",
+        "location": "Istanbul, Turkey"
     },
     {
         "full_name": "Eric Rivera",
@@ -336,7 +369,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/ericrivera_mobile",
         "linkedin_link": "https://www.linkedin.com/in/ericriveramobile/",
-        "current_position": "Mobile App Developer @ Apple"
+        "current_position": "Mobile App Developer @ Apple",
+        "location": "Mumbai, India"
     },
     {
         "full_name": "Hannah Cooper",
@@ -346,7 +380,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/hannahcooper_ui",
         "linkedin_link": "https://www.linkedin.com/in/hannahcooperui/",
-        "current_position": "UI Designer @ Adobe"
+        "current_position": "UI Designer @ Adobe",
+        "location": "Mumbai, India"
     },
     {
         "full_name": "Patrick Young",
@@ -356,7 +391,8 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/patrickyoung_ba",
         "linkedin_link": "https://www.linkedin.com/in/patrickyoungba/",
-        "current_position": "Business Analyst @ Amazon"
+        "current_position": "Business Analyst @ Amazon",
+        "location": "Mumbai, India"
     },
     {
         "full_name": "Olivia Hill",
@@ -366,7 +402,8 @@
         "send_me_bounties": false,
         "twitter_link": "https://twitter.com/oliviahill_design",
         "linkedin_link": "https://www.linkedin.com/in/oliviahilldesign/",
-        "current_position": "Graphic Designer @ Nike"
+        "current_position": "Graphic Designer @ Nike",
+        "location": "Mumbai, India"
     },
     {
         "full_name": "Matthew Martin",
@@ -376,6 +413,7 @@
         "send_me_bounties": true,
         "twitter_link": "https://twitter.com/matthewmartin_test",
         "linkedin_link": "https://www.linkedin.com/in/matthewmartintest/",
-        "current_position": "Software Tester @ Microsoft"
+        "current_position": "Software Tester @ Microsoft",
+        "location": "Mumbai, India"
     }
 ]

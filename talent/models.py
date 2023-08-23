@@ -19,6 +19,7 @@ class Person(TimeStampMixin):
     photo = models.ImageField(upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
+    location = models.TextField(max_length=128, null=True, blank=True)
     send_me_bounties = models.BooleanField(default=True)
     current_position = models.CharField(max_length=256, null=True, blank=True)
     twitter_link = models.URLField(null=True, blank=True, default="")
