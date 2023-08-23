@@ -175,12 +175,39 @@ def generate_sample_data():
     for sk in skill_data:
         skills.append(SkillService.create(**sk))
 
+    skill_ids = [skill.id for skill in skills]
+    skill_name_queryset = Skill.objects.filter(
+        id__in=skill_ids, active=True, selectable=True
+    ).values_list("name", flat=True)
+
     # Create Expertise model instances
     expertise_data = read_json_data("utility/sample_data/expertise.json", "expertise")
 
     expertise = []
     for exp in expertise_data:
         expertise.append(ExpertiseService.create(**exp))
+
+    expertise_ids = [exp.id for exp in expertise]
+    expertise_name_queryset = Expertise.objects.filter(
+        id__in=expertise_ids, selectable=True
+    ).values_list("name", flat=True)
+
+    # Create PersonSkill model instances
+    fancy_out(f"Create PersonSkill records")
+    person_skill_data = [{"person": p} for p in people]
+
+    person_skills = []
+    for psd in person_skill_data:
+        psd["skill"] = sample(
+            list(skill_name_queryset), randint(2, len(skill_name_queryset) // 2)
+        )
+        psd["expertise"] = list(
+            sample(
+                list(expertise_name_queryset),
+                randint(2, len(expertise_name_queryset) // 2),
+            )
+        )
+        person_skills.append(PersonSkillService.create(**psd))
 
     # Create Tag model instances
     tag_data = read_json_data("utility/sample_data/tag.json", "tag")
@@ -293,6 +320,7 @@ if __name__ == "__main__":
     )
     django.setup()
 
+    from talent.models import Skill, Expertise
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,
@@ -307,6 +335,7 @@ if __name__ == "__main__":
         SkillService,
         ExpertiseService,
         StatusService,
+        PersonSkillService,
     )
     from product_management.services import (
         InitiativeService,

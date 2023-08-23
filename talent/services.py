@@ -2,7 +2,7 @@ import os
 from urllib.parse import urlparse
 
 
-from talent.models import Person, Skill, Expertise, Status
+from talent.models import Person, Skill, Expertise, Status, PersonSkill
 from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
 
 
@@ -174,3 +174,12 @@ class ExpertiseService:
         expertise.save()
 
         return expertise
+
+
+class PersonSkillService:
+    @staticmethod
+    def create(**kwargs):
+        person_skill = PersonSkill(**kwargs)
+        person_skill.save()
+
+        return person_skill
