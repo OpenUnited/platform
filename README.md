@@ -77,4 +77,4 @@ docker compose --env-file docker.env up --build
 - For docker desktop in Mac or Windows you can set the custom network network_name=custom_network_name in docker.env.
 (N.B. If you facing issue like  network custom_network_name not found You have to create it like docker network create  custom_network_name )
 
-Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your browser.
+Then navigate to: [http://localhost:8080/](http://localhost:8080/) in your browser.
