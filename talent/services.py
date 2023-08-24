@@ -206,6 +206,13 @@ class BountyClaimService:
 
 class FeedbackService:
     @staticmethod
+    def create(**kwargs):
+        feedback = Feedback(**kwargs)
+        feedback.save()
+
+        return feedback
+
+    @staticmethod
     def get_analytics_for_person(person: Person) -> dict:
         feedbacks = Feedback.objects.filter(recipient=person)
 
