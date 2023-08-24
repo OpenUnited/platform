@@ -3,13 +3,14 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
 
-from .models import Person, Skill, Expertise, PersonSkill, BountyClaim
+from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
 from product_management.models import Challenge
-from .forms import PersonProfileForm
-from .services import PersonService, StatusService
+from .forms import PersonProfileForm, FeedbackForm
+from .services import PersonService, StatusService, FeedbackService
 
 
 class ProfileView(UpdateView):
@@ -143,6 +144,7 @@ class TalentPortfolio(TemplateView):
         bounty_claims = BountyClaim.objects.filter(
             person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
         )
+        received_feedbacks = Feedback.objects.filter(recipient=person)
 
         context = {
             "user": user,
@@ -154,6 +156,9 @@ class TalentPortfolio(TemplateView):
             "skills": person_skill.skill,
             "expertise": person_skill.expertise,
             "bounty_claims": bounty_claims,
+            "received_feedbacks": received_feedbacks,
+            "feedback_analytics": FeedbackService.get_analytics_for_person(person),
+            "form": FeedbackForm(),
         }
         return self.render_to_response(context)
 
@@ -162,5 +167,20 @@ def status_and_points(request):
     return HttpResponse("TODO")
 
 
-def review_modal(request):
-    return render(request, "talent/portfolio.html")
+def submit_feedback(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            recipient_username = request.POST.get("feedback-recipient-username")
+            recipient = Person.objects.get(user__username=recipient_username)
+            feedback = Feedback(
+                recipient=recipient,
+                provider=request.user.person,
+                message=form.cleaned_data.get("message"),
+                stars=int(form.cleaned_data.get("stars")),
+            )
+            feedback.save()
+
+            return redirect("portfolio", username=recipient_username)
+
+    return HttpResponse("Something went wrong")

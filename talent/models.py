@@ -322,11 +322,11 @@ def save_bounty_claim_request(sender, instance, created, **kwargs):
 
 class Feedback(models.Model):
     # Person who recevies the feedback
-    recipient = models.OneToOneField(
+    recipient = models.ForeignKey(
         Person, on_delete=models.CASCADE, related_name="feedback_recipient"
     )
     # Person who sends the feedback
-    provider = models.OneToOneField(
+    provider = models.ForeignKey(
         Person, on_delete=models.CASCADE, related_name="feedback_provider"
     )
     message = models.TextField()
@@ -337,3 +337,6 @@ class Feedback(models.Model):
             MaxValueValidator(5),
         ],
     )
+
+    def __str__(self):
+        return f"{self.recipient} - {self.provider} - {self.stars} - {self.message[:10]}..."

@@ -1,0 +1,30 @@
+.star-rate:not(:checked)>label {
+    float: right;
+    width: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 30px;
+    color: #ccc;
+}
+
+.star-rate:not(:checked)>label:before {
+    content: '★ ';
+}
+
+.star-rate>input:checked~label {
+    color: #ffc700;
+}
+
+.star-rate:not(:checked)>label:hover,
+.star-rate:not(:checked)>label:hover~label {
+    color: #deb217;
+}
+
+.star-rate>input:checked+label:hover,
+.star-rate>input:checked+label:hover~label,
+.star-rate>input:checked~label:hover,
+.star-rate>input:checked~label:hover~label,
+.star-rate>label:hover~input:checked~label {
+    color: #c59b08;
+}

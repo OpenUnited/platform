@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Person
+from .models import Person, Feedback
 
 
 class PersonProfileForm(forms.ModelForm):
@@ -103,6 +103,27 @@ class PersonProfileForm(forms.ModelForm):
             "send_me_bounties": forms.CheckboxInput(
                 attrs={
                     "class": "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600",
+                }
+            ),
+        }
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ["message", "stars"]
+
+        widgets = {
+            "message": forms.Textarea(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Write your feedback here",
+                }
+            ),
+            "stars": forms.HiddenInput(
+                attrs={
+                    "id": "given-star-rating",
+                    "name": "given-star-rating",
                 }
             ),
         }

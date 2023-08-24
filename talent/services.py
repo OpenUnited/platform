@@ -1,8 +1,17 @@
 import os
 from urllib.parse import urlparse
+from django.db.models import Count, Avg
 
 
-from talent.models import Person, Skill, Expertise, Status, PersonSkill, BountyClaim
+from .models import (
+    Person,
+    Skill,
+    Expertise,
+    Status,
+    PersonSkill,
+    BountyClaim,
+    Feedback,
+)
 from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
 
 
@@ -193,3 +202,37 @@ class BountyClaimService:
         bounty_claim.save()
 
         return bounty_claim
+
+
+class FeedbackService:
+    @staticmethod
+    def get_analytics_for_person(person: Person) -> dict:
+        feedbacks = Feedback.objects.filter(recipient=person)
+
+        total_feedbacks = feedbacks.count()
+
+        feedback_aggregates = feedbacks.aggregate(
+            feedback_count=Count("id"), average_stars=Avg("stars")
+        )
+
+        # Calculate percentages
+        feedback_aggregates["average_stars"] = (
+            int(round(feedback_aggregates["average_stars"], 2))
+            if feedback_aggregates["average_stars"] is not None
+            else None
+        )
+
+        stars_counts = feedbacks.values("stars").annotate(count=Count("id"))
+
+        stars_percentages = {
+            star: int(round(0 / total_feedbacks * 100, 2)) for star in range(1, 6)
+        }
+
+        for entry in stars_counts:
+            stars_percentages[entry["stars"]] = int(
+                round(entry["count"] / total_feedbacks * 100, 2)
+            )
+
+        feedback_aggregates.update(stars_percentages)
+
+        return feedback_aggregates

@@ -7,7 +7,7 @@ from .views import (
     list_skill_and_expertise,
     TalentPortfolio,
     status_and_points,
-    review_modal,
+    submit_feedback,
 )
 
 urlpatterns = [
@@ -21,5 +21,5 @@ urlpatterns = [
         name="list_skill_and_expertise",
     ),
     path("status-and-points", status_and_points, name="status_and_points"),
-    path("review-modal/", review_modal, name="review-modal"),
+    path("submit-feedback/", submit_feedback, name="submit-feedback"),
 ]
