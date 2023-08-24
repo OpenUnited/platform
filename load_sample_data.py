@@ -95,6 +95,22 @@ def generate_sample_data():
     for pd in person_data:
         people.append(PersonService.create(**pd))
 
+    # Create Review model instances
+    feedback_data = read_json_data("utility/sample_data/feedback.json", "feedback")
+
+    people_subset = people[:5]
+    feedbacks = []
+    for fd in feedback_data:
+        recipient = choice(people_subset)
+        provider = choice(people_subset)
+        while recipient != provider:
+            provider = choice(people_subset)
+
+        fd["recipient"] = recipient
+        fd["provider"] = provider
+
+        feedbacks.append(FeedbackService.create(**fd))
+
     # Create Status model instances
     status_data = read_json_data("utility/sample_data/status.json", "status")
 
@@ -351,6 +367,7 @@ if __name__ == "__main__":
         StatusService,
         PersonSkillService,
         BountyClaimService,
+        FeedbackService,
     )
     from product_management.services import (
         InitiativeService,

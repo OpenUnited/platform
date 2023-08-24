@@ -1,0 +1,82 @@
+[
+    {
+        "message": "Your work needs significant improvement. Your attention to detail is lacking.",
+        "stars": 1
+    },
+    {
+        "message": "Your contributions require further attention. More effort is needed in your work.",
+        "stars": 1
+    },
+    {
+        "message": "There's room for improvement in your performance. Strive for better outcomes.",
+        "stars": 1
+    },
+    {
+        "message": "Your work has not met expectations. Consider revising your approach for better results.",
+        "stars": 1
+    },
+    {
+        "message": "Your willingness to help others is commendable. You make a positive impact on the team.",
+        "stars": 2
+    },
+    {
+        "message": "Thank you for your teamwork and collaboration. Your contributions are valuable.",
+        "stars": 2
+    },
+    {
+        "message": "While there's room for growth, your efforts in teamwork are noticeable. Keep improving.",
+        "stars": 2
+    },
+    {
+        "message": "Your willingness to contribute is appreciated, although improvements are needed.",
+        "stars": 2
+    },
+    {
+        "message": "Your positive attitude and energy contribute to a positive work environment.",
+        "stars": 3
+    },
+    {
+        "message": "You consistently fulfill your responsibilities with reliability. Your contributions are essential to our achievements.",
+        "stars": 3
+    },
+    {
+        "message": "Your proactive approach to challenges is valuable to the team. Keep it up!",
+        "stars": 3
+    },
+    {
+        "message": "Your dedication and commitment to your role are evident. Keep up the good work.",
+        "stars": 3
+    },
+    {
+        "message": "Your dedication and attention to detail are impressive. Keep up the great work!",
+        "stars": 4
+    },
+    {
+        "message": "Your creative thinking brings new ideas to the team. Well done!",
+        "stars": 4
+    },
+    {
+        "message": "Thank you for your positive contributions. Your teamwork and efforts are valued.",
+        "stars": 4
+    },
+    {
+        "message": "Your commitment to continuous improvement is admirable. Keep pushing forward!",
+        "stars": 4
+    },
+    {
+        "message": "Your problem-solving skills are evident in your work. Keep up the good work!",
+        "stars": 5
+    },
+    {
+        "message": "Your communication skills are effective in conveying ideas. Well done!",
+        "stars": 5
+    },
+    {
+        "message": "Your leadership skills inspire others. Your guidance contributes to the team's success.",
+        "stars": 5
+    },
+    {
+        "message": "Your dedication to quality work is evident. Your attention to detail sets a great example.",
+        "stars": 5
+    }
+]
