@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
 from openunited.settings.base import PERSON_PHOTO_UPLOAD_TO
@@ -18,6 +20,7 @@ class Person(TimeStampMixin):
     photo = models.ImageField(upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
+    location = models.TextField(max_length=128, null=True, blank=True)
     send_me_bounties = models.BooleanField(default=True)
     current_position = models.CharField(max_length=256, null=True, blank=True)
     twitter_link = models.URLField(null=True, blank=True, default="")
@@ -37,6 +40,47 @@ class Person(TimeStampMixin):
 
     def __str__(self):
         return self.full_name
+
+
+class Status(models.Model):
+    DRONE = "Drone"
+    HONEYBEE = "Honeybee"
+    TRUSTED_BEE = "Trusted Bee"
+    QUEEN_BEE = "Queen Bee"
+    BEEKEEPER = "Beekeeper"
+
+    STATUS_CHOICES = [
+        (DRONE, "Drone"),
+        (HONEYBEE, "Honeybee"),
+        (TRUSTED_BEE, "Trusted Bee"),
+        (QUEEN_BEE, "Queen Bee"),
+        (BEEKEEPER, "Beekeeper"),
+    ]
+
+    STATUS_POINT_MAPPING = {
+        DRONE: 0,
+        HONEYBEE: 50,
+        TRUSTED_BEE: 500,
+        QUEEN_BEE: 2000,
+        BEEKEEPER: 8000,
+    }
+
+    STATUS_PRIVILEGES_MAPPING = {
+        DRONE: _("Earn points by completing bounties, submitting Ideas & Bugs"),
+        HONEYBEE: _("Earn payment for payment-eligible bounties on openunited.com"),
+        TRUSTED_BEE: _("Early Access to claim top tasks"),
+        QUEEN_BEE: _("A grant of 1000 points for your own open product on OpenUnited"),
+        BEEKEEPER: _("Invite new products to openunited.com and grant points"),
+    }
+
+    person = models.OneToOneField(
+        Person, on_delete=models.CASCADE, related_name="status"
+    )
+    name = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRONE)
+    points = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.name} - {self.points}"
 
 
 class PersonWebsite(models.Model):
@@ -64,6 +108,9 @@ class PersonSkill(models.Model):
     )
     skill = models.JSONField(blank=True, null=True)
     expertise = models.JSONField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.person} - {self.skill} - {self.expertise}"
 
 
 class Skill(AncestryMixin):
@@ -145,37 +192,37 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
     def __str__(self):
-        return "{}: {} ({})".format(self.bounty.challenge, self.person, self.kind)
+        return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
 
 
-@receiver(post_save, sender=BountyClaim)
-def save_bounty_claim(sender, instance, created, **kwargs):
-    challenge = instance.bounty.challenge
-    reviewer = getattr(challenge, "reviewer", None)
-    contributor = instance.person
-    contributor_email = contributor.email_address
-    reviewer_user = reviewer.user if reviewer else None
+# @receiver(post_save, sender=BountyClaim)
+# def save_bounty_claim(sender, instance, created, **kwargs):
+#     challenge = instance.bounty.challenge
+#     reviewer = getattr(challenge, "reviewer", None)
+#     contributor = instance.person
+#     contributor_email = contributor.email_address
+#     reviewer_user = reviewer.user if reviewer else None
 
-    if not created:
-        # contributor has submitted the work for review
-        if (
-            instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW
-            and instance.tracker.previous("kind")
-            is not BountyClaim.CLAIM_TYPE_IN_REVIEW
-        ):
-            challenge = instance.bounty.challenge
-            subject = f'The challenge "{challenge.title}" is ready to review'
-            message = (
-                f"You can see the challenge here: {challenge.get_challenge_link()}"
-            )
-            if reviewer:
-                engagement.tasks.send_notification.delay(
-                    [Notification.Type.EMAIL],
-                    Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
-                    receivers=[reviewer.id],
-                    task_title=challenge.title,
-                    task_link=challenge.get_challenge_link(),
-                )
+#     if not created:
+#         # contributor has submitted the work for review
+#         if (
+#             instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW
+#             and instance.tracker.previous("kind")
+#             is not BountyClaim.CLAIM_TYPE_IN_REVIEW
+#         ):
+#             challenge = instance.bounty.challenge
+#             subject = f'The challenge "{challenge.title}" is ready to review'
+#             message = (
+#                 f"You can see the challenge here: {challenge.get_challenge_link()}"
+#             )
+#             if reviewer:
+#                 engagement.tasks.send_notification.delay(
+#                     [Notification.Type.EMAIL],
+#                     Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
+#                     receivers=[reviewer.id],
+#                     task_title=challenge.title,
+#                     task_link=challenge.get_challenge_link(),
+#                 )
 
 
 class Comment(MP_Node):
@@ -273,10 +320,23 @@ def save_bounty_claim_request(sender, instance, created, **kwargs):
                 )
 
 
-# class Review(TimeStampMixin, UUIDMixin):
-#     product = models.ForeignKey('product_management.Product', on_delete=models.CASCADE)
-#     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-#     initiative = models.ForeignKey('product_management.Initiative', on_delete=models.CASCADE, null=True, blank=True)
-#     score = models.DecimalField(decimal_places=2, max_digits=3)
-#     text = models.TextField()
-#     created_by = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True, related_name="given")
+class Feedback(models.Model):
+    # Person who recevies the feedback
+    recipient = models.ForeignKey(
+        Person, on_delete=models.CASCADE, related_name="feedback_recipient"
+    )
+    # Person who sends the feedback
+    provider = models.ForeignKey(
+        Person, on_delete=models.CASCADE, related_name="feedback_provider"
+    )
+    message = models.TextField()
+    stars = models.PositiveSmallIntegerField(
+        default=1,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5),
+        ],
+    )
+
+    def __str__(self):
+        return f"{self.recipient} - {self.provider} - {self.stars} - {self.message[:10]}..."

@@ -95,6 +95,16 @@ def generate_sample_data():
     for pd in person_data:
         people.append(PersonService.create(**pd))
 
+    # Create Status model instances
+    status_data = read_json_data("utility/sample_data/status.json", "status")
+
+    for index, sd in enumerate(status_data):
+        sd["person"] = people[index]
+
+    statuses = []
+    for sd in status_data:
+        statuses.append(StatusService.create(**sd))
+
     # Create Organisation model instances
     organisation_data = read_json_data(
         "utility/sample_data/organisation.json", "organisation"
@@ -126,7 +136,7 @@ def generate_sample_data():
 
         product = choice(copy_products)
         ppd["product"] = product
-        copy_products.remove(product)        
+        copy_products.remove(product)
 
     product_people = []
     for ppd in product_role_assignment_data:
@@ -165,12 +175,39 @@ def generate_sample_data():
     for sk in skill_data:
         skills.append(SkillService.create(**sk))
 
+    skill_ids = [skill.id for skill in skills]
+    skill_name_queryset = Skill.objects.filter(
+        id__in=skill_ids, active=True, selectable=True
+    ).values_list("name", flat=True)
+
     # Create Expertise model instances
     expertise_data = read_json_data("utility/sample_data/expertise.json", "expertise")
 
     expertise = []
     for exp in expertise_data:
         expertise.append(ExpertiseService.create(**exp))
+
+    expertise_ids = [exp.id for exp in expertise]
+    expertise_name_queryset = Expertise.objects.filter(
+        id__in=expertise_ids, selectable=True
+    ).values_list("name", flat=True)
+
+    # Create PersonSkill model instances
+    fancy_out(f"Create PersonSkill records")
+    person_skill_data = [{"person": p} for p in people]
+
+    person_skills = []
+    for psd in person_skill_data:
+        psd["skill"] = sample(
+            list(skill_name_queryset), randint(2, len(skill_name_queryset) // 2)
+        )
+        psd["expertise"] = list(
+            sample(
+                list(expertise_name_queryset),
+                randint(2, len(expertise_name_queryset) // 2),
+            )
+        )
+        person_skills.append(PersonSkillService.create(**psd))
 
     # Create Tag model instances
     tag_data = read_json_data("utility/sample_data/tag.json", "tag")
@@ -200,15 +237,29 @@ def generate_sample_data():
     # Create Bounty model instances
     bounty_data = read_json_data("utility/sample_data/bounty.json", "bounty")
 
-    for elem in bounty_data:
-        elem["challenge"] = choice(challenges)
-        elem["skill"] = choice(skills)
+    # NOTE: len(bounty.json) == len(challenge.json)
+    for index, bd in enumerate(bounty_data):
+        bd["challenge"] = challenges[index]
+        bd["skill"] = choice(skills)
 
     bounties = []
     for bd in bounty_data:
         bounty = BountyService.create(**bd)
         bounty.expertise.set(sample(expertise, k=randint(1, 4)))
         bounties.append(bounty)
+
+    # Create BountyClaim model instances
+    bounty_claim_data = read_json_data(
+        "utility/sample_data/bounty_claim.json", "bounty_claim"
+    )
+
+    MAX_PERSON_INDEX = 5
+    bounty_claims = []
+    # NOTE: len(bounty.json) == len(bounty_claims.json)
+    for i, bcd in enumerate(bounty_claim_data):
+        bcd["person"] = people[i % MAX_PERSON_INDEX]
+        bcd["bounty"] = bounties[i]
+        bounty_claims.append(BountyClaimService.create(**bcd))
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -283,6 +334,7 @@ if __name__ == "__main__":
     )
     django.setup()
 
+    from talent.models import Skill, Expertise
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,
@@ -292,7 +344,14 @@ if __name__ == "__main__":
     )
     from security.services import ProductRoleAssignmentService, UserService
     from product_management.models import Capability
-    from talent.services import PersonService, SkillService, ExpertiseService
+    from talent.services import (
+        PersonService,
+        SkillService,
+        ExpertiseService,
+        StatusService,
+        PersonSkillService,
+        BountyClaimService,
+    )
     from product_management.services import (
         InitiativeService,
         TagService,

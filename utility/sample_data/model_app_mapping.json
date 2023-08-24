@@ -7,6 +7,8 @@
     "Person": "talent",
     "Skill": "talent",
     "Expertise": "talent",
+    "Status": "talent",
+    "PersonSkill": "talent",
     "Product": "product_management",
     "Initiative": "product_management",
     "Capability": "product_management",

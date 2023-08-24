@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+
+{% block title %} Portfolio {% endblock %}
+{% block content %}
+
+<div class="flex-auto pb-14">
+    <div class="relative z-[1] w-full h-[296px] rounded-md -mb-40 bg-gradient-to-r from-purple-100 to-indigo-400">
+    </div>
+    <div class="relative z-[2] flex flex-col lg:flex-row w-full max-w-[98%] w-full mx-auto">
+        <div class="w-full lg:w-[320px] lg:mr-6 flex flex-col shrink-0">
+            <div class="relative z-[2] w-[272px] sm:w-[306px] h-[272px] sm:h-[306px] mx-auto">
+                <div
+                    class="w-full h-full mx-auto rounded-full shadow-xl bg-white flex shrink-0 item-center justify-center">
+                    <img src="{{ photo_url }}" class="h-full w-full object-cover object-center rounded-full"
+                        alt="Profile Picture">
+                </div>
+                <div class="group absolute rounded-full bg-white py-0.5 px-2 right-2 bottom-10 border border-solid border-green-600 
+        inline-flex shadow-xl text-green-600 text-lg flex shrink-0 items-center justify-center cursor-pointer">
+                    {{ status.name }}
+                    <div
+                        class="absolute hidden group-hover:block group-focus:block bottom-8 -left-[116px] sm:left-4 block w-60 p-3 bg-white border border-solid border-gray-300 shadow-md rounded-md">
+                        <div class="flex flex-col">
+                            <div class="border-b border-solid border-gray-300 pb-1.5 mb-2 flex items-center">
+                                <div class="text-sm font-medium leading-6 text-gray-900 mr-1">Points:</div>
+                                <div class="text-sm text-gray-500">{{ StatusService.get_display_points(status.name) }}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
+                                <div class="text-sm text-gray-500">{{ StatusService.get_privileges(status.name) }}</div>
+                            </div>
+                            <a href="{{ url('status-and-points') }}"
+                                class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
+                                Learn more about Status & Points
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="bg-white relative -mt-40 rounded-md border border-solid border-[#d0d7de] pt-[190px] pb-6 px-4 relative z-[1]">
+                <div class="text-2xl text-[#4b5563] font-semibold">{{ person.get_full_name() }}</div>
+                <div class="pb-4 font-light text-xl text-[#6b7280]">@{{ user.username }}</div>
+                <div
+                    class="py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full 
+            border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+                    Contact {{ person.get_short_name() }}
+                </div>
+                <div class="pb-1 font-light text-sm text-[#4b5563] font-semibold">{{ status.points }} Points Earned
+                </div>
+                <!-- <div class="mb-4 flex items-center">
+                    <a href="#" class="flex items-center text-[#656d76] transition-all hover:text-blue-400 group">
+                        <span
+                            class="w-4 h-4 flex shrink-0 items-center justify-center mr-1 text-[#4b5563] group-hover:text-blue-400 pt-0.5">
+                            <img class="w-full h-full object-contain object-center"
+                                src="/static/assets/images/contributors.svg" alt="#">
+                        </span>
+                        <strong class="text-[#4b5563] group-hover:text-blue-400 mr-1.5">536</strong> contributor
+                    </a>
+                    <div class="mx-1.5"> · </div>
+                    <a href="#" class="flex items-center text-[#656d76] transition-all hover:text-blue-400 group">
+                        <strong class="text-[#4b5563] group-hover:text-blue-400 mr-1.5">7</strong> leadership
+                    </a>
+                </div> -->
+                <div class="space-y-1.5 flex flex-col">
+                    {% if person.location %}
+                    <div class="flex items-center text-[#4b5563] text-sm transition-all">
+                        <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                            <img src="{{ static('images/geo.svg') }}" alt="Geolocation Icon">
+                        </span>
+                        {{ person.location }}
+                    </div>
+                    {% endif %}
+                    {% if person.linkedin_link %}
+                    <a href="{{ person.linkedin_link}}"
+                        class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+                        <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                            <img src="{{ static('images/ln.svg') }}" alt="Linkedin Icon">
+                        </span>
+                        {{ PersonService.get_path_from_url(person.linkedin_link) }}
+                    </a>
+                    {% endif %}
+                    {% if person.website_link %}
+                    <a href="{{ person.website_link }}"
+                        class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+                        <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                            <img src="{{ static('images/link.svg') }}" alt="Link Icon">
+                        </span>
+                        {{ person.website_link }}
+                    </a>
+                    {% endif %}
+                    {% if person.twitter_link %}
+                    <a href="{{ person.twitter_link }}"
+                        class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
+                        <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
+                            <img src="{{ static('images/twitter.svg') }}" alt="Twitter Icon">
+                        </span>
+                        {{ PersonService.get_path_from_url(person.twitter_link) }}
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="pt-4 mt-4 border-t border-solid border-[#d8dee4] flex flex-col">
+                    <a href="#" class="text-lg font-semibold text-gray-900">Achievements</a>
+                    <div class="flex flex-wrap">
+                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="1">
+                            <div
+                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                                <img src="/static/assets/images/achievement-1.svg"
+                                    class="w-full h-full object-contain object-center" alt="#">
+                            </div>
+                            <div
+                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                x3</div>
+                            <div
+                                class="hidden group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                                <div
+                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                                    <img src="/static/assets/images/achievement-1.svg"
+                                        class="w-full h-full object-contain object-center" alt="#">
+                                </div>
+                                <div class="pt-3">
+                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                                        Created Challenges
+                                        <div
+                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                            x3</div>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="text-[#656d76] text-xs mb-2">List of created Challenges</div>
+                                        <div class="flex flex-col">
+                                            <div
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                                                Bronze and Silver unlocked
+                                            </div>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                Tweak "add product" logic
+                                            </a>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                UserInvitation, ProductInvitation and Contributor role
+                                            </a>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                Others
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="2">
+                            <div
+                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                                <img src="/static/assets/images/achievement-2.svg"
+                                    class="w-full h-full object-contain object-center" alt="#">
+                            </div>
+                            <div
+                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                x2</div>
+                            <div
+                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                                <div
+                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                                    <img src="/static/assets/images/achievement-2.svg"
+                                        class="w-full h-full object-contain object-center" alt="#">
+                                </div>
+                                <div class="pt-3">
+                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                                        Participate in Products <div
+                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                            x2</div>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                                        <div class="flex flex-col">
+                                            <div
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                                                Bronze and Silver locked
+                                            </div>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                Tweak "add product" logic
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="3">
+                            <div
+                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                                <img src="/static/assets/images/achievement-3.svg"
+                                    class="w-full h-full object-contain object-center" alt="#">
+                            </div>
+                            <div
+                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                x2</div>
+                            <div
+                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 -left-[134px] lg:right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                                <div
+                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                                    <img src="/static/assets/images/achievement-2.svg"
+                                        class="w-full h-full object-contain object-center" alt="#">
+                                </div>
+                                <div class="pt-3">
+                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                                        Participate in Products <div
+                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                            x2</div>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                                        <div class="flex flex-col">
+                                            <div
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                                                Bronze and Silver locked
+                                            </div>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                Tweak "add product" logic
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="4">
+                            <div
+                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                                <img src="/static/assets/images/achievement-4.svg"
+                                    class="w-full h-full object-contain object-center" alt="#">
+                            </div>
+                            <div
+                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                x2</div>
+                            <div
+                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                                <div
+                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                                    <img src="/static/assets/images/achievement-2.svg"
+                                        class="w-full h-full object-contain object-center" alt="#">
+                                </div>
+                                <div class="pt-3">
+                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                                        Participate in Products <div
+                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                            x2</div>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                                        <div class="flex flex-col">
+                                            <div
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                                                Bronze and Silver locked
+                                            </div>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                Tweak "add product" logic
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="5">
+                            <div
+                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
+                                <img src="/static/assets/images/achievement-2.svg"
+                                    class="w-full h-full object-contain object-center" alt="#">
+                            </div>
+                            <div
+                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                x2</div>
+                            <div
+                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
+                                <div
+                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
+                                    <img src="/static/assets/images/achievement-2.svg"
+                                        class="w-full h-full object-contain object-center" alt="#">
+                                </div>
+                                <div class="pt-3">
+                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
+                                        Participate in Products <div
+                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
+                                            x2</div>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
+                                        <div class="flex flex-col">
+                                            <div
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
+                                                Bronze and Silver locked
+                                            </div>
+                                            <a href="#"
+                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
+                                                Tweak "add product" logic
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grow border border-solid border-[#d0d7de] px-4 py-5 sm:p-6 bg-white rounded-md mt-[54px]">
+            <button type="button"
+                class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
+        border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+                Create a Portfolio like this
+            </button>
+            <div class="flex items-center pb-2.5 mb-4 border-b border-solid border-[#d0d7de]">
+                <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">{{ person.headline }}</h2>
+            </div>
+            <div class="flex flex-col text-sm leading-6 text-gray-500">
+                <p>{{ person.overview }}</p>
+            </div>
+            <div class="text-lg font-semibold mb-2.5 mt-6">My Skills / Expertise</div>
+            <div class="flex items-center flex-wrap">
+                {% for exp in expertise %}
+                <div
+                    class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+                    <div class="flex items-center text-xs font-semibold leading-6">
+                        <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                            {% set expertise_icon_path = 'images/skills/' ~ exp ~ '.svg' %}
+                            <img src="{{ static(expertise_icon_path)}}"
+                                class="w-full h-full object-contain object-center" alt="#">
+                        </span>
+                        {{ exp }}
+                    </div>
+                    <div
+                        class="flex items-center justify-center rounded-full border border-solid border-blue-400 py-px px-[5px] ml-2.5 text-[10px] font-bold text-blue-400">
+                        3
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-lg font-semibold mb-2.5 mt-6">Open Products I contribute to</div>
+
+            <div class="relative" id="portfolio-table">
+                <div class="overflow-x-auto pb-4 table-products-contribute">
+                    <div class="w-full min-w-[660px] flex flex-col">
+                        <div class="grid grid-cols-12 gap-1">
+                            <div class="col-span-4 bg-gray-50 border-b border-solid border-[#e4e8f1] 
+                py-2.5 px-2 text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Product
+                            </div>
+                            <div class="col-span-6 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2 
+                text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Challenges</div>
+                            <div class="col-span-2 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2 
+                text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Points Earned</div>
+                        </div>
+
+                        {% for bounty_claim in bounty_claims %}
+                        {% set challenge = bounty_claim.bounty.challenge %}
+                        <div class="grid grid-cols-12 gap-1 table-row">
+                            <div
+                                class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+                                <a href="#"
+                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name }}</a>
+                            </div>
+                            <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                                <a href="#"
+                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.title }}</a>
+                            </div>
+                            <div
+                                class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">
+                                {{ bounty_claim.bounty.points }}</div>
+                        </div>
+                        {% endfor %}
+
+                        <!-- <button type="button"
+                                    class="appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
+              border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500 table-products-contribute__button">Show
+                                    more</button> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-2.5 mt-6">
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-bold tracking-tight text-gray-900">Reviews</h2>
+                    {% if received_feedbacks|length > 0 %}
+                    {% set feedback_analytics = FeedbackService.get_analytics_for_person(person) %}
+                    <div class="mt-3 flex items-center">
+                        <div>
+                            <div class="flex items-center">
+                                {% for _ in range(feedback_analytics.get("average_stars")) %}
+                                {% include 'talent/partials/yellow_star.html' %}
+                                {% endfor %}
+
+                                <!-- 5 is the max star count -->
+                                {% for _ in range(5 - feedback_analytics.get("average_stars")) %}
+                                {% include 'talent/partials/gray_star.html' %}
+                                {% endfor %}
+                            </div>
+                            <p class="sr-only">{{ feedback_analytics.get(average_stars) }} out of 5 stars</p>
+                        </div>
+                        <p class="ml-2 text-sm text-gray-900">Based on {{ feedback_analytics.get("feedback_count") }}
+                            reviews</p>
+                    </div>
+                    <div class="mt-6">
+                        {% if received_feedbacks %}
+                        <dl class="space-y-3">
+                            {% for star in range(5, 0, -1) %}
+                            <div class="flex items-center text-sm">
+                                <dt class="flex flex-1 items-center">
+                                    <p class="w-3 font-medium text-gray-900">{{ star }}<span class="sr-only"> star
+                                            reviews</span></p>
+                                    <div aria-hidden="true" class="ml-1 flex flex-1 items-center">
+                                        {% include 'talent/partials/yellow_star.html' %}
+                                        <div class="relative ml-3 flex-1">
+                                            <div class="h-2.5 rounded-full border border-gray-200 bg-gray-100"></div>
+                                            <div style="width: calc({{ feedback_analytics.get(star) }}%)"
+                                                class="absolute inset-y-0 rounded-full border border-yellow-400 bg-yellow-400">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </dt>
+                                <dd class="ml-3 w-10 text-right text-sm tabular-nums text-gray-900">
+                                    {{ feedback_analytics.get(star) }}%</dd>
+                            </div>
+                            {% endfor %}
+                        </dl>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="mt-3">{{ person.get_short_name() }} did not received any feedback yet.</p>
+                    {% endif %}
+                    {% if can_leave_feedback %}
+                    <div class="mt-9">
+                        <button type="submit" id="leave-feedback"
+                            class="mx-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
+                        border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+                            Leave a Feedback to {{ person.get_short_name() }}
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex flex-col divide-y divide-gray-200">
+                    {% for feedback in received_feedbacks %}
+                    <div class="flex flex-col py-4 first:pt-0 last:pb-0">
+                        <div class="flex items-center">
+                            <img src="{{ PersonService.get_photo_url(feedback.provider) }}" alt="Feedback Provider"
+                                class="h-12 w-12 rounded-full">
+                            <div class="ml-4">
+                                <h4 class="text-sm font-bold text-gray-900">{{ feedback.provider.get_full_name() }}</h4>
+                                <div class="mt-1 flex items-center">
+                                    {% for _ in range(feedback.stars) %}
+                                    {% include 'talent/partials/yellow_star.html' %}
+                                    {% endfor %}
+
+                                    <!-- 5 is the max star count -->
+                                    {% for _ in range(5 - feedback.stars) %}
+                                    {% include 'talent/partials/gray_star.html' %}
+                                    {% endfor %}
+                                </div>
+                                <p class="sr-only">{{ feedback.stars }} out of 5 stars</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 space-y-6 text-base italic text-gray-600">
+                            <p>{{ feedback.message }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% include 'talent/feedback_modal_form.html' %}
+
+<script>
+    const button = document.querySelector("#leave-feedback");
+
+    button.addEventListener("click", () => {
+        const modal = document.querySelector("#feedback-form-modal");
+        modal.classList.remove("hidden")
+    });
+</script>
+
+{% endblock %}

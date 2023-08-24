@@ -1,11 +1,16 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.views.generic.edit import UpdateView
+from django.views.generic.base import TemplateView
 
-from .models import Person, Skill, Expertise
-from .forms import PersonProfileForm
-from .services import PersonService
+from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
+from product_management.models import Challenge
+from .forms import PersonProfileForm, FeedbackForm
+from .services import PersonService, StatusService, FeedbackService
 
 
 class ProfileView(UpdateView):
@@ -29,8 +34,8 @@ class ProfileView(UpdateView):
         )
         context["pk"] = person.pk
 
-        image_url, requires_upload = PersonService.does_require_upload(person)
-        context["image"] = image_url
+        image_url, requires_upload = PersonService.get_photo_url(person)
+        context["photo_url"] = image_url
         context["requires_upload"] = requires_upload
 
         return context
@@ -53,25 +58,38 @@ class ProfileView(UpdateView):
 
     # TODO: Add a success message under the photo upload field
     def post(self, request, *args, **kwargs):
-        form = PersonProfileForm(
-            request.POST, request.FILES, instance=request.user.person
-        )
+        person = request.user.person
+        form = PersonProfileForm(request.POST, request.FILES, instance=person)
         if form.is_valid():
             form.save()
 
-            # generate skill and expertise for this person
-            # make sure there is at least one skill
-            # skill_ids = json.loads(request.POST.get("selected_skills"))
-            # print(skill_ids)
+            person_skill = PersonSkill(person=person)
+            skills_queryset = []
+            selected_skills = request.POST.get("selected_skill_ids")
+            if selected_skills:
+                skill_ids = json.loads(selected_skills)
+                skills_queryset = Skill.objects.filter(id__in=skill_ids).values_list(
+                    "name", flat=True
+                )
+                person_skill.skill = list(skills_queryset)
 
-            # make sure there is at least one expertise
-            # expertise_ids = json.loads(request.POST.get("selected-expertise"))
-            # print(expertise_ids)
+            expertise_queryset = []
+            selected_expertise = request.POST.get("selected_expertise_ids")
+            if selected_expertise:
+                expertise_ids = json.loads(selected_expertise)
+                expertise_queryset = Expertise.objects.filter(
+                    id__in=expertise_ids
+                ).values_list("name", flat=True)
+                person_skill.expertise = list(expertise_queryset)
+                person_skill.save()
+
         return super().post(request, *args, **kwargs)
 
 
 def get_skills(request):
-    skill_queryset = Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
+    skill_queryset = (
+        Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
+    )
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
 
@@ -109,3 +127,68 @@ def list_skill_and_expertise(request):
         return JsonResponse(skill_expertise_pairs, safe=False)
 
     return JsonResponse([], safe=False)
+
+
+# NOTE: The links in this view are not completed
+class TalentPortfolio(TemplateView):
+    User = get_user_model()
+    template_name = "talent/portfolio.html"
+
+    def get(self, request, username, *args, **kwargs):
+        user = get_object_or_404(self.User, username=username)
+        person = user.person
+        photo_url, _ = PersonService.get_photo_url(person)
+
+        status = person.status
+        person_skill = person.skills.all().first()
+        bounty_claims = BountyClaim.objects.filter(
+            person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
+        ).select_related("bounty__challenge")
+        received_feedbacks = Feedback.objects.filter(recipient=person)
+
+        if request.user == user or received_feedbacks.filter(
+            provider=request.user.person
+        ):
+            can_leave_feedback = False
+        else:
+            can_leave_feedback = True
+
+        context = {
+            "user": user,
+            "photo_url": photo_url,
+            "person": person,
+            "status": status,
+            "PersonService": PersonService,
+            "StatusService": StatusService,
+            "skills": person_skill.skill,
+            "expertise": person_skill.expertise,
+            "bounty_claims": bounty_claims,
+            "FeedbackService": FeedbackService,
+            "received_feedbacks": received_feedbacks,
+            "form": FeedbackForm(),
+            "can_leave_feedback": can_leave_feedback,
+        }
+        return self.render_to_response(context)
+
+
+def status_and_points(request):
+    return HttpResponse("TODO")
+
+
+def submit_feedback(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            recipient_username = request.POST.get("feedback-recipient-username")
+            recipient = Person.objects.get(user__username=recipient_username)
+            feedback = Feedback(
+                recipient=recipient,
+                provider=request.user.person,
+                message=form.cleaned_data.get("message"),
+                stars=int(form.cleaned_data.get("stars")),
+            )
+            feedback.save()
+
+            return redirect("portfolio", username=recipient_username)
+
+    return HttpResponse("Something went wrong")

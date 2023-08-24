@@ -26,11 +26,6 @@
         {% if request.user.is_authenticated %}
         <div>
               <a href="{{ url('profile', args=(request.user.pk,) ) }}">
-                {% set photo_url = "media/avatars/profile-empty.png" %}
-                {% set person = request.user.person %}
-                {% if person.photo %}
-                {% set photo_url = person.photo.url %}
-                {% endif %}
                 <img class="h-8 w-8 rounded-full" src="{{ photo_url }}" alt="Profile Picture">
               </a>
           </div>
