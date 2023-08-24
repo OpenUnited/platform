@@ -18,8 +18,8 @@ urlpatterns = [
     path(
         "list-skill-and-expertise/",
         list_skill_and_expertise,
-        name="list_skill_and_expertise",
+        name="list-skill-and-expertise",
     ),
-    path("status-and-points", status_and_points, name="status_and_points"),
+    path("status-and-points", status_and_points, name="status-and-points"),
     path("submit-feedback/", submit_feedback, name="submit-feedback"),
 ]

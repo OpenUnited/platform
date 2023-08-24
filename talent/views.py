@@ -140,11 +140,18 @@ class TalentPortfolio(TemplateView):
         photo_url, _ = PersonService.get_photo_url(person)
 
         status = person.status
-        person_skill = PersonSkill.objects.get(person=person)
+        person_skill = person.skills.all().first()
         bounty_claims = BountyClaim.objects.filter(
             person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
-        )
+        ).select_related("bounty__challenge")
         received_feedbacks = Feedback.objects.filter(recipient=person)
+
+        if request.user == user or received_feedbacks.filter(
+            provider=request.user.person
+        ):
+            can_leave_feedback = False
+        else:
+            can_leave_feedback = True
 
         context = {
             "user": user,
@@ -156,9 +163,10 @@ class TalentPortfolio(TemplateView):
             "skills": person_skill.skill,
             "expertise": person_skill.expertise,
             "bounty_claims": bounty_claims,
+            "FeedbackService": FeedbackService,
             "received_feedbacks": received_feedbacks,
-            "feedback_analytics": FeedbackService.get_analytics_for_person(person),
             "form": FeedbackForm(),
+            "can_leave_feedback": can_leave_feedback,
         }
         return self.render_to_response(context)
 

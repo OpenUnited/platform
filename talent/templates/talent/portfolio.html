@@ -29,7 +29,7 @@
                                 <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
                                 <div class="text-sm text-gray-500">{{ StatusService.get_privileges(status.name) }}</div>
                             </div>
-                            <a href="{{ url('status_and_points') }}"
+                            <a href="{{ url('status-and-points') }}"
                                 class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
                                 Learn more about Status & Points
                             </a>
@@ -364,7 +364,7 @@
                                     class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name }}</a>
                             </div>
                             <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
-                                <a href="{{ url('challenges') }}"
+                                <a href="#"
                                     class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.title }}</a>
                             </div>
                             <div
@@ -384,6 +384,8 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-2.5 mt-6">
                 <div class="flex flex-col">
                     <h2 class="text-xl font-bold tracking-tight text-gray-900">Reviews</h2>
+                    {% if received_feedbacks|length > 0 %}
+                    {% set feedback_analytics = FeedbackService.get_analytics_for_person(person) %}
                     <div class="mt-3 flex items-center">
                         <div>
                             <div class="flex items-center">
@@ -424,10 +426,12 @@
                             </div>
                             {% endfor %}
                         </dl>
-                        {% else %}
-                        <p>{{ person.get_short_name() }} did not received any feedback yet.</p>
                         {% endif %}
                     </div>
+                    {% else %}
+                    <p class="mt-3">{{ person.get_short_name() }} did not received any feedback yet.</p>
+                    {% endif %}
+                    {% if can_leave_feedback %}
                     <div class="mt-9">
                         <button type="submit" id="leave-feedback"
                             class="mx-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
@@ -435,6 +439,7 @@
                             Leave a Feedback to {{ person.get_short_name() }}
                         </button>
                     </div>
+                    {% endif %}
                 </div>
                 <div class="flex flex-col divide-y divide-gray-200">
                     {% for feedback in received_feedbacks %}
