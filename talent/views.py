@@ -160,3 +160,7 @@ class TalentPortfolio(TemplateView):
 
 def status_and_points(request):
     return HttpResponse("TODO")
+
+
+def review_modal(request):
+    return render(request, "talent/portfolio.html")

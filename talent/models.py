@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
@@ -317,3 +318,22 @@ def save_bounty_claim_request(sender, instance, created, **kwargs):
                     receivers=[reviewer.id],
                     task_title=bounty_claim.bounty.challenge.title,
                 )
+
+
+class Feedback(models.Model):
+    # Person who recevies the feedback
+    recipient = models.OneToOneField(
+        Person, on_delete=models.CASCADE, related_name="feedback_recipient"
+    )
+    # Person who sends the feedback
+    provider = models.OneToOneField(
+        Person, on_delete=models.CASCADE, related_name="feedback_provider"
+    )
+    message = models.TextField()
+    stars = models.PositiveSmallIntegerField(
+        default=1,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5),
+        ],
+    )
