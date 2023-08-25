@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -189,6 +190,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     )
     bounty = models.ForeignKey("product_management.Bounty", on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    expected_finish_date = models.DateField(default=date.today)
     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
     def __str__(self):

@@ -4,8 +4,9 @@ from django.urls import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.db import models
-from django.views.generic import ListView, TemplateView, RedirectView
+from django.views.generic import ListView, TemplateView, RedirectView, FormView
 
+from .forms import ChallengeClaimForm
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
@@ -179,7 +180,12 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         challenge_id = context.get("challenge_id")
 
-        context.update({"challenge": get_object_or_404(Challenge, id=challenge_id)})
+        context.update(
+            {
+                "challenge": get_object_or_404(Challenge, id=challenge_id),
+                "challenge_claim_form": ChallengeClaimForm(),
+            }
+        )
 
         return context
 
@@ -190,3 +196,27 @@ class InitiativeDetailView(BaseProductDetailView, TemplateView):
 
 class CapabilityDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/capability_detail.html"
+
+
+class ClaimChallengeView(FormView):
+    form_class = ChallengeClaimForm
+    template_name = "product_management/challenge_claim_form.html"
+
+    def form_valid(self, form):
+        if self.request.headers.get("Hx-Request") == "true":
+            return self.render_to_response(self.get_context_data(form=form))
+
+        path = self.request.POST.get("path")
+        path = path.split("/")
+        print(path)
+        self.success_url = reverse("challenge_detail", args=(path[0], path[1], path[3]))
+
+        return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        data = self.form_valid(self.get_form())
+        form = data.context_data.get("form")
+        if not form.is_valid():
+            form.add_error(None, "You cannot submit invalid date.")
+
+        return super().post(request, *args, **kwargs)
