@@ -171,8 +171,17 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
         return context
 
 
+# TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/challenge_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        challenge_id = context.get("challenge_id")
+
+        context.update({"challenge": get_object_or_404(Challenge, id=challenge_id)})
+
+        return context
 
 
 class InitiativeDetailView(BaseProductDetailView, TemplateView):

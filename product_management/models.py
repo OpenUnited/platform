@@ -261,6 +261,14 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def __str__(self):
         return self.title
 
+    def get_bounty_points(self):
+        total = 0
+        queryset = self.bounty_set.all()
+        for elem in queryset:
+            total += elem.points
+
+        return total
+
     @staticmethod
     def get_filtered_data(input_data, filter_data=None, exclude_data=None):
         if not filter_data:
@@ -342,6 +350,9 @@ class Bounty(TimeStampMixin):
     points = models.IntegerField()
     status = models.IntegerField(choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.skill} - {self.expertise} - {self.points} - {self.get_status_display()}"
 
 
 class ChallengeDependency(models.Model):
