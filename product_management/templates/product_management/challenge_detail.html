@@ -32,9 +32,15 @@
                         <div
                             class="w-[15%] min-w-[15%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
                             Points</div>
+                        {% if bounty_claim %}
+                        <div
+                            class="w-[25%] min-w-[25%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                            Claimed By</div>
+                        {% else %}
                         <div
                             class="w-[25%] min-w-[25%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
                             Action</div>
+                        {% endif %}
                     </div>
                     <div class="flex items-center grow">
                         <div
@@ -49,13 +55,22 @@
                             class="h-[54px] flex items-center w-[15%] min-w-[15%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
                             {{ challenge.get_bounty_points() }}
                         </div>
+                        {% if bounty_claim %}
                         <div
                             class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                            <button id="claim-button" type="button"
+                            {{ bounty_claim.person.get_full_name() }}
+                        </div>
+                        {% else %}
+                        <div
+                            class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                            <button type="button" hx-get="{{ url('claim-challenge') }}"
+                                hx-target="#claim-challenge-modal" hx-swap="innerHTML" name="claim-button"
+                                value="claim-button"
                                 class="appearance-none w-fit flex items-center justify-center rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/[0.85] transition-all">
                                 Claim
                             </button>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -104,24 +119,7 @@
     </form>
 </div>
 
-<div id="claim-challenge-modal">
-    {% with form = challenge_claim_form %}
-    {% include 'product_management/challenge_claim_form.html' %}
-    {% endwith %}    
-</div>
-
-<script>
-    const claimChallengeModal = document.getElementById("claim-challenge-modal");
-    const claimButton = document.getElementById("claim-button");
-    const cancelClaimChallengeButton = document.getElementById("cancel-claim-challenge");
-
-    claimButton.addEventListener("click", () => {
-        claimChallengeModal.classList.remove("hidden");
-    });
-
-    cancelClaimChallengeButton.addEventListener("click", () => {
-        claimChallengeModal.classList.add("hidden");
-    });
-</script>
+<!-- Modal for challenge claim form -->
+<div id="claim-challenge-modal" hx-target="this"></div>
 
 {% endblock %}
