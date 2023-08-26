@@ -255,8 +255,9 @@ def generate_sample_data():
 
     # NOTE: len(bounty.json) == len(challenge.json)
     for index, bd in enumerate(bounty_data):
-        bd["challenge"] = challenges[index]
-        bd["skill"] = choice(skills)
+        challenge = challenges[index]
+        bd["challenge"] = challenge
+        bd["skill"] = challenge.skill
 
     bounties = []
     for bd in bounty_data:

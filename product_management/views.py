@@ -1,11 +1,13 @@
 from typing import Any, Dict
-from django.shortcuts import redirect
+from django.shortcuts import redirect, HttpResponse
 from django.urls import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.db import models
-from django.views.generic import ListView, TemplateView, RedirectView
+from django.views.generic import ListView, TemplateView, RedirectView, FormView
 
+from .forms import ChallengeClaimForm
+from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
@@ -171,8 +173,30 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
         return context
 
 
+# TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/challenge_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        challenge_id = context.get("challenge_id")
+        challenge = get_object_or_404(Challenge, id=challenge_id)
+        bounty = challenge.bounty_set.all().first()
+        bounty_claim = (
+            BountyClaim.objects.filter(bounty=bounty)
+            .exclude(kind=BountyClaim.CLAIM_TYPE_FAILED)
+            .first()
+        )
+
+        context.update(
+            {
+                "challenge": challenge,
+                "challenge_claim_form": ChallengeClaimForm(),
+                "bounty_claim": bounty_claim,
+            }
+        )
+
+        return context
 
 
 class InitiativeDetailView(BaseProductDetailView, TemplateView):
@@ -181,3 +205,31 @@ class InitiativeDetailView(BaseProductDetailView, TemplateView):
 
 class CapabilityDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/capability_detail.html"
+
+
+# TODO: create ClaimBounty instance after successful form submission
+# TODO: add a row to the challenge table to show that this challenge is claimed
+class ClaimChallengeView(FormView):
+    form_class = ChallengeClaimForm
+    template_name = "product_management/challenge_claim_form.html"
+
+    def get(self, request, *args, **kwargs):
+        is_triggered_by_cancel_button = request.GET.get("claim-cancel-button")
+        if is_triggered_by_cancel_button:
+            return HttpResponse("")
+
+        return self.render_to_response(self.get_context_data(form=ChallengeClaimForm()))
+
+    def post(self, request, *args, **kwargs):
+        url = request.headers.get("Hx-Current-Url")
+        if url:
+            url = url.split("/")
+            challenge_id = url[-1]
+            ch = Challenge.objects.get(id=challenge_id)
+            bounty_claim = BountyClaim(
+                bounty=ch.bounty_set.all().first(), person=request.user.person
+            )
+            bounty_claim.save()
+
+        self.success_url = request.headers.get("Hx-Current-Url")
+        return super().post(request, *args, **kwargs)
