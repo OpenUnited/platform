@@ -1,7 +1,7 @@
 import os
 import datetime
 import django
-from random import choice, sample, randint
+from random import choice, sample, randint, getrandbits
 from django.apps import apps
 import json
 from utility.utils import *
@@ -274,9 +274,11 @@ def generate_sample_data():
     bounty_claims = []
     # NOTE: len(bounty.json) == len(bounty_claims.json)
     for i, bcd in enumerate(bounty_claim_data):
-        bcd["person"] = people[i % MAX_PERSON_INDEX]
-        bcd["bounty"] = bounties[i]
-        bounty_claims.append(BountyClaimService.create(**bcd))
+        # We do not want every bounty to be claimed
+        if bool(getrandbits(1)):
+            bcd["person"] = people[i % MAX_PERSON_INDEX]
+            bcd["bounty"] = bounties[i]
+            bounty_claims.append(BountyClaimService.create(**bcd))
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
