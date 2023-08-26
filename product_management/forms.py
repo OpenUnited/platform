@@ -11,7 +11,7 @@ class DateInput(forms.DateInput):
     input_type = "date"
 
 
-class ChallengeClaimForm(forms.ModelForm):
+class BountyClaimForm(forms.ModelForm):
     are_terms_accepted = forms.BooleanField(label=_("Do you accept the terms?"))
 
     class Meta:

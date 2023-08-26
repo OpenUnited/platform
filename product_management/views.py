@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.db import models
 from django.views.generic import ListView, TemplateView, RedirectView, FormView
 
-from .forms import ChallengeClaimForm
+from .forms import BountyClaimForm
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
@@ -191,7 +191,7 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         context.update(
             {
                 "challenge": challenge,
-                "challenge_claim_form": ChallengeClaimForm(),
+                "bounty_claim_form": BountyClaimForm(),
                 "bounty_claim": bounty_claim,
             }
         )
@@ -207,18 +207,16 @@ class CapabilityDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/capability_detail.html"
 
 
-# TODO: create ClaimBounty instance after successful form submission
-# TODO: add a row to the challenge table to show that this challenge is claimed
-class ClaimChallengeView(FormView):
-    form_class = ChallengeClaimForm
-    template_name = "product_management/challenge_claim_form.html"
+class BountyClaimView(FormView):
+    form_class = BountyClaimForm
+    template_name = "product_management/bounty_claim_form.html"
 
     def get(self, request, *args, **kwargs):
         is_triggered_by_cancel_button = request.GET.get("claim-cancel-button")
         if is_triggered_by_cancel_button:
             return HttpResponse("")
 
-        return self.render_to_response(self.get_context_data(form=ChallengeClaimForm()))
+        return self.render_to_response(self.get_context_data(form=BountyClaimForm()))
 
     def post(self, request, *args, **kwargs):
         url = request.headers.get("Hx-Current-Url")

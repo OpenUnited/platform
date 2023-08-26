@@ -1,4 +1,4 @@
-<div id="inner-claim-challenge-modal" class="relative z-10" aria-labelledby="modal-title" role="dialog"
+<div id="inner-bounty-claim-modal" class="relative z-10" aria-labelledby="modal-title" role="dialog"
     aria-modal="true">
 
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
@@ -55,13 +55,13 @@
                     <div class="mt-5 sm:mt-6">
                         <div class="flex flex-row">
                             <div class="basis-1/2 mx-2">
-                                <button type="button" hx-get="{{ url('claim-challenge') }}"
-                                    hx-target="#inner-claim-challenge-modal" hx-swap="outerHTML"
+                                <button type="button" hx-get="{{ url('bounty-claim') }}"
+                                    hx-target="#inner-bounty-claim-modal" hx-swap="outerHTML"
                                     name="claim-cancel-button" value="claim-cancel-button"
                                     class="w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cancel</button>
                             </div>
                             <div class="basis-1/2 mx-2">
-                                <button type="submit" hx-post="{{ url('claim-challenge') }}" hx-target="body" hx-swap="outerHTML"
+                                <button type="submit" hx-post="{{ url('bounty-claim') }}" hx-target="body" hx-swap="outerHTML"
                                     class="w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Accept</button>
                             </div>
                         </div>
