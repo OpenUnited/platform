@@ -18,8 +18,8 @@ class User(AbstractUser, TimeStampMixin):
 
     objects = UserManager()
 
-    def __str__(self):
-        return f"{self.person} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
+    # def __str__(self):
+    # return f"{self.person} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
 
 
 class SignUpRequest(TimeStampMixin):
@@ -58,7 +58,7 @@ class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
         (PRODUCT_ADMIN, "Admin"),
     )
     person = models.OneToOneField(Person, on_delete=models.CASCADE)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE, default="")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, default="")
     role = models.IntegerField(choices=ROLES, default=0)
 
     def __str__(self):
