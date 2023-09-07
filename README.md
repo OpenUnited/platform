@@ -17,7 +17,14 @@ This repo contains the full platform including the frontend - which is "delibera
 
 ### Database setup
 
-Please ensure you have a PostgreSQL server running. If you haven't already, you can [download and install PostgreSQL](https://www.postgresql.org/download/) 
+Please ensure you have a PostgreSQL server running. If you haven't already, you can [download and install PostgreSQL](https://www.postgresql.org/download/).
+
+You can also pull the docker image of PostgreSQL. Here are the commands to run if you want to use the docker image:
+
+```
+docker pull postgres
+docker run --name <name of your db> -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
+```
 
 By default, the OpenUnited platform will look for a database named "ou_db" and use "postgres" as both the username and password. For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: ou_db. To override the database settings, you can copy .env.example to .env and set the values you want.
 
