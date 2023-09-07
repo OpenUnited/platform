@@ -30,7 +30,15 @@ By default, the OpenUnited platform will look for a database named "ou_db" and u
 
 ### Running the platform locally
 
-Please fork this repo, then depending on your local environment, do something like the following with "OpenUnited" changed for your own GitHub username.
+Copy the example `.env` file and assign values according to your configuration.
+
+```
+cp .env.example .env
+```
+
+You must set `DJANGO_SECRET_KEY` in order to start working on the project. You can generate the secret key on [this website](https://djecrety.ir/).
+
+Fork this repo, then depending on your local environment, do something like the following with "OpenUnited" changed for your own GitHub username.
 
 ```
 git clone git@github.com:OpenUnited/platform.git
