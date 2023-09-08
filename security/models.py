@@ -58,7 +58,7 @@ class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
         (PRODUCT_ADMIN, "Admin"),
     )
     person = models.OneToOneField(Person, on_delete=models.CASCADE)
-    product = models.OneToOneField(Product, on_delete=models.CASCADE, default="")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, default="")
     role = models.IntegerField(choices=ROLES, default=0)
 
     def __str__(self):
