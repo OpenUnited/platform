@@ -1,0 +1,19 @@
+<form method="post">
+    {% csrf_token %}
+
+    <div>
+        <label for="{{ form.title.id_for_label }}"
+            class="block my-2 text-sm font-medium leading-6 text-gray-900">{{ form.title.label }}</label>
+        {{ form.title  }}
+    </div>
+
+    <div>
+        <label for="{{ form.description.id_for_label }}"
+            class="block my-2 text-sm font-medium leading-6 text-gray-900">{{ form.description.label }}</label>
+        {{ form.description }}
+    </div>
+
+
+    <input type="submit" value="Submit"
+        class="flex w-full justify-center rounded-md bg-[#1890ff] px-3 py-2.5 mt-4 text-sm font-semibold leading-6 text-white shadow-sm transition-all hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1890ff]">
+</form>

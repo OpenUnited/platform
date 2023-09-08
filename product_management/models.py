@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
+from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from model_utils import FieldTracker
@@ -429,12 +430,15 @@ class ContributorGuide(models.Model):
         return self.title
 
 
-class Idea(models.Model):
+class Idea(TimeStampMixin):
     title = models.CharField(max_length=256)
     description = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    vote_count = models.PositiveSmallIntegerField()
+    vote_count = models.PositiveSmallIntegerField(default=0)
+
+    def get_absolute_url(self):
+        return reverse("add_product_idea", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.person} - {self.title}"

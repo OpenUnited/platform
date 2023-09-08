@@ -19,9 +19,9 @@
                 class="bg-gray-100 text-gray-900 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ bugs|length }}</span>
         </a>
     </nav>
-    <button type="button"
-        class="ideas-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50"
-        data-id="modal-idea">Add an Idea</button>
+    <a href="{{ url('add_product_idea', args=(organisation_username, product_slug)) }}"
+        class="ideas-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50">
+        Add Idea</a>
 </div>
 
 <div class="tab-content">
@@ -31,21 +31,23 @@
         <ul role="list" class="divide-y divide-gray-100">
             {% for idea in ideas %}
             <li class="flex flex-col items-start justify-between gap-y-4 py-5">
-                <div class="flex flex-col gap-y-2">
-                    <div class="flex items-start justify-between gap-x-4 xl:gap-x-6">
-                        <h3 class="text-sm font-semibold leading-6 text-gray-900">
-                            {{ idea.title }}
-                        </h3>
-                        <div class="flex items-center justify-center shrink-0 w-6 h-6">
-                            <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                                src="https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                alt="Emma Dorsey">
+                <a href="{{ url('product_idea_detail', args=(organisation_username, product_slug, idea.pk,)) }}">
+                    <div class="flex flex-col gap-y-2">
+                        <div class="flex items-start justify-between gap-x-4 xl:gap-x-6">
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">
+                                {{ idea.title }}
+                            </h3>
+                            <div class="flex items-center justify-center shrink-0 w-6 h-6">
+                                <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
+                                    src="https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                    alt="Emma Dorsey">
+                            </div>
+                        </div>
+                        <div class="mt-1 flex flex-col gap-y-2 text-xs leading-5 text-gray-500 ideas-list__text">
+                            {{ idea.description|safe }}
                         </div>
                     </div>
-                    <div class="mt-1 flex flex-col gap-y-2 text-xs leading-5 text-gray-500 ideas-list__text">
-                        {{ idea.description|safe }}
-                    </div>
-                </div>
+                </a>
                 <div class="flex grow items-center justify-end text-sm font-medium leading-6 text-gray-900">
                     <div class="heart mr-2.5 ml-0.5">
                         <input type="checkbox" class="heart__checkbox">

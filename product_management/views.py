@@ -1,12 +1,22 @@
 from typing import Any, Dict
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
 from django.urls import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
-from django.views.generic import ListView, TemplateView, RedirectView, FormView
+from django.views.generic import (
+    ListView,
+    TemplateView,
+    RedirectView,
+    FormView,
+    CreateView,
+    UpdateView,
+    DetailView,
+)
 
-from .forms import BountyClaimForm
+from .forms import BountyClaimForm, IdeaForm
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
@@ -157,6 +167,58 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         return context
 
 
+# If the user is not authenticated, we redirect him to the sign up page using LoginRequiredMixing.
+# After he signs in, we should redirect him with the help of redirect_field_name attribute
+# See for more detail: https://docs.djangoproject.com/en/4.2/topics/auth/default/
+class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    login_url = "sign-up"
+    template_name = "product_management/add_product_idea.html"
+    form_class = IdeaForm
+
+    def post(self, request, *args, **kwargs):
+        form = IdeaForm(request.POST)
+
+        if form.is_valid():
+            person = self.request.user.person
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+
+            idea = form.save(commit=False)
+            idea.person = person
+            idea.product = product
+            idea.save()
+
+            return redirect("product_ideas_bugs", **kwargs)
+
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
+    login_url = "sign-up"
+    template_name = "product_management/update_product_idea.html"
+    model = Idea
+    form_class = IdeaForm
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        idea_pk = kwargs.get("pk")
+        idea = Idea.objects.get(pk=idea_pk)
+        form = IdeaForm(request.GET, instance=idea)
+
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        idea_pk = kwargs.get("pk")
+        idea = Idea.objects.get(pk=idea_pk)
+
+        form = IdeaForm(request.POST, instance=idea)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect("product_idea_detail", **kwargs)
+
+        return super().post(request, *args, **kwargs)
+
+
 class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_people.html"
 
@@ -167,6 +229,23 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
         context.update(
             {
                 "product_people": ProductRoleAssignment.objects.filter(product=product),
+            }
+        )
+
+        return context
+
+
+class ProductIdeaDetail(BaseProductDetailView, DetailView):
+    template_name = "product_management/product_idea_detail.html"
+    model = Idea
+    context_object_name = "idea"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            {
+                "pk": self.object.pk,
             }
         )
 
