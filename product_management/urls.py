@@ -9,7 +9,7 @@ from .views import (
     ProductTreeView,
     ProductIdeasAndBugsView,
     CreateProductIdea,
-    # UpdateProductIdea,
+    UpdateProductIdea,
     ProductIdeaDetail,
     ProductChallengesView,
     ProductRoleAssignmentView,
@@ -74,11 +74,11 @@ urlpatterns += [
         ProductIdeaDetail.as_view(),
         name="product_idea_detail",
     ),
-    # path(
-    #     "<str:organisation_username>/<str:product_slug>/ideas/update/<int:pk>",
-    #     UpdateProductIdea.as_view(),
-    #     name="update_product_idea",
-    # ),
+    path(
+        "<str:organisation_username>/<str:product_slug>/ideas/update/<int:pk>",
+        UpdateProductIdea.as_view(),
+        name="update_product_idea",
+    ),
     path(
         "<str:organisation_username>/<str:product_slug>/people",
         ProductRoleAssignmentView.as_view(),

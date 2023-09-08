@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
 from django.urls import reverse
 from django.db.models import Sum
@@ -191,6 +192,33 @@ class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
+class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
+    login_url = "sign-up"
+    template_name = "product_management/update_product_idea.html"
+    model = Idea
+    form_class = IdeaForm
+
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        idea_pk = kwargs.get("pk")
+        idea = Idea.objects.get(pk=idea_pk)
+        form = IdeaForm(request.GET, instance=idea)
+
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        idea_pk = kwargs.get("pk")
+        idea = Idea.objects.get(pk=idea_pk)
+
+        form = IdeaForm(request.POST, instance=idea)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect("product_idea_detail", **kwargs)
+
+        return super().post(request, *args, **kwargs)
+
+
 class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_people.html"
 
@@ -211,6 +239,17 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
     template_name = "product_management/product_idea_detail.html"
     model = Idea
     context_object_name = "idea"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            {
+                "pk": self.object.pk,
+            }
+        )
+
+        return context
 
 
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
