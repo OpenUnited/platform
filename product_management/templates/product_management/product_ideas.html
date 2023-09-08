@@ -19,9 +19,9 @@
                 class="bg-gray-100 text-gray-900 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ bugs|length }}</span>
         </a>
     </nav>
-    <button type="button"
-        class="ideas-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50"
-        data-id="modal-idea">Add an Idea</button>
+    <a href="{{ url('add_product_idea', args=(organisation_username, product_slug)) }}"
+        class="ideas-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50">
+        Add Idea</a>
 </div>
 
 <div class="tab-content">

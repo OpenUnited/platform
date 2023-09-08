@@ -3,10 +3,18 @@ from django.shortcuts import redirect, HttpResponse
 from django.urls import reverse
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
-from django.views.generic import ListView, TemplateView, RedirectView, FormView
+from django.views.generic import (
+    ListView,
+    TemplateView,
+    RedirectView,
+    FormView,
+    CreateView,
+    UpdateView,
+)
 
-from .forms import BountyClaimForm
+from .forms import BountyClaimForm, IdeaForm
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
@@ -155,6 +163,31 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         context.update({"ideas": Idea.objects.filter(product=product), "bugs": []})
 
         return context
+
+
+# If the user is not authenticated, we redirect him to the sign up page using LoginRequiredMixing.
+# After he signs in, we should redirect him with the help of redirect_field_name attribute
+# See for more detail: https://docs.djangoproject.com/en/4.2/topics/auth/default/
+class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    login_url = "sign-up"
+    template_name = "product_management/add_product_idea.html"
+    form_class = IdeaForm
+
+    def post(self, request, *args, **kwargs):
+        form = IdeaForm(request.POST)
+
+        if form.is_valid():
+            person = self.request.user.person
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+
+            idea = form.save(commit=False)
+            idea.person = person
+            idea.product = product
+            idea.save()
+
+            return redirect("product_ideas_bugs", **kwargs)
+
+        return super().post(request, *args, **kwargs)
 
 
 class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):

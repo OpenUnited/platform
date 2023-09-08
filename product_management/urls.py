@@ -8,6 +8,8 @@ from .views import (
     ProductInitiativesView,
     ProductTreeView,
     ProductIdeasAndBugsView,
+    CreateProductIdea,
+    # UpdateProductIdea,
     ProductChallengesView,
     ProductRoleAssignmentView,
     ChallengeDetailView,
@@ -61,6 +63,16 @@ urlpatterns += [
         ProductIdeasAndBugsView.as_view(),
         name="product_ideas_bugs",
     ),
+    path(
+        "<str:organisation_username>/<str:product_slug>/ideas/new",
+        CreateProductIdea.as_view(),
+        name="add_product_idea",
+    ),
+    # path(
+    #     "<str:organisation_username>/<str:product_slug>/ideas/update/<int:pk>",
+    #     UpdateProductIdea.as_view(),
+    #     name="update_product_idea",
+    # ),
     path(
         "<str:organisation_username>/<str:product_slug>/people",
         ProductRoleAssignmentView.as_view(),
