@@ -12,6 +12,7 @@ from django.views.generic import (
     FormView,
     CreateView,
     UpdateView,
+    DetailView,
 )
 
 from .forms import BountyClaimForm, IdeaForm
@@ -204,6 +205,12 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
         )
 
         return context
+
+
+class ProductIdeaDetail(BaseProductDetailView, DetailView):
+    template_name = "product_management/product_idea_detail.html"
+    model = Idea
+    context_object_name = "idea"
 
 
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.

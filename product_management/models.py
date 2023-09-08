@@ -430,7 +430,7 @@ class ContributorGuide(models.Model):
         return self.title
 
 
-class Idea(models.Model):
+class Idea(TimeStampMixin):
     title = models.CharField(max_length=256)
     description = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
