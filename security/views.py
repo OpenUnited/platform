@@ -86,7 +86,7 @@ class SignInView(TemplateView):
                 login(request, user)
                 return redirect("home")
             else:
-                UserService.update_failed_login_budget_and_check_reset(user_obj)
+                user_obj.update_failed_login_budget_and_check_reset()
                 form.add_error(None, _("Username or password is not correct"))
 
         return render(request, self.template_name, {"form": form})

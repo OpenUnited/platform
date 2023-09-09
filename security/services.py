@@ -16,15 +16,6 @@ class UserService:
 
         return user
 
-    @staticmethod
-    def update_failed_login_budget_and_check_reset(user: User) -> None:
-        user.remaining_budget_for_failed_logins -= 1
-
-        if user.remaining_budget_for_failed_logins == 0:
-            user.password_reset_required = True
-
-        user.save()
-
 
 class SignUpRequestService:
     @staticmethod

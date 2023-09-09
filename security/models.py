@@ -23,6 +23,14 @@ class User(AbstractUser, TimeStampMixin):
         self.remaining_budget_for_failed_logins = DEFAULT_LOGIN_ATTEMPT_BUDGET
         self.save()
 
+    def update_failed_login_budget_and_check_reset(self):
+        self.remaining_budget_for_failed_logins -= 1
+
+        if self.remaining_budget_for_failed_logins == 0:
+            self.password_reset_required = True
+
+        self.save()
+
     def __str__(self):
         return f"{self.person} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
 
