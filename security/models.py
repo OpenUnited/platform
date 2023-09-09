@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 
@@ -32,7 +31,7 @@ class User(AbstractUser, TimeStampMixin):
         self.save()
 
     def __str__(self):
-        return f"{self.person} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
+        return f"{self.username} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
 
 
 class SignUpRequest(TimeStampMixin):
