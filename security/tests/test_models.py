@@ -4,9 +4,6 @@ from .factories import UserFactory
 
 
 class UserModelTest(TestCase):
-    def setUp(self):
-        print("settign up the cases")
-
     def test_reset_remaining_budget_for_failed_logins(self):
         user_one = UserFactory.create(remaining_budget_for_failed_logins=1)
         user_one.reset_remaining_budget_for_failed_logins()
