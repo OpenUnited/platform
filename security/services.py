@@ -1,10 +1,8 @@
 from django.contrib.auth.hashers import make_password
-from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from random import randrange
 
 from .models import SignUpRequest, ProductRoleAssignment, User
-from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
 
 
 class UserService:
@@ -17,11 +15,6 @@ class UserService:
         user.save()
 
         return user
-
-    @staticmethod
-    def reset_remaining_budget_for_failed_logins(user: User) -> None:
-        user.remaining_budget_for_failed_logins = DEFAULT_LOGIN_ATTEMPT_BUDGET
-        user.save()
 
     @staticmethod
     def update_failed_login_budget_and_check_reset(user: User) -> None:
