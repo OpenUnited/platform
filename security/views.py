@@ -15,7 +15,6 @@ from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
 from .services import (
-    UserService,
     SignUpRequestService,
     create_and_send_verification_code,
 )
