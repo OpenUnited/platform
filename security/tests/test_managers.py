@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from .factories import UserFactory
 
 
-# Create a reverse relation in UserFactory
 class UserManagerTest(TestCase):
     def setUp(self):
         self.User = get_user_model()

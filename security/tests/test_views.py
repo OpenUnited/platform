@@ -5,8 +5,6 @@ from django.contrib.auth.hashers import make_password
 from security.constants import SIGN_UP_REQUEST_ID
 from .factories import UserFactory
 
-import ipdb
-
 
 class SignUpViewTest(TestCase):
     def setUp(self):
@@ -39,7 +37,6 @@ class SignUpViewTest(TestCase):
 
         SIGN_UP_STEPS_DATA = [form_one, form_two, form_three]
 
-        # Note: we should also check for the redirection
         for data in SIGN_UP_STEPS_DATA:
             response = self.client.post(self.url, data)
 
@@ -149,3 +146,29 @@ class PasswordResetViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, reverse("password_reset_done"))
+
+
+class LogoutViewTest(TestCase):
+    def setUp(self):
+        self.url = reverse("log_out")
+        self.client = Client()
+
+    def test_logout_view_authenticated_user(self):
+        plain_password = "12345"
+        hashed_password = make_password(plain_password)
+        user = UserFactory(username="username", password=hashed_password)
+
+        self.client.login(username=user.username, password=plain_password)
+
+        response = self.client.get(self.url)
+
+        self.assertRedirects(response, reverse("home"))
+        self.assertFalse("_auth_user_id" in self.client.session)
+
+    def test_logout_view_unauthenticated_user(self):
+        response = self.client.get(self.url, follow=True)
+
+        expected_url = reverse("sign_in") + "?next=" + reverse("log_out")
+
+        self.assertRedirects(response, expected_url)
+        self.assertFalse("_auth_user_id" in self.client.session)

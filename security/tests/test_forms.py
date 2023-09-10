@@ -53,10 +53,6 @@ class SignUpStepOneFormTest(TestCase):
         expected_error_message = "That email isn't available, please try another"
         self.assertIn(expected_error_message, form.errors.get("email", []))
 
-    # ValidationError is not raised. Find out why. The error exist in form.errors.
-    # with self.assertRaises(ValidationError):
-    #     form.clean_email()
-
     def test_valid_clean(self):
         _ = UserFactory(email="john@example.com")
         email = "not_john@example.com"
