@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
 from django.utils.translation import gettext_lazy as _
@@ -15,7 +16,6 @@ from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
 from .services import (
-    UserService,
     SignUpRequestService,
     create_and_send_verification_code,
 )
@@ -86,7 +86,7 @@ class SignInView(TemplateView):
                 login(request, user)
                 return redirect("home")
             else:
-                UserService.update_failed_login_budget_and_check_reset(user_obj)
+                user_obj.update_failed_login_budget_and_check_reset()
                 form.add_error(None, _("Username or password is not correct"))
 
         return render(request, self.template_name, {"form": form})
@@ -130,9 +130,10 @@ class PasswordResetCompleteView(PasswordResetCompleteView):
     template_name = "security/password_reset/password_reset_complete.html"
 
 
-# We can add 5 seconds pause before redirecting immediately
-class LogoutView(LogoutView):
+# TODO: We can add 5 seconds pause before redirecting immediately
+class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = "security/logout.html"
+    login_url = "sign_in"
 
     def get(self, request, *args, **kwargs):
         logout(request)

@@ -3,13 +3,13 @@ from factory.django import DjangoModelFactory
 from django.core.files.base import ContentFile
 
 from talent.models import Person
+from security.tests.factories import UserFactory
 
 
 class PersonFactory(DjangoModelFactory):
-    first_name = factory.Sequence(lambda n: f"first_name{n}")
-    last_name = factory.Sequence(lambda n: f"last_name{n}")
-    username = factory.Sequence(lambda n: f"username{n}")
-    email = factory.LazyAttribute(lambda obj: f"{obj.username}@example.com")
+    full_name = factory.Sequence(lambda n: f"full_name{n}")
+    preferred_name = factory.Sequence(lambda n: f"preferred_name{n}")
+    user = factory.SubFactory(UserFactory)
     headline = factory.Faker("sentence", nb_words=6)
     overview = factory.Faker("paragraph")
     photo = factory.LazyAttribute(

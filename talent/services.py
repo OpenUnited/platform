@@ -48,39 +48,6 @@ class StatusService:
         return Status.STATUS_POINT_MAPPING.get(status)
 
 
-class StatusService:
-    @staticmethod
-    def create(**kwargs):
-        status = Status(**kwargs)
-        status.save()
-
-        return status
-
-    @staticmethod
-    def get_privileges(status: str) -> str:
-        return Status.STATUS_PRIVILEGES_MAPPING.get(status)
-
-    @staticmethod
-    def get_statuses() -> list:
-        return list(Status.STATUS_POINT_MAPPING.keys())
-
-    @staticmethod
-    def get_display_points(status: str) -> str:
-        statuses = StatusService.get_statuses()
-
-        # if `status` is the last one in `statuses`
-        if status == statuses[-1]:
-            return f">= {StatusService.get_points_for_status(status)}"
-
-        # +1 is to get the next status
-        index = statuses.index(status) + 1
-        return f"< {StatusService.get_points_for_status(statuses[index])}"
-
-    @staticmethod
-    def get_points_for_status(status: str) -> str:
-        return Status.STATUS_POINT_MAPPING.get(status)
-
-
 class PersonService:
     @staticmethod
     def create(**kwargs):
