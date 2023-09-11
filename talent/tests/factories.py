@@ -1,8 +1,8 @@
 import factory
 from factory.django import DjangoModelFactory
-from factory.fuzzy import FuzzyInteger, FuzzyChoice
+from factory.fuzzy import FuzzyInteger
 
-from talent.models import Person, Feedback, Status
+from talent.models import Person, Feedback, Status, Skill, Expertise
 from security.tests.factories import UserFactory
 
 
@@ -42,3 +42,24 @@ class FeedbackFactory(DjangoModelFactory):
 
     class Meta:
         model = Feedback
+
+
+class SkillFactory(DjangoModelFactory):
+    parent = None
+    name = factory.Faker("word")
+    active = factory.Faker("boolean")
+    selectable = factory.Faker("boolean")
+    display_boost_factor = factory.Faker("pyint", min_value=1, max_value=10)
+
+    class Meta:
+        model = Skill
+
+
+class ExpertiseFactory(DjangoModelFactory):
+    parent = None
+    skill = factory.SubFactory(SkillFactory)
+    name = factory.Faker("word")
+    selectable = factory.Faker("boolean")
+
+    class Meta:
+        model = Expertise
