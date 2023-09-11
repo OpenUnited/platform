@@ -86,15 +86,18 @@ class FeedbackService:
 
         total_feedbacks = feedbacks.count()
 
+        if total_feedbacks == 0:
+            total_feedbacks = 1
+
         feedback_aggregates = feedbacks.aggregate(
             feedback_count=Count("id"), average_stars=Avg("stars")
         )
 
         # Calculate percentages
         feedback_aggregates["average_stars"] = (
-            int(round(feedback_aggregates["average_stars"], 2))
+            round(feedback_aggregates["average_stars"], 1)
             if feedback_aggregates["average_stars"] is not None
-            else None
+            else 0
         )
 
         stars_counts = feedbacks.values("stars").annotate(count=Count("id"))
@@ -104,8 +107,8 @@ class FeedbackService:
         }
 
         for entry in stars_counts:
-            stars_percentages[entry["stars"]] = int(
-                round(entry["count"] / total_feedbacks * 100, 2)
+            stars_percentages[entry["stars"]] = round(
+                entry["count"] / total_feedbacks * 100, 1
             )
 
         feedback_aggregates.update(stars_percentages)
