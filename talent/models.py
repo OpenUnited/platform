@@ -3,6 +3,9 @@ from datetime import date
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
@@ -401,6 +404,18 @@ class Feedback(models.Model):
             MaxValueValidator(5),
         ],
     )
+
+    def clean(self, *args, **kwargs):
+        if self.recipient == self.provider:
+            raise ValidationError(
+                _("The recipient and the provider cannot be the same.")
+            )
+
+        super().clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.recipient} - {self.provider} - {self.stars} - {self.message[:10]}..."
