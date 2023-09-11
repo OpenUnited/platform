@@ -1,3 +1,4 @@
+import os
 from datetime import date
 from django.db import models
 from django.db.models.signals import post_save
@@ -6,7 +7,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
-from openunited.settings.base import PERSON_PHOTO_UPLOAD_TO
+from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 from engagement.models import Notification
 import engagement
@@ -32,6 +33,43 @@ class Person(TimeStampMixin):
     class Meta:
         db_table = "talent_person"
         verbose_name_plural = "People"
+
+    def get_initial_data(self):
+        initial = {
+            "full_name": self.full_name,
+            "preferred_name": self.preferred_name,
+            "headline": self.headline,
+            "overview": self.overview,
+            "github_link": self.github_link,
+            "twitter_link": self.twitter_link,
+            "linkedin_link": self.linkedin_link,
+            "website_link": self.website_link,
+            "send_me_bounties": self.send_me_bounties,
+            "current_position": self.current_position,
+            "location": self.location,
+        }
+        return initial
+
+    def get_photo_url(self) -> [str, bool]:
+        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
+        requires_upload = True
+
+        if self.photo:
+            image_url = self.photo.url
+            requires_upload = False
+
+        return image_url, requires_upload
+
+    def delete_photo(self) -> None:
+        path = self.photo.path
+        if os.path.exists(path):
+            os.remove(path)
+
+        self.photo.delete(save=True)
+
+    def toggle_bounties(self):
+        self.send_me_bounties = not self.send_me_bounties
+        self.save()
 
     def get_full_name(self):
         return self.full_name
@@ -79,6 +117,30 @@ class Status(models.Model):
     )
     name = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRONE)
     points = models.PositiveIntegerField(default=0)
+
+    @classmethod
+    def get_privileges(cls, status: str) -> str:
+        return cls.STATUS_PRIVILEGES_MAPPING.get(status)
+
+    @classmethod
+    def get_statuses(cls) -> list:
+        return list(cls.STATUS_POINT_MAPPING.keys())
+
+    @classmethod
+    def get_display_points(cls, status: str) -> str:
+        statuses = cls.get_statuses()
+
+        # if `status` is the last one in `statuses`
+        if status == statuses[-1]:
+            return f">= {cls.get_points_for_status(status)}"
+
+        # +1 is to get the next status
+        index = statuses.index(status) + 1
+        return f"< {cls.get_points_for_status(statuses[index])}"
+
+    @classmethod
+    def get_points_for_status(cls, status: str) -> str:
+        return cls.STATUS_POINT_MAPPING.get(status)
 
     def __str__(self):
         return f"{self.name} - {self.points}"

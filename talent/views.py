@@ -7,10 +7,11 @@ from django.shortcuts import redirect
 from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
 
+from utility.utils import get_path_from_url
 from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
 from product_management.models import Challenge
 from .forms import PersonProfileForm, FeedbackForm
-from .services import PersonService, StatusService, FeedbackService
+from .services import FeedbackService
 
 
 class ProfileView(UpdateView):
@@ -29,12 +30,10 @@ class ProfileView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         person = self.get_object()
-        context["form"] = PersonProfileForm(
-            initial=PersonService.get_initial_data(person)
-        )
+        context["form"] = PersonProfileForm(initial=person.get_initial_data())
         context["pk"] = person.pk
 
-        image_url, requires_upload = PersonService.get_photo_url(person)
+        image_url, requires_upload = person.get_photo_url()
         context["photo_url"] = image_url
         context["requires_upload"] = requires_upload
 
@@ -42,7 +41,7 @@ class ProfileView(UpdateView):
 
     def _remove_picture(self, request):
         person = self.get_object()
-        PersonService.delete_photo(person)
+        person.delete_photo()
         context = self.get_context_data()
 
         return render(request, "talent/profile_picture.html", context)
@@ -57,6 +56,8 @@ class ProfileView(UpdateView):
         return super().get(request, *args, **kwargs)
 
     # TODO: Add a success message under the photo upload field
+    # TODO: Display the previously selected skills and expertise
+    # TODO: Display an error message when skill and expertise fields are empty
     def post(self, request, *args, **kwargs):
         person = request.user.person
         form = PersonProfileForm(request.POST, request.FILES, instance=person)
@@ -137,7 +138,7 @@ class TalentPortfolio(TemplateView):
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(self.User, username=username)
         person = user.person
-        photo_url, _ = PersonService.get_photo_url(person)
+        photo_url, _ = person.get_photo_url()
 
         status = person.status
         person_skill = person.skills.all().first()
@@ -157,9 +158,9 @@ class TalentPortfolio(TemplateView):
             "user": user,
             "photo_url": photo_url,
             "person": person,
+            "person_linkedin_link": get_path_from_url(person.linkedin_link),
+            "person_twitter_link": get_path_from_url(person.twitter_link),
             "status": status,
-            "PersonService": PersonService,
-            "StatusService": StatusService,
             "skills": person_skill.skill,
             "expertise": person_skill.expertise,
             "bounty_claims": bounty_claims,
