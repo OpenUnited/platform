@@ -262,36 +262,6 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
 
 
-# @receiver(post_save, sender=BountyClaim)
-# def save_bounty_claim(sender, instance, created, **kwargs):
-#     challenge = instance.bounty.challenge
-#     reviewer = getattr(challenge, "reviewer", None)
-#     contributor = instance.person
-#     contributor_email = contributor.email_address
-#     reviewer_user = reviewer.user if reviewer else None
-
-#     if not created:
-#         # contributor has submitted the work for review
-#         if (
-#             instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW
-#             and instance.tracker.previous("kind")
-#             is not BountyClaim.CLAIM_TYPE_IN_REVIEW
-#         ):
-#             challenge = instance.bounty.challenge
-#             subject = f'The challenge "{challenge.title}" is ready to review'
-#             message = (
-#                 f"You can see the challenge here: {challenge.get_challenge_link()}"
-#             )
-#             if reviewer:
-#                 engagement.tasks.send_notification.delay(
-#                     [Notification.Type.EMAIL],
-#                     Notification.EventType.BOUNTY_SUBMISSION_READY_TO_REVIEW,
-#                     receivers=[reviewer.id],
-#                     task_title=challenge.title,
-#                     task_link=challenge.get_challenge_link(),
-#                 )
-
-
 class Comment(MP_Node):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
     text = models.TextField(max_length=1000)

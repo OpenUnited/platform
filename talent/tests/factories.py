@@ -1,8 +1,8 @@
 import factory
 from factory.django import DjangoModelFactory
-from factory.fuzzy import FuzzyInteger
+from factory.fuzzy import FuzzyInteger, FuzzyChoice
 
-from talent.models import Person, Feedback
+from talent.models import Person, Feedback, Status
 from security.tests.factories import UserFactory
 
 
@@ -15,6 +15,23 @@ class PersonFactory(DjangoModelFactory):
 
     class Meta:
         model = Person
+
+
+class StatusFactory(DjangoModelFactory):
+    person = factory.SubFactory(PersonFactory)
+    points = FuzzyInteger(0, 10_000)
+
+    @factory.lazy_attribute
+    def name(self):
+        for status in reversed(Status.STATUS_POINT_MAPPING.keys()):
+            current_points = Status.STATUS_POINT_MAPPING.get(status)
+            if current_points < self.points:
+                return status
+
+        return Status.DRONE
+
+    class Meta:
+        model = Status
 
 
 class FeedbackFactory(DjangoModelFactory):
