@@ -79,7 +79,7 @@ class FeedbackService:
     @staticmethod
     def get_analytics_for_person(person: Person) -> dict:
         """
-        Generates the analytics that a Talent receives throught the time he/she spent
+        Generates the analytics that a Talent receives through the time he/she spent
         on the platform.
         """
         feedbacks = Feedback.objects.filter(recipient=person)
