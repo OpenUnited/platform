@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from talent.models import Skill, Expertise
+from talent.models import Skill, Expertise, BountyClaim, Feedback, PersonSkill
 from .factories import (
     SkillFactory,
     ExpertiseFactory,
@@ -149,4 +149,110 @@ class SubmitFeedbackViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response, reverse("portfolio", args=(person.user.username,))
+        )
+
+
+class TalentPortfolioViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        person_auth = PersonFactory()
+        self.client.force_login(person_auth.user)
+
+        self.person = PersonFactory()
+        _ = StatusFactory(person=self.person)
+        self.person_skill = PersonSkillFactory(person=self.person)
+        self.url = reverse("portfolio", args=(self.person.user.username,))
+
+    def test_get_request(self):
+        from talent.forms import FeedbackForm
+        from talent.services import FeedbackService
+
+        response = self.client.get(self.url)
+
+        actual = response.context_data
+        expected = {
+            "user": self.person.user,
+            "photo_url": "/media/avatars/profile-empty.png",
+            "person": self.person,
+            "person_linkedin_link": "",
+            "person_twitter_link": "",
+            "status": self.person.status,
+            "skills": self.person_skill.skill,
+            "expertise": self.person_skill.expertise,
+            "FeedbackService": FeedbackService,
+            "can_leave_feedback": True,
+        }
+
+        # we dont' need to check form
+        actual.pop("form")
+
+        bounty_claims = actual.pop("bounty_claims")
+        self.assertEqual(bounty_claims.count(), 0)
+
+        received_feedbacks = actual.pop("received_feedbacks")
+        self.assertEqual(received_feedbacks.count(), 0)
+
+        self.assertEqual(actual, expected)
+
+
+# TODO: write tests for _remove_picture method. It is not written since it was not urgent
+class ProfileViewTest(TestCase):
+    def setUp(self):
+        self.person = PersonFactory()
+        self.client = Client()
+        self.client.force_login(self.person.user)
+        self.url = reverse("profile", args=(self.person.user.pk,))
+
+    def test_get_context_data(self):
+        response = self.client.get(self.url)
+
+        actual = response.context_data
+        expected = {
+            "person": self.person,
+            "pk": self.person.pk,
+            "photo_url": "/media/avatars/profile-empty.png",
+            "requires_upload": True,
+        }
+
+        for key in expected.keys():
+            self.assertEqual(actual.get(key), expected.get(key))
+
+    def test_post_valid(self):
+        skills = SkillFactory.create_batch(3)
+        skill_ids = [skill.id for skill in skills]
+
+        expertise = ExpertiseFactory.create_batch(5)
+        expertise_ids = [exp.id for exp in expertise]
+
+        data = {
+            "full_name": "test user",
+            "preferred_name": "test",
+            "current_position": "xyz company",
+            "headline": "dummy headline",
+            "overview": "dummy overview",
+            "location": "somewhere",
+            "github_link": "www.github.com/testuser",
+            "twitter_link": "www.twitter.com/testuser",
+            "linkedin_link": "www.linkedin.com/in/testuser",
+            "website_link": "www.example.com",
+            "send_me_bounties": True,
+            "selected_skill_ids": f"{skill_ids}",
+            "selected_expertise_ids": f"{expertise_ids}",
+        }
+
+        _ = self.client.post(self.url, data=data)
+
+        person_skill = PersonSkill.objects.get(person=self.person)
+        self.assertIsNotNone(person_skill)
+        self.assertEqual(
+            person_skill.skill,
+            list(Skill.objects.filter(id__in=skill_ids).values_list("name", flat=True)),
+        )
+        self.assertEqual(
+            person_skill.expertise,
+            list(
+                Expertise.objects.filter(id__in=expertise_ids).values_list(
+                    "name", flat=True
+                )
+            ),
         )
