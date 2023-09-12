@@ -389,12 +389,12 @@
                     <div class="mt-3 flex items-center">
                         <div>
                             <div class="flex items-center">
-                                {% for _ in range(feedback_analytics.get("average_stars")) %}
+                                {% for _ in range(feedback_analytics.get("average_stars")|int) %}
                                 {% include 'talent/partials/yellow_star.html' %}
                                 {% endfor %}
 
                                 <!-- 5 is the max star count -->
-                                {% for _ in range(5 - feedback_analytics.get("average_stars")) %}
+                                {% for _ in range(5 - feedback_analytics.get("average_stars")|int) %}
                                 {% include 'talent/partials/gray_star.html' %}
                                 {% endfor %}
                             </div>

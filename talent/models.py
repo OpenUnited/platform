@@ -375,16 +375,12 @@ class Feedback(models.Model):
         ],
     )
 
-    def clean(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         if self.recipient == self.provider:
             raise ValidationError(
                 _("The recipient and the provider cannot be the same.")
             )
 
-        super().clean(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -2,7 +2,7 @@ import factory
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyInteger
 
-from talent.models import Person, Feedback, Status, Skill, Expertise
+from talent.models import Person, Feedback, Status, Skill, Expertise, PersonSkill
 from security.tests.factories import UserFactory
 
 
@@ -63,3 +63,12 @@ class ExpertiseFactory(DjangoModelFactory):
 
     class Meta:
         model = Expertise
+
+
+class PersonSkillFactory(DjangoModelFactory):
+    person = factory.SubFactory(PersonFactory)
+    skill = factory.Faker("word")
+    expertise = factory.Faker("word")
+
+    class Meta:
+        model = PersonSkill
