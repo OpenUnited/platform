@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (
-    ProfileView,
+    UpdateProfileView,
     get_skills,
     get_expertise,
     list_skill_and_expertise,
@@ -12,7 +12,7 @@ from .views import (
 
 urlpatterns = [
     path("portfolio/<str:username>", TalentPortfolio.as_view(), name="portfolio"),
-    path("profile/<int:pk>/", ProfileView.as_view(), name="profile"),
+    path("profile/<int:pk>/", UpdateProfileView.as_view(), name="profile"),
     path("get-skills/", get_skills, name="get_skills"),
     path("get-expertise/", get_expertise, name="get_expertise"),
     path(
