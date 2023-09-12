@@ -103,7 +103,7 @@ def generate_sample_data():
     for fd in feedback_data:
         recipient = choice(people_subset)
         provider = choice(people_subset)
-        while recipient != provider:
+        while recipient == provider:
             provider = choice(people_subset)
 
         fd["recipient"] = recipient

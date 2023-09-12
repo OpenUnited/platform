@@ -2,6 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from random import randrange
 
+from talent.models import Person
 from .models import SignUpRequest, ProductRoleAssignment, User
 
 
@@ -47,12 +48,16 @@ class SignUpRequestService:
         # TODO: assign device_hash, country, region code etc. when the js libraries are set up
         sign_up_request.verification_code = verification_code
 
-        # TODO: create a Person object for full_name and preferred_name
-
         user = UserService.create(
             username=username,
-            password=make_password(password),
+            password=password,
             email=email,
+        )
+
+        _ = Person.objects.create(
+            full_name=full_name,
+            preferred_name=preferred_name,
+            user=user,
         )
 
         sign_up_request.user = user

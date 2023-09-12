@@ -1,8 +1,8 @@
 import factory
 from factory.django import DjangoModelFactory
-from django.core.files.base import ContentFile
+from factory.fuzzy import FuzzyInteger
 
-from talent.models import Person
+from talent.models import Person, Feedback, Status, Skill, Expertise, PersonSkill
 from security.tests.factories import UserFactory
 
 
@@ -12,12 +12,63 @@ class PersonFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     headline = factory.Faker("sentence", nb_words=6)
     overview = factory.Faker("paragraph")
-    photo = factory.LazyAttribute(
-        lambda _: ContentFile(
-            b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\x0cIDAT\x08\xd7c\xf8\xff\xff?\xc3\x00\x00\x02n\x01^\xd2\xd6\xd8\x00\x00\x00\x00IEND\xaeB`\x82",
-            name="test_image.jpg",
-        )
-    )
 
     class Meta:
         model = Person
+
+
+class StatusFactory(DjangoModelFactory):
+    person = factory.SubFactory(PersonFactory)
+    points = FuzzyInteger(0, 10_000)
+
+    @factory.lazy_attribute
+    def name(self):
+        for status in reversed(Status.STATUS_POINT_MAPPING.keys()):
+            current_points = Status.STATUS_POINT_MAPPING.get(status)
+            if current_points < self.points:
+                return status
+
+        return Status.DRONE
+
+    class Meta:
+        model = Status
+
+
+class FeedbackFactory(DjangoModelFactory):
+    recipient = factory.SubFactory(PersonFactory)
+    provider = factory.SubFactory(PersonFactory)
+    message = factory.Faker("paragraph")
+    stars = FuzzyInteger(1, 5)
+
+    class Meta:
+        model = Feedback
+
+
+class SkillFactory(DjangoModelFactory):
+    parent = None
+    name = factory.Faker("word")
+    active = factory.Faker("boolean")
+    selectable = factory.Faker("boolean")
+    display_boost_factor = factory.Faker("pyint", min_value=1, max_value=10)
+
+    class Meta:
+        model = Skill
+
+
+class ExpertiseFactory(DjangoModelFactory):
+    parent = None
+    skill = factory.SubFactory(SkillFactory)
+    name = factory.Faker("word")
+    selectable = factory.Faker("boolean")
+
+    class Meta:
+        model = Expertise
+
+
+class PersonSkillFactory(DjangoModelFactory):
+    person = factory.SubFactory(PersonFactory)
+    skill = factory.Faker("word")
+    expertise = factory.Faker("word")
+
+    class Meta:
+        model = PersonSkill
