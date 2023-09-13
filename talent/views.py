@@ -71,11 +71,10 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     # TODO: Display the previously selected skills and expertise
     def post(self, request, *args, **kwargs):
         person = request.user.person
-        import ipdb
 
         form = PersonProfileForm(request.POST, request.FILES, instance=person)
         if form.is_valid():
-            form.save()
+            created_person_obj = form.save(commit=False)
 
             person_skill = PersonSkill(person=person)
             skills_queryset = []
@@ -96,6 +95,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
                 ).values_list("name", flat=True)
                 person_skill.expertise = list(expertise_queryset)
                 person_skill.save()
+
+            created_person_obj.completed_profile = True
+            created_person_obj.save()
 
         return super().post(request, *args, **kwargs)
 

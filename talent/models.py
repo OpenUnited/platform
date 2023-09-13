@@ -32,6 +32,7 @@ class Person(TimeStampMixin):
     linkedin_link = models.URLField(null=True, blank=True)
     github_link = models.URLField(null=True, blank=True)
     website_link = models.URLField(null=True, blank=True)
+    completed_profile = models.BooleanField(default=False)
 
     class Meta:
         db_table = "talent_person"
