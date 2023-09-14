@@ -50,6 +50,14 @@
                     <div class="treeselect-skills focus-visible:outline-transparent">
                         {{ form.selected_skill_ids }}
                     </div>
+                    {% set skill_field_errors = form.errors.get("selected_skill_ids") %}
+                    {% if skill_field_errors %}
+                    <div>
+                        {% for error in form.errors.get("selected_skill_ids") %}
+                        <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="flex flex-col mt-6">
@@ -60,6 +68,14 @@
                 <div class="mt-3">
                     <div class="treeselect-expertise focus-visible:outline-transparent">
                     </div>
+                    {% set expertise_field_errors =  form.errors.get("selected_expertise_ids") %}
+                    {% if expertise_field_errors  %}
+                    <div>
+                        {% for error in form.errors.get("selected_expertise_ids") %}
+                        <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="mt-3 flow-root max-w-[742px] w-full">
                     <table id="skill-expertise-table" class="hidden min-w-full">

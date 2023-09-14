@@ -196,7 +196,7 @@ class TalentPortfolioViewTest(TestCase):
 
 
 # TODO: write tests for _remove_picture method. It is not written since it was not urgent
-class ProfileViewTest(TestCase):
+class UpdateProfileViewTest(TestCase):
     def setUp(self):
         self.person = PersonFactory()
         self.client = Client()

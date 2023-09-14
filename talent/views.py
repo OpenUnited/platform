@@ -2,25 +2,31 @@ import json
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 from utility.utils import get_path_from_url
 from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
 from product_management.models import Challenge
-from .forms import PersonProfileForm, FeedbackForm
+from .forms import (
+    PersonProfileForm,
+    FeedbackForm,
+)
 from .services import FeedbackService
 
 
-class ProfileView(UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = Person
     template_name = "talent/profile.html"
-    fields = "__all__"
+    form_class = PersonProfileForm
     context_object_name = "person"
     slug_field = "username"
     slug_url_kwarg = "username"
+    login_url = "sign_in"
 
     def get_queryset(self):
         # Restrict the queryset to the currently authenticated user
@@ -30,7 +36,10 @@ class ProfileView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         person = self.get_object()
-        context["form"] = PersonProfileForm(initial=person.get_initial_data())
+
+        if "form" not in kwargs:
+            context["form"] = self.form_class(initial=person.get_initial_data())
+
         context["pk"] = person.pk
 
         image_url, requires_upload = person.get_photo_url()
@@ -46,6 +55,9 @@ class ProfileView(UpdateView):
 
         return render(request, "talent/profile_picture.html", context)
 
+    def get_success_url(self):
+        return reverse("profile", kwargs={"pk": self.request.user.pk})
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
@@ -57,12 +69,12 @@ class ProfileView(UpdateView):
 
     # TODO: Add a success message under the photo upload field
     # TODO: Display the previously selected skills and expertise
-    # TODO: Display an error message when skill and expertise fields are empty
     def post(self, request, *args, **kwargs):
         person = request.user.person
+
         form = PersonProfileForm(request.POST, request.FILES, instance=person)
         if form.is_valid():
-            form.save()
+            created_person_obj = form.save(commit=False)
 
             person_skill = PersonSkill(person=person)
             skills_queryset = []
@@ -83,6 +95,9 @@ class ProfileView(UpdateView):
                 ).values_list("name", flat=True)
                 person_skill.expertise = list(expertise_queryset)
                 person_skill.save()
+
+            created_person_obj.completed_profile = True
+            created_person_obj.save()
 
         return super().post(request, *args, **kwargs)
 
