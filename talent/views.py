@@ -67,6 +67,23 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
         return super().get(request, *args, **kwargs)
 
+    def _get_skills_list(self, skill_ids: str) -> list:
+        if skill_ids:
+            json_skill_ids = json.loads(skill_ids)
+            skills_queryset = Skill.objects.filter(id__in=json_skill_ids).values(
+                "id", "name"
+            )
+            return list(skills_queryset)
+
+    def _get_expertise_list(self, expertise_ids: str) -> list:
+        if expertise_ids:
+            json_expertise_ids = json.loads(expertise_ids)
+            expertise_queryset = Expertise.objects.filter(
+                id__in=json_expertise_ids
+            ).values("id", "name")
+
+            return list(expertise_queryset)
+
     # TODO: Add a success message under the photo upload field
     # TODO: Display the previously selected skills and expertise
     def post(self, request, *args, **kwargs):
@@ -75,29 +92,17 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         form = PersonProfileForm(request.POST, request.FILES, instance=person)
         if form.is_valid():
             created_person_obj = form.save(commit=False)
-
-            person_skill = PersonSkill(person=person)
-            skills_queryset = []
-            selected_skills = request.POST.get("selected_skill_ids")
-            if selected_skills:
-                skill_ids = json.loads(selected_skills)
-                skills_queryset = Skill.objects.filter(id__in=skill_ids).values_list(
-                    "name", flat=True
-                )
-                person_skill.skill = list(skills_queryset)
-
-            expertise_queryset = []
-            selected_expertise = request.POST.get("selected_expertise_ids")
-            if selected_expertise:
-                expertise_ids = json.loads(selected_expertise)
-                expertise_queryset = Expertise.objects.filter(
-                    id__in=expertise_ids
-                ).values_list("name", flat=True)
-                person_skill.expertise = list(expertise_queryset)
-                person_skill.save()
-
             created_person_obj.completed_profile = True
             created_person_obj.save()
+
+            skill_and_expertise, _ = PersonSkill.objects.get_or_create(person=person)
+            skill_and_expertise.skill = self._get_skills_list(
+                request.POST.get("selected_skill_ids")
+            )
+            skill_and_expertise.expertise = self._get_expertise_list(
+                request.POST.get("selected_expertise_ids")
+            )
+            skill_and_expertise.save()
 
         return super().post(request, *args, **kwargs)
 
