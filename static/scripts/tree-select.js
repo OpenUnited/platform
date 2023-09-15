@@ -1,93 +1,28 @@
-// Reusable utility function to make an AJAX request
-function makeAjaxRequest(url, callback) {
-    const xmlhttp = new XMLHttpRequest();
-
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState === XMLHttpRequest.DONE) {
-            if (xmlhttp.status === 200) {
-                const response = JSON.parse(xmlhttp.responseText);
-                callback(response);
-            } else if (xmlhttp.status === 400) {
-                alert('There was an error 400');
-            } else {
-                alert('Something else other than 200 was returned');
-            }
-        }
-    };
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-}
-
-function initializeTreeselect(options, domElement) {
-    const treeselect = new Treeselect({
-        parentHtmlContainer: domElement,
-        value: [],
-        options: mapOptionsExpertiseToOptions(options),
-    });
-
-    return treeselect;
-}
-
-// Function to fetch and initialize options using AJAX
-function fetchAndInitializeOptions(url, domElement) {
-    makeAjaxRequest(url, options => {
-        initializeTreeselect(options, domElement);
-    });
-}
-
-// Function to map expertise options to tree structure
-function mapOptionsExpertiseToOptions(optionsExpertise) {
-    const newOptions = [];
-
-    optionsExpertise.forEach(expertiseOption => {
-        const { id, name, parent_id } = expertiseOption;
-        const newOption = { name, value: id, children: [] };
-        
-        const parentOption = newOptions.find(option => option.value === parent_id);
-        if (parentOption) {
-            parentOption.children.push(newOption);
-        } else {
-            newOptions.push(newOption);
-        }
-    });
-
-    return newOptions;
-}
-
-// We are selecting only one because there has to be only one skill dropdown field
 const skillsField = document.querySelector(".treeselect-skills");
 const expertiseField = document.querySelector(".treeselect-expertise");
 
+// These two are hidden input fields that hold the ids of skill and expertise objects
 const hiddenSkillsField = document.getElementById("selected-skills");
 const hiddenExpertiseField = document.getElementById("selected-expert");
+
 const skillExpertiseTable = document.getElementById("skill-expertise-table");
 
-// Fetch and initialize skills options
-fetchAndInitializeOptions("/talent/get-skills/", skillsField);
+// Fetch and initialize skills and expertise options
+let skillTreeSelectField = fetchAndInitializeSkillField("/talent/get-skills/", "/talent/get-current-skills/", skillsField);
+let expertiseTreeSelectField = fetchAndInitializeExpertiseField("/talent/get-current-expertise/", expertiseField);
 
-// Since expertise will be selected according to skills, we pass empty array to the options
-let expertiseTreeField = initializeTreeselect([], expertiseField);
+// Everytime a user makes changes on the skills input, we update the related expertise options
+skillsField.addEventListener("input", e => updateExpertiseField(e));
 
-skillsField.addEventListener("input", e => {
-    const selectedSkills = e.detail;
-    hiddenSkillsField.value = JSON.stringify(selectedSkills);
+// When expertise is selected, we add skill - expertise pair to the table
+expertiseField.addEventListener("input", e => updateSkillAndExpertiseTable(e));
 
-    const expertiseURL = "/talent/get-expertise/?selected_skills=" + encodeURIComponent(JSON.stringify(selectedSkills));
-
-    makeAjaxRequest(expertiseURL, options => {
-        expertiseTreeField.destroy();
-        expertiseTreeField = initializeTreeselect(options, expertiseField);
-    });
-});
-
-expertiseField.addEventListener("input", e => {
-    hiddenExpertiseField.value = JSON.stringify(e.detail);
-
+async function updateSkillAndExpertiseTable(event) {
+    hiddenExpertiseField.value = JSON.stringify(event.detail);
     const listSkillAndExpertiseURL = "/talent/list-skill-and-expertise/?skills=" + encodeURIComponent(hiddenSkillsField.value) + "&&" + "expertise=" + encodeURIComponent(hiddenExpertiseField.value);
 
-    makeAjaxRequest(listSkillAndExpertiseURL, response => {
-        const skillExpertiseTable = document.getElementById("skill-expertise-table");
+    const response = await fetchData(listSkillAndExpertiseURL);
+    const skillExpertiseTable = document.getElementById("skill-expertise-table");
 
         if (response.length > 0) {
             skillExpertiseTable.classList.remove("hidden");
@@ -113,5 +48,75 @@ expertiseField.addEventListener("input", e => {
             // Hide the table if there's no data
             skillExpertiseTable.classList.add("hidden");
         }
+}
+
+function createTreeSelect(domElement, initValues, options) {
+    return new Treeselect({
+        parentHtmlContainer: domElement,
+        value: initValues,
+        options: mapOptionsExpertiseToOptions(options),
     });
-});
+}
+
+function mapOptionsExpertiseToOptions(optionsExpertise) {
+    const newOptions = [];
+
+    optionsExpertise.forEach(expertiseOption => {
+        const { id, name, parent_id } = expertiseOption;
+        const newOption = { name, value: id, children: [] };
+        
+        const parentOption = newOptions.find(option => option.value === parent_id);
+        if (parentOption) {
+            parentOption.children.push(newOption);
+        } else {
+            newOptions.push(newOption);
+        }
+    });
+
+    return newOptions;
+}
+
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.log(response);
+            throw new Error("Network response was not OK");
+        }
+        return response.json();
+    }
+    catch (error) {
+        console.log("Fetch error:", error);
+        throw error;
+    }
+}
+
+async function fetchAndInitializeSkillField(getSkillsURL, getSelectedSkillsURL, domElement) {
+    const skillOptions = await fetchData(getSkillsURL);
+    const selectedSkillOptions = await fetchData(getSelectedSkillsURL);
+
+    hiddenSkillsField.value = JSON.stringify(selectedSkillOptions);
+    return createTreeSelect(domElement, selectedSkillOptions, skillOptions);
+}
+
+async function fetchAndInitializeExpertiseField(getSelectedExpertiseURL, domElement) {
+    const response = await fetchData(getSelectedExpertiseURL);
+
+    hiddenExpertiseField.value = JSON.stringify(response.expertiseIDList);
+    return createTreeSelect(domElement, response.expertiseIDList, response.expertiseList);
+}
+
+async function fetchAndUpdateExpertiseField(expertiseTreeSelectField, getExpertiseURL, domElement) {
+    Promise.resolve(expertiseTreeSelectField).then(field => field.destroy());
+    const response = await fetchData(getExpertiseURL);
+
+    return createTreeSelect(domElement, response.expertiseIDList, response.expertiseList);
+}
+
+async function updateExpertiseField(event) {
+    const selectedSkills = event.detail;
+    hiddenSkillsField.value = JSON.stringify(selectedSkills);
+
+    const expertiseURL = "/talent/get-expertise/?selected_skills=" + encodeURIComponent(JSON.stringify(selectedSkills));
+    expertiseTreeSelectField = await fetchAndUpdateExpertiseField(expertiseTreeSelectField, expertiseURL, expertiseField);
+}

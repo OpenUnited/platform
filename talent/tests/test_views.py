@@ -256,3 +256,6 @@ class UpdateProfileViewTest(TestCase):
                 )
             ),
         )
+
+        Skill.objects.filter(id__in=skill_ids).delete()
+        Expertise.objects.filter(id__in=expertise_ids).delete()

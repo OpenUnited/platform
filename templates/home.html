@@ -52,7 +52,6 @@
     </div>
 </div>
 
-<!-- Make the transition smoother when the modal pops-up -->
 {% if request.user.is_authenticated and not request.user.person.completed_profile %}
 <div class="relative z-10" aria-labelledby="complete-profile-modal" role="dialog" aria-modal="true">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
