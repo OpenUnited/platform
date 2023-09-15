@@ -8,6 +8,8 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 
 from utility.utils import get_path_from_url
 from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
@@ -85,7 +87,6 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             return list(expertise_queryset)
 
     # TODO: Add a success message under the photo upload field
-    # TODO: Display the previously selected skills and expertise
     def post(self, request, *args, **kwargs):
         person = request.user.person
 
@@ -107,6 +108,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         return super().post(request, *args, **kwargs)
 
 
+@login_required(login_url="sign_in")
 def get_skills(request):
     skill_queryset = (
         Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
@@ -115,6 +117,19 @@ def get_skills(request):
     return JsonResponse(skills, safe=False)
 
 
+@login_required(login_url="sign_in")
+def get_current_skills(request):
+    person = request.user.person
+    try:
+        person_skill = PersonSkill.objects.get(person=person)
+        skill_ids = [entry.get("id") for entry in person_skill.skill]
+    except ObjectDoesNotExist:
+        skill_ids = []
+
+    return JsonResponse(skill_ids, safe=False)
+
+
+@login_required(login_url="sign_in")
 def get_expertise(request):
     selected_skills = request.GET.get("selected_skills")
     if selected_skills:
@@ -122,13 +137,49 @@ def get_expertise(request):
         expertise_queryset = Expertise.objects.filter(
             skill_id__in=selected_skill_ids
         ).values()
-        expertise = list(expertise_queryset)
 
-        return JsonResponse(expertise, safe=False)
+        person = request.user.person
+        try:
+            person_expertise = PersonSkill.objects.get(person=person)
+            expertise_ids = [entry.get("id") for entry in person_expertise.expertise]
+        except ObjectDoesNotExist:
+            expertise_ids = []
 
-    return JsonResponse([], safe=False)
+        return JsonResponse(
+            {
+                "expertiseList": list(expertise_queryset),
+                "expertiseIDList": expertise_ids,
+            },
+            safe=False,
+        )
+
+    return JsonResponse(
+        {
+            "expertiseList": [],
+            "expertiseIDList": [],
+        },
+        safe=False,
+    )
 
 
+@login_required(login_url="sign_in")
+def get_current_expertise(request):
+    person = request.user.person
+    try:
+        person_skill = PersonSkill.objects.get(person=person)
+        expertise_ids = [entry.get("id") for entry in person_skill.expertise]
+        expertise = Expertise.objects.filter(id__in=expertise_ids).values()
+    except:
+        expertise_ids = []
+        expertise = []
+
+    return JsonResponse(
+        {"expertiseList": list(expertise), "expertiseIDList": expertise_ids},
+        safe=False,
+    )
+
+
+@login_required(login_url="sign_in")
 def list_skill_and_expertise(request):
     skills = request.GET.get("skills")
     expertise = request.GET.get("expertise")
