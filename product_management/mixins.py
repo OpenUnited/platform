@@ -9,7 +9,7 @@ class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
     name = models.TextField()
     short_description = models.TextField()
     full_description = models.TextField(blank=True, null=True)
-    website = models.CharField(max_length=512)
+    website = models.CharField(max_length=512, blank=True, null=True)
     detail_url = models.URLField(blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
     slug = models.SlugField(unique=True)
