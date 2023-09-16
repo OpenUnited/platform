@@ -17,6 +17,7 @@ from .views import (
     InitiativeDetailView,
     CapabilityDetailView,
     BountyClaimView,
+    CreateProductView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -31,6 +32,7 @@ urlpatterns = [
     path("challenges/", ChallengeListView.as_view(), name="challenges"),
     path("products/", ProductListView.as_view(), name="products"),
     path("bounty-claim/", BountyClaimView.as_view(), name="bounty-claim"),
+    path("product/create", CreateProductView.as_view(), name="create-product"),
 ]
 
 # URL patterns for various product views

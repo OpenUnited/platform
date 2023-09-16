@@ -16,7 +16,7 @@ from django.views.generic import (
     DetailView,
 )
 
-from .forms import BountyClaimForm, IdeaForm
+from .forms import BountyClaimForm, IdeaForm, ProductForm
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
@@ -310,3 +310,9 @@ class BountyClaimView(FormView):
 
         self.success_url = request.headers.get("Hx-Current-Url")
         return super().post(request, *args, **kwargs)
+
+
+class CreateProductView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_management/create_product.html"

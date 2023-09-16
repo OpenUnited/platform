@@ -72,6 +72,14 @@ class Product(ProductMixin):
         "commerce.Organisation", on_delete=models.CASCADE, blank=True, null=True
     )
 
+    def make_private(self):
+        self.is_private = True
+        self.save()
+
+    def make_public(self):
+        self.is_private = False
+        self.save()
+
     def get_members_emails(self):
         return self.productrole_set.all().values_list(
             "person__email_address", flat=True
