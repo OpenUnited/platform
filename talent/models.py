@@ -173,6 +173,8 @@ class PersonSkill(models.Model):
         default=None,
         related_name="skills",
     )
+    # The below two fields contain a list of integers
+    # ie. ids of skills and expertise such as [45, 56, 87]
     skill = models.JSONField(blank=True, null=True)
     expertise = models.JSONField(blank=True, null=True)
 
