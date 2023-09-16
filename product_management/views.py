@@ -6,6 +6,9 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
+from django.shortcuts import render
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -312,7 +315,35 @@ class BountyClaimView(FormView):
         return super().post(request, *args, **kwargs)
 
 
-class CreateProductView(CreateView):
+class CreateProductView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = "product_management/create_product.html"
+    login_url = "sign-up"
+
+    # TODO: save the image and the documents
+    def post(self, request, *args, **kwargs):
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product_name = form.cleaned_data.get("name")
+            slug = slugify(product_name)
+
+            if Product.objects.filter(slug=slug):
+                form.add_error(
+                    "name",
+                    _(
+                        f"The name {product_name} is not available currently. Please pick something different."
+                    ),
+                )
+                return render(request, self.template_name, context={"form": form})
+
+            instance = form.save()
+            _ = ProductRoleAssignment.objects.create(
+                person=self.request.user.person, product=instance, role=2
+            )
+            self.success_url = reverse(
+                "product_summary", args=("organisation_username_four", instance.slug)
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)

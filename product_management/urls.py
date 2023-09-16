@@ -36,10 +36,12 @@ urlpatterns = [
 ]
 
 # URL patterns for various product views
+# TODO: remove organisation_username and only use product such as, /product/product-slug/
 urlpatterns += [
     path(
         "<str:organisation_username>/<str:product_slug>/",
         ProductRedirectView.as_view(),
+        name="product_detail",
     ),
     path(
         "<str:organisation_username>/<str:product_slug>/summary",

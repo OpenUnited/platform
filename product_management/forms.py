@@ -78,6 +78,20 @@ class ProductForm(forms.ModelForm):
                 person=request.user.person
             )
 
+    def clean_photo(self):
+        photo = self.cleaned_data.get("photo")
+
+        allowed_extensions = [".jpg", "jpeg", "png"]
+        if photo:
+            file_name = photo.name
+            file_extension = file_name.split(".")[-1]
+            if file_extension not in allowed_extensions:
+                raise ValidationError(
+                    _(
+                        f"File extension must be one of the following: {' '.join(allowed_extensions)}"
+                    )
+                )
+
     class Meta:
         model = Product
         exclude = [
@@ -93,12 +107,12 @@ class ProductForm(forms.ModelForm):
             ),
             "short_description": forms.TextInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 }
             ),
             "full_description": forms.Textarea(
                 attrs={
-                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 }
             ),
             "website": forms.URLInput(
@@ -121,6 +135,11 @@ class ProductForm(forms.ModelForm):
             "is_private": forms.CheckboxInput(
                 attrs={
                     "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
+                }
+            ),
+            "photo": forms.FileInput(
+                attrs={
+                    "class": "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50",
                 }
             ),
             "attachment": forms.FileInput(
