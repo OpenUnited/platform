@@ -1,6 +1,8 @@
 import factory
+import json
 from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyInteger
+from random import randint
 
 from talent.models import Person, Feedback, Status, Skill, Expertise, PersonSkill
 from security.tests.factories import UserFactory
@@ -53,6 +55,7 @@ class SkillFactory(DjangoModelFactory):
 
     class Meta:
         model = Skill
+        django_get_or_create = ("name",)
 
 
 class ExpertiseFactory(DjangoModelFactory):
@@ -63,12 +66,27 @@ class ExpertiseFactory(DjangoModelFactory):
 
     class Meta:
         model = Expertise
+        django_get_or_create = ("name",)
 
 
 class PersonSkillFactory(DjangoModelFactory):
     person = factory.SubFactory(PersonFactory)
-    skill = factory.Faker("word")
-    expertise = factory.Faker("word")
+    skill = factory.LazyAttribute(
+        lambda _: json.dumps(
+            [
+                {"id": randint(1, 50), "name": f"skill-{i}"}
+                for i in range(0, randint(3, 10))
+            ]
+        )
+    )
+    expertise = factory.LazyAttribute(
+        lambda _: json.dumps(
+            [
+                {"id": randint(1, 50), "name": f"expertise-{i}"}
+                for i in range(0, randint(3, 10))
+            ]
+        )
+    )
 
     class Meta:
         model = PersonSkill
