@@ -325,16 +325,10 @@ class CreateProductView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            product_name = form.cleaned_data.get("name")
-            slug = slugify(product_name)
-
-            if Product.objects.filter(slug=slug):
-                form.add_error(
-                    "name",
-                    _(
-                        f"The name {product_name} is not available currently. Please pick something different."
-                    ),
-                )
+            name = form.cleaned_data.get("name")
+            error = Product.check_slug_from_name(name)
+            if error:
+                form.add_error("name", error)
                 return render(request, self.template_name, context={"form": form})
 
             instance = form.save()
