@@ -1,7 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+import factory
 
-from talent.models import Skill, Expertise, BountyClaim, Feedback, PersonSkill
+from talent.models import Skill, Expertise, PersonSkill
 from .factories import (
     SkillFactory,
     ExpertiseFactory,
@@ -11,100 +12,155 @@ from .factories import (
 )
 
 
-class TalentFunctionBasedViewsTest(TestCase):
+class TalentAppLoginRequiredTest(TestCase):
     def setUp(self):
+        self.url_names = [
+            "get_skills",
+            "get_current_skills",
+            "get_expertise",
+            "get_current_expertise",
+            "list-skill-and-expertise",
+        ]
+        self.url_list = [reverse(url_name) for url_name in self.url_names]
+
+    def test_as_anonymous(self):
+        login_url = reverse("sign_in")
+        client = Client()
+
+        for url in self.url_list:
+            response = client.get(url)
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.url, f"{login_url}?next={url}")
+
+    def test_as_logged_in(self):
+        person = PersonFactory()
+        client = Client()
+        client.force_login(person.user)
+
+        for url in self.url_list:
+            response = client.get(url)
+            self.assertEqual(response.status_code, 200)
+
+
+class TalentAppFunctionBasedViewsTest(TestCase):
+    def setUp(self):
+        self.person = PersonFactory()
         self.client = Client()
-        self.skills_url = reverse("get_skills")
-        self.expertise_url = reverse("get_expertise")
-        self.list_skill_and_expertise_url = reverse("list-skill-and-expertise")
+        self.client.force_login(self.person.user)
 
-    def _create_skills(self, n):
-        skill_ids = []
-        skills = []
-        for i in range(n, 0, -1):
-            s = SkillFactory(display_boost_factor=i)
-            skills.append(s)
-            skill_ids.append(s.id)
+        self.another_person = PersonFactory()
+        self.client_for_none = Client()
+        self.client_for_none.force_login(self.another_person.user)
 
-        return skills, skill_ids
+        self.skills = SkillFactory.create_batch(10)
+        self.skill_ids = [s.id for s in self.skills]
+        self.skill_data = [{"id": s.id, "name": s.name} for s in self.skills]
 
-    def _create_expertise(self, skills):
-        expertise_ids = []
-        expertise_list = []
-        for skill in skills:
-            exp = ExpertiseFactory(skill=skill)
-            expertise_list.append(exp)
-            expertise_ids.append(exp.id)
+        self.expertise = ExpertiseFactory.create_batch(
+            10, skill=factory.Iterator(self.skills)
+        )
+        self.expertise_ids = [exp.id for exp in self.expertise]
+        self.expertise_queryset = Expertise.objects.filter(
+            id__in=self.expertise_ids
+        ).values()
+        self.expertise_data = [
+            {"id": exp.id, "name": exp.name} for exp in self.expertise
+        ]
 
-        return expertise_list, expertise_ids
+        _ = PersonSkillFactory(
+            person=self.person, skill=self.skill_data, expertise=self.expertise_data
+        )
+
+    def tearDown(self):
+        Skill.objects.filter(id__in=self.skill_ids).delete()
+        Expertise.objects.filter(id__in=self.expertise_ids).delete()
 
     def test_get_skills(self):
-        _, skill_ids = self._create_skills(10)
-
-        actual_response = self.client.get(self.skills_url)
-        actual_json_data = actual_response.json()
+        skills_url = reverse("get_skills")
+        actual_response = self.client.get(skills_url).json()
 
         expected_json_data = list(
-            Skill.objects.filter(id__in=skill_ids, active=True).values()
+            Skill.objects.filter(id__in=self.skill_ids, active=True)
+            .order_by("-display_boost_factor")
+            .values()
         )
+        self.assertCountEqual(actual_response, expected_json_data)
 
-        self.assertEqual(actual_json_data, expected_json_data)
+    def test_current_skills(self):
+        url = reverse("get_current_skills")
 
-    def test_get_skills_none(self):
-        actual_response = self.client.get(self.skills_url)
-        actual_json_data = actual_response.json()
-        expected_json_data = []
+        actual_response = self.client.get(url).json()
+        self.assertEqual(actual_response, self.skill_ids)
 
-        self.assertEqual(actual_json_data, expected_json_data)
+        actual_response = self.client_for_none.get(url).json()
+        expected_response = []
+
+        self.assertEqual(actual_response, expected_response)
 
     def test_get_expertise(self):
-        skills, skill_ids = self._create_skills(5)
+        url = reverse("get_expertise")
 
-        _, _ = self._create_expertise(skills)
-
-        response = self.client.get(
-            self.expertise_url, data={"selected_skills": f"{skill_ids}"}
-        )
+        response = self.client.get(url, data={"selected_skills": f"{self.skill_ids}"})
         actual_data = response.json()
-        expected_data = list(Expertise.objects.filter(skill_id__in=skill_ids).values())
+        expected_data = {
+            "expertiseList": list(self.expertise_queryset),
+            "expertiseIDList": self.expertise_ids,
+        }
+        self.assertEqual(actual_data, expected_data)
+
+        response = self.client.get(url)
+        actual_data = response.json()
+        expected_data = {
+            "expertiseList": [],
+            "expertiseIDList": [],
+        }
+        self.assertEqual(actual_data, expected_data)
+
+    def test_get_current_expertise(self):
+        url = reverse("get_current_expertise")
+
+        response = self.client.get(url)
+        actual_data = response.json()
+        expected_data = {
+            "expertiseList": list(self.expertise_queryset),
+            "expertiseIDList": self.expertise_ids,
+        }
 
         self.assertEqual(actual_data, expected_data)
 
-    def test_get_expertise_none(self):
-        response = self.client.get(self.expertise_url)
-
+        response = self.client_for_none.get(url)
         actual_data = response.json()
-        expected_data = []
+        expected_data = {
+            "expertiseList": [],
+            "expertiseIDList": [],
+        }
 
         self.assertEqual(actual_data, expected_data)
 
     def test_list_skill_and_expertise(self):
-        skills, skill_ids = self._create_skills(5)
-        expertise, expertise_ids = self._create_expertise(skills)
+        url = reverse("list-skill-and-expertise")
+
+        response = self.client.get(url)
+
+        actual_data = response.json()
+        expected_data = []
+
+        self.assertEqual(actual_data, expected_data)
 
         response = self.client.get(
-            self.list_skill_and_expertise_url,
-            data={"skills": f"{skill_ids}", "expertise": f"{expertise_ids}"},
+            url,
+            data={"skills": f"{self.skill_ids}", "expertise": f"{self.expertise_ids}"},
         )
 
         actual_data = response.json()
-
         expected_data = []
-        for exp in expertise:
+        for exp in self.expertise:
             expected_data.append(
                 {
                     "skill": exp.skill.name,
                     "expertise": exp.name,
                 }
             )
-
-        self.assertEqual(actual_data, expected_data)
-
-    def test_list_and_expertise_none(self):
-        response = self.client.get(self.list_skill_and_expertise_url)
-
-        actual_data = response.json()
-        expected_data = []
 
         self.assertEqual(actual_data, expected_data)
 
@@ -246,15 +302,11 @@ class UpdateProfileViewTest(TestCase):
         self.assertIsNotNone(person_skill)
         self.assertEqual(
             person_skill.skill,
-            list(Skill.objects.filter(id__in=skill_ids).values_list("name", flat=True)),
+            list(Skill.objects.filter(id__in=skill_ids).values("id", "name")),
         )
         self.assertEqual(
             person_skill.expertise,
-            list(
-                Expertise.objects.filter(id__in=expertise_ids).values_list(
-                    "name", flat=True
-                )
-            ),
+            list(Expertise.objects.filter(id__in=expertise_ids).values("id", "name")),
         )
 
         Skill.objects.filter(id__in=skill_ids).delete()
