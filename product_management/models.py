@@ -1,6 +1,5 @@
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
-from django.db import models, transaction
+from django.db import models
 from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -9,9 +8,7 @@ from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from product_management.mixins import ProductMixin
-from engagement.models import Notification
 from talent.models import Person, Skill, Expertise
-from product_management.utils import get_person_data, to_dict
 
 
 class Tag(TimeStampMixin):
@@ -61,6 +58,9 @@ class CapabilityAttachment(models.Model):
         db_table = "capability_attachment"
 
 
+from django.utils.text import slugify
+
+
 class Product(ProductMixin):
     attachment = models.ManyToManyField(
         Attachment, related_name="product_attachments", blank=True
@@ -72,24 +72,21 @@ class Product(ProductMixin):
         "commerce.Organisation", on_delete=models.CASCADE, blank=True, null=True
     )
 
-    def get_members_emails(self):
-        return self.productrole_set.all().values_list(
-            "person__email_address", flat=True
-        )
+    def make_private(self):
+        self.is_private = True
+        self.save()
 
-    def get_members_ids(self):
-        return self.productrole_set.all().values_list("person__id", flat=True)
+    def make_public(self):
+        self.is_private = False
+        self.save()
 
-    def is_product_member(self, person):
-        return self.productrole_set.filter(person=person).exists()
+    @staticmethod
+    def check_slug_from_name(product_name: str) -> str | None:
+        """Checks if the given product name already exists. If so, it returns an error message."""
+        slug = slugify(product_name)
 
-    def get_product_owner(self):
-        product_owner = self.owner
-        return (
-            product_owner.organisation
-            if product_owner.organisation
-            else product_owner.person.user
-        )
+        if Product.objects.filter(slug=slug):
+            return f"The name {product_name} is not available currently. Please pick something different."
 
     def save(self, *args, **kwargs):
         # We show the preview of the video in ProductListing. Therefore, we have to

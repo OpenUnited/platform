@@ -37,7 +37,7 @@
                         <a href="#"
                             class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit">Get
                             Started as a Contributor</a>
-                        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Add your product to OpenUnited
+                        <a href="{{ url('create-product') }}" class="text-sm font-semibold leading-6 text-gray-900">Add your product to OpenUnited
                             <span aria-hidden="true">→</span></a>
                     </div>
                 </div>
@@ -104,12 +104,12 @@
 
     const transitionClasses = {
         show: {
-            remove: ["ease-in", "duration-200", "opacity-0"],
+            remove: ["hidden", "ease-in", "duration-200", "opacity-0"],
             add: ["ease-out", "duration-300", "opacity-100"],
         },
         hide: {
             remove: ["ease-out", "duration-300", "opacity-100"],
-            add: ["ease-in", "duration-200", "opacity-0"],
+            add: ["hidden", "ease-in", "duration-200", "opacity-0"],
         },
     };
 

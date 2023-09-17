@@ -4,12 +4,13 @@ from openunited.mixins import TimeStampMixin, UUIDMixin
 from django.utils.text import slugify
 
 
+# TODO: maybe upload the photos to avatars/products/
 class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
-    photo = models.CharField(blank=True, null=True, default=None, max_length=1024)
+    photo = models.ImageField(upload_to="avatars/", blank=True, null=True)
     name = models.TextField()
     short_description = models.TextField()
     full_description = models.TextField(blank=True, null=True)
-    website = models.CharField(max_length=512)
+    website = models.CharField(max_length=512, blank=True, null=True)
     detail_url = models.URLField(blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
     slug = models.SlugField(unique=True)

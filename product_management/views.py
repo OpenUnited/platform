@@ -6,6 +6,9 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
+from django.shortcuts import render
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -16,7 +19,7 @@ from django.views.generic import (
     DetailView,
 )
 
-from .forms import BountyClaimForm, IdeaForm
+from .forms import BountyClaimForm, IdeaForm, ProductForm
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
@@ -309,4 +312,32 @@ class BountyClaimView(FormView):
             bounty_claim.save()
 
         self.success_url = request.headers.get("Hx-Current-Url")
+        return super().post(request, *args, **kwargs)
+
+
+class CreateProductView(LoginRequiredMixin, CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_management/create_product.html"
+    login_url = "sign-up"
+
+    # TODO: save the image and the documents
+    def post(self, request, *args, **kwargs):
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            error = Product.check_slug_from_name(name)
+            if error:
+                form.add_error("name", error)
+                return render(request, self.template_name, context={"form": form})
+
+            instance = form.save()
+            _ = ProductRoleAssignment.objects.create(
+                person=self.request.user.person, product=instance, role=2
+            )
+            self.success_url = reverse(
+                "product_summary", args=("organisation_username_four", instance.slug)
+            )
+            return redirect(self.success_url)
+
         return super().post(request, *args, **kwargs)
