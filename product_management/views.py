@@ -6,7 +6,6 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.views.generic import (
@@ -19,7 +18,7 @@ from django.views.generic import (
     DetailView,
 )
 
-from .forms import BountyClaimForm, IdeaForm, ProductForm
+from .forms import BountyClaimForm, IdeaForm, ProductForm, OrganisationForm
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
 from commerce.models import Organisation
@@ -340,6 +339,23 @@ class CreateProductView(LoginRequiredMixin, CreateView):
             self.success_url = reverse(
                 "product_summary", args=("organisation_username_four", instance.slug)
             )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class CreateOrganisationView(LoginRequiredMixin, CreateView):
+    model = Organisation
+    form_class = OrganisationForm
+    template_name = "product_management/create_organisation.html"
+    success_url = "create-product"
+    login_url = "sign-up"
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)

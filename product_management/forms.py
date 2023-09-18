@@ -63,7 +63,7 @@ class ProductForm(forms.ModelForm):
         to_field_name="name",
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
             }
         ),
         help_text="Optional. If you do not provide an organisation, you will be the owner of the product",
@@ -160,4 +160,28 @@ class ProductForm(forms.ModelForm):
             "website": "Link to the product's website, if any.",
             "video_url": "Link to a video such as Youtube.",
             "is_private": "Make the product private",
+        }
+
+
+class OrganisationForm(forms.ModelForm):
+    class Meta:
+        model = Organisation
+        exclude = ["id"]
+
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                }
+            ),
+            "username": forms.TextInput(
+                attrs={
+                    "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                }
+            ),
+            "photo": forms.FileInput(
+                attrs={
+                    "class": "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50",
+                }
+            ),
         }
