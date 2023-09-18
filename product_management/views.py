@@ -333,7 +333,9 @@ class CreateProductView(LoginRequiredMixin, CreateView):
 
             instance = form.save()
             _ = ProductRoleAssignment.objects.create(
-                person=self.request.user.person, product=instance, role=2
+                person=self.request.user.person,
+                product=instance,
+                role=ProductRoleAssignment.PRODUCT_ADMIN,
             )
             self.success_url = reverse(
                 "product_summary", args=("organisation_username_four", instance.slug)
