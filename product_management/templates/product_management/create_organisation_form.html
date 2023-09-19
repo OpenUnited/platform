@@ -14,7 +14,11 @@
                 <label for="{{ form.username.id_for_label }}"
                     class="block text-sm font-medium leading-6 text-gray-900">{{ form.username.label }}</label>
                 <div class="mt-2">
-                    {{ form.username }}
+                    <div class="flex">
+                        {{ form.username }}
+                        <img id="ind" src="{{ static('images/loading.svg') }}" width="32" height="32"
+                            class="htmx-indicator" />
+                    </div>
 
                     <div id="organisation-username-errors">
                         {% for error in form.username.errors %}

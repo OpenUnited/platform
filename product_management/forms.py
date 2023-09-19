@@ -179,9 +179,10 @@ class OrganisationForm(forms.ModelForm):
                 attrs={
                     "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                     "hx-post": reverse_lazy("create-organisation"),
-                    "hx-trigger": "blur",
+                    "hx-trigger": "input",
                     "hx-target": "#organisation-username-errors",
                     "hx-select": "#organisation-username-errors",
+                    "hx-indicator": "#ind",
                 }
             ),
             "photo": forms.FileInput(
