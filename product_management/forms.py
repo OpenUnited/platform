@@ -3,6 +3,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from commerce.models import Organisation
@@ -173,6 +174,11 @@ class OrganisationForm(forms.ModelForm):
             "name": forms.TextInput(
                 attrs={
                     "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "hx-post": reverse_lazy("create-organisation"),
+                    "hx-trigger": "input",
+                    "hx-target": "#organisation-name-errors",
+                    "hx-select": "#organisation-name-errors",
+                    "hx-indicator": "#ind-name",
                 }
             ),
             "username": forms.TextInput(
@@ -182,7 +188,7 @@ class OrganisationForm(forms.ModelForm):
                     "hx-trigger": "input",
                     "hx-target": "#organisation-username-errors",
                     "hx-select": "#organisation-username-errors",
-                    "hx-indicator": "#ind",
+                    "hx-indicator": "#ind-username",
                 }
             ),
             "photo": forms.FileInput(
@@ -192,12 +198,21 @@ class OrganisationForm(forms.ModelForm):
             ),
         }
 
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+
+        try:
+            Organisation.objects.get(name=name)
+            raise ValidationError(_("This name already taken."))
+        except ObjectDoesNotExist:
+            return name
+
     def clean_username(self):
         username = self.cleaned_data.get("username")
 
         if Organisation.objects.filter(username=username) or Person.objects.filter(
             user__username=username
         ):
-            raise ValidationError("This username is already taken.")
+            raise ValidationError(_("This username is already taken."))
 
         return username

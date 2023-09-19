@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="space-y-12">
         <div class="mt-10 grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-3">
@@ -6,7 +6,17 @@
                 <label for="{{ form.name.id_for_label }}"
                     class="block text-sm font-medium leading-6 text-gray-900">{{ form.name.label }}</label>
                 <div class="mt-2">
-                    {{ form.name }}
+                    <div class="flex">
+                        {{ form.name }}
+                        <img id="ind-name" src="{{ static('images/loading.svg') }}" width="32" height="32"
+                            class="htmx-indicator" />
+                    </div>
+                </div>
+
+                <div id="organisation-name-errors">
+                    {% for error in form.name.errors %}
+                    <p class="mt-3 text-sm leading-6 text-red-900">{{ error }}</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -16,7 +26,7 @@
                 <div class="mt-2">
                     <div class="flex">
                         {{ form.username }}
-                        <img id="ind" src="{{ static('images/loading.svg') }}" width="32" height="32"
+                        <img id="ind-username" src="{{ static('images/loading.svg') }}" width="32" height="32"
                             class="htmx-indicator" />
                     </div>
 
