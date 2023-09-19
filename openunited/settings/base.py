@@ -63,6 +63,9 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.StaticFilesExtension",
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
             ],
+            "context_processors": [
+                "django.contrib.messages.context_processors.messages",
+            ],
             "bytecode_cache": {
                 "name": "default",
                 "backend": "django_jinja.cache.BytecodeCache",
