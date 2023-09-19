@@ -2,10 +2,11 @@ from datetime import date
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.urls import reverse_lazy
 
 
 from commerce.models import Organisation
-from talent.models import BountyClaim
+from talent.models import BountyClaim, Person
 from .models import Idea, Product
 
 
@@ -177,6 +178,10 @@ class OrganisationForm(forms.ModelForm):
             "username": forms.TextInput(
                 attrs={
                     "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "hx-post": reverse_lazy("create-organisation"),
+                    "hx-trigger": "blur",
+                    "hx-target": "#organisation-username-errors",
+                    "hx-select": "#organisation-username-errors",
                 }
             ),
             "photo": forms.FileInput(
@@ -185,3 +190,13 @@ class OrganisationForm(forms.ModelForm):
                 }
             ),
         }
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+
+        if Organisation.objects.filter(username=username) or Person.objects.filter(
+            user__username=username
+        ):
+            raise ValidationError("This username is already taken.")
+
+        return username
