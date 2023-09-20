@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
-from .models import Idea, Product
+from .models import Idea, Product, Challenge
 
 
 class DateInput(forms.DateInput):
@@ -218,27 +218,62 @@ class OrganisationForm(forms.ModelForm):
         return username
 
 
-from .models import Challenge
-
-
-class CreateChallengeStepOne(forms.Form):
-    skill_mode = forms.ChoiceField(
-        choices=Challenge.SKILL_MODE,
-        widget=forms.RadioSelect,
-        required=True,
-        help_text="Does solving your challenge require one skill, or multiple skills?",
-    )
-    reward_type = forms.ChoiceField(
-        choices=Challenge.REWARD_TYPE,
-        widget=forms.RadioSelect,
-        required=True,
-        help_text="How will solving this challenge be rewarded?",
+class ChallengeForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        empty_label="Select a product",
+        queryset=Product.objects.all(),
+        to_field_name="name",
+        widget=forms.Select(
+            attrs={
+                "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+            }
+        ),
     )
 
+    class Meta:
+        model = Challenge
+        fields = [
+            "title",
+            "description",
+            "product",
+            "skill_mode",
+            "reward_type",
+            "priority",
+            "status",
+            "skill",
+            "expertise",
+        ]
 
-class CreateChallengeStepTwo(forms.Form):
-    pass
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                }
+            ),
+            "skill_mode": forms.RadioSelect(
+                attrs={
+                    "class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600",
+                }
+            ),
+            "reward_type": forms.RadioSelect(
+                attrs={
+                    "class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600",
+                }
+            ),
+            "priority": forms.Select(
+                attrs={
+                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                },
+                choices=Challenge.CHALLENGE_PRIORITY,
+            ),
+        }
 
-
-class CreateChallengeStepThree(forms.Form):
-    pass
+        help_texts = {
+            "skill_mode": "If the challenge requires let's say only Back-end Development, select Single Skill. If it requires UI/UX skills, then select Multiple Skills.",
+            "reward_type": "Liquid points can be redeemed for money, Non-Liquid points cannot.",
+        }

@@ -18,16 +18,13 @@ from django.views.generic import (
     UpdateView,
     DetailView,
 )
-from formtools.wizard.views import SessionWizardView
 
 from .forms import (
     BountyClaimForm,
     IdeaForm,
     ProductForm,
     OrganisationForm,
-    CreateChallengeStepOne,
-    CreateChallengeStepTwo,
-    CreateChallengeStepThree,
+    ChallengeForm,
 )
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
@@ -384,12 +381,9 @@ class CreateOrganisationView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class CreateChallengeView(LoginRequiredMixin, SessionWizardView):
-    form_list = [
-        CreateChallengeStepOne,
-        CreateChallengeStepTwo,
-        CreateChallengeStepThree,
-    ]
+class CreateChallengeView(LoginRequiredMixin, CreateView):
+    model = Challenge
+    form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
     # TODO: change the success url
     success_url = reverse_lazy("home")
