@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Create a Challenge{% endblock %}
+
+{% block content %}
+
+<div class="flex flex-col grow pb-8 lg:pb-0">
+
+    <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900 mb-6 md:mb-10 lg:pt-[30px]">Create
+        Challenge</h2>
+
+    {% include 'product_management/steps.html' %}
+
+    {% include 'product_management/create_challenge_form.html' %}
+
+</div>
+
+</div>
+
+{% endblock %}

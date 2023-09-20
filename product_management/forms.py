@@ -216,3 +216,29 @@ class OrganisationForm(forms.ModelForm):
             raise ValidationError(_("This username is already taken."))
 
         return username
+
+
+from .models import Challenge
+
+
+class CreateChallengeStepOne(forms.Form):
+    skill_mode = forms.ChoiceField(
+        choices=Challenge.SKILL_MODE,
+        widget=forms.RadioSelect,
+        required=True,
+        help_text="Does solving your challenge require one skill, or multiple skills?",
+    )
+    reward_type = forms.ChoiceField(
+        choices=Challenge.REWARD_TYPE,
+        widget=forms.RadioSelect,
+        required=True,
+        help_text="How will solving this challenge be rewarded?",
+    )
+
+
+class CreateChallengeStepTwo(forms.Form):
+    pass
+
+
+class CreateChallengeStepThree(forms.Form):
+    pass
