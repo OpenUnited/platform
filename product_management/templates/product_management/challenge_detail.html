@@ -63,9 +63,8 @@
                         {% else %}
                         <div
                             class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                            <button type="button" hx-get="{{ url('bounty-claim') }}"
-                                hx-target="#bounty-claim-modal" hx-swap="innerHTML" name="claim-button"
-                                value="claim-button"
+                            <button type="button" hx-get="{{ url('bounty-claim') }}" hx-target="#bounty-claim-modal"
+                                hx-swap="innerHTML" name="claim-button" value="claim-button"
                                 class="appearance-none w-fit flex items-center justify-center rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/[0.85] transition-all">
                                 Claim
                             </button>
@@ -94,6 +93,7 @@
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Priority:</strong> <span class="text-green-400 ml-1">{{ challenge.get_priority_display() }}</span>
         </div>
+        {% if challenge.reviewer %}
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Reviewer:</strong>
             <a href="#" class="flex items-center ml-4">
@@ -104,6 +104,7 @@
                 <div class="text-neutral-800">{{ challenge.reviewer.get_full_name() }}</div>
             </a>
         </div>
+        {% endif %}
     </div>
     <form action="" class="flex flex-col">
         <label for="comments" class="block text-sm font-medium leading-6 text-gray-900">Ask a question or make a

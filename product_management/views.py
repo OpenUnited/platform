@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
@@ -27,7 +28,7 @@ from .forms import (
     ChallengeForm,
 )
 from talent.models import BountyClaim
-from .models import Challenge, Product, Initiative, Bounty, Capability, Idea
+from .models import Challenge, Product, Initiative, Bounty, Capability, Idea, Expertise
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
 
@@ -385,6 +386,40 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
-    # TODO: change the success url
-    success_url = reverse_lazy("home")
     login_url = "sign-up"
+
+    def _is_htmx_request(self, request):
+        htmx_header = request.headers.get("Hx-Request", None)
+        return htmx_header == "true"
+
+    def form_valid(self, form):
+        if self._is_htmx_request(self.request):
+            return self.render_to_response(self.get_context_data(form=form))
+
+        return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save()
+
+            expertise_ids = json.loads(form.cleaned_data.get("selected_expertise_ids"))
+            expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
+
+            instance.expertise.add(*expertise_queryset)
+            instance.status = Challenge.CHALLENGE_STATUS_AVAILABLE
+            instance.created_by = request.user.person
+            instance.save()
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    # todo: remove the organisation_username_four
+                    "organisation_username_four",
+                    instance.product.slug,
+                    instance.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)

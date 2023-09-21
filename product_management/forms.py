@@ -230,6 +230,17 @@ class ChallengeForm(forms.ModelForm):
         ),
     )
 
+    selected_skill_ids = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={"id": "selected-skills", "name": "selected-skills"}
+        )
+    )
+    selected_expertise_ids = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={"id": "selected-expert", "name": "selected-expert"}
+        )
+    )
+
     class Meta:
         model = Challenge
         fields = [
@@ -239,20 +250,17 @@ class ChallengeForm(forms.ModelForm):
             "skill_mode",
             "reward_type",
             "priority",
-            "status",
-            "skill",
-            "expertise",
         ]
 
         widgets = {
             "title": forms.TextInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    "class": "block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": "block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                 }
             ),
             "skill_mode": forms.RadioSelect(
