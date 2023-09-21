@@ -181,6 +181,15 @@ def get_current_expertise(request):
 
 @login_required(login_url="sign_in")
 def list_skill_and_expertise(request):
+    # Very basic pattern matching to enable this endpoint on
+    # specific URLs.
+    referer_url = request.headers.get("Referer")
+    path = get_path_from_url(referer_url)
+    patterns = ["/profile/"]
+    for pattern in patterns:
+        if pattern not in path:
+            return JsonResponse([], safe=False)
+
     skills = request.GET.get("skills")
     expertise = request.GET.get("expertise")
 
@@ -229,8 +238,8 @@ class TalentPortfolio(TemplateView):
             "user": user,
             "photo_url": photo_url,
             "person": person,
-            "person_linkedin_link": get_path_from_url(person.linkedin_link),
-            "person_twitter_link": get_path_from_url(person.twitter_link),
+            "person_linkedin_link": get_path_from_url(person.linkedin_link, True),
+            "person_twitter_link": get_path_from_url(person.twitter_link, True),
             "status": status,
             "skills": person_skill.skill,
             "expertise": person_skill.expertise,

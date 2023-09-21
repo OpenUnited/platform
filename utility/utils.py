@@ -10,8 +10,11 @@ def fancy_out(message):
     time.sleep(0.5)
 
 
-def get_path_from_url(url_string):
+def get_path_from_url(url_string, strip=False):
     if not url_string:
         return ""
     parsed = urlparse(url_string)
-    return parsed.path.strip("/")
+    if strip:
+        return parsed.path.strip("/")
+
+    return parsed.path
