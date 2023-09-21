@@ -231,17 +231,6 @@ class ChallengeForm(forms.ModelForm):
         ),
     )
 
-    selected_skill_ids = forms.CharField(
-        widget=forms.HiddenInput(
-            attrs={"id": "selected-skills", "name": "selected-skills"}
-        )
-    )
-    selected_expertise_ids = forms.CharField(
-        widget=forms.HiddenInput(
-            attrs={"id": "selected-expert", "name": "selected-expert"}
-        )
-    )
-
     class Meta:
         model = Challenge
         fields = [
@@ -286,29 +275,3 @@ class ChallengeForm(forms.ModelForm):
             "skill_mode": "If the challenge requires let's say only Back-end Development, select Single Skill. If it requires for instance, Back-end Development and UI/UX skills, then select Multiple Skills.",
             "reward_type": "Liquid points can be redeemed for money, Non-Liquid points cannot.",
         }
-
-    def clean(self):
-        skill_mode = self.cleaned_data.get("skill_mode")
-        selected_expertise_ids = json.loads(
-            self.cleaned_data.get("selected_expertise_ids")
-        )
-
-        overlapping_message = "Skill mode and the selected skills do not match."
-        if (
-            skill_mode == Challenge.CHALLENGE_SKILL_MODE_SINGLE_SKILL
-            and len(selected_expertise_ids) > 1
-        ):
-            raise ValidationError(
-                _(
-                    f"{overlapping_message} To select select 'Single Skill' as the skill mode, you must pick only one skill."
-                )
-            )
-        elif (
-            skill_mode == Challenge.CHALLENGE_SKILL_MODE_MULTIPLE_SKILL
-            and len(selected_expertise_ids) == 1
-        ):
-            raise ValidationError(
-                _(
-                    f"{overlapping_message} To select 'Multiple Skills' as the skill mode, you must pick more than one skill."
-                )
-            )
