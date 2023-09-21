@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %} Portfolio {% endblock %}
+{% block title %}My Portfolio{% endblock %}
+
 {% block content %}
 
 <div class="flex-auto pb-14">
@@ -477,6 +478,9 @@
 
 {% include 'talent/feedback_modal_form.html' %}
 
+{% endblock %}
+
+{% block scripts %}
 <script>
     const button = document.querySelector("#leave-feedback");
 
@@ -485,5 +489,4 @@
         modal.classList.remove("hidden")
     });
 </script>
-
 {% endblock %}
