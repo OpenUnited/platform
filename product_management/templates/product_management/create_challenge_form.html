@@ -9,6 +9,20 @@
 
             <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
                 <div class="col-span-full">
+                    {% if form.non_field_errors() %}
+                    <div
+                        class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+                        <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
+                            <img src="{{ static('images/error.svg') }}" alt="Error Icon">
+                        </span>
+                        {% for error in form.non_field_errors() %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-full">
                     <label for="{{ form.title.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.title.label }}</label>
                     <div class="mt-2">

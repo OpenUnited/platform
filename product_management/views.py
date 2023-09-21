@@ -411,6 +411,7 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
             instance.created_by = request.user.person
             instance.save()
 
+            messages.success(request, _("The challenge is successfully created!"))
             self.success_url = reverse(
                 "challenge_detail",
                 args=(
