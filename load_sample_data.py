@@ -242,12 +242,10 @@ def generate_sample_data():
         elem["updated_by"] = choice(people)
         elem["reviewer"] = choice(people)
         elem["product"] = choice(products)
-        elem["skill"] = choice(skills)
 
     challenges = []
     for cd in challenge_data:
         challenge = ChallengeService.create(**cd)
-        challenge.expertise.set(sample(expertise, k=randint(1, 3)))
         challenges.append(challenge)
 
     # Create Bounty model instances
@@ -257,11 +255,11 @@ def generate_sample_data():
     for index, bd in enumerate(bounty_data):
         challenge = challenges[index]
         bd["challenge"] = challenge
-        bd["skill"] = challenge.skill
 
     bounties = []
     for bd in bounty_data:
         bounty = BountyService.create(**bd)
+        bounty.skill.set(sample(skills, k=randint(1, 4)))
         bounty.expertise.set(sample(expertise, k=randint(1, 4)))
         bounties.append(bounty)
 

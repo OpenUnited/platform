@@ -211,15 +211,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         Attachment, related_name="challenge_attachements", blank=True
     )
     tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
-    skill = models.ForeignKey(
-        Skill,
-        on_delete=models.CASCADE,
-        related_name="challenge",
-        blank=True,
-        null=True,
-        default=None,
-    )
-    expertise = models.ManyToManyField(Expertise, related_name="challenge_expertise")
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     priority = models.IntegerField(choices=CHALLENGE_PRIORITY, default=1)
@@ -342,14 +333,7 @@ class Bounty(TimeStampMixin):
     )
 
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
-    skill = models.ForeignKey(
-        Skill,
-        on_delete=models.CASCADE,
-        related_name="bounty_skill",
-        blank=True,
-        null=True,
-        default=None,
-    )
+    skill = models.ManyToManyField(Skill, related_name="bounty_skill")
     expertise = models.ManyToManyField(Expertise, related_name="bounty_expertise")
     points = models.IntegerField()
     status = models.IntegerField(choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE)
