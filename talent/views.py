@@ -119,14 +119,11 @@ def get_skills(request):
 
 @login_required(login_url="sign_in")
 def get_current_skills(request):
-    import ipdb
-
-    # ipdb.set_trace()
     person = request.user.person
     try:
         person_skill = PersonSkill.objects.get(person=person)
         skill_ids = [entry.get("id") for entry in person_skill.skill]
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, AttributeError):
         skill_ids = []
 
     return JsonResponse(skill_ids, safe=False)
@@ -145,7 +142,7 @@ def get_expertise(request):
         try:
             person_expertise = PersonSkill.objects.get(person=person)
             expertise_ids = [entry.get("id") for entry in person_expertise.expertise]
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             expertise_ids = []
 
         return JsonResponse(
@@ -172,7 +169,7 @@ def get_current_expertise(request):
         person_skill = PersonSkill.objects.get(person=person)
         expertise_ids = [entry.get("id") for entry in person_skill.expertise]
         expertise = Expertise.objects.filter(id__in=expertise_ids).values()
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, AttributeError):
         expertise_ids = []
         expertise = []
 
