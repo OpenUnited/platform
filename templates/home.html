@@ -1,5 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base_html.html' %}
+
 {% block title %}Homepage - Splash{% endblock %}
+
+{% block header %}
+    {% include 'header_full.html' %}
+{% endblock %}
+
 {% block content %}
 
 <div class="relative isolate w-full flex flex-col h-full grow xl:justify-center">
@@ -139,4 +145,8 @@
     skipForNowButton.addEventListener("click", hideModal);
 </script>
 
+{% endblock %}
+
+{% block footer %}
+    {% include 'footer.html' %}
 {% endblock %}
