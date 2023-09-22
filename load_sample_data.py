@@ -255,11 +255,11 @@ def generate_sample_data():
     for index, bd in enumerate(bounty_data):
         challenge = challenges[index]
         bd["challenge"] = challenge
+        bd["skill"] = choice(skills)
 
     bounties = []
     for bd in bounty_data:
         bounty = BountyService.create(**bd)
-        bounty.skill.set(sample(skills, k=randint(1, 4)))
         bounty.expertise.set(sample(expertise, k=randint(1, 4)))
         bounties.append(bounty)
 

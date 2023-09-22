@@ -51,22 +51,6 @@
                 </div>
 
                 <div class="col-span-full">
-                    <label for="{{ form.skill_mode.id_for_label }}"
-                        class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ form.skill_mode.label }}</label>
-                    {% for radio in form.skill_mode %}
-                    <div class="flex items-center gap-x-3 mt-2">
-                        {{ radio.tag() }}
-                        <label for="{{ radio.id_for_label }}"
-                            class="block text-sm font-medium leading-6 text-gray-900">{{ radio.choice_label }}</label>
-                    </div>
-                    {% endfor %}
-
-                    <p class="text-xs leading-6 mt-2 text-black-900">
-                        {{ form.skill_mode.help_text }}
-                    </p>
-                </div>
-
-                <div class="col-span-full">
                     <label for="{{ form.reward_type.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ form.reward_type.label }}</label>
                     {% for radio in form.reward_type %}
@@ -79,6 +63,11 @@
 
                     <p class="text-xs leading-6 mt-2 text-black-900">
                         {{ form.reward_type.help_text }}
+                    </p>
+
+                    <p class="text-xs leading-6 text-red-900">
+                        <span class="text-bold"> Note:</span> The points will be assigned when creating a bounty for the
+                        challenge.
                     </p>
                 </div>
 

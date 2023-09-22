@@ -184,14 +184,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
     )
     CHALLENGE_PRIORITY = ((0, "High"), (1, "Medium"), (2, "Low"))
 
-    CHALLENGE_SKILL_MODE_SINGLE_SKILL = 0
-    CHALLENGE_SKILL_MODE_MULTIPLE_SKILL = 1
-
-    SKILL_MODE = (
-        (CHALLENGE_SKILL_MODE_SINGLE_SKILL, "Single Skill"),
-        (CHALLENGE_SKILL_MODE_MULTIPLE_SKILL, "Multiple Skills"),
-    )
-
     REWARD_TYPE = (
         (0, "Liquid Points"),
         (1, "Non-liquid Points"),
@@ -247,7 +239,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         blank=True,
         on_delete=models.SET_NULL,
     )
-    skill_mode = models.IntegerField(choices=SKILL_MODE, default=0)
     reward_type = models.IntegerField(choices=REWARD_TYPE, default=1)
 
     class Meta:
@@ -333,7 +324,14 @@ class Bounty(TimeStampMixin):
     )
 
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
-    skill = models.ManyToManyField(Skill, related_name="bounty_skill")
+    skill = models.ForeignKey(
+        Skill,
+        on_delete=models.CASCADE,
+        related_name="bounty_skill",
+        blank=True,
+        null=True,
+        default=None,
+    )
     expertise = models.ManyToManyField(Expertise, related_name="bounty_expertise")
     points = models.IntegerField()
     status = models.IntegerField(choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE)

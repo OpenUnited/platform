@@ -237,7 +237,6 @@ class ChallengeForm(forms.ModelForm):
             "title",
             "description",
             "product",
-            "skill_mode",
             "reward_type",
             "priority",
         ]
@@ -251,11 +250,6 @@ class ChallengeForm(forms.ModelForm):
             "description": forms.Textarea(
                 attrs={
                     "class": "block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                }
-            ),
-            "skill_mode": forms.RadioSelect(
-                attrs={
-                    "class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600",
                 }
             ),
             "reward_type": forms.RadioSelect(
@@ -272,6 +266,5 @@ class ChallengeForm(forms.ModelForm):
         }
 
         help_texts = {
-            "skill_mode": "If the challenge requires let's say only Back-end Development, select Single Skill. If it requires for instance, Back-end Development and UI/UX skills, then select Multiple Skills.",
             "reward_type": "Liquid points can be redeemed for money, Non-Liquid points cannot.",
         }
