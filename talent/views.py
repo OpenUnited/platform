@@ -257,10 +257,11 @@ def status_and_points(request):
     return HttpResponse("TODO")
 
 
-class CreateFeedbackView(CreateView):
+class CreateFeedbackView(LoginRequiredMixin, CreateView):
     model = Feedback
     form_class = FeedbackForm
     template_name = "talent/partials/feedback_form.html"
+    login_url = "sign_in"
 
     def get_success_url(self):
         return reverse("portfolio", args=(self.object.recipient.get_username(),))
@@ -296,11 +297,12 @@ class CreateFeedbackView(CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class UpdateFeedbackView(UpdateView):
+class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
     model = Feedback
     form_class = FeedbackForm
     context_object_name = "feedback"
     template_name = "talent/partials/feedback_form.html"
+    login_url = "sign_in"
 
     def get_success_url(self):
         return reverse("portfolio", args=(self.object.recipient.get_username(),))
@@ -331,10 +333,11 @@ class UpdateFeedbackView(UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-class DeleteFeedbackView(DeleteView):
+class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
     model = Feedback
     context_object_name = "feedback"
     template_name = "talent/partials/delete_feedback_form.html"
+    login_url = "sign_in"
 
     def get_success_url(self):
         return reverse("portfolio", args=(self.object.recipient.get_username(),))
