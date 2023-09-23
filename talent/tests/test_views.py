@@ -1,14 +1,16 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 import factory
 
-from talent.models import Skill, Expertise, PersonSkill
+from talent.models import Skill, Expertise, PersonSkill, Feedback
 from .factories import (
     SkillFactory,
     ExpertiseFactory,
     PersonFactory,
     StatusFactory,
     PersonSkillFactory,
+    FeedbackFactory,
 )
 
 
@@ -268,3 +270,102 @@ class UpdateProfileViewTest(TestCase):
 
         Skill.objects.filter(id__in=skill_ids).delete()
         Expertise.objects.filter(id__in=expertise_ids).delete()
+
+
+class CreateFeedbackViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("create-feedback")
+        self.login_url = reverse("sign_in")
+        self.recipient = PersonFactory()
+        self.provider = PersonFactory()
+
+    def test_post(self):
+        # Test login required
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
+
+        # Test Feedback object creation
+        self.client.force_login(self.provider.user)
+        data = {
+            "recipient": self.recipient,
+            "provider": self.provider,
+            "message": "Test test test",
+            "stars": 5,
+        }
+
+        response = self.client.post(
+            self.url,
+            data=data,
+            headers={
+                "Referer": f"http://example.com/talent/portfolio/{self.recipient.user.username}"
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url, reverse("portfolio", args=(self.recipient.user.username,))
+        )
+        self.assertGreater(Feedback.objects.filter(provider=self.provider).count(), 0)
+
+
+class UpdateFeedbackViewTest(TestCase):
+    def setUp(self):
+        self.feedback = FeedbackFactory()
+        self.url = reverse("update-feedback", args=(self.feedback.id,))
+        self.person = PersonFactory()
+        self.client = Client()
+        self.login_url = reverse("sign_in")
+
+    def test_post(self):
+        # Test login required
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
+
+        # Test Feedback object update
+        self.client.force_login(self.person.user)
+        data = {
+            "message": "Update message",
+            "stars": 4,
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse("portfolio", args=(self.feedback.recipient.user.username,)),
+        )
+
+        obj = Feedback.objects.get(pk=self.feedback.pk)
+        self.assertEqual(obj.message, data.get("message"))
+        self.assertEqual(obj.stars, data.get("stars"))
+
+
+class DeleteFeedbackViewTest(TestCase):
+    def setUp(self):
+        self.feedback = FeedbackFactory()
+        self.url = reverse("delete-feedback", args=(self.feedback.id,))
+        self.person = PersonFactory()
+        self.client = Client()
+        self.login_url = reverse("sign_in")
+
+    def test_post(self):
+        # Test login required
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+        login_url = reverse("sign_in")
+        self.assertEqual(response.url, f"{login_url}?next={self.url}")
+
+        # Test Feedback object delete
+        self.client.force_login(self.person.user)
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse("portfolio", args=(self.feedback.recipient.user.username,)),
+        )
+
+        with self.assertRaises(ObjectDoesNotExist):
+            Feedback.objects.get(pk=self.feedback.pk)
