@@ -250,7 +250,7 @@ class TalentPortfolio(TemplateView):
             "form": FeedbackForm(),
             "can_leave_feedback": can_leave_feedback,
         }
-        return render(request, self.template_name, context)
+        return self.render_to_response(context)
 
 
 def status_and_points(request):

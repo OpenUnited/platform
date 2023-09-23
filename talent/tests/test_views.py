@@ -153,6 +153,13 @@ class TalentAppFunctionBasedViewsTest(TestCase):
             url,
             data={"skills": f"{self.skill_ids}", "expertise": f"{self.expertise_ids}"},
         )
+        self.assertEqual(response.json(), [])
+
+        response = self.client.get(
+            url,
+            data={"skills": f"{self.skill_ids}", "expertise": f"{self.expertise_ids}"},
+            headers={"Referer": "http://example.com/talent/profile/"},
+        )
 
         actual_data = response.json()
         expected_data = []
@@ -179,7 +186,6 @@ class TalentPortfolioViewTest(TestCase):
         self.url = reverse("portfolio", args=(self.person.user.username,))
 
     def test_get_request(self):
-        from talent.forms import FeedbackForm
         from talent.services import FeedbackService
 
         response = self.client.get(self.url)
