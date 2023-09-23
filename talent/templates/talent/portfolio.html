@@ -434,7 +434,7 @@
                     {% endif %}
                     {% if can_leave_feedback %}
                     <div class="mt-9">
-                        <button type="submit" id="leave-feedback"
+                        <button type="submit" id="leave-feedback" _="on click remove .hidden from #feedback-form-modal"
                             class="mx-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
                         border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
                             Leave a Feedback to {{ person.get_short_name() }}
@@ -445,10 +445,12 @@
                 <div class="flex flex-col divide-y divide-gray-200">
                     {% for feedback in received_feedbacks %}
                     <div class="flex flex-col py-4 first:pt-0 last:pb-0">
-                        <div class="flex items-center">
-                            {% set photo_url, _ = feedback.provider.get_photo_url() %}
-                            <img src="{{ photo_url }}" alt="Feedback Provider" class="h-12 w-12 rounded-full">
-                            <div class="ml-4">
+                        <div class="grid grid-cols-6">
+                            <div class="col-span-1">
+                                {% set photo_url, _ = feedback.provider.get_photo_url() %}
+                                <img src="{{ photo_url }}" alt="Feedback Provider" class="h-12 w-12 rounded-full">
+                            </div>
+                            <div class="col-span-4">
                                 <h4 class="text-sm font-bold text-gray-900">{{ feedback.provider.get_full_name() }}</h4>
                                 <div class="mt-1 flex items-center">
                                     {% for _ in range(feedback.stars) %}
@@ -461,6 +463,9 @@
                                     {% endfor %}
                                 </div>
                                 <p class="sr-only">{{ feedback.stars }} out of 5 stars</p>
+                            </div>
+                            <div class="ml-4 col-span-1">
+                                {% include 'talent/partials/horizontal_dropdown_dots.html' %}
                             </div>
                         </div>
 
@@ -476,17 +481,9 @@
     </div>
 </div>
 
+<!-- Reserved for update feedback modal -->
+<div id="update-feedback"></div>
+
 {% include 'talent/feedback_modal_form.html' %}
 
-{% endblock %}
-
-{% block scripts %}
-<script>
-    const button = document.querySelector("#leave-feedback");
-
-    button.addEventListener("click", () => {
-        const modal = document.querySelector("#feedback-form-modal");
-        modal.classList.remove("hidden")
-    });
-</script>
 {% endblock %}

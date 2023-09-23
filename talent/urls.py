@@ -10,6 +10,7 @@ from .views import (
     TalentPortfolio,
     status_and_points,
     submit_feedback,
+    UpdateFeedbackView,
 )
 
 urlpatterns = [
@@ -26,4 +27,9 @@ urlpatterns = [
     ),
     path("status-and-points", status_and_points, name="status-and-points"),
     path("submit-feedback/", submit_feedback, name="submit-feedback"),
+    path(
+        "feedback/update/<int:pk>/",
+        UpdateFeedbackView.as_view(),
+        name="update-feedback-view",
+    ),
 ]

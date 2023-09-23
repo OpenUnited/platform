@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.edit import UpdateView
 from django.views.generic.base import TemplateView
@@ -249,11 +249,35 @@ class TalentPortfolio(TemplateView):
             "form": FeedbackForm(),
             "can_leave_feedback": can_leave_feedback,
         }
-        return self.render_to_response(context)
+        return render(request, self.template_name, context)
 
 
 def status_and_points(request):
     return HttpResponse("TODO")
+
+
+class UpdateFeedbackView(UpdateView):
+    model = Feedback
+    form_class = FeedbackForm
+    context_object_name = "feedback"
+    template_name = "talent/feedback_update_form.html"
+
+    def get_success_url(self):
+        username = self.object.recipient.user.username
+        return reverse("portfolio", args=(username,))
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super().post(request, *args, **kwargs)
 
 
 def submit_feedback(request):
