@@ -337,6 +337,9 @@ class Bounty(TimeStampMixin):
     status = models.IntegerField(choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE)
     is_active = models.BooleanField(default=True)
 
+    def get_expertise_as_str(self):
+        return ", ".join([exp.name.title() for exp in self.expertise.all()])
+
     def __str__(self):
         return f"{self.skill} - {self.expertise} - {self.points} - {self.get_status_display()}"
 
