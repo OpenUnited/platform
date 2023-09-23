@@ -3,13 +3,14 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
-from django.shortcuts import redirect
+from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import gettext_lazy as _
 
 from utility.utils import get_path_from_url
 from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
@@ -282,6 +283,9 @@ class CreateFeedbackView(CreateView):
     def form_valid(self, form):
         form.instance.recipient = self._get_recipient_from_url()
         form.instance.provider = self.request.user.person
+        self.object = form.save()
+
+        messages.success(self.request, _("Feedback is successfully created!"))
 
         return super().form_valid(form)
 
@@ -321,10 +325,29 @@ class UpdateFeedbackView(UpdateView):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
             form.save()
+            messages.success(self.request, _("Feedback is successfully updated!"))
             return HttpResponseRedirect(self.get_success_url())
 
         return super().post(request, *args, **kwargs)
 
 
 class DeleteFeedbackView(DeleteView):
-    pass
+    model = Feedback
+    context_object_name = "feedback"
+    template_name = "talent/partials/delete_feedback_form.html"
+
+    def get_success_url(self):
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        try:
+            Feedback.objects.get(pk=self.object.pk).delete()
+            messages.success(self.request, _("Feedback is successfully deleted!"))
+            return HttpResponseRedirect(self.get_success_url())
+        except ObjectDoesNotExist:
+            return super().post(request, *args, **kwargs)

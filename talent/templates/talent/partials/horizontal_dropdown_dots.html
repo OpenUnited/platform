@@ -15,14 +15,13 @@
         </li>
         {% if request.user.person == feedback.provider %}
         <li>
-            <button type="button" hx-get="{{ url('update-feedback', args=(feedback.id,)) }}"
-                hx-target="#update-feedback" hx-swap="innerHTML"
-                _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id }}"
+            <button type="button" hx-get="{{ url('update-feedback', args=(feedback.id,)) }}" hx-target="#feedback-modal"
+                hx-swap="innerHTML" _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id }}"
                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</button>
         </li>
         <li>
-            <button type="button" hx-get="{{ url('delete-feedback', args=(feedback.id,)) }}"
-                _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id }}"
+            <button type="button" hx-get="{{ url('delete-feedback', args=(feedback.id,)) }}" hx-target="#feedback-modal"
+                hx-swap="innerHTML" _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id }}"
                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</button>
         </li>
         {% endif %}
