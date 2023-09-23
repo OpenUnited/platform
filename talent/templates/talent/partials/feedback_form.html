@@ -1,4 +1,4 @@
-<div id="feedback-form-modal" class="hidden relative z-10" role="dialog" aria-modal="true">
+<div id="feedback-form-modal" class="relative z-10" role="dialog" aria-modal="true">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
     <div class="fixed inset-0 z-10 overflow-y-auto">
@@ -7,10 +7,9 @@
                 class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 m:w-full m:max-w-m m:p-6">
                 <div>
                     <div class="mt-3 text-center sm:mt-5">
-                        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-5" id="modal-title">Write a review
-                            for
-                            Felicity</h3>
-                        <form method="post" action="{{ url('submit-feedback') }}">
+                        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-5" id="modal-title">Update the
+                            review for {{ person.get_short_name() }}</h3>
+                        <form method="post">
                             {% csrf_token %}
 
                             <div class="grid grid-cols-4 gap-10 mt-2">
@@ -22,36 +21,23 @@
                                     {{ form.message }}
                                 </div>
 
-                                {{ form.stars }}
-                                <input type="hidden" name="feedback-recipient-username"
-                                    value="{{ request.path.split("/")[-1] }}">
-
                                 <div class="col-span-1">
                                     <label for="rating"
                                         class="text-lg text-black/[0.85] mb-2 font-semibold">Rating</label>
                                 </div>
 
-                                <div class="star-rate col-span-3">
-                                    <input class="hidden" type="radio" id="star5" name="rate" value="5" />
-                                    <label for="star5">5 stars</label>
-                                    <input class="hidden" type="radio" id="star4" name="rate" value="4" />
-                                    <label for="star4">4 stars</label>
-                                    <input class="hidden" type="radio" id="star3" name="rate" value="3" />
-                                    <label for="star3">3 stars</label>
-                                    <input class="hidden" type="radio" id="star2" name="rate" value="2" />
-                                    <label for="star2">2 stars</label>
-                                    <input class="hidden" type="radio" id="star1" name="rate" value="1" />
-                                    <label for="star1">1 star</label>
+                                <div class="col-span-3">
+                                    {{ form.stars }}
                                 </div>
 
                                 <div class="col-span-2">
-                                    <button type="button" id="cancel-feedback-form-button"
-                                        _="on click add .hidden to #feedback-form-modal"
+                                    <button type="button" _="on click add .hidden to #feedback-form-modal"
                                         class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Cancel</button>
                                 </div>
 
                                 <div class="col-span-2">
-                                    <button type="submit" id="submit-feedback-form-button"
+                                    <button type="submit" hx-post="{{ post_url }}"
+                                        hx-target="body" _="on click add .hidden to #feedback-form-modal"
                                         class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Send</button>
                                 </div>
                             </div>
@@ -62,18 +48,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const radioInputs = document.querySelectorAll(".star-rate input[type='radio']");
-        const starRatingInput = document.getElementById("given-star-rating");
-
-        radioInputs.forEach((radioInput) => {
-            radioInput.addEventListener("change", function () {
-                if (this.checked) {
-                    starRatingInput.value = this.value;
-                }
-            });
-        });
-    });
-</script>

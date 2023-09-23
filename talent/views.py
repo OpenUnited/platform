@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
@@ -256,15 +256,61 @@ def status_and_points(request):
     return HttpResponse("TODO")
 
 
+class CreateFeedbackView(CreateView):
+    model = Feedback
+    form_class = FeedbackForm
+    template_name = "talent/partials/feedback_form.html"
+
+    def get_success_url(self):
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+
+    def _get_recipient_from_url(self):
+        recipient_username = self.request.headers.get("Referer").split("/")[-1]
+        return Person.objects.get(user__username=recipient_username)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "post_url": reverse("create-feedback"),
+                "person": self._get_recipient_from_url(),
+            }
+        )
+
+        return context
+
+    def form_valid(self, form):
+        form.instance.recipient = self._get_recipient_from_url()
+        form.instance.provider = self.request.user.person
+
+        return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
 class UpdateFeedbackView(UpdateView):
     model = Feedback
     form_class = FeedbackForm
     context_object_name = "feedback"
-    template_name = "talent/feedback_update_form.html"
+    template_name = "talent/partials/feedback_form.html"
 
     def get_success_url(self):
-        username = self.object.recipient.user.username
-        return reverse("portfolio", args=(username,))
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "post_url": reverse("update-feedback", args=(self.object.pk,)),
+                "person": self.object.recipient,
+            }
+        )
+
+        return context
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -280,20 +326,5 @@ class UpdateFeedbackView(UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-def submit_feedback(request):
-    if request.method == "POST":
-        form = FeedbackForm(request.POST)
-        if form.is_valid():
-            recipient_username = request.POST.get("feedback-recipient-username")
-            recipient = Person.objects.get(user__username=recipient_username)
-            feedback = Feedback(
-                recipient=recipient,
-                provider=request.user.person,
-                message=form.cleaned_data.get("message"),
-                stars=int(form.cleaned_data.get("stars")),
-            )
-            feedback.save()
-
-            return redirect("portfolio", username=recipient_username)
-
-    return HttpResponse("Something went wrong")
+class DeleteFeedbackView(DeleteView):
+    pass

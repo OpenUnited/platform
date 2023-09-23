@@ -1,4 +1,5 @@
-<button type="button" _="on click toggle .hidden on #dropdown-dots-horizontal-{{ feedback.id }}"
+<!-- TODO: There is a small bug in here. After the update view, this button becomes untoggleable.  -->
+<button type="button" _="on click toggle .hidden on #dropdown-dots-horizontal-{{ feedback.id }} then log 'aaa'"
     class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
         <path
@@ -14,10 +15,15 @@
         </li>
         {% if request.user.person == feedback.provider %}
         <li>
-            <button type="button" hx-get="{{ url('update-feedback-view', args=(feedback.id,)) }}"
+            <button type="button" hx-get="{{ url('update-feedback', args=(feedback.id,)) }}"
                 hx-target="#update-feedback" hx-swap="innerHTML"
                 _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id }}"
                 class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</button>
+        </li>
+        <li>
+            <button type="button" hx-get="{{ url('delete-feedback', args=(feedback.id,)) }}"
+                _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id }}"
+                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Delete</button>
         </li>
         {% endif %}
     </ul>

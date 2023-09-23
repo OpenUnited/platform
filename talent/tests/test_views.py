@@ -165,49 +165,6 @@ class TalentAppFunctionBasedViewsTest(TestCase):
         self.assertEqual(actual_data, expected_data)
 
 
-class SubmitFeedbackViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.url = reverse("submit-feedback")
-
-    def test_submit_feedback_get(self):
-        response = self.client.get(self.url)
-
-        actual = response.content.decode("utf-8")
-        expected = "Something went wrong"
-
-        self.assertEqual(actual, expected)
-
-    def test_submit_feedback_invalid_post(self):
-        response = self.client.post(self.url, data={"message": "test message"})
-
-        actual = response.content.decode("utf-8")
-        expected = "Something went wrong"
-
-        self.assertEqual(actual, expected)
-
-    def test_submit_feedback_valid_post(self):
-        person = PersonFactory()
-        _ = StatusFactory(person=person)
-        _ = PersonSkillFactory(person=person)
-        auth_person = PersonFactory()
-
-        self.client.force_login(auth_person.user)
-        response = self.client.post(
-            self.url,
-            data={
-                "message": "test message",
-                "stars": 5,
-                "feedback-recipient-username": person.user.username,
-            },
-        )
-
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response, reverse("portfolio", args=(person.user.username,))
-        )
-
-
 class TalentPortfolioViewTest(TestCase):
     def setUp(self):
         self.client = Client()

@@ -9,8 +9,9 @@ from .views import (
     list_skill_and_expertise,
     TalentPortfolio,
     status_and_points,
-    submit_feedback,
+    CreateFeedbackView,
     UpdateFeedbackView,
+    DeleteFeedbackView,
 )
 
 urlpatterns = [
@@ -26,10 +27,13 @@ urlpatterns = [
         name="list-skill-and-expertise",
     ),
     path("status-and-points", status_and_points, name="status-and-points"),
-    path("submit-feedback/", submit_feedback, name="submit-feedback"),
+    path("feedback/create/", CreateFeedbackView.as_view(), name="create-feedback"),
     path(
         "feedback/update/<int:pk>/",
         UpdateFeedbackView.as_view(),
-        name="update-feedback-view",
+        name="update-feedback",
+    ),
+    path(
+        "feedback/delete/<int:pk>", DeleteFeedbackView.as_view(), name="delete-feedback"
     ),
 ]
