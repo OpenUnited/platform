@@ -418,3 +418,7 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
+
+
+class DashboardView(TemplateView):
+    template_name = "product_management/dashboard.html"
