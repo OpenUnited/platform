@@ -26,6 +26,10 @@
                                         class="text-lg text-black/[0.85] mb-2 font-semibold">Rating</label>
                                 </div>
 
+                                {% with inputFieldID='#star-rating' %}
+                                    {% include 'talent/partials/star-rating.html' %}
+                                {% endwith %}
+
                                 <div class="col-span-3">
                                     {{ form.stars }}
                                 </div>

@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from .models import Person, Feedback
 
@@ -127,6 +129,16 @@ class PersonProfileForm(forms.ModelForm):
 
 
 class FeedbackForm(forms.ModelForm):
+    stars = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={
+                "id": "star-rating",
+                "name": "star-rating",
+                "display": "none",
+            }
+        )
+    )
+
     class Meta:
         model = Feedback
         fields = ["message", "stars"]
@@ -138,10 +150,18 @@ class FeedbackForm(forms.ModelForm):
                     "placeholder": "Write your feedback here",
                 }
             ),
-            "stars": forms.NumberInput(
-                attrs={
-                    "id": "given-star-rating",
-                    "name": "given-star-rating",
-                }
-            ),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        stars = self.data.get("stars", None)
+        try:
+            star_rating = int(stars.split("-")[-1])
+            cleaned_data["stars"] = star_rating
+        except (AttributeError, ValueError):
+            raise ValidationError(
+                _(
+                    "Something went wrong. The given star value should be in 'star-x' format where x is an integer."
+                )
+            )
+        return cleaned_data
