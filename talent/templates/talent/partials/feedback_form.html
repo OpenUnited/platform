@@ -26,12 +26,12 @@
                                         class="text-lg text-black/[0.85] mb-2 font-semibold">Rating</label>
                                 </div>
 
-                                {% with inputFieldID='#star-rating' %}
-                                    {% include 'talent/partials/star-rating.html' %}
-                                {% endwith %}
+                                {{ form.stars }}
 
                                 <div class="col-span-3">
-                                    {{ form.stars }}
+                                    {% with inputFieldID=form.stars.id_for_label %}
+                                    {% include 'talent/partials/star_rating.html' %}
+                                    {% endwith %}
                                 </div>
 
                                 <div class="col-span-2">
@@ -40,8 +40,8 @@
                                 </div>
 
                                 <div class="col-span-2">
-                                    <button type="submit" hx-post="{{ post_url }}"
-                                        hx-target="body" _="on click add .hidden to #feedback-form-modal"
+                                    <button type="submit" hx-post="{{ post_url }}" hx-target="body"
+                                        _="on click add .hidden to #feedback-form-modal"
                                         class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Send</button>
                                 </div>
                             </div>

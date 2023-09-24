@@ -6,7 +6,7 @@
                 increment x
         end
         on click from <path/> in me
-            set inputField to {{ inputFieldID }}
+            set inputField to #{{ inputFieldID }}
             remove .text-yellow-400 from <path/> in me
             for s in <path/> in me
             add .text-yellow-400 to s
