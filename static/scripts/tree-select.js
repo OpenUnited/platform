@@ -24,6 +24,8 @@ async function updateSkillAndExpertiseTable(event) {
     const response = await fetchData(listSkillAndExpertiseURL);
     const skillExpertiseTable = document.getElementById("skill-expertise-table");
 
+    // In case we don't want to list skill-expertise pairs
+    if (skillExpertiseTable) {
         if (response.length > 0) {
             skillExpertiseTable.classList.remove("hidden");
 
@@ -48,6 +50,7 @@ async function updateSkillAndExpertiseTable(event) {
             // Hide the table if there's no data
             skillExpertiseTable.classList.add("hidden");
         }
+    }
 }
 
 function createTreeSelect(domElement, initValues, options) {

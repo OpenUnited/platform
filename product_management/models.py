@@ -184,7 +184,13 @@ class Challenge(TimeStampMixin, UUIDMixin):
     )
     CHALLENGE_PRIORITY = ((0, "High"), (1, "Medium"), (2, "Low"))
 
-    SKILL_MODE = ((0, "Single Skill"), (1, "Multiple Skills"))
+    CHALLENGE_SKILL_MODE_SINGLE_SKILL = 0
+    CHALLENGE_SKILL_MODE_MULTIPLE_SKILL = 1
+
+    SKILL_MODE = (
+        (CHALLENGE_SKILL_MODE_SINGLE_SKILL, "Single Skill"),
+        (CHALLENGE_SKILL_MODE_MULTIPLE_SKILL, "Multiple Skills"),
+    )
 
     REWARD_TYPE = (
         (0, "Liquid Points"),

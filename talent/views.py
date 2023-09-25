@@ -119,14 +119,11 @@ def get_skills(request):
 
 @login_required(login_url="sign_in")
 def get_current_skills(request):
-    import ipdb
-
-    # ipdb.set_trace()
     person = request.user.person
     try:
         person_skill = PersonSkill.objects.get(person=person)
         skill_ids = [entry.get("id") for entry in person_skill.skill]
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, AttributeError):
         skill_ids = []
 
     return JsonResponse(skill_ids, safe=False)
@@ -145,7 +142,7 @@ def get_expertise(request):
         try:
             person_expertise = PersonSkill.objects.get(person=person)
             expertise_ids = [entry.get("id") for entry in person_expertise.expertise]
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             expertise_ids = []
 
         return JsonResponse(
@@ -172,7 +169,7 @@ def get_current_expertise(request):
         person_skill = PersonSkill.objects.get(person=person)
         expertise_ids = [entry.get("id") for entry in person_skill.expertise]
         expertise = Expertise.objects.filter(id__in=expertise_ids).values()
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, AttributeError):
         expertise_ids = []
         expertise = []
 
@@ -184,6 +181,15 @@ def get_current_expertise(request):
 
 @login_required(login_url="sign_in")
 def list_skill_and_expertise(request):
+    # Very basic pattern matching to enable this endpoint on
+    # specific URLs.
+    referer_url = request.headers.get("Referer")
+    path = get_path_from_url(referer_url)
+    patterns = ["/profile/"]
+    for pattern in patterns:
+        if pattern not in path:
+            return JsonResponse([], safe=False)
+
     skills = request.GET.get("skills")
     expertise = request.GET.get("expertise")
 
@@ -232,8 +238,8 @@ class TalentPortfolio(TemplateView):
             "user": user,
             "photo_url": photo_url,
             "person": person,
-            "person_linkedin_link": get_path_from_url(person.linkedin_link),
-            "person_twitter_link": get_path_from_url(person.twitter_link),
+            "person_linkedin_link": get_path_from_url(person.linkedin_link, True),
+            "person_twitter_link": get_path_from_url(person.twitter_link, True),
             "status": status,
             "skills": person_skill.skill,
             "expertise": person_skill.expertise,
