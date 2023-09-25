@@ -420,5 +420,30 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class DashboardView(TemplateView):
+class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "product_management/dashboard.html"
+    login_url = "sign_in"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        person = self.request.user.person
+        photo_url, _ = person.get_photo_url()
+        context.update(
+            {
+                "person": person,
+                "photo_url": photo_url,
+            }
+        )
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
+class ManageBountiesView(LoginRequiredMixin, TemplateView):
+    template_name = "product_management/dashboard/manage_bounties.html"
+    login_url = "sign_in"
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)

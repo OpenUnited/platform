@@ -21,6 +21,7 @@ from .views import (
     CreateOrganisationView,
     CreateChallengeView,
     DashboardView,
+    ManageBountiesView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -32,7 +33,6 @@ from .views import (
 
 # URL patterns for challenge and product list views
 urlpatterns = [
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("challenges/", ChallengeListView.as_view(), name="challenges"),
     path("challenge/create/", CreateChallengeView.as_view(), name="create-challenge"),
     path("products/", ProductListView.as_view(), name="products"),
@@ -116,5 +116,14 @@ urlpatterns += [
         "<str:organisation_username>/<str:product_slug>/challenge/<int:challenge_id>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
+    ),
+]
+
+urlpatterns += [
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    path(
+        "dashboard/bounties",
+        ManageBountiesView.as_view(),
+        name="manage-bounties",
     ),
 ]

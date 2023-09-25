@@ -68,6 +68,7 @@ class Product(ProductMixin):
     capability_start = models.ForeignKey(
         Capability, on_delete=models.CASCADE, null=True, editable=False
     )
+    # todo: make this foreignkey generic relation. it must accept Person or Organisation
     owner = models.ForeignKey(
         "commerce.Organisation", on_delete=models.CASCADE, blank=True, null=True
     )
