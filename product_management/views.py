@@ -67,9 +67,9 @@ class BaseProductDetailView:
         context = super().get_context_data(**kwargs)
 
         organisation = get_object_or_404(
-            Organisation, username=self.kwargs["organisation_username"]
+            Organisation, username=self.kwargs.get("organisation_username", None)
         )
-        product = get_object_or_404(Product, slug=self.kwargs["product_slug"])
+        product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
 
         context.update(
             {
@@ -401,13 +401,7 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            instance = form.save()
-
-            expertise_ids = json.loads(form.cleaned_data.get("selected_expertise_ids"))
-            expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
-
-            instance.expertise.add(*expertise_queryset)
-            instance.status = Challenge.CHALLENGE_STATUS_AVAILABLE
+            instance = form.save(commit=False)
             instance.created_by = request.user.person
             instance.save()
 

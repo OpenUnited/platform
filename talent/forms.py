@@ -138,7 +138,7 @@ class FeedbackForm(forms.ModelForm):
                     "placeholder": "Write your feedback here",
                 }
             ),
-            "stars": forms.HiddenInput(
+            "stars": forms.NumberInput(
                 attrs={
                     "id": "given-star-rating",
                     "name": "given-star-rating",

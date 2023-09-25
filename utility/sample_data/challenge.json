@@ -9,7 +9,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=abcd1234",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -22,7 +21,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=efgh5678",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -35,7 +33,6 @@
         "blocked": true,
         "featured": false,
         "video_url": "",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -48,7 +45,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -61,7 +57,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=mnop3456",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -74,7 +69,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=qrst5678",
-        "skill_mode": 1,
         "reward_type": 1
     },
     {
@@ -87,7 +81,6 @@
         "blocked": true,
         "featured": false,
         "video_url": "",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -100,7 +93,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=uvwxy345",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -113,7 +105,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -126,7 +117,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=mnop5678",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -139,7 +129,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=abcd1234",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -152,7 +141,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=efgh5678",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -165,7 +153,6 @@
         "blocked": true,
         "featured": false,
         "video_url": "",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -178,7 +165,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -191,7 +177,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=mnop3456",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -204,7 +189,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=qrst5678",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -217,7 +201,6 @@
         "blocked": true,
         "featured": false,
         "video_url": "",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -230,7 +213,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=uvwxy345",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -243,7 +225,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -256,7 +237,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=mnop5678",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -269,7 +249,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=abcd1234",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -282,7 +261,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=efgh5678",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -295,7 +273,6 @@
         "blocked": true,
         "featured": false,
         "video_url": "",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -308,7 +285,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "skill_mode": 1,
         "reward_type": 0
     },
     {
@@ -321,7 +297,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=mnop3456",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -334,7 +309,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=qrst5678",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -347,7 +321,6 @@
         "blocked": true,
         "featured": false,
         "video_url": "",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -360,7 +333,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=uvwxy345",
-        "skill_mode": 0,
         "reward_type": 0
     },
     {
@@ -373,7 +345,6 @@
         "blocked": false,
         "featured": false,
         "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "skill_mode": 0,
         "reward_type": 1
     },
     {
@@ -386,7 +357,6 @@
         "blocked": false,
         "featured": true,
         "video_url": "https://www.youtube.com/watch?v=mnop5678",
-        "skill_mode": 1,
         "reward_type": 0
     }
 ]

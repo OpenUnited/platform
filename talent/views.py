@@ -2,14 +2,15 @@ import json
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect
-from django.views.generic.edit import UpdateView
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.contrib import messages
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import gettext_lazy as _
 
 from utility.utils import get_path_from_url
 from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
@@ -256,20 +257,100 @@ def status_and_points(request):
     return HttpResponse("TODO")
 
 
-def submit_feedback(request):
-    if request.method == "POST":
-        form = FeedbackForm(request.POST)
+class CreateFeedbackView(LoginRequiredMixin, CreateView):
+    model = Feedback
+    form_class = FeedbackForm
+    template_name = "talent/partials/feedback_form.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+
+    def _get_recipient_from_url(self):
+        recipient_username = self.request.headers.get("Referer").split("/")[-1]
+        return Person.objects.get(user__username=recipient_username)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "post_url": reverse("create-feedback"),
+                "person": self._get_recipient_from_url(),
+            }
+        )
+
+        return context
+
+    def form_valid(self, form):
+        form.instance.recipient = self._get_recipient_from_url()
+        form.instance.provider = self.request.user.person
+        self.object = form.save()
+
+        messages.success(self.request, _("Feedback is successfully created!"))
+
+        return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
+    model = Feedback
+    form_class = FeedbackForm
+    context_object_name = "feedback"
+    template_name = "talent/partials/feedback_form.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "post_url": reverse("update-feedback", args=(self.object.pk,)),
+                "person": self.object.recipient,
+            }
+        )
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
-            recipient_username = request.POST.get("feedback-recipient-username")
-            recipient = Person.objects.get(user__username=recipient_username)
-            feedback = Feedback(
-                recipient=recipient,
-                provider=request.user.person,
-                message=form.cleaned_data.get("message"),
-                stars=int(form.cleaned_data.get("stars")),
-            )
-            feedback.save()
+            form.save()
+            messages.success(self.request, _("Feedback is successfully updated!"))
+            return HttpResponseRedirect(self.get_success_url())
 
-            return redirect("portfolio", username=recipient_username)
+        return super().post(request, *args, **kwargs)
 
-    return HttpResponse("Something went wrong")
+
+class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
+    model = Feedback
+    context_object_name = "feedback"
+    template_name = "talent/partials/delete_feedback_form.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        try:
+            Feedback.objects.get(pk=self.object.pk).delete()
+            messages.success(self.request, _("Feedback is successfully deleted!"))
+            return HttpResponseRedirect(self.get_success_url())
+        except ObjectDoesNotExist:
+            return super().post(request, *args, **kwargs)

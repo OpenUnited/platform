@@ -184,14 +184,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
     )
     CHALLENGE_PRIORITY = ((0, "High"), (1, "Medium"), (2, "Low"))
 
-    CHALLENGE_SKILL_MODE_SINGLE_SKILL = 0
-    CHALLENGE_SKILL_MODE_MULTIPLE_SKILL = 1
-
-    SKILL_MODE = (
-        (CHALLENGE_SKILL_MODE_SINGLE_SKILL, "Single Skill"),
-        (CHALLENGE_SKILL_MODE_MULTIPLE_SKILL, "Multiple Skills"),
-    )
-
     REWARD_TYPE = (
         (0, "Liquid Points"),
         (1, "Non-liquid Points"),
@@ -211,15 +203,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         Attachment, related_name="challenge_attachements", blank=True
     )
     tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
-    skill = models.ForeignKey(
-        Skill,
-        on_delete=models.CASCADE,
-        related_name="challenge",
-        blank=True,
-        null=True,
-        default=None,
-    )
-    expertise = models.ManyToManyField(Expertise, related_name="challenge_expertise")
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     priority = models.IntegerField(choices=CHALLENGE_PRIORITY, default=1)
@@ -256,7 +239,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         blank=True,
         on_delete=models.SET_NULL,
     )
-    skill_mode = models.IntegerField(choices=SKILL_MODE, default=0)
     reward_type = models.IntegerField(choices=REWARD_TYPE, default=1)
 
     class Meta:
@@ -354,6 +336,9 @@ class Bounty(TimeStampMixin):
     points = models.IntegerField()
     status = models.IntegerField(choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE)
     is_active = models.BooleanField(default=True)
+
+    def get_expertise_as_str(self):
+        return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
         return f"{self.skill} - {self.expertise} - {self.points} - {self.get_status_display()}"

@@ -1,0 +1,67 @@
+{% if challenge.bounty_set.all() %}
+<div class="mb-2.5 font-medium text-sm text-black/[0.85]">Bounty:</div>
+<div class="flex flex-col w-full overflow-x-auto pb-3">
+    <div class="min-w-[440px] flex flex-col">
+        <div class="flex flex-col">
+            <div class="flex items-center grow">
+                <div
+                    class="w-[30%] min-w-[30%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    Skill</div>
+                <div
+                    class="w-[30%] min-w-[30%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    Expertise</div>
+                <div
+                    class="w-[15%] min-w-[15%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    Points</div>
+                {% if bounty_claim %}
+                <div
+                    class="w-[25%] min-w-[25%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    Claimed By</div>
+                {% else %}
+                <div
+                    class="w-[25%] min-w-[25%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    Action</div>
+                {% endif %}
+            </div>
+            {% for bounty in bounties %}
+            <div class="flex items-center grow">
+                <div
+                    class="h-[54px] flex items-center w-[30%] min-w-[30%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    {{ bounty.skill }}
+                </div>
+                <div
+                    class="h-[54px] flex items-center w-[30%] min-w-[30%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    {{ bounty.get_expertise_as_str() }}
+                </div>
+                <div
+                    class="h-[54px] flex items-center w-[15%] min-w-[15%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    {{ challenge.get_bounty_points() }}
+                </div>
+                {% if bounty_claim %}
+                <div
+                    class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    {{ bounty_claim.person.get_full_name() }}
+                </div>
+                {% else %}
+                <div
+                    class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                    <button type="button" hx-get="{{ url('bounty-claim') }}" hx-target="#bounty-claim-modal"
+                        hx-swap="innerHTML" name="claim-button" value="claim-button"
+                        class="appearance-none w-fit flex items-center justify-center rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/[0.85] transition-all">
+                        Claim
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+<p class="text-lg text-bold text-red-700">This challenge has no bounty associated with it.</p>
+<a href="#"><button class="w-6/12 justify-center rounded-md bg-indigo-600 mt-4 px-3 py-2 text-sm
+                                        font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline
+                                        focus-visible:outline-2 focus-visible:outline-offset-2
+                                        focus-visible:outline-indigo-600" type="button">Create a bounty for this
+        challenge</button></a>
+{% endif %}
