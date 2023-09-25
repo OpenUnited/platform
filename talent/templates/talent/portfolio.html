@@ -436,7 +436,8 @@
                     {% endif %}
                     {% if can_leave_feedback %}
                     <div class="mt-9">
-                        <button type="submit" hx-get="{{ url('create-feedback') }}" hx-target="#feedback-modal" hx-swap="innerHTML"
+                        <button type="submit" hx-get="{{ url('create-feedback') }}" hx-target="#feedback-modal"
+                            hx-swap="innerHTML"
                             class="mx-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
                         border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
                             Leave a Feedback to {{ person.get_short_name() }}

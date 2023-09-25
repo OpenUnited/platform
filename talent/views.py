@@ -276,6 +276,7 @@ class CreateFeedbackView(LoginRequiredMixin, CreateView):
             {
                 "post_url": reverse("create-feedback"),
                 "person": self._get_recipient_from_url(),
+                "current_rating": 0,
             }
         )
 
@@ -313,6 +314,7 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
             {
                 "post_url": reverse("update-feedback", args=(self.object.pk,)),
                 "person": self.object.recipient,
+                "current_rating": self.object.stars,
             }
         )
 
