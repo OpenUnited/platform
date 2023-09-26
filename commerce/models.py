@@ -1,23 +1,15 @@
-from openunited.mixins import TimeStampMixin, UUIDMixin
-from django.db import models
-from django.db.models import Sum
-from .utils import *
-import datetime
 import uuid
-
-from django.db.models.signals import post_save
-from django.core.validators import RegexValidator
-from django.dispatch import receiver
-from model_utils import FieldTracker
-
-import engagement.tasks
+from django.db import models
 from openunited.mixins import TimeStampMixin, UUIDMixin
-from engagement.models import Notification
-from product_management.models import Bounty
+from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import RegexValidator
+
+from openunited.mixins import TimeStampMixin, UUIDMixin
+from product_management.models import Product
+from .utils import *
 
 
 class Organisation(TimeStampMixin):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     username = models.CharField(
         max_length=39,
         unique=True,
@@ -31,6 +23,7 @@ class Organisation(TimeStampMixin):
         ],
     )
     name = models.CharField(max_length=512, unique=True)
+    products = GenericRelation(Product)
     photo = models.ImageField(upload_to="avatars/", null=True, blank=True)
 
     class Meta:
