@@ -135,7 +135,11 @@ def generate_sample_data():
 
     products = []
     for pd in product_data:
-        pd["owner"] = choice(organisations)
+        if bool(getrandbits(1)):
+            pd["content_object"] = choice(organisations)
+        else:
+            pd["content_object"] = choice(people)
+
         products.append(ProductService.create(**pd))
 
     # Create ProductRoleAssignment model instances
