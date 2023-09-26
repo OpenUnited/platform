@@ -69,7 +69,7 @@ class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
         (PRODUCT_MANAGER, "Manager"),
         (PRODUCT_ADMIN, "Admin"),
     )
-    person = models.OneToOneField(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, default="")
     role = models.IntegerField(choices=ROLES, default=0)
 

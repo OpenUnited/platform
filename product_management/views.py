@@ -1,4 +1,3 @@
-import json
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
@@ -9,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.views.generic import (
     ListView,
@@ -338,7 +338,32 @@ class CreateProductView(LoginRequiredMixin, CreateView):
                 form.add_error("name", error)
                 return render(request, self.template_name, context={"form": form})
 
-            instance = form.save()
+            instance = form.save(commit=False)
+
+            make_me_owner = form.cleaned_data.get("make_me_owner")
+            organisation = form.cleaned_data.get("organisation")
+            if make_me_owner and organisation:
+                form.add_error(
+                    "organisation",
+                    "A product cannot be owned by a person and an organisation",
+                )
+                return render(request, self.template_name, context={"form": form})
+
+            if not make_me_owner and not organisation:
+                form.add_error("organisation", "You have to select an owner")
+                return render(request, self.template_name, context={"form": form})
+
+            if make_me_owner:
+                instance.content_type = ContentType.objects.get_for_model(
+                    request.user.person
+                )
+                instance.object_id = request.user.id
+            else:
+                instance.content_type = ContentType.objects.get_for_model(organisation)
+                instance.object_id = organisation.id
+
+            instance.save()
+
             _ = ProductRoleAssignment.objects.create(
                 person=self.request.user.person,
                 product=instance,
