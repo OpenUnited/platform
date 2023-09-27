@@ -17,6 +17,7 @@ from django.views.generic import (
     FormView,
     CreateView,
     UpdateView,
+    DeleteView,
     DetailView,
 )
 
@@ -31,6 +32,7 @@ from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea, Expertise
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
+from openunited.mixins import HTMXInlineFormValidationMixin
 
 
 class ChallengeListView(ListView):
@@ -385,7 +387,7 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST, request.FILES, instance=self.object)
         if form.is_valid():
             instance = form.save()
             self.success_url = reverse("product_summary", args=(instance.slug,))
@@ -424,21 +426,13 @@ class CreateOrganisationView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class CreateChallengeView(LoginRequiredMixin, CreateView):
+class CreateChallengeView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
+):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
     login_url = "sign-up"
-
-    def _is_htmx_request(self, request):
-        htmx_header = request.headers.get("Hx-Request", None)
-        return htmx_header == "true"
-
-    def form_valid(self, form):
-        if self._is_htmx_request(self.request):
-            return self.render_to_response(self.get_context_data(form=form))
-
-        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -458,3 +452,45 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
+
+
+class UpdateChallengeView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
+):
+    model = Challenge
+    form_class = ChallengeForm
+    template_name = "product_management/update_challenge.html"
+    login_url = "sign-up"
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+
+        instance = kwargs.get("instance")
+        kwargs.update({"initial": {"product": instance.product.pk}})
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _("The challenge is successfully updated!"))
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    instance.product.slug,
+                    instance.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class DeleteChallengeView(LoginRequiredMixin, DeleteView):
+    pass

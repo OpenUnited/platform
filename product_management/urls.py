@@ -20,6 +20,8 @@ from .views import (
     CreateProductView,
     CreateOrganisationView,
     CreateChallengeView,
+    UpdateChallengeView,
+    DeleteChallengeView,
     UpdateProductView,
 )
 
@@ -34,6 +36,16 @@ from .views import (
 urlpatterns = [
     path("challenges/", ChallengeListView.as_view(), name="challenges"),
     path("challenge/create/", CreateChallengeView.as_view(), name="create-challenge"),
+    path(
+        "challenge/update/<int:pk>/",
+        UpdateChallengeView.as_view(),
+        name="update-challenge",
+    ),
+    path(
+        "challenge/delete/<int:pk>/",
+        DeleteChallengeView.as_view(),
+        name="delete-challenge",
+    ),
     path("products/", ProductListView.as_view(), name="products"),
     path("bounty-claim/", BountyClaimView.as_view(), name="bounty-claim"),
     path("product/create", CreateProductView.as_view(), name="create-product"),
