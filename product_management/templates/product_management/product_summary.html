@@ -41,11 +41,11 @@
         <p class="transition-all delay-600 text-red-400 hover:text-red-400/[0.85]">No available challenge is
             found.</p>
         {% elif challenge_count == 1 %}
-        <a href="{{ url('product_challenges', args=(organisation_username, product_slug)) }}"
+        <a href="{{ url('product_challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
             Available Challenge </a>
         {% else %}
-        <a href="{{ url('product_challenges', args=(organisation_username, product_slug)) }}"
+        <a href="{{ url('product_challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ challenge_count }}
             Available Challenges</a>
         {% endif %}

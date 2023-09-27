@@ -41,7 +41,7 @@
                     {{ challenge.get_priority_display() }}
                 </td>
                 <td class="px-6 py-4 text-right">
-                    <a href="{{ url('challenge_detail', args=(organisation_username, product_slug, challenge.id)) }}"
+                    <a href="{{ url('challenge_detail', args=(product_slug, challenge.id)) }}"
                         class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Visit</a>
                 </td>
             </tr>

@@ -66,15 +66,10 @@ class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        organisation = get_object_or_404(
-            Organisation, username=self.kwargs.get("organisation_username", None)
-        )
         product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
 
         context.update(
             {
-                "organisation": organisation,
-                "organisation_username": organisation.username,
                 "product": product,
                 "product_slug": product.slug,
             }
@@ -372,9 +367,7 @@ class CreateProductView(LoginRequiredMixin, CreateView):
                 product=instance,
                 role=ProductRoleAssignment.PRODUCT_ADMIN,
             )
-            self.success_url = reverse(
-                "product_summary", args=("organisation_username_four", instance.slug)
-            )
+            self.success_url = reverse("product_summary", args=(instance.slug,))
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -395,9 +388,7 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save()
-            self.success_url = reverse(
-                "product_summary", args=("organisation_username_four", instance.slug)
-            )
+            self.success_url = reverse("product_summary", args=(instance.slug,))
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -460,8 +451,6 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
             self.success_url = reverse(
                 "challenge_detail",
                 args=(
-                    # todo: remove the organisation_username_four
-                    "organisation_username_four",
                     instance.product.slug,
                     instance.id,
                 ),

@@ -48,55 +48,54 @@ urlpatterns = [
 ]
 
 # URL patterns for various product views
-# TODO: remove organisation_username and only use product such as, /product/product-slug/
 urlpatterns += [
     path(
-        "<str:organisation_username>/<str:product_slug>/",
+        "<str:product_slug>/",
         ProductRedirectView.as_view(),
         name="product_detail",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/summary",
+        "<str:product_slug>/summary",
         ProductSummaryView.as_view(),
         name="product_summary",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/initiatives",
+        "<str:product_slug>/initiatives",
         ProductInitiativesView.as_view(),
         name="product_initiatives",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/challenges",
+        "<str:product_slug>/challenges",
         ProductChallengesView.as_view(),
         name="product_challenges",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/tree",
+        "<str:product_slug>/tree",
         ProductTreeView.as_view(),
         name="product_tree",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/ideas",
+        "<str:product_slug>/ideas",
         ProductIdeasAndBugsView.as_view(),
         name="product_ideas_bugs",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/ideas/new",
+        "<str:product_slug>/ideas/new",
         CreateProductIdea.as_view(),
         name="add_product_idea",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/idea/<int:pk>",
+        "<str:product_slug>/idea/<int:pk>",
         ProductIdeaDetail.as_view(),
         name="product_idea_detail",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/ideas/update/<int:pk>",
+        "<str:product_slug>/ideas/update/<int:pk>",
         UpdateProductIdea.as_view(),
         name="update_product_idea",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/people",
+        "<str:product_slug>/people",
         ProductRoleAssignmentView.as_view(),
         name="product_people",
     ),
@@ -105,17 +104,17 @@ urlpatterns += [
 # URL patterns for initiative, capability, and challenge detail views
 urlpatterns += [
     path(
-        "<str:organisation_username>/<str:product_slug>/initiative/<int:initiative_id>",
+        "<str:product_slug>/initiative/<int:initiative_id>",
         InitiativeDetailView.as_view(),
         name="initiative_details",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/capability/<int:capability_id>",
+        "<str:product_slug>/capability/<int:capability_id>",
         CapabilityDetailView.as_view(),
         name="capability_detail",
     ),
     path(
-        "<str:organisation_username>/<str:product_slug>/challenge/<int:challenge_id>",
+        "<str:product_slug>/challenge/<int:challenge_id>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
     ),
