@@ -87,20 +87,6 @@ class ProductForm(forms.ModelForm):
         self.fields["content_type"].required = False
         self.fields["object_id"].required = False
 
-    def clean_photo(self):
-        photo = self.cleaned_data.get("photo")
-
-        allowed_extensions = [".jpg", "jpeg", "png"]
-        if photo:
-            file_name = photo.name
-            file_extension = file_name.split(".")[-1]
-            if file_extension not in allowed_extensions:
-                raise ValidationError(
-                    _(
-                        f"File extension must be one of the following: {' '.join(allowed_extensions)}"
-                    )
-                )
-
     class Meta:
         model = Product
         exclude = [
