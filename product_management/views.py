@@ -396,22 +396,14 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-class CreateOrganisationView(LoginRequiredMixin, CreateView):
+class CreateOrganisationView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
+):
     model = Organisation
     form_class = OrganisationForm
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy("create-product")
     login_url = "sign-up"
-
-    def _is_htmx_request(self, request):
-        htmx_header = request.headers.get("Hx-Request", None)
-        return htmx_header == "true"
-
-    def form_valid(self, form):
-        if self._is_htmx_request(self.request):
-            return self.render_to_response(self.get_context_data(form=form))
-
-        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         if self._is_htmx_request(self.request):
