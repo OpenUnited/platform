@@ -20,6 +20,7 @@ from .views import (
     CreateProductView,
     CreateOrganisationView,
     CreateChallengeView,
+    UpdateProductView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -36,6 +37,9 @@ urlpatterns = [
     path("products/", ProductListView.as_view(), name="products"),
     path("bounty-claim/", BountyClaimView.as_view(), name="bounty-claim"),
     path("product/create", CreateProductView.as_view(), name="create-product"),
+    path(
+        "product/update/<int:pk>/", UpdateProductView.as_view(), name="update-product"
+    ),
     path(
         "organisation/create",
         CreateOrganisationView.as_view(),

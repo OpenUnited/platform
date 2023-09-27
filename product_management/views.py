@@ -99,6 +99,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         challenges = Challenge.objects.filter(product=product)
         context.update(
             {
+                "product": product,
                 "challenges": challenges,
                 "capabilities": Capability.get_root_nodes(),
             }
@@ -371,6 +372,29 @@ class CreateProductView(LoginRequiredMixin, CreateView):
                 product=instance,
                 role=ProductRoleAssignment.PRODUCT_ADMIN,
             )
+            self.success_url = reverse(
+                "product_summary", args=("organisation_username_four", instance.slug)
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateProductView(LoginRequiredMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_management/update_product.html"
+    login_url = "sign-up"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save()
             self.success_url = reverse(
                 "product_summary", args=("organisation_username_four", instance.slug)
             )
