@@ -328,16 +328,18 @@ class CreateProductView(LoginRequiredMixin, CreateView):
     template_name = "product_management/create_product.html"
     login_url = "sign-up"
 
-    # TODO: save the image and the documents
-    def post(self, request, *args, **kwargs):
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            name = form.cleaned_data.get("name")
-            error = Product.check_slug_from_name(name)
-            if error:
-                form.add_error("name", error)
-                return render(request, self.template_name, context={"form": form})
+    def _is_htmx_request(self, request):
+        htmx_header = request.headers.get("Hx-Request", None)
+        return htmx_header == "true"
 
+    # TODO: save the image and the documents
+    # TODO: move the owner validation to forms
+    def post(self, request, *args, **kwargs):
+        if self._is_htmx_request(self.request):
+            return super().post(request, *args, **kwargs)
+
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
             instance = form.save(commit=False)
 
             make_me_owner = form.cleaned_data.get("make_me_owner")

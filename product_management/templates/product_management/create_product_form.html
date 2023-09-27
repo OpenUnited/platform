@@ -14,10 +14,13 @@
                     <div class="mt-2">
                         {{ form.name }}
                     </div>
-                    {% if form.name.errors %}
-                    <p class="mt-3 text-sm leading-6 text-red-900">
-                        {{ form.name.errors }}</p>
-                    {% endif %}
+                    <div id="name-errors">
+                        {% if form.name.errors %}
+                        {% for error in form.name.errors %}
+                        <p class="mt-3 text-sm leading-6 text-red-900">{{ error }}</p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
 
                 <div class="sm:col-span-full">
@@ -44,10 +47,6 @@
                                     <p class="text-gray-500">{{ form.make_me_owner.help_text }}</p>
                                 </div>
                             </div>
-                            {% if form.organisation.errors %}
-                            <p class="mt-3 text-sm leading-6 text-red-900">
-                                {{ form.organisation.errors }}</p>
-                            {% endif %}
                         </div>
                     </div>
                 </div>

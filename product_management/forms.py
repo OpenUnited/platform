@@ -87,6 +87,14 @@ class ProductForm(forms.ModelForm):
         self.fields["content_type"].required = False
         self.fields["object_id"].required = False
 
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        error = Product.check_slug_from_name(name)
+        if error:
+            raise ValidationError(error)
+
+        return name
+
     class Meta:
         model = Product
         exclude = [
@@ -98,6 +106,11 @@ class ProductForm(forms.ModelForm):
                 attrs={
                     "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                     "autocomplete": "none",
+                    "hx-post": reverse_lazy("create-product"),
+                    "hx-trigger": "input delay:100ms",
+                    "hx-select": "#name-errors",
+                    "hx-target": "#name-errors",
+                    "hx-swap": "innerHTML",
                 }
             ),
             "short_description": forms.TextInput(
