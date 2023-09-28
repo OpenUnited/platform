@@ -23,6 +23,9 @@ from .views import (
     UpdateChallengeView,
     DeleteChallengeView,
     UpdateProductView,
+    CreateBountyView,
+    UpdateBountyView,
+    DeleteBountyView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -45,6 +48,21 @@ urlpatterns = [
         "challenge/delete/<int:pk>/",
         DeleteChallengeView.as_view(),
         name="delete-challenge",
+    ),
+    path(
+        "bounty/create/",
+        CreateBountyView.as_view(),
+        name="create-bounty",
+    ),
+    path(
+        "bounty/update/<int:pk>",
+        UpdateBountyView.as_view(),
+        name="update-bounty",
+    ),
+    path(
+        "bounty/delete/<int:pk>",
+        DeleteBountyView.as_view(),
+        name="delete-bounty",
     ),
     path("products/", ProductListView.as_view(), name="products"),
     path("bounty-claim/", BountyClaimView.as_view(), name="bounty-claim"),

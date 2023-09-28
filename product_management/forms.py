@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
-from .models import Idea, Product, Challenge
+from .models import Idea, Product, Challenge, Bounty
 
 
 class DateInput(forms.DateInput):
@@ -273,3 +273,9 @@ class ChallengeForm(forms.ModelForm):
         help_texts = {
             "reward_type": "Liquid points can be redeemed for money, Non-Liquid points cannot.",
         }
+
+
+class BountyForm(forms.ModelForm):
+    class Meta:
+        model = Bounty
+        fields = "__all__"

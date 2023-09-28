@@ -29,6 +29,7 @@ from .forms import (
     ProductForm,
     OrganisationForm,
     ChallengeForm,
+    BountyForm,
 )
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea, Expertise
@@ -512,3 +513,22 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
                     ),
                 )
             )
+
+
+class CreateBountyView(LoginRequiredMixin, CreateView):
+    model = Bounty
+    form_class = BountyForm
+    template_name = "product_management/create_bounty.html"
+    login_url = "sign-up"
+
+
+class UpdateBountyView(LoginRequiredMixin, UpdateView):
+    model = Bounty
+    template_name = "product_management/create_bounty.html"
+    login_url = "sign-up"
+
+
+class DeleteBountyView(LoginRequiredMixin, DeleteView):
+    model = Bounty
+    template_name = "product_management/create_bounty.html"
+    login_url = "sign-up"
