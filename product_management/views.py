@@ -493,23 +493,12 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("challenges")
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        person = request.user.person
-        product = self.object.product
-        try:
-            product_role_assignment = ProductRoleAssignment.objects.filter(
-                person=person, product=product
-            ).first()
-
-            if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
-                messages.error(
-                    request, _("You do not have rights to remove this challenge.")
-                )
-            else:
-                Challenge.objects.get(pk=self.object.pk).delete()
-                messages.success(request, _("The challenge is successfully deleted!"))
-
-        except AttributeError:
+        challenge_obj = self.get_object()
+        if challenge_obj.can_delete_challenge(request.user.person):
+            Challenge.objects.get(pk=challenge_obj.pk).delete()
+            messages.success(request, _("The challenge is successfully deleted!"))
+            return redirect(self.success_url)
+        else:
             messages.error(
                 request, _("You do not have rights to remove this challenge.")
             )
@@ -518,13 +507,8 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
                 reverse(
                     "challenge_detail",
                     args=(
-                        product.slug,
-                        self.object.pk,
+                        challenge_obj.product.slug,
+                        challenge_obj.pk,
                     ),
                 )
             )
-        except ObjectDoesNotExist as e:
-            messages.error(request, _("Something went wrong!"))
-            logging.error(f"The following is catched during deleting a challenge: {e}")
-
-        return redirect(self.success_url)

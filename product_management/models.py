@@ -12,6 +12,7 @@ from treebeard.mp_tree import MP_Node
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
+from security.models import ProductRoleAssignment
 
 
 class Tag(TimeStampMixin):
@@ -246,6 +247,26 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
     def __str__(self):
         return self.title
+
+    def can_delete_challenge(self, person):
+        product = self.product
+        # That should not happen because every challenge should have a product.
+        # We could remove null=True statement from the product field and this
+        # if statement to prevent having challenges without a product.
+        if product is None:
+            return False
+
+        product_role_assignment = ProductRoleAssignment.objects.filter(
+            person=person, product=product
+        ).first()
+
+        if product_role_assignment is None:
+            return False
+
+        if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
+            return False
+
+        return True
 
     def get_bounty_points(self):
         total = 0
