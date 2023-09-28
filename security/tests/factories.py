@@ -1,7 +1,10 @@
 import factory
 from factory.django import DjangoModelFactory
+from factory.fuzzy import FuzzyChoice
+from factory import SubFactory
 
-from security.models import User
+from product_management.tests.factories import OwnedProductFactory
+from security.models import User, ProductRoleAssignment
 
 
 class UserFactory(DjangoModelFactory):
@@ -13,3 +16,14 @@ class UserFactory(DjangoModelFactory):
 
     class Meta:
         model = User
+
+
+# Due to a circular import, we cannot declare a person field.
+# Person should be passed during the initialization of the object:
+# ProductRoleAssignmentFactory(person=person)
+class ProductRoleAssignmentFactory(DjangoModelFactory):
+    product = SubFactory(content_object=OwnedProductFactory)
+    role = FuzzyChoice([elem[0] for elem in ProductRoleAssignment.ROLES])
+
+    class Meta:
+        model = ProductRoleAssignment
