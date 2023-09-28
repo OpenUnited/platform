@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
@@ -10,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -485,4 +487,44 @@ class UpdateChallengeView(
 
 
 class DeleteChallengeView(LoginRequiredMixin, DeleteView):
-    pass
+    model = Challenge
+    template_name = "product_management/delete_challenge.html"
+    login_url = "sign-up"
+    success_url = reverse_lazy("challenges")
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        person = request.user.person
+        product = self.object.product
+        try:
+            product_role_assignment = ProductRoleAssignment.objects.filter(
+                person=person, product=product
+            ).first()
+
+            if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
+                messages.error(
+                    request, _("You do not have rights to remove this challenge.")
+                )
+            else:
+                Challenge.objects.get(pk=self.object.pk).delete()
+                messages.success(request, _("The challenge is successfully deleted!"))
+
+        except AttributeError:
+            messages.error(
+                request, _("You do not have rights to remove this challenge.")
+            )
+
+            return redirect(
+                reverse(
+                    "challenge_detail",
+                    args=(
+                        product.slug,
+                        self.object.pk,
+                    ),
+                )
+            )
+        except ObjectDoesNotExist as e:
+            messages.error(request, _("Something went wrong!"))
+            logging.error(f"The following is catched during deleting a challenge: {e}")
+
+        return redirect(self.success_url)
