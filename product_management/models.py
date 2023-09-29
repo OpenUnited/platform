@@ -247,6 +247,28 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def __str__(self):
         return self.title
 
+    def can_delete_challenge(self, person):
+        from security.models import ProductRoleAssignment
+
+        product = self.product
+        # That should not happen because every challenge should have a product.
+        # We could remove null=True statement from the product field and this
+        # if statement to prevent having challenges without a product.
+        if product is None:
+            return False
+
+        product_role_assignment = ProductRoleAssignment.objects.filter(
+            person=person, product=product
+        ).first()
+
+        if product_role_assignment is None:
+            return False
+
+        if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
+            return False
+
+        return True
+
     def get_bounty_points(self):
         total = 0
         queryset = self.bounty_set.all()

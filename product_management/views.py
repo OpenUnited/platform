@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
@@ -10,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -17,6 +19,7 @@ from django.views.generic import (
     FormView,
     CreateView,
     UpdateView,
+    DeleteView,
     DetailView,
 )
 
@@ -26,11 +29,13 @@ from .forms import (
     ProductForm,
     OrganisationForm,
     ChallengeForm,
+    BountyForm,
 )
 from talent.models import BountyClaim
 from .models import Challenge, Product, Initiative, Bounty, Capability, Idea, Expertise
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
+from openunited.mixins import HTMXInlineFormValidationMixin
 
 
 class ChallengeListView(ListView):
@@ -385,7 +390,7 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST, request.FILES, instance=self.object)
         if form.is_valid():
             instance = form.save()
             self.success_url = reverse("product_summary", args=(instance.slug,))
@@ -394,22 +399,14 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-class CreateOrganisationView(LoginRequiredMixin, CreateView):
+class CreateOrganisationView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
+):
     model = Organisation
     form_class = OrganisationForm
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy("create-product")
     login_url = "sign-up"
-
-    def _is_htmx_request(self, request):
-        htmx_header = request.headers.get("Hx-Request", None)
-        return htmx_header == "true"
-
-    def form_valid(self, form):
-        if self._is_htmx_request(self.request):
-            return self.render_to_response(self.get_context_data(form=form))
-
-        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         if self._is_htmx_request(self.request):
@@ -424,21 +421,13 @@ class CreateOrganisationView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class CreateChallengeView(LoginRequiredMixin, CreateView):
+class CreateChallengeView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
+):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
     login_url = "sign-up"
-
-    def _is_htmx_request(self, request):
-        htmx_header = request.headers.get("Hx-Request", None)
-        return htmx_header == "true"
-
-    def form_valid(self, form):
-        if self._is_htmx_request(self.request):
-            return self.render_to_response(self.get_context_data(form=form))
-
-        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -458,3 +447,88 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
+
+
+class UpdateChallengeView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
+):
+    model = Challenge
+    form_class = ChallengeForm
+    template_name = "product_management/update_challenge.html"
+    login_url = "sign-up"
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+
+        instance = kwargs.get("instance")
+        kwargs.update({"initial": {"product": instance.product.pk}})
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(request, _("The challenge is successfully updated!"))
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    instance.product.slug,
+                    instance.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class DeleteChallengeView(LoginRequiredMixin, DeleteView):
+    model = Challenge
+    template_name = "product_management/delete_challenge.html"
+    login_url = "sign-up"
+    success_url = reverse_lazy("challenges")
+
+    def get(self, request, *args, **kwargs):
+        challenge_obj = self.get_object()
+        if challenge_obj.can_delete_challenge(request.user.person):
+            Challenge.objects.get(pk=challenge_obj.pk).delete()
+            messages.success(request, _("The challenge is successfully deleted!"))
+            return redirect(self.success_url)
+        else:
+            messages.error(
+                request, _("You do not have rights to remove this challenge.")
+            )
+
+            return redirect(
+                reverse(
+                    "challenge_detail",
+                    args=(
+                        challenge_obj.product.slug,
+                        challenge_obj.pk,
+                    ),
+                )
+            )
+
+
+class CreateBountyView(LoginRequiredMixin, CreateView):
+    model = Bounty
+    form_class = BountyForm
+    template_name = "product_management/create_bounty.html"
+    login_url = "sign-up"
+
+
+class UpdateBountyView(LoginRequiredMixin, UpdateView):
+    model = Bounty
+    template_name = "product_management/create_bounty.html"
+    login_url = "sign-up"
+
+
+class DeleteBountyView(LoginRequiredMixin, DeleteView):
+    model = Bounty
+    template_name = "product_management/create_bounty.html"
+    login_url = "sign-up"
