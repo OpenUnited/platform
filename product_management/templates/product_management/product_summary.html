@@ -3,6 +3,8 @@
 {% block title %}Product - Summary{% endblock %}
 {% block product_content %}
 
+{% include 'toast.html' %}
+
 <div class="flex flex-col">
     <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900">About {{ product.name  }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-3">
@@ -16,6 +18,14 @@
                     class="appearance-none transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85] mr-auto text-xs">Show
                     more</a>
                     {% endif %}
+
+                    <!-- TODO: add product owner logic here -->
+                    <a href="{{ url('update-product', args=(product.id,)) }}">
+                        <button type="button"
+                            class="w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            Edit Product
+                        </button>
+                    </a>
             </div>
         </div>
         <div class="w-full h-[232px]">
@@ -31,11 +41,11 @@
         <p class="transition-all delay-600 text-red-400 hover:text-red-400/[0.85]">No available challenge is
             found.</p>
         {% elif challenge_count == 1 %}
-        <a href="{{ url('product_challenges', args=(organisation_username, product_slug)) }}"
+        <a href="{{ url('product_challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
             Available Challenge </a>
         {% else %}
-        <a href="{{ url('product_challenges', args=(organisation_username, product_slug)) }}"
+        <a href="{{ url('product_challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ challenge_count }}
             Available Challenges</a>
         {% endif %}

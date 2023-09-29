@@ -3,7 +3,10 @@ from django.db import models
 from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from model_utils import FieldTracker
+from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
@@ -58,9 +61,6 @@ class CapabilityAttachment(models.Model):
         db_table = "capability_attachment"
 
 
-from django.utils.text import slugify
-
-
 class Product(ProductMixin):
     attachment = models.ManyToManyField(
         Attachment, related_name="product_attachments", blank=True
@@ -68,9 +68,9 @@ class Product(ProductMixin):
     capability_start = models.ForeignKey(
         Capability, on_delete=models.CASCADE, null=True, editable=False
     )
-    owner = models.ForeignKey(
-        "commerce.Organisation", on_delete=models.CASCADE, blank=True, null=True
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
 
     def make_private(self):
         self.is_private = True

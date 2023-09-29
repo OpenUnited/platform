@@ -59,41 +59,41 @@ class IdeaForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
-    # TODO: set up a hierarcy in organisation and query accordingly
-    owner = forms.ModelChoiceField(
+    organisation = forms.ModelChoiceField(
         empty_label="Select an organisation",
-        queryset=Organisation.objects.all(),
+        required=False,
+        queryset=Organisation.objects.none(),
         to_field_name="name",
+        label="Organisations",
         widget=forms.Select(
             attrs={
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
             }
         ),
-        help_text="Optional. If you do not provide an organisation, you will be the owner of the product",
+    )
+    make_me_owner = forms.BooleanField(
+        label="Make me the owner",
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
+            }
+        ),
+        required=False,
     )
 
     def __init__(self, *args, **kwargs):
-        request = kwargs.pop("request", None)
-        super().__init__(*args, **kwargs)
+        self.request = kwargs.pop("request", None)
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields["content_type"].required = False
+        self.fields["object_id"].required = False
 
-        if request and request.user.is_authenticated:
-            self.fields["owner"].queryset = Organisation.objects.filter(
-                person=request.user.person
-            )
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        error = Product.check_slug_from_name(name)
+        if error:
+            raise ValidationError(error)
 
-    def clean_photo(self):
-        photo = self.cleaned_data.get("photo")
-
-        allowed_extensions = [".jpg", "jpeg", "png"]
-        if photo:
-            file_name = photo.name
-            file_extension = file_name.split(".")[-1]
-            if file_extension not in allowed_extensions:
-                raise ValidationError(
-                    _(
-                        f"File extension must be one of the following: {' '.join(allowed_extensions)}"
-                    )
-                )
+        return name
 
     class Meta:
         model = Product
@@ -106,6 +106,11 @@ class ProductForm(forms.ModelForm):
                 attrs={
                     "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
                     "autocomplete": "none",
+                    "hx-post": reverse_lazy("create-product"),
+                    "hx-trigger": "input delay:100ms",
+                    "hx-select": "#name-errors",
+                    "hx-target": "#name-errors",
+                    "hx-swap": "innerHTML",
                 }
             ),
             "short_description": forms.TextInput(
@@ -155,6 +160,7 @@ class ProductForm(forms.ModelForm):
             "detail_url": "Additional URL",
             "video_url": "Video URL",
             "is_private": "Private",
+            "content_object": "Owner",
         }
 
         help_texts = {

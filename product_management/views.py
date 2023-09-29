@@ -1,4 +1,3 @@
-import json
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
@@ -9,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.views.generic import (
     ListView,
@@ -66,15 +66,10 @@ class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        organisation = get_object_or_404(
-            Organisation, username=self.kwargs.get("organisation_username", None)
-        )
         product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
 
         context.update(
             {
-                "organisation": organisation,
-                "organisation_username": organisation.username,
                 "product": product,
                 "product_slug": product.slug,
             }
@@ -99,6 +94,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         challenges = Challenge.objects.filter(product=product)
         context.update(
             {
+                "product": product,
                 "challenges": challenges,
                 "capabilities": Capability.get_root_nodes(),
             }
@@ -328,25 +324,71 @@ class CreateProductView(LoginRequiredMixin, CreateView):
     template_name = "product_management/create_product.html"
     login_url = "sign-up"
 
+    def _is_htmx_request(self, request):
+        htmx_header = request.headers.get("Hx-Request", None)
+        return htmx_header == "true"
+
     # TODO: save the image and the documents
+    # TODO: move the owner validation to forms
     def post(self, request, *args, **kwargs):
-        form = ProductForm(request.POST, request.FILES)
+        if self._is_htmx_request(self.request):
+            return super().post(request, *args, **kwargs)
+
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data.get("name")
-            error = Product.check_slug_from_name(name)
-            if error:
-                form.add_error("name", error)
+            instance = form.save(commit=False)
+
+            make_me_owner = form.cleaned_data.get("make_me_owner")
+            organisation = form.cleaned_data.get("organisation")
+            if make_me_owner and organisation:
+                form.add_error(
+                    "organisation",
+                    "A product cannot be owned by a person and an organisation",
+                )
                 return render(request, self.template_name, context={"form": form})
 
-            instance = form.save()
+            if not make_me_owner and not organisation:
+                form.add_error("organisation", "You have to select an owner")
+                return render(request, self.template_name, context={"form": form})
+
+            if make_me_owner:
+                instance.content_type = ContentType.objects.get_for_model(
+                    request.user.person
+                )
+                instance.object_id = request.user.id
+            else:
+                instance.content_type = ContentType.objects.get_for_model(organisation)
+                instance.object_id = organisation.id
+
+            instance.save()
+
             _ = ProductRoleAssignment.objects.create(
                 person=self.request.user.person,
                 product=instance,
                 role=ProductRoleAssignment.PRODUCT_ADMIN,
             )
-            self.success_url = reverse(
-                "product_summary", args=("organisation_username_four", instance.slug)
-            )
+            self.success_url = reverse("product_summary", args=(instance.slug,))
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateProductView(LoginRequiredMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "product_management/update_product.html"
+    login_url = "sign-up"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save()
+            self.success_url = reverse("product_summary", args=(instance.slug,))
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -409,8 +451,6 @@ class CreateChallengeView(LoginRequiredMixin, CreateView):
             self.success_url = reverse(
                 "challenge_detail",
                 args=(
-                    # todo: remove the organisation_username_four
-                    "organisation_username_four",
                     instance.product.slug,
                     instance.id,
                 ),
