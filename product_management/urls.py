@@ -79,6 +79,16 @@ urlpatterns = [
     ),
 ]
 
+urlpatterns += [
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    path(
+        "dashboard/bounties",
+        ManageBountiesView.as_view(),
+        name="manage-bounties",
+    ),
+]
+
+
 # URL patterns for various product views
 urlpatterns += [
     path(
@@ -149,14 +159,5 @@ urlpatterns += [
         "<str:product_slug>/challenge/<int:challenge_id>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
-    ),
-]
-
-urlpatterns += [
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    path(
-        "dashboard/bounties",
-        ManageBountiesView.as_view(),
-        name="manage-bounties",
     ),
 ]
