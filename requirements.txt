@@ -77,6 +77,7 @@ pydot==1.4.2
 pyflakes==3.0.1
 Pygments==2.15.1
 pyparsing==3.1.0
+pytailwindcss==0.2.0
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 python-engineio==4.5.1
