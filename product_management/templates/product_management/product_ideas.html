@@ -19,7 +19,7 @@
                 class="bg-gray-100 text-gray-900 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ bugs|length }}</span>
         </a>
     </nav>
-    <a href="{{ url('add_product_idea', args=(organisation_username, product_slug)) }}"
+    <a href="{{ url('add_product_idea', args=(product_slug,)) }}"
         class="ideas-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50">
         Add Idea</a>
 </div>
@@ -31,7 +31,7 @@
         <ul role="list" class="divide-y divide-gray-100">
             {% for idea in ideas %}
             <li class="flex flex-col items-start justify-between gap-y-4 py-5">
-                <a href="{{ url('product_idea_detail', args=(organisation_username, product_slug, idea.pk,)) }}">
+                <a href="{{ url('product_idea_detail', args=(product_slug, idea.pk,)) }}">
                     <div class="flex flex-col gap-y-2">
                         <div class="flex items-start justify-between gap-x-4 xl:gap-x-6">
                             <h3 class="text-sm font-semibold leading-6 text-gray-900">

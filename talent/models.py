@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
@@ -22,6 +23,7 @@ class Person(TimeStampMixin):
     user = models.OneToOneField(
         "security.User", on_delete=models.CASCADE, related_name="person"
     )
+    products = GenericRelation("product_management.Product")
     photo = models.ImageField(upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)

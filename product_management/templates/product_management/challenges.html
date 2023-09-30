@@ -6,6 +6,8 @@
 {% set TASK_TYPES = ["Draft", "Blocked", "Available", "Claimed", "Done", "In Review"] %}
 {% set TASK_CLAIM_TYPES = ["Claimed", "Not Ready", "Ready", "Done"] %}
 
+{% include 'toast.html' %}
+
 <div class="flex flex-col">
 
   <div class="flex items-center justify-between w-full mb-12">
@@ -31,7 +33,7 @@
       {% for challenge in challenges %}
       <li class="overflow-hidden rounded-xl border border-gray-200">
         <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-4">
-          <a href="/{{ challenge.product.owner.username }}/{{ challenge.product.slug }}/challenge/{{ challenge.id }}"
+          <a href="/{{ challenge.product.slug }}/challenge/{{ challenge.id }}"
             class="text-lg font-medium leading-6 text-blue-400">{{ challenge.title }}</a>
         </div>
         <div class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
@@ -58,7 +60,7 @@
               {% endif %}
               <div class="flex-1">
                 <a class="text-blue-400"
-                  href="/{{ challenge.product.owner.username }}/{{ challenge.product.slug }}/">{{
+                  href="/{{ challenge.product.slug }}/">{{
                   challenge.product.name }}</a>
               </div>
             </div>
@@ -82,7 +84,7 @@
               {% endif %}
               <div class="flex-1">
                 <a class="text-blue-400"
-                  href="/{{ challenge.product.owner.username }}/{{ challenge.product.slug }}/initiatives/{{ challenge.initiative.id }}">
+                  href="/{{ challenge.product.slug }}/initiatives/{{ challenge.initiative.id }}">
                   {{ challenge.initiative.name }}
                 </a>
               </div>

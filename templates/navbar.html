@@ -24,11 +24,13 @@
     </div>
     <div class="hidden lg:flex lg:items-center lg:justify-end lg:gap-x-5 relative z-[2] ml-auto">
         {% if request.user.is_authenticated %}
+        {% set person = request.user.person %}
         <div>
             <button type="button"
                 class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 id="user-menu-button" aria-expanded="false" aria-haspopup="true"
-                _="on click toggle .hidden on #user-menu">
+                _="on click toggle .hidden on #user-menu end on blur wait 100ms then add .hidden to #user-menu end">
+                {% set photo_url, _ = person.get_photo_url() %}
                 <img class="h-8 w-8 rounded-full" src="{{ photo_url }}" alt="Profile Picture">
             </button>
             <div class="relative ml-3">
