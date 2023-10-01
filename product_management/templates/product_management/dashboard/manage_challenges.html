@@ -1,10 +1,10 @@
-<div class="sm:flex sm:items-center">
+<div class="sm:flex sm:items-center mt-3">
     <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-gray-900">Challenges</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of challenges created for this product.</p>
+        <p class="mt-2 text-md text-gray-700">A list of challenges created for this product.</p>
     </div>
     <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <button type="button"
+        <button type="button" hx-get="{{ url('create-challenge') }}" hx-target="body" hx-swap="innerHTML"
+            hx-push-url="true"
             class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add
             Challenge</button>
     </div>
@@ -36,7 +36,7 @@
                     <tbody class="divide-y divide-gray-200 bg-white">
                         {% for challenge in challenges %}
                         <tr>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ challenge.title }}</td>
+                            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">{{ challenge.title }}</td>
                             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 {{ challenge.get_status_display() }}
                             </td>
@@ -54,9 +54,9 @@
                             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 {% if challenge.reviewer %}
                                 <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
-                                    src="{{ challenge.created_by.get_photo_url()[0] }}"
-                                    alt="{{ challenge.created_by.get_short_name() }}">
-                                <span class="ml-1.5">{{ challenge.created_by.get_full_name() }}</span>
+                                    src="{{ challenge.reviewer.get_photo_url()[0] }}"
+                                    alt="{{ challenge.reviewer.get_short_name() }}">
+                                <span class="ml-1.5">{{ challenge.reviewer.get_full_name() }}</span>
                                 {% else %}
                                 <p>No reviewer assigned to this challenge. <button type="button">Assign a
                                         Reviewer</button>
