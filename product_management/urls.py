@@ -28,6 +28,8 @@ from .views import (
     CreateBountyView,
     UpdateBountyView,
     DeleteBountyView,
+    DashboardHomeView,
+    DashboardProductDetailView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -82,9 +84,19 @@ urlpatterns = [
 urlpatterns += [
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path(
+        "dashboard/home",
+        DashboardHomeView.as_view(),
+        name="dashboard-home",
+    ),
+    path(
         "dashboard/bounties",
         ManageBountiesView.as_view(),
         name="manage-bounties",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/",
+        DashboardProductDetailView.as_view(),
+        name="dashboard-product-detail",
     ),
 ]
 

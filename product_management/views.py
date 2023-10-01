@@ -449,8 +449,7 @@ class CreateChallengeView(
         return super().post(request, *args, **kwargs)
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "product_management/dashboard.html"
+class DashboardBaseView(LoginRequiredMixin):
     login_url = "sign_in"
 
     def get_context_data(self, **kwargs):
@@ -470,16 +469,26 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         )
         return context
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+
+class DashboardView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard.html"
 
 
-class ManageBountiesView(LoginRequiredMixin, TemplateView):
+class DashboardHomeView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard/dashboard_home.html"
+
+
+class ManageBountiesView(DashboardBaseView, TemplateView):
     template_name = "product_management/dashboard/manage_bounties.html"
-    login_url = "sign_in"
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+
+class DashboardProductDetailView(DashboardBaseView, DetailView):
+    model = Product
+    template_name = "product_management/dashboard/product_detail.html"
+
+    def get_object(self, queryset=None):
+        slug = self.kwargs.get("product_slug")
+        return get_object_or_404(self.model, slug=slug)
 
 
 class UpdateChallengeView(
