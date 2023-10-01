@@ -168,7 +168,7 @@
                 <div class="relative inline-block px-3 text-left">
                     <div>
                         <button type="button" _="on click toggle .hidden on #options-dropdown-menu end
-                        on blur add .hidden to #options-dropdown-menu end" class=" group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium
+                        on blur wait 100ms add .hidden to #options-dropdown-menu end" class=" group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium
                             text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500
                             focus:ring-offset-2 focus:ring-offset-gray-100" id="options-menu-button"
                             aria-expanded="false" aria-haspopup="true">
@@ -192,45 +192,36 @@
                         </button>
                     </div>
 
-                    <div id="options-dropdown-menu" class="hidden absolute left-0 right-0 z-10 mx-3 mt-1 origin-top
+                    <div _="on mouseenter from <a/> in me
+                                remove .text-gray-700 from <a/> in me
+                                tell the target
+                                    add .bg-gray-100 .text-gray-900
+                            end
+                            on mouseleave from <a/> in me
+                                remove .bg-gray-100 .text-gray-900 from <a/> in me
+                                tell the target
+                                    add .text-gray-700
+                            end" id="options-dropdown-menu" class="hidden absolute left-0 right-0 z-10 mx-3 mt-1 origin-top
                         divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5
                         focus:outline-none" role="menu" aria-orientation="vertical"
                         aria-labelledby="options-menu-button" tabindex="-1">
                         <div class="py-1" role="none">
-                            <a href="#"
-                                _="on mouseenter remove .text-gray-700 from me then add .bg-gray-100 .text-gray-900 to me
-                                   on mouseleave remove .bg-gray-100 .text-gray-900 from me then add .text-gray-700 to me"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-0">View profile</a>
-                            <a href="#"
-                                _="on mouseenter remove .text-gray-700 from me then add .bg-gray-100 .text-gray-900 to me
-                                   on mouseleave remove .bg-gray-100 .text-gray-900 from me then add .text-gray-700 to me"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-1">Settings</a>
-                            <a href="#"
-                                _="on mouseenter remove .text-gray-700 from me then add .bg-gray-100 .text-gray-900 to me
-                                   on mouseleave remove .bg-gray-100 .text-gray-900 from me then add .text-gray-700 to me"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-2">Notifications</a>
                         </div>
                         <div class="py-1" role="none">
-                            <a href="#"
-                                _="on mouseenter remove .text-gray-700 from me then add .bg-gray-100 .text-gray-900 to me
-                                   on mouseleave remove .bg-gray-100 .text-gray-900 from me then add .text-gray-700 to me"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-3">Get desktop app</a>
-                            <a href="#"
-                                _="on mouseenter remove .text-gray-700 from me then add .bg-gray-100 .text-gray-900 to me
-                                   on mouseleave remove .bg-gray-100 .text-gray-900 from me then add .text-gray-700 to me"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-4">Support</a>
                         </div>
                         <div class="py-1" role="none">
-                            <a href="{{ url('log_out') }}"
-                                _="on mouseenter remove .text-gray-700 from me then add .bg-gray-100 .text-gray-900 to me
-                                   on mouseleave remove .bg-gray-100 .text-gray-900 from me then add .text-gray-700 to me"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
-                                id="options-menu-item-5">Logout</a>
+                            <a href="{{ url('log_out') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                                tabindex="-1" id="options-menu-item-5">Logout</a>
                         </div>
                     </div>
                 </div>
@@ -431,7 +422,7 @@
                                     </div>
                                     <div class="flex-shrink-0 pr-2">
                                         <button type="button" _="on click toggle .hidden on #pinned-project-options-dropdown
-                                    on blur add .hidden to #pinned-project-options-dropdown"
+                                    on blur wait 100ms add .hidden to #pinned-project-options-dropdown"
                                             class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                             id="pinned-project-options-menu-0-button" aria-expanded="false"
                                             aria-haspopup="true">
