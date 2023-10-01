@@ -253,11 +253,14 @@
                     </div>
                 </div>
                 <!-- Navigation -->
-                <nav class="mt-6 px-3">
+                <nav class="mt-6 px-3" _="on click from <button/> in me
+                                    remove .bg-gray-200 .text-gray-900 from <button/> in me
+                                    add .text-gray-700 .hover:bg-gray-50 .hover:text-gray-900 to <button/> in me
+                                    tell the target
+                                        add .bg-gray-200 .text-gray-900">
                     <div class="space-y-1">
                         <!-- Current: "bg-gray-200 text-gray-900", Default: "text-gray-700 hover:bg-gray-50 hover:text-gray-900" -->
                         <button
-                            _="on click remove .text-gray-700 .hover:bg-gray-50 .hover:text-gray-900 then add .bg-gray-200 .text-gray-900"
                             class="w-full bg-gray-200 text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                             aria-current="page">
                             <!-- Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500" -->
@@ -269,7 +272,6 @@
                             Home
                         </button>
                         <button hx-get="{{ url('manage-bounties') }}" hx-target="#dashboard-tabs" hx-swap="innerHTML"
-                            _="on click remove .text-gray-700 .hover:bg-gray-50 .hover:text-gray-900 then add .bg-gray-200 .text-gray-900"
                             class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium">
                             <svg class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6 flex-shrink-0" fill="none"
                                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -278,91 +280,32 @@
                             </svg>
                             My bounties
                         </button>
-                        <a href="#"
-                            class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium">
-                            <svg class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6 flex-shrink-0" fill="none"
-                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <button _="on click
+                                        toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu
+                                        then toggle .hidden on #sub-menu-1" type="button" class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center
+                            rounded-md px-2 py-2 text-sm font-medium" aria-controls="sub-menu-1" aria-expanded="false">
+                            <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
+                            <svg id="side-arrow-for-expandable-menu" class="text-gray-400 h-5 w-5 shrink-0"
+                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                    clip-rule="evenodd" />
                             </svg>
-                            Recent
-                        </a>
-                    </div>
-                    <div class="mt-8">
-                        <!-- Secondary navigation -->
-                        <h3 class="px-3 text-sm font-medium text-gray-500" id="desktop-teams-headline">Teams</h3>
-                        <div class="mt-1 space-y-1" role="group" aria-labelledby="desktop-teams-headline">
-                            <a href="#"
-                                class="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
-                                <span class="mr-4 h-2.5 w-2.5 bg-indigo-500 rounded-full" aria-hidden="true"></span>
-                                <span class="truncate">Engineering</span>
-                            </a>
-                            <a href="#"
-                                class="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
-                                <span class="mr-4 h-2.5 w-2.5 bg-green-500 rounded-full" aria-hidden="true"></span>
-                                <span class="truncate">Human Resources</span>
-                            </a>
-                            <a href="#"
-                                class="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
-                                <span class="mr-4 h-2.5 w-2.5 bg-yellow-500 rounded-full" aria-hidden="true"></span>
-                                <span class="truncate">Customer Success</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
-                        <nav _="on click from <a/> in me
-                                    remove .bg-gray-50 from <a/> in me
-                                    add .hover:bg-gray-50 to <a/> in me
-                                    tell the target
-                                        add .bg-gray-50" class="flex flex-1 flex-col">
-                            <ul role="list" class="flex flex-1 flex-col gap-y-7">
-                                <li>
-                                    <ul role="list" class="-mx-2 space-y-1">
-                                        <li>
-                                            <a href="#"
-                                                class="bg-gray-50 block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold text-gray-700">Dashboard</a>
-                                        </li>
-                                        <li>
-                                            <div>
-                                                <button _="on click
-                                                            toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu
-                                                            then toggle .hidden on #sub-menu-1" type="button"
-                                                    class="hover:bg-gray-50 flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-gray-700"
-                                                    aria-controls="sub-menu-1" aria-expanded="false">
-                                                    <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
-                                                    <svg id="side-arrow-for-expandable-menu"
-                                                        class="text-gray-400 h-5 w-5 shrink-0" viewBox="0 0 20 20"
-                                                        fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd"
-                                                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                    Teams
-                                                </button>
-                                                <!-- Expandable link section, show/hide based on state. -->
-                                                <ul class="hidden mt-1 px-2" id="sub-menu-1">
-                                                    <li>
-                                                        <a href="#"
-                                                            class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Engineering</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#"
-                                                            class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Human
-                                                            Resources</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#"
-                                                            class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">Customer
-                                                            Success</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </nav>
+                            Products
+                        </button>
+                        <!-- Expandable link section, show/hide based on state. -->
+                        <ul _="on click from <a/> in me
+                                 remove .bg-gray-50 from <a/> in me
+                                 add .hover:bg-gray-50 to <a/> in me
+                                 tell the target
+                                    add .bg-gray-50" class="hidden mt-1 px-2" id="sub-menu-1">
+                            {% for product in products %}
+                            <li>
+                                <a href="#"
+                                    class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
 
                 </nav>

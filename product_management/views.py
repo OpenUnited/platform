@@ -458,10 +458,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         person = self.request.user.person
         photo_url, _ = person.get_photo_url()
+        product_queryset = Product.objects.filter(
+            content_type__model="person", object_id=person.id
+        )
         context.update(
             {
                 "person": person,
                 "photo_url": photo_url,
+                "products": product_queryset,
             }
         )
         return context
