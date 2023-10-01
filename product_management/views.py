@@ -491,6 +491,24 @@ class DashboardProductDetailView(DashboardBaseView, DetailView):
         return get_object_or_404(self.model, slug=slug)
 
 
+class DashboardProductChallengesView(LoginRequiredMixin, ListView):
+    model = Challenge
+    paginate_by = 20
+    template_name = "product_management/dashboard/manage_challenges.html"
+
+
+class DashboardProductBountiesView(LoginRequiredMixin, ListView):
+    model = Bounty
+    paginate_by = 20
+    template_name = "product_management/dashboard/manage_bounties.html"
+
+
+# This view displays the each action of a product manager does, kinda like logs.
+# TODO: change this view with ListView after History model is created
+class DashboardProductHistoryView(LoginRequiredMixin, TemplateView):
+    template_name = "product_management/dashboard/action_history.html"
+
+
 class UpdateChallengeView(
     LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
 ):

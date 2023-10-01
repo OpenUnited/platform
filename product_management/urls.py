@@ -30,6 +30,9 @@ from .views import (
     DeleteBountyView,
     DashboardHomeView,
     DashboardProductDetailView,
+    DashboardProductChallengesView,
+    DashboardProductBountiesView,
+    DashboardProductHistoryView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -97,6 +100,21 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/",
         DashboardProductDetailView.as_view(),
         name="dashboard-product-detail",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/challenges/",
+        DashboardProductChallengesView.as_view(),
+        name="dashboard-product-challenges",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/bounties/",
+        DashboardProductBountiesView.as_view(),
+        name="dashboard-product-bounties",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/history/",
+        DashboardProductHistoryView.as_view(),
+        name="dashboard-product-history",
     ),
 ]
 
