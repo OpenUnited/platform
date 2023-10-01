@@ -311,18 +311,23 @@
                     </div>
 
                     <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
-                        <nav class="flex flex-1 flex-col">
+                        <nav _="on click from <a/> in me
+                                    remove .bg-gray-50 from <a/> in me
+                                    add .hover:bg-gray-50 to <a/> in me
+                                    tell the target
+                                        add .bg-gray-50" class="flex flex-1 flex-col">
                             <ul role="list" class="flex flex-1 flex-col gap-y-7">
                                 <li>
                                     <ul role="list" class="-mx-2 space-y-1">
                                         <li>
-                                            <!-- Current: "bg-gray-50", Default: "hover:bg-gray-50" -->
                                             <a href="#"
                                                 class="bg-gray-50 block rounded-md py-2 pr-2 pl-10 text-sm leading-6 font-semibold text-gray-700">Dashboard</a>
                                         </li>
                                         <li>
                                             <div>
-                                                <button type="button"
+                                                <button _="on click
+                                                            toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu
+                                                            then toggle .hidden on #sub-menu-1" type="button"
                                                     class="hover:bg-gray-50 flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-gray-700"
                                                     aria-controls="sub-menu-1" aria-expanded="false">
                                                     <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
