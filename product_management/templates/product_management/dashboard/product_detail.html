@@ -62,17 +62,17 @@
                                 add .border-indigo-500 .text-indigo-600
                                 remove .hover:border-gray-300 .hover:text-gray-700" class="-mb-px flex space-x-8">
                     <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                    <a href="#" hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}"
                         hx-target="#manage-product-tabs" hx-swap="innerHTML"
-                        class="border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        class="cursor-pointer border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
                         aria-current="page">Challenges</a>
-                    <a href="#" hx-get="{{ url('dashboard-product-bounties', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('dashboard-product-bounties', args=(product.slug,)) }}"
                         hx-target="#manage-product-tabs" hx-swap="innerHTML"
-                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">Bounty
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">Bounty
                         Claim Requests</a>
-                    <a href="#" hx-get="{{ url('dashboard-product-history', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('dashboard-product-history', args=(product.slug,)) }}"
                         hx-target="#manage-product-tabs" hx-swap="innerHTML"
-                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">History</a>
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">History</a>
                 </nav>
             </div>
         </div>

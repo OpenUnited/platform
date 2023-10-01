@@ -294,9 +294,9 @@
                             {% for product in products %}
                             <li>
                                 <!-- TODO: Maybe this anchor tag can be converted to a button -->
-                                <a href="#" hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}"
+                                <a hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}"
                                     hx-target="#dashboard-tabs" hx-swap="innerHTML"
-                                    class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
+                                    class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
                             </li>
                             {% endfor %}
                             {% else %}

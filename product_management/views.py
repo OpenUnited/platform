@@ -490,11 +490,22 @@ class DashboardProductDetailView(DashboardBaseView, DetailView):
         slug = self.kwargs.get("product_slug")
         return get_object_or_404(self.model, slug=slug)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"challenges": Challenge.objects.filter(product=self.object)})
+        return context
+
 
 class DashboardProductChallengesView(LoginRequiredMixin, ListView):
     model = Challenge
     paginate_by = 20
+    context_object_name = "challenges"
     template_name = "product_management/dashboard/manage_challenges.html"
+
+    def get_queryset(self):
+        product_slug = self.kwargs.get("product_slug")
+        queryset = Challenge.objects.filter(product__slug=product_slug)
+        return queryset
 
 
 class DashboardProductBountiesView(LoginRequiredMixin, ListView):
