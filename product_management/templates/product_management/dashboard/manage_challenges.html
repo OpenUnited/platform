@@ -12,8 +12,8 @@
 <div class="mt-8 flow-root">
     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            {% if challenges %}
             <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                {% if challenges %}
                 <table class="min-w-full divide-y divide-gray-300">
                     <thead class="bg-gray-50">
                         <tr>
@@ -58,7 +58,7 @@
                                     alt="{{ challenge.reviewer.get_short_name() }}">
                                 <span class="ml-1.5">{{ challenge.reviewer.get_full_name() }}</span>
                                 {% else %}
-                                <p>No reviewer assigned to this challenge. <button type="button">Assign a
+                                <p>No reviewer assigned to this challenge. <button type="button" class="block">Assign a
                                         Reviewer</button>
                                 </p>
                                 {% endif %}
@@ -67,10 +67,10 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% else %}
-                <p>No challenge is created for this product.</p>
-                {% endif %}
             </div>
+            {% else %}
+            <p>No challenge is created for this product.</p>
+            {% endif %}
         </div>
     </div>
 </div>
