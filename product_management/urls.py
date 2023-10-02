@@ -33,6 +33,7 @@ from .views import (
     DashboardProductChallengesView,
     DashboardProductBountiesView,
     DashboardProductHistoryView,
+    DashboardProductChallengeFilterView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -105,6 +106,11 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/challenges/",
         DashboardProductChallengesView.as_view(),
         name="dashboard-product-challenges",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/challenges/filter/",
+        DashboardProductChallengeFilterView.as_view(),
+        name="dashboard-product-challenge-filter",
     ),
     path(
         "dashboard/product/<str:product_slug>/bounties/",

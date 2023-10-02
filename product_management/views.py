@@ -500,6 +500,7 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
     model = Challenge
     paginate_by = 20
     context_object_name = "challenges"
+    login_url = "sign_in"
     template_name = "product_management/dashboard/manage_challenges.html"
 
     def get_context_data(self, **kwargs):
@@ -514,27 +515,46 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
         queryset = Challenge.objects.filter(product__slug=product_slug)
         return queryset
 
+
+class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
+    template_name = "product_management/dashboard/challenge_table.html"
+    login_url = "sign_in"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
     def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        query = request.GET.get("q")
-        if query:
-            for q in query.split(" "):
+        context = self.get_context_data()
+
+        product = context.get("product")
+        queryset = Challenge.objects.filter(product=product)
+
+        # Handle sort filter
+        query_parameter = request.GET.get("q")
+        if query_parameter:
+            for q in query_parameter.split(" "):
                 q = q.split(":")
                 key = q[0]
                 value = q[1]
 
                 if key == "sort":
                     if value == "created-asc":
-                        self.object_list = self.object_list.order_by("created_at")
+                        queryset = queryset.order_by("created_at")
                     if value == "created-desc":
-                        self.object_list = self.object_list.order_by("-created_at")
-                    return render(request, self.template_name, self.get_context_data())
+                        queryset = queryset.order_by("-created_at")
 
-        query = request.GET.get("search-challenge")
-        if query:
-            self.object_list = Challenge.objects.filter(title__icontains=query)
-            return render(request, self.template_name, self.get_context_data())
-        return super().get(request, *args, **kwargs)
+        # Handle search
+        query_parameter = request.GET.get("search-challenge")
+        if query_parameter:
+            queryset = Challenge.objects.filter(title__icontains=query_parameter)
+
+        context.update({"challenges": queryset})
+
+        return render(request, self.template_name, context)
 
 
 class DashboardProductBountiesView(LoginRequiredMixin, ListView):
