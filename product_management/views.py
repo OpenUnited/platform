@@ -511,7 +511,16 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
 class DashboardProductBountiesView(LoginRequiredMixin, ListView):
     model = Bounty
     paginate_by = 20
+    context_object_name = "bounties"
     template_name = "product_management/dashboard/manage_bounties.html"
+
+    def get_queryset(self):
+        product_slug = self.kwargs.get("product_slug")
+        challenges = Challenge.objects.filter(product__slug=product_slug).values_list(
+            "id", flat=True
+        )
+        queryset = Bounty.objects.filter(challenge__id__in=challenges)
+        return queryset
 
 
 # This view displays the each action of a product manager does, kinda like logs.
