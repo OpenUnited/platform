@@ -23,78 +23,78 @@
                                 clip-rule="evenodd" />
                         </svg>
                     </div>
-                    <input type="text" id="simple-search"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    <input type="input" name="search-challenge"
+                        hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}"
+                        hx-trigger="keyup changed delay:200ms" hx-target="#challenge-table" hx-swap="innerHTML"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2"
                         placeholder="Search" required="">
                 </div>
             </form>
         </div>
-        <div
-            class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-            <button type="button"
-                class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                </svg>
-                Add product
-            </button>
-            <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="h-4 w-4 mr-2 text-gray-400"
-                    viewbox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                        clip-rule="evenodd" />
-                </svg>
-                Filter
-                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-            </button>
-            <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-                <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Choose brand</h6>
-                <ul class="space-y-2 text-sm" aria-labelledby="filterDropdownButton">
-                    <li class="flex items-center">
-                        <input id="apple" type="checkbox" value=""
-                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                        <label for="apple" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Apple
-                            (56)</label>
-                    </li>
-                    <li class="flex items-center">
-                        <input id="fitbit" type="checkbox" value=""
-                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                        <label for="fitbit" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Microsoft
-                            (16)</label>
-                    </li>
-                    <li class="flex items-center">
-                        <input id="razor" type="checkbox" value=""
-                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                        <label for="razor" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Razor
-                            (49)</label>
-                    </li>
-                    <li class="flex items-center">
-                        <input id="nikon" type="checkbox" value=""
-                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                        <label for="nikon" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">Nikon
-                            (12)</label>
-                    </li>
-                    <li class="flex items-center">
-                        <input id="benq" type="checkbox" value=""
-                            class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                        <label for="benq" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">BenQ
-                            (74)</label>
-                    </li>
-                </ul>
+        <div class="col-start-1 row-start-1 py-4">
+            <div class="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-8">
+                <div class="relative inline-block">
+                    <div class="flex">
+                        <button type="button" _="on click toggle .hidden on #sortButton"
+                            class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                            id="menu-button" aria-expanded="false" aria-haspopup="true">
+                            Sort
+                            <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!--
+            Dropdown menu, show/hide based on menu state.
+
+            Entering: "transition ease-out duration-100"
+              From: "transform opacity-0 scale-95"
+              To: "transform opacity-100 scale-100"
+            Leaving: "transition ease-in duration-75"
+              From: "transform opacity-100 scale-100"
+              To: "transform opacity-0 scale-95"
+          -->
+                    <div id="sortButton"
+                        class="hidden absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div _="on mouseenter from <a/> in me
+                                    remove .bg-gray-100 from <a/> in me
+                                    tell the target
+                                        add .bg-gray-100
+                                end
+                                on mouseleave from <a/> in me
+                                    tell the target
+                                        remove .bg-gray-100
+                                on click from <a/> in me
+                                    remove .font-medium .text-gray-900 from <a /> in me
+                                    tell the target
+                                        add .font-medium .text-gray-900
+                                    wait 100ms
+                                    add .hidden to #sortButton
+                                end" class="py-1" role="none">
+                            <!-- TODO: There is a minor bug in here which is the clicked sort method does not get bold
+                            because we swap the whole content. It can be fixed by addding another URL route that just 
+                            handles the filtering stuff. Later, we can swap only the table with the result.  -->
+                            <a hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}?q=sort:created-desc"
+                                hx-target="#manage-product-tabs" hx-swap="innerHTML"
+                                class="cursor-pointer text-gray-500 block px-4 py-2 text-sm" tabindex="-1"
+                                id="menu-item-0">Newest</a>
+                            <a hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}?q=sort:created-asc"
+                                hx-target="#manage-product-tabs" hx-swap="innerHTML"
+                                class="cursor-pointer text-gray-500 block px-4 py-2 text-sm" tabindex="-1"
+                                id="menu-item-1">Oldest</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <div id="challenge-table" class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             {% if challenges %}
             <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-300">

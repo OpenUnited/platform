@@ -502,10 +502,39 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
     context_object_name = "challenges"
     template_name = "product_management/dashboard/manage_challenges.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
         queryset = Challenge.objects.filter(product__slug=product_slug)
         return queryset
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        query = request.GET.get("q")
+        if query:
+            for q in query.split(" "):
+                q = q.split(":")
+                key = q[0]
+                value = q[1]
+
+                if key == "sort":
+                    if value == "created-asc":
+                        self.object_list = self.object_list.order_by("created_at")
+                    if value == "created-desc":
+                        self.object_list = self.object_list.order_by("-created_at")
+                    return render(request, self.template_name, self.get_context_data())
+
+        query = request.GET.get("search-challenge")
+        if query:
+            self.object_list = Challenge.objects.filter(title__icontains=query)
+            return render(request, self.template_name, self.get_context_data())
+        return super().get(request, *args, **kwargs)
 
 
 class DashboardProductBountiesView(LoginRequiredMixin, ListView):
