@@ -449,6 +449,135 @@ class CreateChallengeView(
         return super().post(request, *args, **kwargs)
 
 
+class DashboardBaseView(LoginRequiredMixin):
+    login_url = "sign_in"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        person = self.request.user.person
+        photo_url, _ = person.get_photo_url()
+        product_queryset = Product.objects.filter(
+            content_type__model="person", object_id=person.id
+        )
+        context.update(
+            {
+                "person": person,
+                "photo_url": photo_url,
+                "products": product_queryset,
+            }
+        )
+        return context
+
+
+class DashboardView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard.html"
+
+
+class DashboardHomeView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard/dashboard_home.html"
+
+
+class ManageBountiesView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard/manage_bounties.html"
+
+
+class DashboardProductDetailView(DashboardBaseView, DetailView):
+    model = Product
+    template_name = "product_management/dashboard/product_detail.html"
+
+    def get_object(self, queryset=None):
+        slug = self.kwargs.get("product_slug")
+        return get_object_or_404(self.model, slug=slug)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"challenges": Challenge.objects.filter(product=self.object)})
+        return context
+
+
+class DashboardProductChallengesView(LoginRequiredMixin, ListView):
+    model = Challenge
+    paginate_by = 20
+    context_object_name = "challenges"
+    login_url = "sign_in"
+    template_name = "product_management/dashboard/manage_challenges.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
+    def get_queryset(self):
+        product_slug = self.kwargs.get("product_slug")
+        queryset = Challenge.objects.filter(product__slug=product_slug)
+        return queryset
+
+
+class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
+    template_name = "product_management/dashboard/challenge_table.html"
+    login_url = "sign_in"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+
+        product = context.get("product")
+        queryset = Challenge.objects.filter(product=product)
+
+        # Handle sort filter
+        query_parameter = request.GET.get("q")
+        if query_parameter:
+            for q in query_parameter.split(" "):
+                q = q.split(":")
+                key = q[0]
+                value = q[1]
+
+                if key == "sort":
+                    if value == "created-asc":
+                        queryset = queryset.order_by("created_at")
+                    if value == "created-desc":
+                        queryset = queryset.order_by("-created_at")
+
+        # Handle search
+        query_parameter = request.GET.get("search-challenge")
+        if query_parameter:
+            queryset = Challenge.objects.filter(title__icontains=query_parameter)
+
+        context.update({"challenges": queryset})
+
+        return render(request, self.template_name, context)
+
+
+class DashboardProductBountiesView(LoginRequiredMixin, ListView):
+    model = Bounty
+    paginate_by = 20
+    context_object_name = "bounties"
+    template_name = "product_management/dashboard/manage_bounties.html"
+
+    def get_queryset(self):
+        product_slug = self.kwargs.get("product_slug")
+        challenges = Challenge.objects.filter(product__slug=product_slug).values_list(
+            "id", flat=True
+        )
+        queryset = Bounty.objects.filter(challenge__id__in=challenges)
+        return queryset
+
+
+# This view displays the each action of a product manager does, kinda like logs.
+# TODO: change this view with ListView after History model is created
+class DashboardProductHistoryView(LoginRequiredMixin, TemplateView):
+    template_name = "product_management/dashboard/action_history.html"
+
+
 class UpdateChallengeView(
     LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
 ):

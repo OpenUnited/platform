@@ -9,7 +9,7 @@ class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
     photo = models.ImageField(upload_to="avatars/", blank=True, null=True)
     name = models.TextField()
     short_description = models.TextField()
-    full_description = models.TextField(blank=True, null=True)
+    full_description = models.TextField()
     website = models.CharField(max_length=512, blank=True, null=True)
     detail_url = models.URLField(blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)

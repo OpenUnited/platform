@@ -10,6 +10,7 @@ from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
+from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
 
@@ -79,6 +80,18 @@ class Product(ProductMixin):
     def make_public(self):
         self.is_private = False
         self.save()
+
+    # TODO: this method also exists in Person model. Move it in a mixin and
+    # separate requires_upload variable from this method
+    def get_photo_url(self) -> [str, bool]:
+        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
+        requires_upload = True
+
+        if self.photo:
+            image_url = self.photo.url
+            requires_upload = False
+
+        return image_url, requires_upload
 
     @staticmethod
     def check_slug_from_name(product_name: str) -> str | None:

@@ -69,6 +69,11 @@ class Person(TimeStampMixin):
 
         return image_url, requires_upload
 
+    def get_products(self):
+        from product_management.models import Product
+
+        return Product.objects.none()
+
     def delete_photo(self) -> None:
         path = self.photo.path
         if os.path.exists(path):

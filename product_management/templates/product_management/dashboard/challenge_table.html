@@ -1,0 +1,51 @@
+<table class="min-w-full divide-y divide-gray-300">
+    <thead class="bg-gray-50">
+        <tr>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Title
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Reward
+                Type
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tag
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created By
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Reviewer
+            </th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 bg-white">
+        {% for challenge in challenges %}
+        <tr>
+            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">{{ challenge.title }}</td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ challenge.get_status_display() }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ challenge.get_reward_type_display() }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ challenge.tag.all() }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
+                    src="{{ challenge.created_by.get_photo_url()[0] }}"
+                    alt="{{ challenge.created_by.get_short_name() }}">
+                <span class="ml-1.5">{{ challenge.created_by.get_full_name() }}</span>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {% if challenge.reviewer %}
+                <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
+                    src="{{ challenge.reviewer.get_photo_url()[0] }}" alt="{{ challenge.reviewer.get_short_name() }}">
+                <span class="ml-1.5">{{ challenge.reviewer.get_full_name() }}</span>
+                {% else %}
+                <p>No reviewer assigned to this challenge. <button type="button" class="block">Assign a
+                        Reviewer</button>
+                </p>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
