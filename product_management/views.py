@@ -563,13 +563,61 @@ class DashboardProductBountiesView(LoginRequiredMixin, ListView):
     context_object_name = "bounties"
     template_name = "product_management/dashboard/manage_bounties.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        challenges = Challenge.objects.filter(product__slug=product_slug).values_list(
-            "id", flat=True
-        )
-        queryset = Bounty.objects.filter(challenge__id__in=challenges)
+        product = Product.objects.get(slug=product_slug)
+        queryset = Bounty.objects.filter(challenge__product=product)
         return queryset
+
+
+class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
+    template_name = "product_management/dashboard/bounty_table.html"
+    login_url = "sign_in"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+
+        product = context.get("product")
+        queryset = Bounty.objects.filter(challenge__product=product)
+
+        # Handle sort filter
+        query_parameter = request.GET.get("q")
+        if query_parameter:
+            for q in query_parameter.split(" "):
+                q = q.split(":")
+                key = q[0]
+                value = q[1]
+
+                if key == "sort":
+                    if value == "points-asc":
+                        queryset = queryset.order_by("points")
+                    if value == "points-desc":
+                        queryset = queryset.order_by("-points")
+
+        # Handle search
+        query_parameter = request.GET.get("search-bounty")
+        if query_parameter:
+            queryset = Bounty.objects.filter(
+                challenge__title__icontains=query_parameter
+            )
+
+        context.update({"bounties": queryset})
+
+        return render(request, self.template_name, context)
 
 
 # This view displays the each action of a product manager does, kinda like logs.

@@ -260,6 +260,12 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse(
+            "challenge_detail",
+            kwargs={"product_slug": self.product.slug, "challenge_id": self.pk},
+        )
+
     def can_delete_challenge(self, person):
         from security.models import ProductRoleAssignment
 
