@@ -51,6 +51,19 @@
                     </p>
                 </div>
 
+                <div class="col-span-4">
+                    <label for="{{ form.reviewer.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.reviewer.label }}</label>
+                    <div class="mt-2">
+                        {{ form.reviewer }}
+                    </div>
+
+                    <!-- TODO: complete selecting a reviewer -->
+                    <p class="text-xs leading-6 text-red-900">
+                        The reviewer functionality is not done yet. It is expected to not work.
+                    </p>
+                </div>
+
                 <div class="col-span-full">
                     <label for="{{ form.reward_type.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ form.reward_type.label }}</label>
