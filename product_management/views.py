@@ -1,4 +1,4 @@
-import logging
+import json
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse
@@ -32,7 +32,16 @@ from .forms import (
     BountyForm,
 )
 from talent.models import BountyClaim
-from .models import Challenge, Product, Initiative, Bounty, Capability, Idea, Expertise
+from .models import (
+    Challenge,
+    Product,
+    Initiative,
+    Bounty,
+    Capability,
+    Idea,
+    Skill,
+    Expertise,
+)
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
@@ -335,6 +344,7 @@ class CreateProductView(LoginRequiredMixin, CreateView):
 
     # TODO: save the image and the documents
     # TODO: move the owner validation to forms
+    # TODO: replace self.request with request
     def post(self, request, *args, **kwargs):
         if self._is_htmx_request(self.request):
             return super().post(request, *args, **kwargs)
@@ -698,14 +708,65 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
     template_name = "product_management/create_bounty.html"
     login_url = "sign-up"
 
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.challenge = form.cleaned_data.get("challenge")
+            skill_id = form.cleaned_data.get("selected_skill_ids")[0]
+            instance.skill = Skill.objects.get(id=skill_id)
+            instance.save()
+
+            instance.expertise.add(
+                *Expertise.objects.filter(
+                    id__in=form.cleaned_data.get("selected_expertise_ids")
+                )
+            )
+            instance.save()
+
+            return redirect("dashboard")
+
+        return super().post(request, *args, **kwargs)
+
 
 class UpdateBountyView(LoginRequiredMixin, UpdateView):
     model = Bounty
+    form_class = BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign-up"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.challenge = form.cleaned_data.get("challenge")
+            skill_id = form.cleaned_data.get("selected_skill_ids")[0]
+            instance.skill = Skill.objects.get(id=skill_id)
+            instance.save()
+
+            instance.expertise.add(
+                *Expertise.objects.filter(
+                    id__in=form.cleaned_data.get("selected_expertise_ids")
+                )
+            )
+            instance.save()
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(self.object.challenge.product.slug, self.object.challenge.id),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
 
 
 class DeleteBountyView(LoginRequiredMixin, DeleteView):
     model = Bounty
-    template_name = "product_management/create_bounty.html"
     login_url = "sign-up"
+    success_url = reverse_lazy("challenges")
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        Bounty.objects.get(pk=self.object.pk).delete()
+        return redirect(self.success_url)

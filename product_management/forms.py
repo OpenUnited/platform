@@ -290,6 +290,66 @@ class ChallengeForm(forms.ModelForm):
 
 
 class BountyForm(forms.ModelForm):
+    challenge = forms.ModelChoiceField(
+        empty_label="Select a challenge",
+        queryset=Challenge.objects.filter(status=Challenge.CHALLENGE_STATUS_AVAILABLE),
+        widget=forms.Select(
+            attrs={
+                "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+            }
+        ),
+    )
+    selected_skill_ids = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={"id": "selected-skills", "name": "selected-skills"}
+        )
+    )
+    selected_expertise_ids = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={"id": "selected-expert", "name": "selected-expert"}
+        )
+    )
+
+    def clean_selected_skill_ids(self):
+        skill_id = self.cleaned_data.get("selected_skill_ids")
+        skill_id = json.loads(skill_id)
+
+        if len(skill_id) != 1:
+            raise ValidationError(_("You must select exactly one skill."))
+
+        return skill_id
+
+    def clean_selected_expertise_ids(self):
+        expertise_ids = self.cleaned_data.get("selected_expertise_ids")
+
+        return json.loads(expertise_ids)
+
     class Meta:
         model = Bounty
-        fields = "__all__"
+        fields = ["points", "status", "is_active"]
+
+        widgets = {
+            "points": forms.NumberInput(
+                attrs={
+                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                }
+            ),
+            "status": forms.Select(
+                attrs={
+                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                }
+            ),
+            "is_active": forms.CheckboxInput(
+                attrs={
+                    "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
+                }
+            ),
+        }
+
+        help_texts = {
+            "is_active": "Display this bounty under the challenge that is created for."
+        }
+
+        labels = {
+            "is_active": "Is Active",
+        }

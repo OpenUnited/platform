@@ -382,7 +382,7 @@ class Bounty(TimeStampMixin):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
-        return f"{self.skill} - {self.expertise} - {self.points} - {self.get_status_display()}"
+        return f"{self.points} - {self.get_status_display()}"
 
 
 class ChallengeDependency(models.Model):
