@@ -35,6 +35,9 @@ from .views import (
     DashboardProductHistoryView,
     DashboardProductChallengeFilterView,
     DashboardProductBountyFilterView,
+    DashboardBountyClaimRequestsView,
+    DashboardBountyClaimsView,
+    DeleteBountyClaimView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -73,6 +76,11 @@ urlpatterns = [
         DeleteBountyView.as_view(),
         name="delete-bounty",
     ),
+    path(
+        "bounty_claim/delete/<int:pk>",
+        DeleteBountyClaimView.as_view(),
+        name="delete-bounty-claim",
+    ),
     path("products/", ProductListView.as_view(), name="products"),
     path("bounty-claim/", BountyClaimView.as_view(), name="bounty-claim"),
     path("product/create", CreateProductView.as_view(), name="create-product"),
@@ -97,6 +105,16 @@ urlpatterns += [
         "dashboard/bounties",
         ManageBountiesView.as_view(),
         name="manage-bounties",
+    ),
+    path(
+        "dashboard/bounties/bounty-requests",
+        DashboardBountyClaimRequestsView.as_view(),
+        name="dashboard-bounty-requests",
+    ),
+    path(
+        "dashboard/bounties/bounty-claims",
+        DashboardBountyClaimsView.as_view(),
+        name="dashboard-bounty-claims",
     ),
     path(
         "dashboard/product/<str:product_slug>/",

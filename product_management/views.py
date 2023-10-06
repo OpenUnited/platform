@@ -314,6 +314,7 @@ class CapabilityDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/capability_detail.html"
 
 
+# TODO: refactor this view
 class BountyClaimView(FormView):
     form_class = BountyClaimForm
     template_name = "product_management/bounty_claim_form.html"
@@ -327,6 +328,7 @@ class BountyClaimView(FormView):
 
     def post(self, request, *args, **kwargs):
         url = request.headers.get("Hx-Current-Url")
+        self.success_url = request.headers.get("Hx-Current-Url")
         if url:
             url = url.split("/")
             challenge_id = url[-1]
@@ -337,8 +339,10 @@ class BountyClaimView(FormView):
                 kind=BountyClaim.CLAIM_TYPE_ACTIVE,
             )
             bounty_claim.save()
+            messages.success(request, "Your bounty claim request is successfully sent!")
 
-        self.success_url = request.headers.get("Hx-Current-Url")
+            return redirect(self.success_url)
+
         return super().post(request, *args, **kwargs)
 
 
@@ -499,7 +503,31 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
 
 
 class ManageBountiesView(DashboardBaseView, TemplateView):
-    template_name = "product_management/dashboard/manage_bounties.html"
+    template_name = "product_management/dashboard/my_bounties.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        person = self.request.user.person
+        queryset = BountyClaim.objects.filter(person=person)
+        context.update({"bounty_claims": queryset})
+        return context
+
+
+class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
+    model = BountyClaim
+    context_object_name = "bounty_claims"
+    template_name = "product_management/dashboard/bounty_claim_requests.html"
+    login_url = "sign_in"
+
+    def get_queryset(self):
+        person = self.request.user.person
+        queryset = BountyClaim.objects.filter(person=person)
+        return queryset
+
+
+class DashboardBountyClaimsView(TemplateView):
+    template_name = "product_management/dashboard/accepted_bounty_claims.html"
 
 
 class DashboardProductDetailView(DashboardBaseView, DetailView):
@@ -785,4 +813,26 @@ class DeleteBountyView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         Bounty.objects.get(pk=self.object.pk).delete()
+        return redirect(self.success_url)
+
+
+class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
+    model = BountyClaim
+    login_url = "sign_in"
+    success_url = reverse_lazy("dashboard-bounty-requests")
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        instance = BountyClaim.objects.get(pk=self.object.pk)
+        if instance.kind == BountyClaim.CLAIM_TYPE_ACTIVE:
+            instance.delete
+            messages.success(request, _("The bounty claim is successfully deleted."))
+        else:
+            messages.error(
+                request,
+                _(
+                    "Only the active claims can be deleted. The bounty claim did not deleted."
+                ),
+            )
+
         return redirect(self.success_url)
