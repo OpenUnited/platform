@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import BadRequest
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -282,7 +282,8 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         challenge = get_object_or_404(Challenge, id=challenge_id)
         bounty = challenge.bounty_set.all().first()
         bounty_claim = BountyClaim.objects.filter(
-            bounty=bounty, kind=BountyClaim.CLAIM_TYPE_DONE
+            bounty=bounty,
+            kind__in=[BountyClaim.CLAIM_TYPE_DONE, BountyClaim.CLAIM_TYPE_ACTIVE],
         ).first()
         bounty_claims = BountyClaim.objects.filter(
             bounty=bounty, person=self.request.user.person
@@ -336,7 +337,7 @@ class BountyClaimView(FormView):
             bounty_claim = BountyClaim(
                 bounty=ch.bounty_set.all().first(),
                 person=request.user.person,
-                kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+                kind=BountyClaim.CLAIM_TYPE_IN_REVIEW,
             )
             bounty_claim.save()
             messages.success(request, "Your bounty claim request is successfully sent!")
@@ -607,8 +608,7 @@ class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
 
 class DashboardProductBountiesView(LoginRequiredMixin, ListView):
     model = Bounty
-    paginate_by = 20
-    context_object_name = "bounties"
+    context_object_name = "bounty_claims"
     template_name = "product_management/dashboard/manage_bounties.html"
 
     def get_context_data(self, **kwargs):
@@ -621,7 +621,9 @@ class DashboardProductBountiesView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=product_slug)
-        queryset = Bounty.objects.filter(challenge__product=product)
+        queryset = BountyClaim.objects.filter(
+            bounty__challenge__product=product, kind=BountyClaim.CLAIM_TYPE_IN_REVIEW
+        )
         return queryset
 
 
@@ -824,7 +826,7 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.kind == BountyClaim.CLAIM_TYPE_ACTIVE:
+        if instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW:
             instance.delete
             messages.success(request, _("The bounty claim is successfully deleted."))
         else:
@@ -836,3 +838,28 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
             )
 
         return redirect(self.success_url)
+
+
+def bounty_claim_actions(request, pk):
+    instance = BountyClaim.objects.get(pk=pk)
+    action_type = request.GET.get("action")
+    if action_type == "accept":
+        instance.kind = BountyClaim.CLAIM_TYPE_ACTIVE
+
+        # If one claim is accepted for a particular challenge, the other claims automatically fails.
+        challenge = instance.bounty.challenge
+        _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(
+            kind=BountyClaim.CLAIM_TYPE_FAILED
+        )
+    elif action_type == "reject":
+        instance.kind = BountyClaim.CLAIM_TYPE_FAILED
+    else:
+        raise BadRequest()
+
+    instance.save()
+
+    return redirect(
+        reverse(
+            "dashboard-product-bounties", args=(instance.bounty.challenge.product.slug,)
+        )
+    )
