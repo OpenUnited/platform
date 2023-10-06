@@ -284,6 +284,9 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         bounty_claim = BountyClaim.objects.filter(
             bounty=bounty, kind=BountyClaim.CLAIM_TYPE_DONE
         ).first()
+        bounty_claims = BountyClaim.objects.filter(
+            bounty=bounty, person=self.request.user.person
+        )
 
         context.update(
             {
@@ -291,6 +294,7 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
                 "bounty": bounty,
                 "bounty_claim_form": BountyClaimForm(),
                 "bounty_claim": bounty_claim,
+                "current_user_created_claim_request": bounty_claims.count() > 0,
             }
         )
 
@@ -328,7 +332,9 @@ class BountyClaimView(FormView):
             challenge_id = url[-1]
             ch = Challenge.objects.get(id=challenge_id)
             bounty_claim = BountyClaim(
-                bounty=ch.bounty_set.all().first(), person=request.user.person
+                bounty=ch.bounty_set.all().first(),
+                person=request.user.person,
+                kind=BountyClaim.CLAIM_TYPE_ACTIVE,
             )
             bounty_claim.save()
 
@@ -716,7 +722,8 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.challenge = form.cleaned_data.get("challenge")
+            challenge = form.cleaned_data.get("challenge")
+            instance.challenge = challenge
             skill_id = form.cleaned_data.get("selected_skill_ids")[0]
             instance.skill = Skill.objects.get(id=skill_id)
             instance.save()
@@ -728,7 +735,12 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
             )
             instance.save()
 
-            return redirect("dashboard")
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(challenge.product.slug, challenge.pk),
+            )
+
+            return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
 

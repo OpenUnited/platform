@@ -288,6 +288,9 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
         return True
 
+    def has_bounty(self):
+        return self.bounty_set.count() > 0
+
     def get_bounty_points(self):
         total = 0
         queryset = self.bounty_set.all()
