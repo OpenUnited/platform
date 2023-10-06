@@ -281,19 +281,23 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         challenge_id = context.get("challenge_id")
         challenge = get_object_or_404(Challenge, id=challenge_id)
         bounty = challenge.bounty_set.all().first()
-        bounty_claim = (
-            BountyClaim.objects.filter(bounty=bounty)
-            .exclude(kind=BountyClaim.CLAIM_TYPE_FAILED)
-            .first()
-        )
+        bounty_claim = BountyClaim.objects.filter(
+            bounty=bounty, kind=BountyClaim.CLAIM_TYPE_DONE
+        ).first()
 
         context.update(
             {
                 "challenge": challenge,
+                "bounty": bounty,
                 "bounty_claim_form": BountyClaimForm(),
                 "bounty_claim": bounty_claim,
             }
         )
+
+        if bounty_claim:
+            context.update({"is_claimed": True, "claimed_by": bounty_claim.person})
+        else:
+            context.update({"is_claimed": False})
 
         return context
 
