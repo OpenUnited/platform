@@ -359,9 +359,8 @@ class CreateProductView(LoginRequiredMixin, CreateView):
 
     # TODO: save the image and the documents
     # TODO: move the owner validation to forms
-    # TODO: replace self.request with request
     def post(self, request, *args, **kwargs):
-        if self._is_htmx_request(self.request):
+        if self._is_htmx_request(request):
             return super().post(request, *args, **kwargs)
 
         form = self.form_class(request.POST, request.FILES)
