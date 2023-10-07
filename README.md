@@ -52,7 +52,7 @@ export DJANGO_SETTINGS_MODULE=openunited.settings.development
 
 Note: above you ran `export DJANGO_SETTINGS_MODULE=openunited.settings.development`
 
-This is using the development `openunited/settings/development.py`
+This is using the development settings in `openunited/settings/development.py`
 
 You can also create a `local.py` in `openunited/settings` and import `base.py` or `development.py` as you wish. If you want, you can use `development.py` as well.
 
