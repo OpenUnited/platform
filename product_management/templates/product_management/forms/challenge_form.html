@@ -1,5 +1,6 @@
 <form method="post">
     {% csrf_token %}
+    <!-- TODO: add a dropdown to select the reviewer -->
     <div class="space-y-12">
         <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
             <div>
@@ -48,6 +49,12 @@
                         Don't have product. <a class="font-semibold" href="{{ url('create-product') }}">Create
                             one.</a>
                     </p>
+                </div>
+
+                <div class="col-span-3">
+                    <label for="{{ form.status.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ form.status.label }}</label>
+                    {{ form.status }}
                 </div>
 
                 <div class="col-span-full">

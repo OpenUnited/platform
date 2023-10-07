@@ -3,6 +3,7 @@ from datetime import date
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -73,6 +74,9 @@ class Person(TimeStampMixin):
         from product_management.models import Product
 
         return Product.objects.none()
+
+    def get_absolute_url(self):
+        return reverse("portfolio", args=(self.user.username,))
 
     def delete_photo(self) -> None:
         path = self.photo.path

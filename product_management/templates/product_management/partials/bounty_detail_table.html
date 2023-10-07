@@ -1,61 +1,66 @@
 {% if challenge.bounty_set.all() %}
-<div class="mb-2.5 font-medium text-sm text-black/[0.85]">Bounty:</div>
-<div class="flex flex-col w-full overflow-x-auto pb-3">
-    <div class="min-w-[440px] flex flex-col">
-        <div class="flex flex-col">
-            <div class="flex items-center grow">
-                <div
-                    class="w-[30%] min-w-[30%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    Skill</div>
-                <div
-                    class="w-[30%] min-w-[30%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    Expertise</div>
-                <div
-                    class="w-[15%] min-w-[15%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    Points</div>
-                {% if bounty_claim %}
-                <div
-                    class="w-[25%] min-w-[25%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    Claimed By</div>
-                {% else %}
-                <div
-                    class="w-[25%] min-w-[25%] bg-gray-50 font-medium border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    Action</div>
-                {% endif %}
-            </div>
-            {% for bounty in bounties %}
-            <div class="flex items-center grow">
-                <div
-                    class="h-[54px] flex items-center w-[30%] min-w-[30%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+<div class="mb-2.5 font-medium text-sm text-black/[0.85]">Bounty</div>
+
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Skill
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Expertise
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Points
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Claimed
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bounty in challenge.bounty_set.all() %}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{ bounty.skill }}
-                </div>
-                <div
-                    class="h-[54px] flex items-center w-[30%] min-w-[30%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                </th>
+                <td class="px-6 py-4">
                     {{ bounty.get_expertise_as_str() }}
-                </div>
-                <div
-                    class="h-[54px] flex items-center w-[15%] min-w-[15%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    {{ challenge.get_bounty_points() }}
-                </div>
-                {% if bounty_claim %}
-                <div
-                    class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
-                    {{ bounty_claim.person.get_full_name() }}
-                </div>
-                {% else %}
-                <div
-                    class="h-[54px] flex items-center w-[25%] min-w-[25%] border-b border-solid border-gray-300 whitespace-nowrap py-2.5 pl-3 pr-2 text-sm text-gray-900">
+                </td>
+                <td class="px-6 py-4">
+                    {{ bounty.points }}
+                </td>
+                <td class="px-6 py-4">
+                    {% if is_claimed %}
+                        Assigned to <a href={{ claimed_by.get_absolute_url() }} class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{ claimed_by }}</a>
+                    {% elif current_user_created_claim_request %}
+                    <p>You have created a claim request for this bounty.</p>
+                    {% else %}
                     <button type="button" hx-get="{{ url('bounty-claim') }}" hx-target="#bounty-claim-modal"
                         hx-swap="innerHTML" name="claim-button" value="claim-button"
                         class="appearance-none w-fit flex items-center justify-center rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/[0.85] transition-all">
                         Claim
                     </button>
-                </div>
-                {% endif %}
-            </div>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex">
+                        <a href="{{ url('update-bounty', args=(bounty.id,)) }}"
+                            class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Edit</a>
+                        <a hx-get="{{ url('delete-bounty', args=(bounty.id,)) }}"
+                            hx-confirm="Are you sure to delete this bounty?"
+                            class="cursor-pointer font-medium text-red-600 hover:underline">Delete</a>
+                    </div>
+                </td>
+            </tr>
             {% endfor %}
-        </div>
-    </div>
+        </tbody>
+    </table>
+</div>
 </div>
 {% else %}
 <p class="text-lg text-bold text-red-700">This challenge has no bounty associated with it.</p>

@@ -260,6 +260,12 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse(
+            "challenge_detail",
+            kwargs={"product_slug": self.product.slug, "challenge_id": self.pk},
+        )
+
     def can_delete_challenge(self, person):
         from security.models import ProductRoleAssignment
 
@@ -281,6 +287,9 @@ class Challenge(TimeStampMixin, UUIDMixin):
             return False
 
         return True
+
+    def has_bounty(self):
+        return self.bounty_set.count() > 0
 
     def get_bounty_points(self):
         total = 0
@@ -376,7 +385,7 @@ class Bounty(TimeStampMixin):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
-        return f"{self.skill} - {self.expertise} - {self.points} - {self.get_status_display()}"
+        return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points} - {self.get_status_display()}"
 
 
 class ChallengeDependency(models.Model):

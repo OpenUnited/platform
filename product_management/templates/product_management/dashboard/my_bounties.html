@@ -1,0 +1,23 @@
+<div class="mt-5 px-4 sm:px-6 lg:px-8">
+    <div class="border-b border-gray-200">
+        <nav _="on click from <a/> in me
+                            remove .border-indigo-500 .text-indigo-600 from <a/> in me
+                            add .border-transparent .text-gray-500 .hover:border-gray-300 .hover:text-gray-700 to <a/> in me
+                            tell the target
+                                add .border-indigo-500 .text-indigo-600
+                                remove .hover:border-gray-300 .hover:text-gray-700"
+            class="-mb-px flex space-x-8 border-b-4">
+            <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+            <a hx-get="{{ url('dashboard-bounty-requests') }}" hx-swap="innerHTML" hx-target="#manage-bounties-tabs"
+                class="cursor-pointer border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                aria-current="page">Bounty Claim Requests</a>
+            <a hx-get="{{ url('dashboard-bounty-claims') }}" hx-swap="innerHTML" hx-target="#manage-bounties-tabs"
+                class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700
+        whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">Accepted Bounty Claims</a>
+        </nav>
+    </div>
+
+    <div id="manage-bounties-tabs" class="mt-2 mb-4">
+        {% include 'product_management/dashboard/bounty_claim_requests.html' %}
+    </div>
+</div>

@@ -34,6 +34,11 @@ from .views import (
     DashboardProductBountiesView,
     DashboardProductHistoryView,
     DashboardProductChallengeFilterView,
+    DashboardProductBountyFilterView,
+    DashboardBountyClaimRequestsView,
+    DashboardBountyClaimsView,
+    DeleteBountyClaimView,
+    bounty_claim_actions,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -72,6 +77,11 @@ urlpatterns = [
         DeleteBountyView.as_view(),
         name="delete-bounty",
     ),
+    path(
+        "bounty_claim/delete/<int:pk>",
+        DeleteBountyClaimView.as_view(),
+        name="delete-bounty-claim",
+    ),
     path("products/", ProductListView.as_view(), name="products"),
     path("bounty-claim/", BountyClaimView.as_view(), name="bounty-claim"),
     path("product/create", CreateProductView.as_view(), name="create-product"),
@@ -98,6 +108,16 @@ urlpatterns += [
         name="manage-bounties",
     ),
     path(
+        "dashboard/bounties/bounty-requests",
+        DashboardBountyClaimRequestsView.as_view(),
+        name="dashboard-bounty-requests",
+    ),
+    path(
+        "dashboard/bounties/bounty-claims",
+        DashboardBountyClaimsView.as_view(),
+        name="dashboard-bounty-claims",
+    ),
+    path(
         "dashboard/product/<str:product_slug>/",
         DashboardProductDetailView.as_view(),
         name="dashboard-product-detail",
@@ -116,6 +136,16 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/bounties/",
         DashboardProductBountiesView.as_view(),
         name="dashboard-product-bounties",
+    ),
+    path(
+        "dashboard/bounties/action/<int:pk>/",
+        bounty_claim_actions,
+        name="dashboard-bounties-action",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/bounties/filter/",
+        DashboardProductBountyFilterView.as_view(),
+        name="dashboard-product-bounty-filter",
     ),
     path(
         "dashboard/product/<str:product_slug>/history/",
