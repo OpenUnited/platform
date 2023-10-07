@@ -84,7 +84,11 @@ class SignInView(TemplateView):
             # TODO: create SignInAttempt for the both cases
             if user is not None:
                 login(request, user)
-                return redirect("home")
+                next_url = request.GET.get("next")
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect("home")
             else:
                 user_obj.update_failed_login_budget_and_check_reset()
                 form.add_error(None, _("Username or password is not correct"))

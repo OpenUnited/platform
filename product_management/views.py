@@ -191,7 +191,7 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
 # After he signs in, we should redirect him with the help of redirect_field_name attribute
 # See for more detail: https://docs.djangoproject.com/en/4.2/topics/auth/default/
 class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
-    login_url = "sign-up"
+    login_url = "sign_in"
     template_name = "product_management/add_product_idea.html"
     form_class = IdeaForm
 
@@ -213,7 +213,7 @@ class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
 
 
 class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
-    login_url = "sign-up"
+    login_url = "sign_in"
     template_name = "product_management/update_product_idea.html"
     model = Idea
     form_class = IdeaForm
@@ -351,7 +351,7 @@ class CreateProductView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = "product_management/create_product.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def _is_htmx_request(self, request):
         htmx_header = request.headers.get("Hx-Request", None)
@@ -407,7 +407,7 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "product_management/update_product.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -431,7 +431,7 @@ class CreateOrganisationView(
     form_class = OrganisationForm
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy("create-product")
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def post(self, request, *args, **kwargs):
         if self._is_htmx_request(self.request):
@@ -452,7 +452,7 @@ class CreateChallengeView(
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -682,7 +682,7 @@ class UpdateChallengeView(
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/update_challenge.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -717,7 +717,7 @@ class UpdateChallengeView(
 class DeleteChallengeView(LoginRequiredMixin, DeleteView):
     model = Challenge
     template_name = "product_management/delete_challenge.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
     success_url = reverse_lazy("challenges")
 
     def get(self, request, *args, **kwargs):
@@ -746,7 +746,7 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/create_bounty.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -779,7 +779,7 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/create_bounty.html"
-    login_url = "sign-up"
+    login_url = "sign_in"
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -809,7 +809,7 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
 
 class DeleteBountyView(LoginRequiredMixin, DeleteView):
     model = Bounty
-    login_url = "sign-up"
+    login_url = "sign_in"
     success_url = reverse_lazy("challenges")
 
     def get(self, request, *args, **kwargs):
