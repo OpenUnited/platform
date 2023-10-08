@@ -38,21 +38,20 @@ cp .env.example .env
 
 You must set `DJANGO_SECRET_KEY` in order to start working on the project. You can generate the secret key on [this website](https://djecrety.ir/).
 
-Fork this repo, then depending on your local environment, do something like the following with "OpenUnited" changed for your own GitHub username.
+Fork this repo, then assuming you set `DJANGO_SECRET_KEY` already in the `.env` file, do something like the following:
 
 ```
-git clone git@github.com:OpenUnited/platform.git
+git clone git@github.com:<your-username>/platform.git
 cd platform
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=openunited.settings.development
-export DJANGO_SECRET_KEY=<secret key you made>
 ./setup.sh
 ```
-You should also set the DJANGO_SETTINGS_MODULE and DJANGO_SECRET_KEY environment variables in your bash profile or similar, so that they are available to you in the future.
+as above, you should set the DJANGO_SETTINGS_MODULE and DJANGO_SECRET_KEY in the right places, so that they are available to you in the future.
 
-Note: above you ran `export DJANGO_SETTINGS_MODULE=openunited.settings.development`
+Note regarding settings: above you ran `export DJANGO_SETTINGS_MODULE=openunited.settings.development`
 This is using the development settings in `openunited/settings/development.py`
 
 You can also create a `local.py` in `openunited/settings` and import `base.py` or `development.py` as you wish. If you want, you can use `development.py` as well.
