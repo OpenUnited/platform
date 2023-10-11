@@ -59,7 +59,7 @@ You can also create a `local.py` in `openunited/settings` and import `base.py` o
 Create an environment variable:
 
 ```
-export DJANGO_SETTINGS_MODULE=opeunited.settings.<name_of_your_file>
+export DJANGO_SETTINGS_MODULE=openunited.settings.<name_of_your_file>
 
 Example:
 
