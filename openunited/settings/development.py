@@ -6,10 +6,7 @@ DEBUG = True
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-]
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 TEMPLATES[0]["OPTIONS"]["auto_reload"] = DEBUG
 
