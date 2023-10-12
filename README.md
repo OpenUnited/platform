@@ -59,11 +59,11 @@ You can also create a `local.py` in `openunited/settings` and import `base.py` o
 Create an environment variable:
 
 ```
-export DJANGO_SETTINGS_MODULE=opeunited.settings.<name_of_your_file>
+export DJANGO_SETTINGS_MODULE=openunited.settings.<name_of_your_file>
 
 Example:
 
-export DJANGO_SETTINGS_MODULE=opeunited.settings.local`
+export DJANGO_SETTINGS_MODULE=openunited.settings.local
 ```
 
 It is advised to put this line into your bash configuration.
@@ -79,13 +79,16 @@ Then navigate to: [http://localhost:8000/](http://localhost:8000/) in your brows
 
 Not working? Please check [the Django docs](https://docs.djangoproject.com/en/4.2/intro/tutorial01/) and make sure you have [PostgreSQL installed](https://www.google.com/search?q=how+to+install+postgresql)
 
-### Running the platform locally using docker
+### Running the platform locally using docker & docker compose
 
 Make sure you have docker install on your machine.
 
-```
+```bash
 cp .env.example .env
 cp docker.env.example docker.env
+
+# create a network named as platform_default
+docker network create platform_default
 
 # Change them as you need
 
