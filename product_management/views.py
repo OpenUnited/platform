@@ -497,9 +497,29 @@ class DashboardBaseView(LoginRequiredMixin):
 class DashboardView(DashboardBaseView, TemplateView):
     template_name = "product_management/dashboard.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        person = context.get("person")
+        active_bounty_claims = BountyClaim.objects.filter(
+            person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+        context.update({"active_bounty_claims": active_bounty_claims})
+        return context
+
 
 class DashboardHomeView(DashboardBaseView, TemplateView):
     template_name = "product_management/dashboard/dashboard_home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        person = context.get("person")
+        active_bounty_claims = BountyClaim.objects.filter(
+            person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+        context.update({"active_bounty_claims": active_bounty_claims})
+        return context
 
 
 class ManageBountiesView(DashboardBaseView, TemplateView):

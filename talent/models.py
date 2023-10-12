@@ -276,6 +276,9 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     def get_challenge_detail_url(self):
         return self.bounty.challenge.get_absolute_url()
 
+    def get_product_detail_url(self):
+        return self.bounty.challenge.product.get_absolute_url()
+
     def __str__(self):
         return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
 
