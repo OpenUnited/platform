@@ -16,6 +16,9 @@ class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
     slug = models.SlugField(unique=True)
     is_private = models.BooleanField(default=False)
 
+    def get_initials_of_name(self):
+        return "".join([word[0] for word in self.name.split()])
+
     @hook(BEFORE_CREATE)
     @hook(BEFORE_SAVE, when="name", has_changed=True)
     def update_slug(self, *args, **kwargs):

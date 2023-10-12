@@ -71,9 +71,7 @@ class Person(TimeStampMixin):
         return image_url, requires_upload
 
     def get_products(self):
-        from product_management.models import Product
-
-        return Product.objects.none()
+        return self.products.all()
 
     def get_absolute_url(self):
         return reverse("portfolio", args=(self.user.username,))
