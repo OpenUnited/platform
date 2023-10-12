@@ -13,11 +13,20 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 
 from utility.utils import get_path_from_url
-from .models import Person, Skill, Expertise, PersonSkill, BountyClaim, Feedback
+from .models import (
+    Person,
+    Skill,
+    Expertise,
+    PersonSkill,
+    BountyClaim,
+    Feedback,
+    BountyDeliveryAttempt,
+)
 from product_management.models import Challenge
 from .forms import (
     PersonProfileForm,
     FeedbackForm,
+    BountyDeliveryAttemptForm,
 )
 from .services import FeedbackService
 
@@ -356,3 +365,10 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
             return HttpResponseRedirect(self.get_success_url())
         except ObjectDoesNotExist:
             return super().post(request, *args, **kwargs)
+
+
+class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
+    model = BountyDeliveryAttempt
+    form_class = BountyDeliveryAttemptForm
+    template_name = "talent/bounty_claim_attempt.html"
+    login_url = "sign_in"
