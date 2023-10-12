@@ -71,9 +71,7 @@ class Person(TimeStampMixin):
         return image_url, requires_upload
 
     def get_products(self):
-        from product_management.models import Product
-
-        return Product.objects.none()
+        return self.products.all()
 
     def get_absolute_url(self):
         return reverse("portfolio", args=(self.user.username,))
@@ -275,6 +273,12 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     expected_finish_date = models.DateField(default=date.today)
     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
+    def get_challenge_detail_url(self):
+        return self.bounty.challenge.get_absolute_url()
+
+    def get_product_detail_url(self):
+        return self.bounty.challenge.product.get_absolute_url()
+
     def __str__(self):
         return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
 
@@ -321,57 +325,12 @@ class BountyDeliveryAttempt(TimeStampMixin):
     bounty_claim = models.ForeignKey(
         BountyClaim,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
         related_name="delivery_attempt",
     )
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     is_canceled = models.BooleanField(default=False)
     delivery_message = models.CharField(max_length=2000, default=None)
-
-
-class BountyDeliveryAttachment(models.Model):
-    bounty_delivery_attempt = models.ForeignKey(
-        BountyDeliveryAttempt, on_delete=models.CASCADE, related_name="attachments"
-    )
-    file_type = models.CharField(max_length=20)
-    name = models.CharField(max_length=100)
-    path = models.CharField(max_length=100)
-
-
-@receiver(post_save, sender=BountyDeliveryAttempt)
-def save_bounty_claim_request(sender, instance, created, **kwargs):
-    bounty_claim = instance.bounty_claim
-    contributor = instance.person
-    contributor_id = contributor.id
-    reviewer = getattr(bounty_claim.bounty.challenge, "reviewer", None)
-    reviewer_user = reviewer.user if reviewer else None
-
-    # contributor request to claim it
-    if created and not bounty_claim.bounty.challenge.auto_approve_task_claims:
-        subject = f"A new bounty delivery attempt has been created"
-        message = f'A new bounty delivery attempt has been created for the challenge: "{bounty_claim.bounty.challenge.title}"'
-
-        if reviewer:
-            engagement.tasks.send_notification.delay(
-                [Notification.Type.EMAIL],
-                Notification.EventType.BOUNTY_DELIVERY_ATTEMPT_CREATED,
-                receivers=[reviewer.id],
-                task_title=bounty_claim.bounty.challenge.title,
-            )
-    if not created:
-        # contributor quits the task
-        if instance.is_canceled and not instance.tracker.previous("is_canceled"):
-            subject = f"The contributor left the task"
-            message = f'The contributor has left the task "{bounty_claim.bounty.challenge.title}"'
-
-            if reviewer:
-                engagement.tasks.send_notification.delay(
-                    [Notification.Type.EMAIL],
-                    Notification.EventType.CONTRIBUTOR_LEFT_TASK,
-                    receivers=[reviewer.id],
-                    task_title=bounty_claim.bounty.challenge.title,
-                )
+    attachment = models.FileField("bounty_delivery_attempts/", blank=True, null=True)
 
 
 class Feedback(models.Model):

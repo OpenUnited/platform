@@ -1,5 +1,6 @@
 from django_lifecycle import LifecycleModelMixin, hook, BEFORE_CREATE, BEFORE_SAVE
 from django.db import models
+from django.urls import reverse
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from django.utils.text import slugify
 
@@ -15,6 +16,12 @@ class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
     video_url = models.URLField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     is_private = models.BooleanField(default=False)
+
+    def get_initials_of_name(self):
+        return "".join([word[0] for word in self.name.split()])
+
+    def get_absolute_url(self):
+        return reverse("product_detail", args=(self.slug,))
 
     @hook(BEFORE_CREATE)
     @hook(BEFORE_SAVE, when="name", has_changed=True)

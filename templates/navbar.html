@@ -25,37 +25,61 @@
     <div class="hidden lg:flex lg:items-center lg:justify-end lg:gap-x-5 relative z-[2] ml-auto">
         {% if request.user.is_authenticated %}
         {% set person = request.user.person %}
-        <div>
-            <button type="button"
-                class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                id="user-menu-button" aria-expanded="false" aria-haspopup="true"
-                _="on click toggle .hidden on #user-menu end on blur wait 100ms then add .hidden to #user-menu end">
-                {% set photo_url, _ = person.get_photo_url() %}
-                <img class="h-8 w-8 rounded-full" src="{{ photo_url }}" alt="Profile Picture">
-            </button>
-            <div class="relative ml-3">
-                <div id="user-menu"
-                    class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                    <a href="{{ url('dashboard') }}"
-                        class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1">
-                        Dashboard
-                    </a>
+        <div class="relative inline-block px-3 text-left">
+            <div>
+                <button type="button" _="on click toggle .hidden on #navbar-dropdown-menu end" class=" group w-full rounded-md px-3.5 py-2 text-left text-sm font-medium
+                            text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500
+                            focus:ring-offset-2 focus:ring-offset-gray-100" id="navbar-menu-button"
+                    aria-expanded="false" aria-haspopup="true">
+                    <span class="flex w-full items-center justify-between">
+                        <span class="flex min-w-0 items-center justify-between space-x-3">
+                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ photo_url }}"
+                                alt="Profile Picture">
+                            <span class="flex min-w-0 flex-1 flex-col">
+                                <span
+                                    class="truncate text-sm font-medium text-gray-900">{{ person.get_full_name() }}</span>
+                                <span class="truncate text-sm text-gray-500">@{{ person.get_username() }}</span>
+                            </span>
+                        </span>
+                        <svg class="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20"
+                            fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+
+            <div _="on mouseenter from <a/> in me
+                                remove .text-gray-700 from <a/> in me
+                                tell the target
+                                    add .bg-gray-100 .text-gray-900
+                            end
+                            on mouseleave from <a/> in me
+                                remove .bg-gray-100 .text-gray-900 from <a/> in me
+                                tell the target
+                                    add .text-gray-700
+                            end" id="navbar-dropdown-menu" class="hidden absolute left-0 right-0 z-10 mx-3 mt-1 origin-top
+                        divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5
+                        focus:outline-none" role="menu" aria-orientation="vertical"
+                aria-labelledby="navbar-menu-button" tabindex="-1">
+                <div class="py-1" role="none">
+                    <a href="{{ url('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                        tabindex="-1" id="options-menu-item-0">Dashboard</a>
                     <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
-                        class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1">
-                        Your Profile
-                    </a>
+                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                        id="options-menu-item-1">Your Profile</a>
                     <a href="{{ url('portfolio', args=(request.user.username,) ) }}"
-                        class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1">
-                        Visit Portfolio
-                    </a>
+                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                        id="options-menu-item-2">Visit Portfolio</a>
+                </div>
+                <div class="py-1" role="none">
+                    <a href="{{ url('log_out') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                        tabindex="-1" id="options-menu-item-5">Logout</a>
                 </div>
             </div>
         </div>
-        <a href="{{ url('log_out') }}"
-            class="text-sm font-semibold leading-6 transition-all delay-600 rounded bg-indigo-600 px-3.5 py-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            Log out
-        </a>
         {% else %}
         <a href="{{ url('sign_in') }}" class="text-sm font-semibold leading-6 text-gray-900">Sign in <span
                 aria-hidden="true">&rarr;</span></a>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
@@ -51,7 +52,9 @@ class SignUpWizard(SessionWizardView):
         sign_up_req_id = self.initial_dict.get("1").get(SIGN_UP_REQUEST_ID)
         SignUpRequestService.create_from_steps_form(form_list, sign_up_req_id)
 
-        return redirect("sign_in")
+        return redirect(
+            reverse("sign_in") + f"?next={self.request.GET.get('next', '')}"
+        )
 
 
 class SignInView(TemplateView):
@@ -60,8 +63,8 @@ class SignInView(TemplateView):
     template_name = "security/sign_in/sign_in.html"
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class(initial=self.initial)
-        return render(request, self.template_name, {"form": form})
+        context = {"form": self.form_class(), "next": request.GET.get("next", "")}
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -84,7 +87,11 @@ class SignInView(TemplateView):
             # TODO: create SignInAttempt for the both cases
             if user is not None:
                 login(request, user)
-                return redirect("home")
+                next_url = request.GET.get("next")
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect("home")
             else:
                 user_obj.update_failed_login_budget_and_check_reset()
                 form.add_error(None, _("Username or password is not correct"))
