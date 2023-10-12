@@ -32,7 +32,6 @@ from .views import (
     DashboardProductDetailView,
     DashboardProductChallengesView,
     DashboardProductBountiesView,
-    DashboardProductHistoryView,
     DashboardProductChallengeFilterView,
     DashboardProductBountyFilterView,
     DashboardBountyClaimRequestsView,
@@ -146,11 +145,6 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/bounties/filter/",
         DashboardProductBountyFilterView.as_view(),
         name="dashboard-product-bounty-filter",
-    ),
-    path(
-        "dashboard/product/<str:product_slug>/history/",
-        DashboardProductHistoryView.as_view(),
-        name="dashboard-product-history",
     ),
 ]
 

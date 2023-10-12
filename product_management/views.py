@@ -696,12 +696,6 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-# This view displays the each action of a product manager does, kinda like logs.
-# TODO: change this view with ListView after History model is created
-class DashboardProductHistoryView(LoginRequiredMixin, TemplateView):
-    template_name = "product_management/dashboard/action_history.html"
-
-
 class UpdateChallengeView(
     LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
 ):
