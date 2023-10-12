@@ -275,6 +275,9 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     expected_finish_date = models.DateField(default=date.today)
     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
+    def get_challenge_detail_url(self):
+        return self.bounty.challenge.get_absolute_url()
+
     def __str__(self):
         return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
 

@@ -540,13 +540,18 @@ class DashboardProductDetailView(DashboardBaseView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({"challenges": Challenge.objects.filter(product=self.object)})
+        context.update(
+            {
+                "challenges": Challenge.objects.filter(product=self.object).order_by(
+                    "-created_at"
+                )
+            }
+        )
         return context
 
 
 class DashboardProductChallengesView(LoginRequiredMixin, ListView):
     model = Challenge
-    paginate_by = 20
     context_object_name = "challenges"
     login_url = "sign_in"
     template_name = "product_management/dashboard/manage_challenges.html"
@@ -560,7 +565,9 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        queryset = Challenge.objects.filter(product__slug=product_slug)
+        queryset = Challenge.objects.filter(product__slug=product_slug).order_by(
+            "-created_at"
+        )
         return queryset
 
 

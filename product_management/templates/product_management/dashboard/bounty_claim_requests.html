@@ -32,7 +32,9 @@
                     <tbody class="divide-y divide-gray-200 bg-white">
                         {% for bounty_claim in bounty_claims %}
                         <tr>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ bounty_claim.bounty }}
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a
+                                    href="{{ bounty_claim.get_challenge_detail_url() }}" class="cursor-pointer font-medium text-blue-600 mr-4
+                                    hover:underline">{{ bounty_claim.bounty }}</a>
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                 {{ bounty_claim.expected_finish_date|date }}
