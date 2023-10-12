@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from .models import Person, Feedback, BountyDeliveryAttempt
+from .models import Person, Feedback, BountyClaim, BountyDeliveryAttempt
 
 
 def _get_text_input_class():
@@ -168,6 +168,22 @@ class FeedbackForm(forms.ModelForm):
 
 
 class BountyDeliveryAttemptForm(forms.ModelForm):
+    bounty_claim = forms.ModelChoiceField(
+        empty_label="Select a Bounty Claim",
+        queryset=BountyClaim.objects.filter(kind=BountyClaim.CLAIM_TYPE_ACTIVE),
+        label="Bounty Claim",
+        widget=forms.Select(
+            attrs={
+                "class": "mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6",
+            }
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        # todo: get id from the previous view
+        # if there is a id, init bounty_claim with it, if not, pass an empty value
+        pass
+
     class Meta:
         model = BountyDeliveryAttempt
         fields = [
@@ -177,11 +193,6 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
         ]
 
         widgets = {
-            "bounty_claim": forms.Select(
-                attrs={
-                    "class": "mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                }
-            ),
             "delivery_message": forms.Textarea(
                 attrs={
                     "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",

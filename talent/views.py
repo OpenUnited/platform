@@ -1,13 +1,14 @@
 import json
+from typing import Any
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
@@ -370,5 +371,18 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
 class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
     model = BountyDeliveryAttempt
     form_class = BountyDeliveryAttemptForm
+    success_url = reverse_lazy("dashboard")
     template_name = "talent/bounty_claim_attempt.html"
     login_url = "sign_in"
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.person = request.user.person
+            instance.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
+            instance.save()
+
+            return HttpResponseRedirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
