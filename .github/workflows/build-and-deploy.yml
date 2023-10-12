@@ -17,6 +17,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag registry.digitalocean.com/openunited/core:$(date +%s) --tag registry.digitalocean.com/openunited/core:latest
+    - name: Login to registry
+      shell: bash
+      run: doctl registry login --expiry-seconds 600
     - name: Push to DigitalOcean
       run: docker push -a registry.digitalocean.com/openunited/core
     
