@@ -325,11 +325,9 @@ class BountyDeliveryAttempt(TimeStampMixin):
     bounty_claim = models.ForeignKey(
         BountyClaim,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
         related_name="delivery_attempt",
     )
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     is_canceled = models.BooleanField(default=False)
     delivery_message = models.CharField(max_length=2000, default=None)
 
