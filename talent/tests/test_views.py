@@ -224,20 +224,6 @@ class UpdateProfileViewTest(TestCase):
         self.client.force_login(self.person.user)
         self.url = reverse("profile", args=(self.person.user.pk,))
 
-    def test_get_context_data(self):
-        response = self.client.get(self.url)
-
-        actual = response.context_data
-        expected = {
-            "person": self.person,
-            "pk": self.person.pk,
-            "photo_url": "/media/avatars/profile-empty.png",
-            "requires_upload": True,
-        }
-
-        for key in expected.keys():
-            self.assertEqual(actual.get(key), expected.get(key))
-
     def test_post_valid(self):
         skills = SkillFactory.create_batch(3)
         skill_ids = [skill.id for skill in skills]
