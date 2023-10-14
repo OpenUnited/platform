@@ -1,0 +1,30 @@
+name: Deploy to Production
+
+on:
+  - workflow_dispatch
+
+env:
+  STAGING_ID: 0fe572eb-1984-47e3-aabd-d1056b014486
+  PRODUCTION_ID: c3364f4f-1d34-4b31-ac49-da9782159a7e
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - uses: actions/setup-python@v4
+    - run: pip install yq
+    - name: Fetch staging spec file
+      run: doctl apps spec get $STAGING_ID > staging.yaml
+    - name: Fetch production spec file
+      run: doctl apps spec get $PRODUCTION_ID > production.yaml
+    - name: Update image tag
+      run: |
+        export TAG="$(python -m yq .services[0].image.tag staging.yaml)"
+        echo "Updating production image tag to $TAG"
+        python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[0].image.tag = $TAG' production.yaml
+    - name: Update the environment
+      run: doctl apps update $PRODUCTION_ID --spec production.yaml
