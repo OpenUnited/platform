@@ -23,7 +23,7 @@ jobs:
       run: doctl apps spec get $PRODUCTION_ID > production.yaml
     - name: Update image tag
       run: |
-        export TAG="$(python -m yq .services[0].image.tag staging.yaml)"
+        export TAG="$(python -m yq -r .services[0].image.tag staging.yaml)"
         echo "Updating production image tag to $TAG"
         python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[0].image.tag = $TAG' production.yaml
     - name: Update the environment
