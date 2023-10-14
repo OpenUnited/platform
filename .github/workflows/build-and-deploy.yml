@@ -1,13 +1,11 @@
-name: Docker Image CI
+name: Deploy to Staging
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - name: Install doctl
