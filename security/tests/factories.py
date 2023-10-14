@@ -19,9 +19,6 @@ class UserFactory(DjangoModelFactory):
         model = User
 
 
-# Due to a circular import, we cannot declare a person field.
-# Person should be passed during the initialization of the object:
-# ProductRoleAssignmentFactory(person=person)
 class ProductRoleAssignmentFactory(DjangoModelFactory):
     person = SubFactory(PersonFactory)
     product = SubFactory(OwnedProductFactory)
