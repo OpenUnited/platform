@@ -1,0 +1,14 @@
+{% extends 'base_html.html' %}
+
+{% block header %}
+{% include 'header_without_discord.html' %}
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+<script type="module" src="{{ static('scripts/main.js') }}"></script>
+{% endblock %}
