@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  STAGING_ID: 0fe572eb-1984-47e3-aabd-d1056b014486
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -28,10 +31,10 @@ jobs:
     - name: Push to DigitalOcean
       run: docker push -a registry.digitalocean.com/openunited/core
     - name: Fetch current spec file
-      run: doctl apps spec get 0fe572eb-1984-47e3-aabd-d1056b014486 > spec.yaml
+      run: doctl apps spec get $STAGING_ID > spec.yaml
     - name: Update image tag
       run: |
         export VERSION=$(python -c 'import version; print(version.version)')
         sed -i "s/\(.*tag: \).*/\1$VERSION/" spec.yaml
     - name: Update the environment
-      run: doctl apps update 0fe572eb-1984-47e3-aabd-d1056b014486 --spec spec.yaml
+      run: doctl apps update $STAGING_ID --spec spec.yaml
