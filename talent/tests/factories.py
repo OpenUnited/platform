@@ -5,18 +5,22 @@ from factory.fuzzy import FuzzyInteger
 from random import randint
 
 from talent.models import Person, Feedback, Status, Skill, Expertise, PersonSkill
-from security.tests.factories import UserFactory
 
 
 class PersonFactory(DjangoModelFactory):
     full_name = factory.Sequence(lambda n: f"full_name{n}")
     preferred_name = factory.Sequence(lambda n: f"preferred_name{n}")
-    user = factory.SubFactory(UserFactory)
     headline = factory.Faker("sentence", nb_words=6)
     overview = factory.Faker("paragraph")
 
     class Meta:
         model = Person
+
+    @factory.lazy_attribute
+    def user(self):
+        from security.tests.factories import UserFactory
+
+        return UserFactory()
 
 
 class StatusFactory(DjangoModelFactory):

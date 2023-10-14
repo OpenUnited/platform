@@ -100,11 +100,10 @@ class SignInViewTest(TestCase):
         response = self.client.post(
             self.url,
             data={"username": user.username, "password": plain_password},
-            follow=True,
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertRedirects(response, reverse("home"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("home"))
 
     def test_post_invalid_credentials(self):
         plain_password = "12345"
