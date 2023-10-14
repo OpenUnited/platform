@@ -1,0 +1,52 @@
+<header class="z-[3]">
+    {% include 'navbar.html' %}
+
+    <div class="flex items-center justify-center text-sm font-medium leading-6 text-gray-600 py-4">
+        <span class="mb-[3px]">Join Us on</span>
+        <a href="https://discord.gg/T3xevYvWey" class="ml-2 h-6 w-auto">
+            <img class="w-full h-full" src="{{ static('images/discord-logo.png') }}" alt="Discord Logo">
+        </a>
+    </div>
+    <div class="lg:hidden menu-wrap" role="dialog" aria-modal="true">
+
+        <div class="fixed inset-y-0 w-full z-10 menu-overlay"></div>
+        <div
+            class="fixed inset-y-0 z-[11] overflow-y-auto bg-white px-4 py-6 sm:max-w-sm w-full sm:ring-1 sm:ring-gray-900/10 menu">
+            <div class="flex items-center justify-between">
+                <a href="#" class="-m-1.5 p-1.5">
+                    <span class="sr-only">OpenUnited</span>
+                    <img class="h-8 w-auto" src="{{ static('images/logo.svg') }}" alt="">
+                </a>
+                <button type="button"
+                    class="-m-2.5 rounded-md p-2.5 text-gray-700 focus-visible:outline-none btn-close-menu">
+                    <span class="sr-only">Close menu</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                        aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <ul class="space-y-5 flex flex-col pt-20 sm:pt-[30%] pb-10">
+                <li class="flex">
+                    <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">
+                        Find a Challenge
+                    </a>
+                </li>
+                <li class="flex">
+                    <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Explainer Video</a>
+                </li>
+                <li class="flex">
+                    <a href="{{ url('sign_in') }}" class="text-sm font-semibold leading-6 text-gray-900">
+                        Sign in <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+                <li class="flex">
+                    <a href="{{ url('sign-up') }}"
+                        class="text-sm font-semibold leading-6 text-gray-900 transition-all delay-600 rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Sign up
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

@@ -1,15 +1,15 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from django.conf import settings
 
-from openunited import settings
 from . import views
 
 handler404 = views.custom_404_view
 
 urlpatterns = []
 
-if settings.development.DEBUG:
+if settings.DEBUG:
     urlpatterns += [
         path("__debug__/", include("debug_toolbar.urls")),
     ]
@@ -22,4 +22,4 @@ urlpatterns += [
     path("", include("product_management.urls")),
 ]
 
-urlpatterns += static(settings.base.MEDIA_URL, document_root=settings.base.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
