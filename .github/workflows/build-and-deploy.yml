@@ -19,7 +19,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Update the project version
-      run: pip install python-semantic-release && python -m semantic_release version
+      run: pip install python-semantic-release && python -m semantic_release version --no-changelog
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
     - name: Build the Docker image
