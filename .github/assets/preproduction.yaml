@@ -1,0 +1,60 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+databases:
+- engine: PG
+  name: openunited-core-db
+  version: "12"
+domains:
+- domain: preproduction.openunited.com
+  type: PRIMARY
+features:
+- buildpack-stack=ubuntu-22
+ingress:
+  rules:
+  - component:
+      name: platform
+    match:
+      path:
+        prefix: /
+name: openunited-platform-preprod
+region: sfo
+services:
+- envs:
+  - key: POSTGRES_HOST
+    scope: RUN_AND_BUILD_TIME
+    value: ${openunited-core-db.HOSTNAME}
+  - key: PORT
+    scope: RUN_AND_BUILD_TIME
+    value: "80"
+  - key: POSTGRES_DB
+    scope: RUN_AND_BUILD_TIME
+    value: ${openunited-core-db.DATABASE}
+  - key: POSTGRES_USER
+    scope: RUN_AND_BUILD_TIME
+    value: ${openunited-core-db.USERNAME}
+  - key: POSTGRES_PORT
+    scope: RUN_AND_BUILD_TIME
+    value: ${openunited-core-db.PORT}
+  - key: POSTGRES_PASSWORD
+    scope: RUN_AND_BUILD_TIME
+    value: ${openunited-core-db.PASSWORD}
+  - key: DJANGO_SETTINGS_MODULE
+    scope: RUN_AND_BUILD_TIME
+    value: openunited.settings.development
+  - key: DJANGO_ALLOWED_HOSTS
+    scope: RUN_AND_BUILD_TIME
+    value: preproduction.openunited.com
+  - key: DJANGO_SECRET_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: 862ec1becf292bf2d001
+  http_port: 80
+  image:
+    deploy_on_push: {}
+    registry_type: DOCR
+    repository: core
+    tag: 0.1.0
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: platform

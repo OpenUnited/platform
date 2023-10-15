@@ -1,0 +1,41 @@
+name: Deploy to Pre-production
+
+on:
+  push:
+    branches: [ "preproduction" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Update the project version
+      run: pip install python-semantic-release && python -m semantic_release version
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    - name: Build the Docker image
+      run: |
+        export VERSION=hotfix-$(python -c 'import version; print(version.version)')
+        echo "VERSION is $VERSION"
+        docker build . --file Dockerfile --tag registry.digitalocean.com/openunited/core:$VERSION
+    - name: Login to registry
+      run: doctl registry login --expiry-seconds 600
+    - name: Push to DigitalOcean
+      run: docker push -a registry.digitalocean.com/openunited/core
+    - name: Create or update preproduction app
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      run: |
+        cp .github/assets/preproduction.yaml spec.yaml
+
+        export VERSION=hotfix-$(python -c 'import version; print(version.version)')
+        sed -i "s/\(.*tag: \).*/\1$VERSION/" spec.yaml
+
+        doctl --output json apps create --project-id cff8852f-36fa-430d-9e74-627a3723a4be --upsert --spec spec.yaml
