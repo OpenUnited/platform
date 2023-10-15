@@ -17,5 +17,5 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-# When running in DigitalOcean, Django sits behind a proxy
+# When running in a DigitalOcean app, Django sits behind a proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
