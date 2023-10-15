@@ -15,6 +15,11 @@ echo "Apply database migrations"
 echo "----------------------------------------------------------"
 nohup python manage.py migrate --run-syncdb
 
+# Prepare static files
+echo "Preparing static files"
+echo "----------------------------------------------------------"
+nohup python manage.py collectstatic
+
 # Load Sample Data
 # echo "Load Sample Data"
 # echo "----------------------------------------------------------"
