@@ -33,6 +33,7 @@
                     aria-expanded="false" aria-haspopup="true">
                     <span class="flex w-full items-center justify-between">
                         <span class="flex min-w-0 items-center justify-between space-x-3">
+                            {% set photo_url, _ = person.get_photo_url() %}
                             <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ photo_url }}"
                                 alt="Profile Picture">
                             <span class="flex min-w-0 flex-1 flex-col">
