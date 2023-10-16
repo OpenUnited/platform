@@ -91,7 +91,7 @@ class SignInView(TemplateView):
                 if next_url:
                     return redirect(next_url)
                 else:
-                    return redirect("home")
+                    return redirect("challenges")
             else:
                 user_obj.update_failed_login_budget_and_check_reset()
                 form.add_error(None, _("Username or password is not correct"))
