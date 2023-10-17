@@ -90,6 +90,11 @@ class ProductForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get("name")
+        
+        # skip slug validation if name is not changed in update view 
+        if self.instance and self.instance.name == name:
+            return name
+
         error = Product.check_slug_from_name(name)
         if error:
             raise ValidationError(error)
