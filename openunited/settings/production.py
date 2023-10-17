@@ -18,6 +18,7 @@ EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = "no-reply@openunited.com"
 
 # When running in a DigitalOcean app, Django sits behind a proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

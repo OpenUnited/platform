@@ -7,7 +7,7 @@ from sendgrid.helpers.mail import Mail
 def send_sendgrid_email(to_emails, subject, content):
     try:
         message = Mail(
-            from_email=settings.EMAIL_HOST,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             to_emails=to_emails,
             subject=subject,
             html_content=content
