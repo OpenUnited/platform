@@ -33,8 +33,18 @@
                             </div>
                             <p class="text-xs leading-6 text-red-900">
                                 Don't have an organisation? <a class="font-semibold"
-                                    href="{{ url('create-organisation') }}">Create one.</a>
+                                href="{{ url('create-organisation') }}">Create one.</a>
                             </p>
+                            
+                            <div class="my-2">
+                                {% if form.organisation.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.organisation.errors %}
+                                <li class="text-xs italic text-red-600 ">Error : {{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            </div>
 
                             <div class="my-2"><span>or</span></div>
                             <div class="relative flex gap-x-3">
