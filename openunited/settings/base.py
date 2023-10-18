@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-import sentry_sdk
 from dotenv import load_dotenv
 
 
@@ -170,11 +169,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
-
-sentry_sdk.init(
-dsn="https://34dd2db529445f60bd209e142e98af22@o1120097.ingest.sentry.io/4506064626909184",
-# Set traces_sample_rate to 1.0 to capture 100%
-# of transactions for performance monitoring.
-traces_sample_rate=1.0,
-)

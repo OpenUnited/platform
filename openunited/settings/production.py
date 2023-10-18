@@ -1,4 +1,5 @@
 import os
+import sentry_sdk
 
 from openunited.settings.base import *
 
@@ -11,9 +12,9 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").sp
 
 TEMPLATES[0]["OPTIONS"]["auto_reload"] = DEBUG
 
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -21,7 +22,7 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = "no-reply@openunited.com"
 
 # When running in a DigitalOcean app, Django sits behind a proxy
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -55,3 +56,10 @@ LOGGING = {
         },
     },
 }
+
+sentry_sdk.init(
+    dsn="https://34dd2db529445f60bd209e142e98af22@o1120097.ingest.sentry.io/4506064626909184",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+)
