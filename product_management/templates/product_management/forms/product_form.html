@@ -40,7 +40,7 @@
                                 {% if form.organisation.errors %}
                             <ul class="errorlist">
                                 {% for error in form.organisation.errors %}
-                                <li class="text-xs italic text-red-600 ">Error : {{ error }}</li>
+                                <li class="text-xs text-red-600 ">{{ error }}</li>
                                 {% endfor %}
                             </ul>
                             {% endif %}
