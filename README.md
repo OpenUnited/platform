@@ -101,3 +101,32 @@ docker compose --env-file docker.env up --build
 (N.B. If you facing issue like  network custom_network_name not found You have to create it like docker network create  custom_network_name )
 
 Then navigate to: [http://localhost:8080/](http://localhost:8080/) in your browser.
+
+
+### Docker compose Notes
+- If you want to have auto-reload during development and use ipdb/pdb/breakpoint add following to docker-compose.yml > services > platform
+```yaml
+
+services:
+  platform:
+    # ...
+    volumes:
+      - .:/code/
+    # ...
+    stdin_open: true
+    tty: true
+
+```
+
+- After adding ipdb/pdb/breakpoint, you can check container id by `docker ps` and attach it to debug `docker attach <container-id>`
+
+### Running Tests
+#### Without docker
+- Activate your virtual environment
+```bash
+python manage.py test
+```
+#### With docker-compose
+```bash
+docker-compose --env-file docker.env exec platform sh -c "python manage.py test"
+```
