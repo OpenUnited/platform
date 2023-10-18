@@ -26,10 +26,10 @@ def create_database():
         cursor = conn.cursor()
 
         # Drop the existing database if it exists
-        cursor.execute(f"DROP DATABASE IF EXISTS {db_config['dbname']}")
+        cursor.execute(f'DROP DATABASE IF EXISTS "{db_config["dbname"]}"')
 
         # Create a new database
-        cursor.execute(f"CREATE DATABASE {db_config['dbname']}")
+        cursor.execute(f'CREATE DATABASE "{db_config["dbname"]}"')
 
         cursor.close()
         conn.close()
