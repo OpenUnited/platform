@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 
 
+from django.contrib.contenttypes.models import ContentType
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
 from .models import Idea, Product, Challenge, Bounty
@@ -63,7 +64,9 @@ class ProductForm(forms.ModelForm):
     organisation = forms.ModelChoiceField(
         empty_label="Select an organisation",
         required=False,
-        queryset=Organisation.objects.none(),
+        # TODO: We should not get all the organizations here. 
+        # After the organization hierarchy is constructed, we need to filter based on the current user's organizations.
+        queryset=Organisation.objects.all(),
         to_field_name="name",
         label="Organisations",
         widget=forms.Select(
@@ -90,11 +93,39 @@ class ProductForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get("name")
+        
+        # skip slug validation if name is not changed in update view 
+        if self.instance and self.instance.name == name:
+            return name
+
         error = Product.check_slug_from_name(name)
         if error:
             raise ValidationError(error)
 
         return name
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        make_me_owner = cleaned_data.get("make_me_owner")
+        organisation = cleaned_data.get("organisation")
+
+        if make_me_owner and organisation:
+            self.add_error( "organisation", "A product cannot be owned by a person and an organisation", )
+            return cleaned_data
+        
+        if not make_me_owner and not organisation:
+            self.add_error( "organisation", "You have to select an owner", )
+            return cleaned_data
+
+        
+        if make_me_owner:
+            cleaned_data['content_type'] = ContentType.objects.get_for_model( self.request.user.person )
+            cleaned_data["object_id"] = self.request.user.id
+        else:
+            cleaned_data['content_type'] = ContentType.objects.get_for_model(organisation)
+            cleaned_data["object_id"] = organisation.id
+        
+        return cleaned_data
 
     class Meta:
         model = Product

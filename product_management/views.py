@@ -358,39 +358,13 @@ class CreateProductView(LoginRequiredMixin, CreateView):
         return htmx_header == "true"
 
     # TODO: save the image and the documents
-    # TODO: move the owner validation to forms
     def post(self, request, *args, **kwargs):
         if self._is_htmx_request(request):
             return super().post(request, *args, **kwargs)
 
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST, request.FILES,request=request)
         if form.is_valid():
-            instance = form.save(commit=False)
-
-            make_me_owner = form.cleaned_data.get("make_me_owner")
-            organisation = form.cleaned_data.get("organisation")
-            if make_me_owner and organisation:
-                form.add_error(
-                    "organisation",
-                    "A product cannot be owned by a person and an organisation",
-                )
-                return render(request, self.template_name, context={"form": form})
-
-            if not make_me_owner and not organisation:
-                form.add_error("organisation", "You have to select an owner")
-                return render(request, self.template_name, context={"form": form})
-
-            if make_me_owner:
-                instance.content_type = ContentType.objects.get_for_model(
-                    request.user.person
-                )
-                instance.object_id = request.user.id
-            else:
-                instance.content_type = ContentType.objects.get_for_model(organisation)
-                instance.object_id = organisation.id
-
-            instance.save()
-
+            instance = form.save()
             _ = ProductRoleAssignment.objects.create(
                 person=self.request.user.person,
                 product=instance,
@@ -410,11 +384,24 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        return super().get(request, *args, **kwargs)
+        
+        # case when owner is the user
+        if self.object.content_type_id == ContentType.objects.get_for_model(self.request.user.person).id:
+            initial_make_me_owner = self.object.object_id == request.user.id
+            initial = {"make_me_owner": initial_make_me_owner}
+        
+        # case when owner is an organisation
+        if self.object.content_type_id == ContentType.objects.get_for_model(Organisation).id:
+            initial_organisation = Organisation.objects.filter(id=self.object.object_id).first()
+            initial = {"organisation":initial_organisation}
+        
+        form = self.form_class(instance=self.object, initial=initial)
+        return render(request, self.template_name, {"form": form, "product_instance": self.object})
+
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, request.FILES, instance=self.object)
+        form = self.form_class(request.POST, request.FILES, instance=self.object,request=request)
         if form.is_valid():
             instance = form.save()
             self.success_url = reverse("product_summary", args=(instance.slug,))
