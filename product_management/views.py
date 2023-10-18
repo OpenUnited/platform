@@ -1,7 +1,7 @@
 import json
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, HttpResponse
+from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
@@ -285,9 +285,6 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
             bounty=bounty,
             kind__in=[BountyClaim.CLAIM_TYPE_DONE, BountyClaim.CLAIM_TYPE_ACTIVE],
         ).first()
-        bounty_claims = BountyClaim.objects.filter(
-            bounty=bounty, person=self.request.user.person
-        )
 
         context.update(
             {
@@ -295,9 +292,25 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
                 "bounty": bounty,
                 "bounty_claim_form": BountyClaimForm(),
                 "bounty_claim": bounty_claim,
-                "current_user_created_claim_request": bounty_claims.count() > 0,
             }
         )
+
+        if self.request.user.is_authenticated:
+            bounty_claims = BountyClaim.objects.filter(
+                bounty=bounty, person=self.request.user.person
+            )
+
+            context.update(
+                {
+                    "current_user_created_claim_request": bounty_claims.count() > 0,
+                }
+            )
+        else:
+            context.update(
+                {
+                    "current_user_created_claim_request": False,
+                }
+            )
 
         if bounty_claim:
             context.update({"is_claimed": True, "claimed_by": bounty_claim.person})
@@ -315,33 +328,44 @@ class CapabilityDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/capability_detail.html"
 
 
-# TODO: refactor this view
-class BountyClaimView(FormView):
+class BountyClaimView(LoginRequiredMixin, FormView):
     form_class = BountyClaimForm
-    template_name = "product_management/bounty_claim_form.html"
+    template_name = "product_management/bounty_claim.html"
+    login_url = "sign_in"
 
-    def get(self, request, *args, **kwargs):
-        is_triggered_by_cancel_button = request.GET.get("claim-cancel-button")
-        if is_triggered_by_cancel_button:
-            return HttpResponse("")
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
 
-        return self.render_to_response(self.get_context_data(form=BountyClaimForm()))
+        pk = self.kwargs.get("pk")
+        challenge = get_object_or_404(Challenge, pk=pk)
+
+        context["challenge_pk"] = pk
+        context["challenge"] = challenge
+
+        return context
 
     def post(self, request, *args, **kwargs):
-        url = request.headers.get("Hx-Current-Url")
-        self.success_url = request.headers.get("Hx-Current-Url")
-        if url:
-            url = url.split("/")
-            challenge_id = url[-1]
-            ch = Challenge.objects.get(id=challenge_id)
-            bounty_claim = BountyClaim(
-                bounty=ch.bounty_set.all().first(),
-                person=request.user.person,
-                kind=BountyClaim.CLAIM_TYPE_IN_REVIEW,
-            )
-            bounty_claim.save()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            context = self.get_context_data(**kwargs)
+            challenge = context.get("challenge")
+
+            instance.bounty = challenge.bounty_set.all().first()
+            instance.person = request.user.person
+            instance.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
+            instance.save()
+
             messages.success(request, "Your bounty claim request is successfully sent!")
 
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    challenge.product.slug,
+                    challenge.pk,
+                ),
+            )
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -362,7 +386,7 @@ class CreateProductView(LoginRequiredMixin, CreateView):
         if self._is_htmx_request(request):
             return super().post(request, *args, **kwargs)
 
-        form = self.form_class(request.POST, request.FILES,request=request)
+        form = self.form_class(request.POST, request.FILES, request=request)
         if form.is_valid():
             instance = form.save()
             _ = ProductRoleAssignment.objects.create(
@@ -384,24 +408,35 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        
+
         # case when owner is the user
-        if self.object.content_type_id == ContentType.objects.get_for_model(self.request.user.person).id:
+        if (
+            self.object.content_type_id
+            == ContentType.objects.get_for_model(self.request.user.person).id
+        ):
             initial_make_me_owner = self.object.object_id == request.user.id
             initial = {"make_me_owner": initial_make_me_owner}
-        
-        # case when owner is an organisation
-        if self.object.content_type_id == ContentType.objects.get_for_model(Organisation).id:
-            initial_organisation = Organisation.objects.filter(id=self.object.object_id).first()
-            initial = {"organisation":initial_organisation}
-        
-        form = self.form_class(instance=self.object, initial=initial)
-        return render(request, self.template_name, {"form": form, "product_instance": self.object})
 
+        # case when owner is an organisation
+        if (
+            self.object.content_type_id
+            == ContentType.objects.get_for_model(Organisation).id
+        ):
+            initial_organisation = Organisation.objects.filter(
+                id=self.object.object_id
+            ).first()
+            initial = {"organisation": initial_organisation}
+
+        form = self.form_class(instance=self.object, initial=initial)
+        return render(
+            request, self.template_name, {"form": form, "product_instance": self.object}
+        )
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, request.FILES, instance=self.object,request=request)
+        form = self.form_class(
+            request.POST, request.FILES, instance=self.object, request=request
+        )
         if form.is_valid():
             instance = form.save()
             self.success_url = reverse("product_summary", args=(instance.slug,))
