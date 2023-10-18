@@ -114,7 +114,7 @@ def migrate():
             "file_path": "utility/export/json/work_product.json",
             "model": Product,
             "model_name": "product",
-            "arguments": ("owner_id",),
+            "arguments": ("owner_id", "content_object,"),
         },
         {
             "file_path": "utility/export/json/work_initiative.json",
@@ -139,6 +139,19 @@ def migrate():
         if arguments is None:
             arguments = []
         model_name = row.get("model_name").lower()
+
+        if model_name == "product":
+            user = User.objects.create(
+                username="temporary_user",
+                password="password",
+                email="temporary_user@example.com",
+            )
+            _ = Person.objects.create(
+                full_name="Temporary User",
+                preferred_name="Temporary",
+                headline="aaaa",
+                user=user,
+            )
 
         objects, extra_data = create_from_json(
             row.get("file_path"),
@@ -220,7 +233,9 @@ def migrate():
         created_by_id = elem.pop("created_by_id")
         updated_by_id = elem.pop("updated_by_id")
 
-        elem.pop("comments_start_id")
+        elem.pop("comments_start_id", None)
+        elem.pop("skill_id", None)
+        elem.pop("skill_mode", None)
 
         elem["reviewer_id"] = person_uuid_id_mapping.get(reviewer_id)
         elem["created_by_id"] = person_uuid_id_mapping.get(created_by_id)
@@ -268,12 +283,6 @@ def migrate():
         bounty_delivery_attempt_list.append(
             BountyDeliveryAttempt.objects.create(**elem)
         )
-
-    # finally:
-    #     print("Delete all the created records")
-    #     model_names = list_container.keys()
-    #     for model_name in model_names:
-    #         delete_model_instances(list_container.get(model_name))
 
 
 if __name__ == "__main__":
