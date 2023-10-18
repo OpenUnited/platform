@@ -64,6 +64,8 @@ class ProductForm(forms.ModelForm):
     organisation = forms.ModelChoiceField(
         empty_label="Select an organisation",
         required=False,
+        # TODO: We should not get all the organizations here. 
+        # After the organization hierarchy is constructed, we need to filter based on the current user's organizations.
         queryset=Organisation.objects.all(),
         to_field_name="name",
         label="Organisations",
