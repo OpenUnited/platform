@@ -285,9 +285,6 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
             bounty=bounty,
             kind__in=[BountyClaim.CLAIM_TYPE_DONE, BountyClaim.CLAIM_TYPE_ACTIVE],
         ).first()
-        bounty_claims = BountyClaim.objects.filter(
-            bounty=bounty, person=self.request.user.person
-        )
 
         context.update(
             {
@@ -295,9 +292,25 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
                 "bounty": bounty,
                 "bounty_claim_form": BountyClaimForm(),
                 "bounty_claim": bounty_claim,
-                "current_user_created_claim_request": bounty_claims.count() > 0,
             }
         )
+
+        if self.request.user.is_authenticated:
+            bounty_claims = BountyClaim.objects.filter(
+                bounty=bounty, person=self.request.user.person
+            )
+
+            context.update(
+                {
+                    "current_user_created_claim_request": bounty_claims.count() > 0,
+                }
+            )
+        else:
+            context.update(
+                {
+                    "current_user_created_claim_request": False,
+                }
+            )
 
         if bounty_claim:
             context.update({"is_claimed": True, "claimed_by": bounty_claim.person})
