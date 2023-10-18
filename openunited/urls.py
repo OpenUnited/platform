@@ -19,6 +19,9 @@ urlpatterns += [
     path("", views.home, name="home"),
     path("privacy-policy/", views.privacy_policy, name="privacy-policy"),
     path("terms-of-use/", views.terms_of_use, name="terms-of-use"),
+    path(
+        "enterprise-customers/", views.enterprise_customers, name="enterprise-customers"
+    ),
     path("talent/", include("talent.urls")),
     path("", include("security.urls")),
     path("", include("product_management.urls")),
