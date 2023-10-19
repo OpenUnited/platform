@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from random import randrange
 
-from talent.models import Person
+from talent.models import Person, Status
 from .models import SignUpRequest, ProductRoleAssignment, User
 
 
@@ -26,6 +26,7 @@ class SignUpRequestService:
 
         return sign_up_request
 
+    # TODO: This method is too messy. Refactor it
     # TODO: Write a docstring when this method is complete
     @staticmethod
     def create_from_steps_form(form_list, object_id=None):
@@ -54,11 +55,13 @@ class SignUpRequestService:
             email=email,
         )
 
-        _ = Person.objects.create(
+        person = Person.objects.create(
             full_name=full_name,
             preferred_name=preferred_name,
             user=user,
         )
+
+        _ = Status.objects.create(person=person)
 
         sign_up_request.user = user
         sign_up_request.save()
