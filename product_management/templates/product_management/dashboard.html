@@ -160,7 +160,9 @@
         <div
             class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pb-4 lg:pt-5">
             <div class="flex flex-shrink-0 items-center px-6">
-                <img class="h-6 w-auto" src="{{ static('images/logo.svg') }}" alt="OpenUnited Logo">
+                <a href="{{ url('home') }}" >
+                    <img class="h-6 w-auto" src="{{ static('images/logo.svg') }}" alt="OpenUnited Logo">
+                </a>
             </div>
             <div class="mt-5 flex h-0 flex-1 flex-col overflow-y-auto pt-1">
                 <!-- User account dropdown -->
@@ -204,7 +206,7 @@
                         focus:outline-none" role="menu" aria-orientation="vertical"
                         aria-labelledby="options-menu-button" tabindex="-1">
                         <div class="py-1" role="none">
-                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="{{ url('profile', args=(request.user.person.pk,) ) }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-0">View profile</a>
                             <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-1">Settings</a>
