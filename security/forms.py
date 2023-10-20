@@ -121,7 +121,7 @@ class SignUpStepThreeForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError(_("Username is already exist"))
+            raise forms.ValidationError(_("Username already exists"))
 
         return username
 
