@@ -221,7 +221,6 @@ def list_skill_and_expertise(request):
     return JsonResponse([], safe=False)
 
 
-# NOTE: The links in this view are not completed
 class TalentPortfolio(TemplateView):
     User = get_user_model()
     template_name = "talent/portfolio.html"
@@ -229,17 +228,17 @@ class TalentPortfolio(TemplateView):
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(self.User, username=username)
         person = user.person
-        photo_url, _ = person.get_photo_url()
 
-        status = person.status
         person_skill = person.skills.all().first()
         bounty_claims = BountyClaim.objects.filter(
             person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
         ).select_related("bounty__challenge")
         received_feedbacks = Feedback.objects.filter(recipient=person)
 
-        if request.user == user or received_feedbacks.filter(
-            provider=request.user.person
+        if (
+            request.user.is_anonymous
+            or request.user == user
+            or received_feedbacks.filter(provider=request.user.person)
         ):
             can_leave_feedback = False
         else:
@@ -247,13 +246,11 @@ class TalentPortfolio(TemplateView):
 
         context = {
             "user": user,
-            "photo_url": photo_url,
             "person": person,
             "person_linkedin_link": get_path_from_url(person.linkedin_link, True),
             "person_twitter_link": get_path_from_url(person.twitter_link, True),
-            "status": status,
-            "skills": person_skill.skill if person_skill else None,
-            "expertise": person_skill.expertise if person_skill else None,
+            "status": person.status,
+            "expertise": person_skill.expertise if person_skill else [],
             "bounty_claims": bounty_claims,
             "FeedbackService": FeedbackService,
             "received_feedbacks": received_feedbacks,

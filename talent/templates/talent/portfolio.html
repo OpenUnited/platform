@@ -14,6 +14,7 @@
             <div class="relative z-[2] w-[272px] sm:w-[306px] h-[272px] sm:h-[306px] mx-auto">
                 <div
                     class="w-full h-full mx-auto rounded-full shadow-xl bg-white flex shrink-0 item-center justify-center">
+                    {% set photo_url, _ = person.get_photo_url() %}
                     <img src="{{ photo_url }}" class="h-full w-full object-cover object-center rounded-full"
                         alt="Profile Picture">
                 </div>
@@ -313,20 +314,24 @@
         </div>
         <div class="grow border border-solid border-[#d0d7de] px-4 py-5 sm:p-6 bg-white rounded-md mt-[54px]">
             {% if request.user.person != person %}
-            <button type="button"
-                class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
+            <a href="{{ url('sign-up') }}">
+                <button type="button"
+                    class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
         border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
-                Create a Portfolio like this
-            </button>
+                    Create a Portfolio like this
+                </button>
+            </a>
             {% endif %}
             <div class="flex items-center pb-2.5 mb-4 border-b border-solid border-[#d0d7de]">
-                <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">{{ person.headline }}</h2>
+                <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">
+                    {{ person.headline }}</h2>
             </div>
             <div class="flex flex-col text-sm leading-6 text-gray-500">
                 <p>{{ person.overview }}</p>
             </div>
             <div class="text-lg font-semibold mb-2.5 mt-6">My Skills / Expertise</div>
             <div class="flex items-center flex-wrap">
+                {% if expertise %}
                 {% for exp in expertise %}
                 <div
                     class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
@@ -344,6 +349,9 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                <p class="text-sm italic">There are no expertise to list.</p>
+                {% endif %}
             </div>
             <div class="text-lg font-semibold mb-2.5 mt-6">Open Products I contribute to</div>
 
