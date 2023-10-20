@@ -4,8 +4,7 @@
         style="background-image: url('{{ photo_url }}')">
     </div>
         <img id="image-preview" src="" alt="Image Preview" 
-        class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover"
-        style="display: none;" />
+        class="w-40 h-40 flex items-center justify-center rounded-full bg-no-repeat bg-center bg-cover hidden" />
     <div class="flex flex-col items-center">
         {% if requires_upload %}
         <label for="{{ form.photo.id_for_label }}"
@@ -78,7 +77,7 @@ document.querySelector("#id_photo").addEventListener("change", function (e) {
 
         reader.onload = function (event) {
             imagePreview.src = event.target.result
-            imagePreview.style.display = "block"
+            imagePreview.classList.remove("hidden")
             placeholder.style.display = "none"
             if (removeButton) {
                 removeButton.style.display = "none"
