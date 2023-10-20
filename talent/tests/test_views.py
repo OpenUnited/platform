@@ -188,17 +188,42 @@ class TalentPortfolioViewTest(TestCase):
     def test_get_request(self):
         from talent.services import FeedbackService
 
+        client = Client()
+        response = client.get(self.url)
+
+        actual = response.context_data
+
+        # we dont' need to check form
+        actual.pop("form")
+
+        expected = {
+            "user": self.person.user,
+            "person": self.person,
+            "person_linkedin_link": "",
+            "person_twitter_link": "",
+            "status": self.person.status,
+            "expertise": self.person_skill.expertise,
+            "FeedbackService": FeedbackService,
+            "can_leave_feedback": False,
+        }
+
+        bounty_claims = actual.pop("bounty_claims")
+        self.assertEqual(bounty_claims.count(), 0)
+
+        received_feedbacks = actual.pop("received_feedbacks")
+        self.assertEqual(received_feedbacks.count(), 0)
+
+        self.assertEqual(actual, expected)
+
         response = self.client.get(self.url)
 
         actual = response.context_data
         expected = {
             "user": self.person.user,
-            "photo_url": "/media/avatars/profile-empty.png",
             "person": self.person,
             "person_linkedin_link": "",
             "person_twitter_link": "",
             "status": self.person.status,
-            "skills": self.person_skill.skill,
             "expertise": self.person_skill.expertise,
             "FeedbackService": FeedbackService,
             "can_leave_feedback": True,
