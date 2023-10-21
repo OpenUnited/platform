@@ -5,6 +5,10 @@ def home(request):
     return render(request, "home.html", context={"request": request})
 
 
+def about(request):
+    return render(request, "about.html", context={"request": request})
+
+
 def privacy_policy(request):
     return render(request, "privacy_policy.html")
 
