@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django_jinja",
     "formtools",
     "debug_toolbar",
+    "storages",
 ]
 
 MIDDLEWARE = [
