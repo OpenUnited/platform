@@ -23,6 +23,7 @@ urlpatterns += [
     path(
         "enterprise-customers/", views.enterprise_customers, name="enterprise-customers"
     ),
+    path("version/", views.version_view, name="version"),
     path("talent/", include("talent.urls")),
     path("", include("security.urls")),
     path("", include("product_management.urls")),
