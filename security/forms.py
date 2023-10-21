@@ -77,7 +77,9 @@ class SignUpStepTwoForm(forms.Form):
         actual_verification_code = SignUpRequest.objects.get(id=req_id)
 
         if verification_code != actual_verification_code.verification_code:
-            raise ValidationError(_("Invalid verification code. Please try again."))
+            raise ValidationError(
+                _("Invalid verification code. Please try again.")
+            )
 
         return cleaned_data
 

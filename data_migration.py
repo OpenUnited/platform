@@ -21,7 +21,9 @@ def delete_model_instances(sequence: list, model_name: str = None) -> None:
         elem.delete()
 
 
-def create_from_json(path: str, model: object, model_name: str = None, *args) -> list:
+def create_from_json(
+    path: str, model: object, model_name: str = None, *args
+) -> list:
     result = []
     extra_data = []
     data = read_json_data(path, model_name)
@@ -197,7 +199,8 @@ def migrate():
 
     product_role_assignment_list = []
     product_role_assignment_data = read_json_data(
-        "utility/export/json/talent_productperson.json", "productroleassignment"
+        "utility/export/json/talent_productperson.json",
+        "productroleassignment",
     )
 
     person_history = []
@@ -246,7 +249,9 @@ def migrate():
     list_container["challenge"] = challenge_list
 
     bounty_list = []
-    bounty_data = read_json_data("utility/export/json/work_bounty.json", "bounty")
+    bounty_data = read_json_data(
+        "utility/export/json/work_bounty.json", "bounty"
+    )
 
     for elem in bounty_data:
         bounty_list.append(Bounty.objects.create(**elem))
@@ -291,7 +296,11 @@ if __name__ == "__main__":
     )
     django.setup()
 
-    from security.models import BlacklistedUsernames, User, ProductRoleAssignment
+    from security.models import (
+        BlacklistedUsernames,
+        User,
+        ProductRoleAssignment,
+    )
     from product_management.models import (
         Tag,
         Product,

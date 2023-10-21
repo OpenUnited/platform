@@ -19,10 +19,12 @@ def create_capabilities() -> list:
     fancy_out("Create Capability records")
     get = lambda node_id: Capability.objects.get(pk=node_id)
     root_1 = Capability.add_root(
-        name="Root Capability 1", description="Root Description of Capability 1"
+        name="Root Capability 1",
+        description="Root Description of Capability 1",
     )
     root_2 = Capability.add_root(
-        name="Root Capability 2", description="Root Description of Capability 2"
+        name="Root Capability 2",
+        description="Root Description of Capability 2",
     )
     node_root_2 = get(root_2.pk).add_child(
         name="Child of a Root Capability 2",
@@ -72,7 +74,9 @@ def read_json_data(file_name: str, model_name: str = None) -> dict | list:
 
 # Generate sample data for various models and populate the database
 def generate_sample_data():
-    model_app_mapping = read_json_data("utility/sample_data/model_app_mapping.json")
+    model_app_mapping = read_json_data(
+        "utility/sample_data/model_app_mapping.json"
+    )
 
     clear_rows_by_model_name(model_app_mapping)
 
@@ -96,7 +100,9 @@ def generate_sample_data():
         people.append(PersonService.create(**pd))
 
     # Create Review model instances
-    feedback_data = read_json_data("utility/sample_data/feedback.json", "feedback")
+    feedback_data = read_json_data(
+        "utility/sample_data/feedback.json", "feedback"
+    )
 
     people_subset = people[:5]
     feedbacks = []
@@ -131,7 +137,9 @@ def generate_sample_data():
         organisations.append(OrganisationService.create(**org_data))
 
     # Create Product model instances
-    product_data = read_json_data("utility/sample_data/product.json", "product")
+    product_data = read_json_data(
+        "utility/sample_data/product.json", "product"
+    )
 
     products = []
     for pd in product_data:
@@ -144,7 +152,8 @@ def generate_sample_data():
 
     # Create ProductRoleAssignment model instances
     product_role_assignment_data = read_json_data(
-        "utility/sample_data/product_role_assignment.json", "product_role_assignment"
+        "utility/sample_data/product_role_assignment.json",
+        "product_role_assignment",
     )
 
     copy_people = people.copy()
@@ -201,7 +210,9 @@ def generate_sample_data():
     ).values_list("name", flat=True)
 
     # Create Expertise model instances
-    expertise_data = read_json_data("utility/sample_data/expertise.json", "expertise")
+    expertise_data = read_json_data(
+        "utility/sample_data/expertise.json", "expertise"
+    )
 
     expertise = []
     for exp in expertise_data:
@@ -219,7 +230,8 @@ def generate_sample_data():
     person_skills = []
     for psd in person_skill_data:
         psd["skill"] = sample(
-            list(skill_name_queryset), randint(2, len(skill_name_queryset) // 2)
+            list(skill_name_queryset),
+            randint(2, len(skill_name_queryset) // 2),
         )
         psd["expertise"] = list(
             sample(
@@ -237,7 +249,9 @@ def generate_sample_data():
         tags.append(TagService.create(**tag))
 
     # Create Challenge model instances
-    challenge_data = read_json_data("utility/sample_data/challenge.json", "challenge")
+    challenge_data = read_json_data(
+        "utility/sample_data/challenge.json", "challenge"
+    )
 
     for elem in challenge_data:
         elem["initiative"] = choice(initiatives)

@@ -90,7 +90,9 @@ class OrganisationAccountService:
             organisation_account = OrganisationAccount.objects.get(pk=id)
             organisation_account.organisation = organisation
             organisation_account.liquid_points_balance = liquid_points_balance
-            organisation_account.nonliquid_points_balance = nonliquid_points_balance
+            organisation_account.nonliquid_points_balance = (
+                nonliquid_points_balance
+            )
             organisation_account.save()
             return organisation_account
         except OrganisationAccount.DoesNotExist as e:
@@ -118,7 +120,9 @@ class OrganisationAccountService:
 
         # only grant points if granting_object has no existing related credit
         if not granting_object.organisation_account_credit:
-            organisation_account_credit_service = OrganisationAccountCreditService()
+            organisation_account_credit_service = (
+                OrganisationAccountCreditService()
+            )
             credit = organisation_account_credit_service.create(
                 organisation_account=account,
                 number_of_points=granting_object.number_of_points,
@@ -132,7 +136,8 @@ class OrganisationAccountService:
     def _recalculate_balances(account: OrganisationAccount) -> None:
         nonliquid_credits = (
             OrganisationAccountCredit.objects.filter(
-                organisation_account=account, type_of_points=PointTypes.NONLIQUID
+                organisation_account=account,
+                type_of_points=PointTypes.NONLIQUID,
             ).aggregate(Sum("number_of_points"))["number_of_points__sum"]
             or 0
         )
@@ -191,7 +196,9 @@ class OrganisationAccountCreditService:
             org_acc_credit = OrganisationAccountCredit.objects.get(pk=id)
             org_acc_credit.delete()
         except OrganisationAccountCredit.DoesNotExist as e:
-            logger.error(f"Failed to delete OrganisationAccountCredit due to: {e}")
+            logger.error(
+                f"Failed to delete OrganisationAccountCredit due to: {e}"
+            )
             return False
 
 
@@ -202,8 +209,8 @@ class CartService:
         if not currency_of_payment:
             currency_of_payment = Cart.currency_of_payment.field.default
 
-        price_per_point_in_cents = CartService._get_point_inbound_price_in_cents(
-            currency_of_payment
+        price_per_point_in_cents = (
+            CartService._get_point_inbound_price_in_cents(currency_of_payment)
         )
 
         number_of_points = kwargs.get("number_of_points", None)
@@ -211,7 +218,9 @@ class CartService:
             number_of_points = Cart.number_of_points.field.default
 
         subtotal_in_cents = number_of_points * price_per_point_in_cents
-        sales_tax_in_cents = 0  # TODO: create logic for sales tax based on org account
+        sales_tax_in_cents = (
+            0  # TODO: create logic for sales tax based on org account
+        )
         total_payable_in_cents = subtotal_in_cents + sales_tax_in_cents
 
         kwargs["subtotal_in_cents"] = subtotal_in_cents
@@ -262,7 +271,9 @@ class CartService:
             cart.delete()
             return True
         except Cart.DoesNotExist as e:
-            logger.error(f"Failed to delete OrganisationAccountCredit due to: {e}")
+            logger.error(
+                f"Failed to delete OrganisationAccountCredit due to: {e}"
+            )
             return False
 
     @staticmethod
@@ -279,7 +290,9 @@ class CartService:
         elif currency == CurrencyTypes.GBP:
             return conversion_rates.gbp_point_inbound_price_in_cents
         else:
-            raise ValueError("No conversion rate for given currency.", currency)
+            raise ValueError(
+                "No conversion rate for given currency.", currency
+            )
 
 
 class SalesOrderService:
@@ -337,7 +350,9 @@ class SalesOrderService:
         try:
             sales_order = SalesOrder.objects.get(pk=id)
             sales_order.organisation_account = organisation_account
-            sales_order.organisation_account_credit = organisation_account_credit
+            sales_order.organisation_account_credit = (
+                organisation_account_credit
+            )
             sales_order.cart = cart
             sales_order.number_of_points = number_of_points
             sales_order.currency_of_payments = currency_of_payments
@@ -529,13 +544,22 @@ class PointPriceConfigurationService:
         gbp_point_outbound_price_in_cents,
     ):
         profitable = True
-        if usd_point_inbound_price_in_cents < usd_point_outbound_price_in_cents:
+        if (
+            usd_point_inbound_price_in_cents
+            < usd_point_outbound_price_in_cents
+        ):
             profitable = False
 
-        if eur_point_inbound_price_in_cents < eur_point_outbound_price_in_cents:
+        if (
+            eur_point_inbound_price_in_cents
+            < eur_point_outbound_price_in_cents
+        ):
             profitable = False
 
-        if gbp_point_inbound_price_in_cents < gbp_point_outbound_price_in_cents:
+        if (
+            gbp_point_inbound_price_in_cents
+            < gbp_point_outbound_price_in_cents
+        ):
             profitable = False
 
         return profitable

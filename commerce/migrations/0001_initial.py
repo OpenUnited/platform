@@ -25,7 +25,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("number_of_points", models.IntegerField(default=500)),
@@ -77,8 +80,14 @@ class Migration(migrations.Migration):
                         default=commerce.utils.CommunityStatusOptions["DRONE"],
                     ),
                 ),
-                ("liquid_points_balance", models.PositiveBigIntegerField(default=0)),
-                ("nonliquid_points_balance", models.PositiveBigIntegerField(default=0)),
+                (
+                    "liquid_points_balance",
+                    models.PositiveBigIntegerField(default=0),
+                ),
+                (
+                    "nonliquid_points_balance",
+                    models.PositiveBigIntegerField(default=0),
+                ),
             ],
         ),
         migrations.CreateModel(
@@ -93,13 +102,20 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
                     "reason",
                     models.IntegerField(
-                        choices=[(1, "BOUNTY"), (2, "LIQUIDATION"), (3, "REWARD")],
+                        choices=[
+                            (1, "BOUNTY"),
+                            (2, "LIQUIDATION"),
+                            (3, "REWARD"),
+                        ],
                         default=0,
                     ),
                 ),
@@ -128,13 +144,17 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
                     "reason",
                     models.IntegerField(
-                        choices=[(1, "LIQUIDATION"), (2, "PUNISHMENT")], default=0
+                        choices=[(1, "LIQUIDATION"), (2, "PUNISHMENT")],
+                        default=0,
                     ),
                 ),
                 ("number_of_points", models.PositiveIntegerField()),
@@ -162,13 +182,19 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
                     "action",
                     models.IntegerField(
-                        choices=[(1, "INVITED FRIENDS"), (2, "VERIFIED IDENTITY")],
+                        choices=[
+                            (1, "INVITED FRIENDS"),
+                            (2, "VERIFIED IDENTITY"),
+                        ],
                         default=0,
                     ),
                 ),
@@ -195,7 +221,11 @@ class Migration(migrations.Migration):
                 (
                     "status",
                     models.IntegerField(
-                        choices=[(1, "NEW"), (2, "COMPLETE"), (3, "CANCELLED")],
+                        choices=[
+                            (1, "NEW"),
+                            (2, "COMPLETE"),
+                            (3, "CANCELLED"),
+                        ],
                         default=commerce.utils.LifecycleStatusOptions["NEW"],
                     ),
                 ),
@@ -213,7 +243,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
@@ -249,7 +282,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 (
                     "username",
@@ -269,7 +305,9 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=512, unique=True)),
                 (
                     "photo",
-                    models.ImageField(blank=True, null=True, upload_to="avatars/"),
+                    models.ImageField(
+                        blank=True, null=True, upload_to="avatars/"
+                    ),
                 ),
             ],
             options={
@@ -304,7 +342,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("number_of_points", models.PositiveIntegerField()),
@@ -341,7 +382,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
@@ -374,7 +418,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("details", models.TextField(max_length=1024)),
@@ -395,7 +442,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
@@ -411,13 +461,18 @@ class Migration(migrations.Migration):
                 (
                     "payment_type",
                     models.IntegerField(
-                        choices=[(1, "PARTNER"), (2, "BANK TRANSFER")], default=0
+                        choices=[(1, "PARTNER"), (2, "BANK TRANSFER")],
+                        default=0,
                     ),
                 ),
                 (
                     "status",
                     models.IntegerField(
-                        choices=[(1, "NEW"), (2, "COMPLETE"), (3, "CANCELLED")],
+                        choices=[
+                            (1, "NEW"),
+                            (2, "COMPLETE"),
+                            (3, "CANCELLED"),
+                        ],
                         default=commerce.utils.LifecycleStatusOptions["NEW"],
                     ),
                 ),
@@ -438,7 +493,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("applicable_from_date", models.DateField()),
@@ -481,7 +539,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("number_of_points", models.PositiveIntegerField()),
@@ -509,7 +570,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("number_of_points", models.PositiveIntegerField()),
@@ -537,7 +601,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("number_of_points", models.PositiveIntegerField()),
@@ -565,7 +632,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("number_of_points", models.IntegerField()),
@@ -602,14 +672,19 @@ class Migration(migrations.Migration):
                 (
                     "process_status",
                     models.IntegerField(
-                        choices=[(1, "NEW"), (2, "COMPLETE"), (3, "CANCELLED")],
+                        choices=[
+                            (1, "NEW"),
+                            (2, "COMPLETE"),
+                            (3, "CANCELLED"),
+                        ],
                         default=commerce.utils.LifecycleStatusOptions["NEW"],
                     ),
                 ),
                 (
                     "cart",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="commerce.cart"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="commerce.cart",
                     ),
                 ),
                 (

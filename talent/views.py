@@ -3,7 +3,12 @@ from typing import Any
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    JsonResponse,
+    HttpResponseRedirect,
+)
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
@@ -51,7 +56,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         person = self.get_object()
 
         if "form" not in kwargs:
-            context["form"] = self.form_class(initial=person.get_initial_data())
+            context["form"] = self.form_class(
+                initial=person.get_initial_data()
+            )
 
         context["pk"] = person.pk
 
@@ -83,9 +90,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     def _get_skills_list(self, skill_ids: str) -> list:
         if skill_ids:
             json_skill_ids = json.loads(skill_ids)
-            skills_queryset = Skill.objects.filter(id__in=json_skill_ids).values(
-                "id", "name"
-            )
+            skills_queryset = Skill.objects.filter(
+                id__in=json_skill_ids
+            ).values("id", "name")
             return list(skills_queryset)
 
     def _get_expertise_list(self, expertise_ids: str) -> list:
@@ -107,7 +114,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             created_person_obj.completed_profile = True
             created_person_obj.save()
 
-            skill_and_expertise, _ = PersonSkill.objects.get_or_create(person=person)
+            skill_and_expertise, _ = PersonSkill.objects.get_or_create(
+                person=person
+            )
             skill_and_expertise.skill = self._get_skills_list(
                 request.POST.get("selected_skill_ids")
             )
@@ -122,7 +131,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 @login_required(login_url="sign_in")
 def get_skills(request):
     skill_queryset = (
-        Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
+        Skill.objects.filter(active=True)
+        .order_by("-display_boost_factor")
+        .values()
     )
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
@@ -152,7 +163,9 @@ def get_expertise(request):
         person = request.user.person
         try:
             person_expertise = PersonSkill.objects.get(person=person)
-            expertise_ids = [entry.get("id") for entry in person_expertise.expertise]
+            expertise_ids = [
+                entry.get("id") for entry in person_expertise.expertise
+            ]
         except (ObjectDoesNotExist, AttributeError):
             expertise_ids = []
 
@@ -231,7 +244,8 @@ class TalentPortfolio(TemplateView):
 
         person_skill = person.skills.all().first()
         bounty_claims = BountyClaim.objects.filter(
-            person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
+            person=person,
+            bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE,
         ).select_related("bounty__challenge")
         received_feedbacks = Feedback.objects.filter(recipient=person)
 
@@ -247,8 +261,12 @@ class TalentPortfolio(TemplateView):
         context = {
             "user": user,
             "person": person,
-            "person_linkedin_link": get_path_from_url(person.linkedin_link, True),
-            "person_twitter_link": get_path_from_url(person.twitter_link, True),
+            "person_linkedin_link": get_path_from_url(
+                person.linkedin_link, True
+            ),
+            "person_twitter_link": get_path_from_url(
+                person.twitter_link, True
+            ),
             "status": person.status,
             "expertise": person_skill.expertise if person_skill else [],
             "bounty_claims": bounty_claims,
@@ -271,7 +289,9 @@ class CreateFeedbackView(LoginRequiredMixin, CreateView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+        return reverse(
+            "portfolio", args=(self.object.recipient.get_username(),)
+        )
 
     def _get_recipient_from_url(self):
         recipient_username = self.request.headers.get("Referer").split("/")[-1]
@@ -313,7 +333,9 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+        return reverse(
+            "portfolio", args=(self.object.recipient.get_username(),)
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -336,7 +358,9 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
             form.save()
-            messages.success(self.request, _("Feedback is successfully updated!"))
+            messages.success(
+                self.request, _("Feedback is successfully updated!")
+            )
             return HttpResponseRedirect(self.get_success_url())
 
         return super().post(request, *args, **kwargs)
@@ -349,7 +373,9 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+        return reverse(
+            "portfolio", args=(self.object.recipient.get_username(),)
+        )
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -359,7 +385,9 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
 
         try:
             Feedback.objects.get(pk=self.object.pk).delete()
-            messages.success(self.request, _("Feedback is successfully deleted!"))
+            messages.success(
+                self.request, _("Feedback is successfully deleted!")
+            )
             return HttpResponseRedirect(self.get_success_url())
         except ObjectDoesNotExist:
             return super().post(request, *args, **kwargs)

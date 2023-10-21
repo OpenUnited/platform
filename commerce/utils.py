@@ -1,21 +1,24 @@
 from enum import IntEnum
 
+
 class CurrencyTypes(IntEnum):
-  USD = 1
-  EUR = 2
-  GBP = 3
-  
-  @classmethod
-  def choices(cls):
-    return [(key.value, key.name) for key in cls]
+    USD = 1
+    EUR = 2
+    GBP = 3
+
+    @classmethod
+    def choices(cls):
+        return [(key.value, key.name) for key in cls]
+
 
 class PointTypes(IntEnum):
     NONLIQUID = 1
     LIQUID = 2
-  
+
     @classmethod
     def choices(cls):
         return [(key.value, key.name) for key in cls]
+
 
 class OrganisationAccountCreditReasons(IntEnum):
     GRANT = 1
@@ -30,7 +33,7 @@ class PaymentTypes(IntEnum):
     NONE = 1
     ONLINE = 2
     OFFLINE = 3
-    
+
     @classmethod
     def choices(cls):
         return [(key.value, key.name) for key in cls]
@@ -41,7 +44,7 @@ class PaymentStatusOptions(IntEnum):
     PAID = 2
     CANCELLED = 3
     REFUNDED = 4
-    
+
     @classmethod
     def choices(cls):
         return [(key.value, key.name) for key in cls]

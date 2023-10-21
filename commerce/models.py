@@ -51,7 +51,9 @@ class OrganisationAccountCredit(TimeStampMixin, UUIDMixin):
 
 
 class OrganisationAccount(models.Model):
-    organisation = models.ForeignKey(to="Organisation", on_delete=models.CASCADE)
+    organisation = models.ForeignKey(
+        to="Organisation", on_delete=models.CASCADE
+    )
     liquid_points_balance = models.PositiveBigIntegerField()
     nonliquid_points_balance = models.PositiveBigIntegerField()
 
@@ -87,7 +89,8 @@ class Grant(models.Model):
     description = models.TextField(max_length=1024)
     number_of_points = models.IntegerField(default=500)
     status = models.IntegerField(
-        choices=LifecycleStatusOptions.choices(), default=LifecycleStatusOptions.NEW
+        choices=LifecycleStatusOptions.choices(),
+        default=LifecycleStatusOptions.NEW,
     )
     organisation_account_credit = models.ForeignKey(
         to="OrganisationAccountCredit", on_delete=models.CASCADE, null=True
@@ -119,10 +122,12 @@ class SalesOrder(TimeStampMixin, UUIDMixin):
         choices=PaymentTypes.choices(), default=PaymentTypes.ONLINE
     )
     payment_status = models.IntegerField(
-        choices=PaymentStatusOptions.choices(), default=PaymentStatusOptions.PENDING
+        choices=PaymentStatusOptions.choices(),
+        default=PaymentStatusOptions.PENDING,
     )
     process_status = models.IntegerField(
-        choices=LifecycleStatusOptions.choices(), default=LifecycleStatusOptions.NEW
+        choices=LifecycleStatusOptions.choices(),
+        default=LifecycleStatusOptions.NEW,
     )
 
 
@@ -166,16 +171,22 @@ class ProductAccountCredit(TimeStampMixin, UUIDMixin):
     organisation_account_debit = models.ForeignKey(
         OrganisationAccountDebit, on_delete=models.CASCADE
     )
-    product_account = models.ForeignKey(ProductAccount, on_delete=models.CASCADE)
+    product_account = models.ForeignKey(
+        ProductAccount, on_delete=models.CASCADE
+    )
     number_of_points = models.PositiveIntegerField()
     type_of_points = models.IntegerField(
         choices=PointTypes.choices(), default=PointTypes.NONLIQUID
     )
-    actioned_by = models.ForeignKey(to="talent.Person", on_delete=models.CASCADE)
+    actioned_by = models.ForeignKey(
+        to="talent.Person", on_delete=models.CASCADE
+    )
 
 
 class ProductAccountReservation(TimeStampMixin, UUIDMixin):
-    bounty_claim = models.ForeignKey(to="talent.BountyClaim", on_delete=models.CASCADE)
+    bounty_claim = models.ForeignKey(
+        to="talent.BountyClaim", on_delete=models.CASCADE
+    )
     number_of_points = models.PositiveIntegerField()
     type_of_points = models.IntegerField(
         choices=PointTypes.choices(), default=PointTypes.NONLIQUID
@@ -183,7 +194,9 @@ class ProductAccountReservation(TimeStampMixin, UUIDMixin):
 
 
 class ProductAccountDebit(TimeStampMixin, UUIDMixin):
-    bounty_claim = models.ForeignKey(to="talent.BountyClaim", on_delete=models.CASCADE)
+    bounty_claim = models.ForeignKey(
+        to="talent.BountyClaim", on_delete=models.CASCADE
+    )
     number_of_points = models.PositiveIntegerField()
     type_of_points = models.IntegerField(
         choices=PointTypes.choices(), default=PointTypes.NONLIQUID
@@ -193,7 +206,8 @@ class ProductAccountDebit(TimeStampMixin, UUIDMixin):
 class ContributorAccount(models.Model):
     owner = models.ForeignKey(to="talent.Person", on_delete=models.CASCADE)
     community_status = models.IntegerField(
-        choices=CommunityStatusOptions.choices(), default=CommunityStatusOptions.DRONE
+        choices=CommunityStatusOptions.choices(),
+        default=CommunityStatusOptions.DRONE,
     )
     liquid_points_balance = models.PositiveBigIntegerField(default=0)
     nonliquid_points_balance = models.PositiveBigIntegerField(default=0)
@@ -215,7 +229,8 @@ class PaymentOrder(TimeStampMixin, UUIDMixin):
     )
     payment_type = models.IntegerField(choices=PaymentType, default=0)
     status = models.IntegerField(
-        choices=LifecycleStatusOptions.choices(), default=LifecycleStatusOptions.NEW
+        choices=LifecycleStatusOptions.choices(),
+        default=LifecycleStatusOptions.NEW,
     )
 
 
@@ -239,7 +254,9 @@ class ContributorReward(TimeStampMixin, UUIDMixin):
 class ContributorAccountCredit(TimeStampMixin, UUIDMixin):
     CreditReason = ((1, "BOUNTY"), (2, "LIQUIDATION"), (3, "REWARD"))
     reason = models.IntegerField(choices=CreditReason, default=0)
-    bounty_claim = models.ForeignKey(to="talent.BountyClaim", on_delete=models.CASCADE)
+    bounty_claim = models.ForeignKey(
+        to="talent.BountyClaim", on_delete=models.CASCADE
+    )
     contributor_account = models.ForeignKey(
         ContributorAccount, on_delete=models.CASCADE
     )
@@ -250,7 +267,9 @@ class ContributorAccountCredit(TimeStampMixin, UUIDMixin):
     # when liquid points are cashed out, then an equivalent credit of nonliquid points is granted
     payment_order = models.ForeignKey(PaymentOrder, on_delete=models.CASCADE)
     # only applicable if credit is a reward
-    contributor_reward = models.ForeignKey(ContributorReward, on_delete=models.CASCADE)
+    contributor_reward = models.ForeignKey(
+        ContributorReward, on_delete=models.CASCADE
+    )
 
 
 class ContributorAccountDebit(TimeStampMixin, UUIDMixin):

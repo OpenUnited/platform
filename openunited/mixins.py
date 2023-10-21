@@ -42,7 +42,9 @@ class AncestryMixin(models.Model):
 class VoteMixin(TimeStampMixin, UUIDMixin):
     VOTE_TYPES = ((0, "Up"), (1, "Down"))
     vote_type = models.IntegerField(choices=VOTE_TYPES)
-    person = models.ForeignKey("talent.Person", on_delete=models.SET_NULL, null=True)
+    person = models.ForeignKey(
+        "talent.Person", on_delete=models.SET_NULL, null=True
+    )
 
     class Meta:
         abstract = True

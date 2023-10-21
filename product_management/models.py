@@ -106,7 +106,9 @@ class Product(ProductMixin):
         # convert the given URL to an embed
         from .services import ProductService
 
-        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
+        self.video_url = ProductService.convert_youtube_link_to_embed(
+            self.video_url
+        )
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -135,7 +137,9 @@ class Initiative(TimeStampMixin, UUIDMixin):
         # TODO: move the below method to a utility class
         from .services import ProductService
 
-        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
+        self.video_url = ProductService.convert_youtube_link_to_embed(
+            self.video_url
+        )
         super(Initiative, self).save(*args, **kwargs)
 
     def get_available_challenges_count(self):
@@ -144,10 +148,16 @@ class Initiative(TimeStampMixin, UUIDMixin):
         ).count()
 
     def get_completed_challenges_count(self):
-        return self.challenge_set.filter(status=Challenge.CHALLENGE_STATUS_DONE).count()
+        return self.challenge_set.filter(
+            status=Challenge.CHALLENGE_STATUS_DONE
+        ).count()
 
     def get_challenge_tags(self):
-        return Challenge.objects.filter(task_tags__initiative=self).distinct("id").all()
+        return (
+            Challenge.objects.filter(task_tags__initiative=self)
+            .distinct("id")
+            .all()
+        )
 
     @staticmethod
     def get_filtered_data(input_data, filter_data=None, exclude_data=None):
@@ -215,7 +225,9 @@ class Challenge(TimeStampMixin, UUIDMixin):
     attachment = models.ManyToManyField(
         Attachment, related_name="challenge_attachements", blank=True
     )
-    tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
+    tag = models.ManyToManyField(
+        Tag, related_name="challenge_tags", blank=True
+    )
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     priority = models.IntegerField(choices=CHALLENGE_PRIORITY, default=1)
@@ -242,7 +254,9 @@ class Challenge(TimeStampMixin, UUIDMixin):
         null=True,
         editable=False,
     )
-    reviewer = models.ForeignKey("talent.Person", on_delete=models.SET_NULL, null=True)
+    reviewer = models.ForeignKey(
+        "talent.Person", on_delete=models.SET_NULL, null=True
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     video_url = models.URLField(blank=True, null=True)
     contribution_guide = models.ForeignKey(
@@ -263,7 +277,10 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def get_absolute_url(self):
         return reverse(
             "challenge_detail",
-            kwargs={"product_slug": self.product.slug, "challenge_id": self.pk},
+            kwargs={
+                "product_slug": self.product.slug,
+                "challenge_id": self.pk,
+            },
         )
 
     def can_delete_challenge(self, person):
@@ -376,9 +393,13 @@ class Bounty(TimeStampMixin):
         null=True,
         default=None,
     )
-    expertise = models.ManyToManyField(Expertise, related_name="bounty_expertise")
+    expertise = models.ManyToManyField(
+        Expertise, related_name="bounty_expertise"
+    )
     points = models.IntegerField()
-    status = models.IntegerField(choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE)
+    status = models.IntegerField(
+        choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE
+    )
     is_active = models.BooleanField(default=True)
 
     def get_expertise_as_str(self):
@@ -389,7 +410,9 @@ class Bounty(TimeStampMixin):
 
 
 class ChallengeDependency(models.Model):
-    preceding_challenge = models.ForeignKey(to=Challenge, on_delete=models.CASCADE)
+    preceding_challenge = models.ForeignKey(
+        to=Challenge, on_delete=models.CASCADE
+    )
     subsequent_challenge = models.ForeignKey(
         to=Challenge, on_delete=models.CASCADE, related_name="Challenge"
     )
@@ -408,12 +431,16 @@ def save_product_task(sender, instance, created, **kwargs):
     if created:
         challenge = instance.challenge
         last_product_challenge = (
-            Challenge.objects.filter(productchallenge__product=instance.product)
+            Challenge.objects.filter(
+                productchallenge__product=instance.product
+            )
             .order_by("-published_id")
             .first()
         )
         challenge.published_id = (
-            last_product_challenge.published_id + 1 if last_product_challenge else 1
+            last_product_challenge.published_id + 1
+            if last_product_challenge
+            else 1
         )
         challenge.save()
 
@@ -431,7 +458,9 @@ class ContributorAgreement(models.Model):
 
 
 class ContributorAgreementAcceptance(models.Model):
-    agreement = models.ForeignKey(to=ContributorAgreement, on_delete=models.CASCADE)
+    agreement = models.ForeignKey(
+        to=ContributorAgreement, on_delete=models.CASCADE
+    )
     person = models.ForeignKey(
         to="talent.Person",
         on_delete=models.CASCADE,
@@ -445,7 +474,9 @@ class ContributorAgreementAcceptance(models.Model):
 
 class ContributorGuide(models.Model):
     product = models.ForeignKey(
-        to=Product, on_delete=models.CASCADE, related_name="product_contributor_guide"
+        to=Product,
+        on_delete=models.CASCADE,
+        related_name="product_contributor_guide",
     )
     title = models.CharField(max_length=60, unique=True)
     description = models.TextField(null=True, blank=True)

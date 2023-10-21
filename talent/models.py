@@ -25,7 +25,9 @@ class Person(TimeStampMixin):
         "security.User", on_delete=models.CASCADE, related_name="person"
     )
     products = GenericRelation("product_management.Product")
-    photo = models.ImageField(upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
+    photo = models.ImageField(
+        upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True
+    )
     headline = models.TextField()
     overview = models.TextField(blank=True)
     location = models.TextField(max_length=128, null=True, blank=True)
@@ -121,17 +123,25 @@ class Status(models.Model):
     }
 
     STATUS_PRIVILEGES_MAPPING = {
-        DRONE: _("Earn points by completing bounties, submitting Ideas & Bugs"),
-        HONEYBEE: _("Earn payment for payment-eligible bounties on openunited.com"),
+        DRONE: _(
+            "Earn points by completing bounties, submitting Ideas & Bugs"
+        ),
+        HONEYBEE: _(
+            "Earn payment for payment-eligible bounties on openunited.com"
+        ),
         TRUSTED_BEE: _("Early Access to claim top tasks"),
-        QUEEN_BEE: _("A grant of 1000 points for your own open product on OpenUnited"),
+        QUEEN_BEE: _(
+            "A grant of 1000 points for your own open product on OpenUnited"
+        ),
         BEEKEEPER: _("Invite new products to openunited.com and grant points"),
     }
 
     person = models.OneToOneField(
         Person, on_delete=models.CASCADE, related_name="status"
     )
-    name = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRONE)
+    name = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default=DRONE
+    )
     points = models.PositiveIntegerField(default=0)
 
     @classmethod
@@ -217,7 +227,9 @@ class Skill(AncestryMixin):
 
     @staticmethod
     def get_active_skill_list(active=True):
-        return Skill.objects.filter(active=active, parent=None).values("id", "name")
+        return Skill.objects.filter(active=active, parent=None).values(
+            "id", "name"
+        )
 
 
 class Expertise(AncestryMixin):
@@ -268,8 +280,12 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         (CLAIM_TYPE_FAILED, "Failed"),
         (CLAIM_TYPE_IN_REVIEW, "In review"),
     )
-    bounty = models.ForeignKey("product_management.Bounty", on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    bounty = models.ForeignKey(
+        "product_management.Bounty", on_delete=models.CASCADE
+    )
+    person = models.ForeignKey(
+        Person, on_delete=models.CASCADE, blank=True, null=True
+    )
     expected_finish_date = models.DateField(default=date.today)
     kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
 
@@ -284,7 +300,9 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
 
 
 class Comment(MP_Node):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    person = models.ForeignKey(
+        Person, on_delete=models.CASCADE, blank=True, null=True
+    )
     text = models.TextField(max_length=1000)
 
     class Meta:
@@ -330,7 +348,9 @@ class BountyDeliveryAttempt(TimeStampMixin):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     is_canceled = models.BooleanField(default=False)
     delivery_message = models.CharField(max_length=2000, default=None)
-    attachment = models.FileField("bounty_delivery_attempts/", blank=True, null=True)
+    attachment = models.FileField(
+        "bounty_delivery_attempts/", blank=True, null=True
+    )
 
 
 class Feedback(models.Model):

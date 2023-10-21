@@ -260,9 +260,9 @@ class OrganisationForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get("username")
 
-        if Organisation.objects.filter(username=username) or Person.objects.filter(
-            user__username=username
-        ):
+        if Organisation.objects.filter(
+            username=username
+        ) or Person.objects.filter(user__username=username):
             raise ValidationError(_("This username is already taken."))
 
         return username
@@ -341,7 +341,9 @@ class ChallengeForm(forms.ModelForm):
 class BountyForm(forms.ModelForm):
     challenge = forms.ModelChoiceField(
         empty_label="Select a challenge",
-        queryset=Challenge.objects.filter(status=Challenge.CHALLENGE_STATUS_AVAILABLE),
+        queryset=Challenge.objects.filter(
+            status=Challenge.CHALLENGE_STATUS_AVAILABLE
+        ),
         widget=forms.Select(
             attrs={
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",

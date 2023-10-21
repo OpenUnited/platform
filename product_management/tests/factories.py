@@ -37,7 +37,9 @@ class ChallengeFactory(DjangoModelFactory):
     # Looping is required because we cannot pass a list of sets.
     # Integer list is required.
     status = FuzzyChoice([status[0] for status in Challenge.CHALLENGE_STATUS])
-    priority = FuzzyChoice([priority[0] for priority in Challenge.CHALLENGE_PRIORITY])
+    priority = FuzzyChoice(
+        [priority[0] for priority in Challenge.CHALLENGE_PRIORITY]
+    )
     reward_type = FuzzyChoice([reward[0] for reward in Challenge.REWARD_TYPE])
 
     class Meta:

@@ -125,7 +125,9 @@ class PersonProfileForm(forms.ModelForm):
             ),
         }
 
-        help_texts = {"send_me_bounties": "Get notified when a new bounty is added."}
+        help_texts = {
+            "send_me_bounties": "Get notified when a new bounty is added."
+        }
 
 
 class FeedbackForm(forms.ModelForm):
@@ -170,7 +172,9 @@ class FeedbackForm(forms.ModelForm):
 class BountyDeliveryAttemptForm(forms.ModelForm):
     bounty_claim = forms.ModelChoiceField(
         empty_label="Select a Bounty Claim",
-        queryset=BountyClaim.objects.filter(kind=BountyClaim.CLAIM_TYPE_ACTIVE),
+        queryset=BountyClaim.objects.filter(
+            kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        ),
         label="Bounty Claim",
         widget=forms.Select(
             attrs={

@@ -23,7 +23,9 @@ def create_image(image_name):
 class PersonModelTest(TestCase):
     def setUp(self):
         self.person = PersonFactory()
-        self.person_with_photo = PersonFactory(photo=create_image("test_image.jpg"))
+        self.person_with_photo = PersonFactory(
+            photo=create_image("test_image.jpg")
+        )
 
     def test_get_photo_url(self):
         actual_url, requires_upload = self.person.get_photo_url()
@@ -58,6 +60,10 @@ class StatusModelTest(TestCase):
     def test_get_display_points(self):
         self.assertEqual(Status.get_display_points(Status.DRONE), "< 50")
         self.assertEqual(Status.get_display_points(Status.HONEYBEE), "< 500")
-        self.assertEqual(Status.get_display_points(Status.TRUSTED_BEE), "< 2000")
+        self.assertEqual(
+            Status.get_display_points(Status.TRUSTED_BEE), "< 2000"
+        )
         self.assertEqual(Status.get_display_points(Status.QUEEN_BEE), "< 8000")
-        self.assertEqual(Status.get_display_points(Status.BEEKEEPER), ">= 8000")
+        self.assertEqual(
+            Status.get_display_points(Status.BEEKEEPER), ">= 8000"
+        )

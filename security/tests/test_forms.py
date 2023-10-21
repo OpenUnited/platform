@@ -2,7 +2,11 @@ from django.test import TestCase
 from django.forms import ValidationError
 
 from security.models import SignUpRequest
-from security.forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from security.forms import (
+    SignUpStepOneForm,
+    SignUpStepTwoForm,
+    SignUpStepThreeForm,
+)
 from .factories import UserFactory
 from security.constants import SIGN_UP_REQUEST_ID
 
@@ -50,7 +54,9 @@ class SignUpStepOneFormTest(TestCase):
         cleaned_email = form.clean_email()
         self.assertIsNone(cleaned_email)
 
-        expected_error_message = "That email isn't available, please try another"
+        expected_error_message = (
+            "That email isn't available, please try another"
+        )
         self.assertIn(expected_error_message, form.errors.get("email", []))
 
     def test_valid_clean(self):
@@ -72,14 +78,17 @@ class SignUpStepOneFormTest(TestCase):
 
 class SignUpStepTwoFormTest(TestCase):
     def setUp(self):
-        self.signup_request = SignUpRequest.objects.create(verification_code="123456")
+        self.signup_request = SignUpRequest.objects.create(
+            verification_code="123456"
+        )
 
     def test_missing_verification_code(self):
         form_data = {
             "verification_code": "",
         }
         form = SignUpStepTwoForm(
-            data=form_data, initial={SIGN_UP_REQUEST_ID: self.signup_request.id}
+            data=form_data,
+            initial={SIGN_UP_REQUEST_ID: self.signup_request.id},
         )
 
         self.assertFalse(form.is_valid())
@@ -89,7 +98,8 @@ class SignUpStepTwoFormTest(TestCase):
             "verification_code": "654321",
         }
         form = SignUpStepTwoForm(
-            data=form_data, initial={SIGN_UP_REQUEST_ID: self.signup_request.id}
+            data=form_data,
+            initial={SIGN_UP_REQUEST_ID: self.signup_request.id},
         )
 
         self.assertFalse(form.is_valid())
@@ -101,7 +111,8 @@ class SignUpStepTwoFormTest(TestCase):
             "verification_code": "123456",
         }
         form = SignUpStepTwoForm(
-            data=form_data, initial={SIGN_UP_REQUEST_ID: self.signup_request.id}
+            data=form_data,
+            initial={SIGN_UP_REQUEST_ID: self.signup_request.id},
         )
 
         self.assertTrue(form.is_valid())
