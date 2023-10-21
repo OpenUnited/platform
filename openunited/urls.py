@@ -27,6 +27,7 @@ urlpatterns += [
     path("talent/", include("talent.urls")),
     path("", include("security.urls")),
     path("", include("product_management.urls")),
+    path("backup/", include("openunited_backup.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
