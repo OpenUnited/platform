@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
+
+import version
 
 
 def home(request):
@@ -19,3 +21,7 @@ def enterprise_customers(request):
 
 def custom_404_view(request, exception):
     return render(request, "404.html")
+
+
+def version_view(request):
+    return HttpResponse(f"Version Number: {version.version}")
