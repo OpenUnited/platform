@@ -13,6 +13,7 @@ from .views import (
     UpdateFeedbackView,
     DeleteFeedbackView,
     CreateBountyDeliveryAttemptView,
+    BountyDeliveryAttemptDetail,
 )
 
 urlpatterns = [
@@ -41,5 +42,10 @@ urlpatterns = [
         "bounty-delivery-attempt/create/",
         CreateBountyDeliveryAttemptView.as_view(),
         name="create-bounty-delivery-attempt",
+    ),
+    path(
+        "bounty-delivery-attempt/<int:pk>/",
+        BountyDeliveryAttemptDetail.as_view(),
+        name="bounty-delivery-attempt-detail",
     ),
 ]

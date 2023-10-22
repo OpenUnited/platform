@@ -180,9 +180,12 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        # todo: get id from the previous view
-        # if there is a id, init bounty_claim with it, if not, pass an empty value
-        pass
+        self.request = kwargs.pop("request", None)
+        super().__init__(*args, **kwargs)
+        if self.request:
+            pk = self.request.GET.get("id", None)
+            instance = BountyClaim.objects.get(id=pk)
+            self.fields["bounty_claim"].initial = instance
 
     class Meta:
         model = BountyDeliveryAttempt
@@ -204,3 +207,5 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
                 }
             ),
         }
+
+        labels = {"attachment": "Attachment"}

@@ -332,6 +332,12 @@ class BountyDeliveryAttempt(TimeStampMixin):
     delivery_message = models.CharField(max_length=2000, default=None)
     attachment = models.FileField("bounty_delivery_attempts/", blank=True, null=True)
 
+    def get_absolute_url(self):
+        return reverse("bounty-delivery-attempt-detail", kwargs={"pk": self.pk})
+
+    def __str__(self):
+        return f"{self.person} - {self.delivery_message}"
+
 
 class Feedback(models.Model):
     # Person who recevies the feedback
