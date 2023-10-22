@@ -39,6 +39,7 @@ from .views import (
     DeleteBountyClaimView,
     bounty_claim_actions,
     DashboardReviewWorkView,
+    CreateInitiativeView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -211,6 +212,11 @@ urlpatterns += [
 
 # URL patterns for initiative, capability, and challenge detail views
 urlpatterns += [
+    path(
+        "<str:product_slug>/initiative/create",
+        CreateInitiativeView.as_view(),
+        name="create-initiative",
+    ),
     path(
         "<str:product_slug>/initiative/<int:initiative_id>",
         InitiativeDetailView.as_view(),

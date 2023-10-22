@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -30,6 +30,7 @@ from .forms import (
     OrganisationForm,
     ChallengeForm,
     BountyForm,
+    InitiativeForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -318,6 +319,37 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
             context.update({"is_claimed": False})
 
         return context
+
+
+class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    form_class = InitiativeForm
+    template_name = "product_management/create_initiative.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["slug"] = self.kwargs.get("product_slug")
+
+        return kwargs
+
+    def get_success_url(self):
+        return reverse(
+            "product_initiatives",
+            args=(self.kwargs.get("product_slug"),),
+        )
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            product = form.cleaned_data.get("product")
+            instance.product = product
+            instance.save()
+
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super().post(request, *args, **kwargs)
 
 
 class InitiativeDetailView(BaseProductDetailView, TemplateView):
