@@ -179,8 +179,6 @@ else:
 
 PERSON_PHOTO_UPLOAD_TO = "avatars/"
 
-PROFILE_PICTURE_ROOT = os.path.join(MEDIA_ROOT, PERSON_PHOTO_UPLOAD_TO)
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
