@@ -37,7 +37,7 @@
 -->
     <div class="min-h-full">
         <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
-        <div class="relative z-40 lg:hidden" role="dialog" aria-modal="true">
+        <div id="mobile-menu-navbar" class="relative hidden z-40 lg:hidden" role="dialog" aria-modal="true">
             <!--
       Off-canvas menu backdrop, show/hide based on off-canvas menu state.
 
@@ -73,7 +73,7 @@
             To: "opacity-0"
         -->
                     <div class="absolute right-0 top-0 -mr-12 pt-2">
-                        <button type="button"
+                        <button type="button" _="on click add .hidden to #mobile-menu-navbar"
                             class="relative ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                             <span class="absolute -inset-0.5"></span>
                             <span class="sr-only">Close sidebar</span>
@@ -89,11 +89,17 @@
                             alt="Your Company">
                     </div>
                     <div class="mt-5 h-0 flex-1 overflow-y-auto">
-                        <nav class="px-2">
+                        <nav class="mt-6 px-3" _="on click from <button/> in me
+                                    remove .bg-gray-200 .text-gray-900 from <button/> in me
+                                    add .text-gray-700 .hover:bg-gray-50 .hover:text-gray-900 to <button/> in me
+                                    add .hidden to #mobile-menu-navbar
+                                    tell the target
+                                        add .bg-gray-200 .text-gray-900">
                             <div class="space-y-1">
-                                <!-- Current: "bg-gray-100 text-gray-900", Default: "text-gray-600 hover:bg-gray-50 hover:text-gray-900" -->
-                                <a href="#"
-                                    class="bg-gray-100 text-gray-900 group flex items-center rounded-md px-2 py-2 text-base font-medium leading-5"
+                                <!-- Current: "bg-gray-200 text-gray-900", Default: "text-gray-700 hover:bg-gray-50 hover:text-gray-900" -->
+                                <button hx-get="{{ url('dashboard-home') }}" hx-target="#dashboard-tabs"
+                                    hx-swap="innerHTML"
+                                    class="w-full bg-gray-200 text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                                     aria-current="page">
                                     <!-- Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500" -->
                                     <svg class="text-gray-500 mr-3 h-6 w-6 flex-shrink-0" fill="none"
@@ -102,57 +108,58 @@
                                             d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                                     </svg>
                                     Home
-                                </a>
-                                <a href="#"
-                                    class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-base font-medium leading-5">
+                                </button>
+                                <button hx-get="{{ url('manage-bounties') }}" hx-target="#dashboard-tabs"
+                                    hx-swap="innerHTML"
+                                    class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium">
                                     <svg class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6 flex-shrink-0"
                                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                         aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
                                     </svg>
-                                    My tasks
-                                </a>
-                                <a href="#"
-                                    class="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-base font-medium leading-5">
-                                    <svg class="text-gray-400 group-hover:text-gray-500 mr-3 h-6 w-6 flex-shrink-0"
-                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                        aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    My bounties
+                                </button>
+                                <button _="on click
+                                        toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu
+                                        then toggle .hidden on #sub-menu-1" type="button" class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center
+                            rounded-md px-2 py-2 text-sm font-medium" aria-controls="sub-menu-1" aria-expanded="false">
+                                    <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
+                                    <svg id="side-arrow-for-expandable-menu" class="text-gray-400 mr-3 h-6 w-6 shrink-0"
+                                        viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd"
+                                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                                            clip-rule="evenodd" />
                                     </svg>
-                                    Recent
-                                </a>
+                                    Products
+                                </button>
+                                <!-- Expandable link section, show/hide based on state. -->
+                                <ul _="on click from <a/> in me
+                                 remove .bg-gray-50 from <a/> in me
+                                 add .hover:bg-gray-50 to <a/> in me
+                                 tell the target
+                                    add .bg-gray-50" class="hidden mt-1 px-2" id="sub-menu-1">
+                                    {% if products %}
+                                    {% for product in products %}
+                                    <li>
+                                        <!-- TODO: Maybe this anchor tag can be converted to a button -->
+                                        <a hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}"
+                                            hx-target="#dashboard-tabs" hx-swap="innerHTML"
+                                            class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    {% else %}
+                                    <li>
+                                        <a href="#"
+                                            class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">No
+                                            product is found.</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
                             </div>
-                            <div class="mt-8">
-                                <h3 class="px-3 text-sm font-medium text-gray-500" id="mobile-teams-headline">Teams</h3>
-                                <div class="mt-1 space-y-1" role="group" aria-labelledby="mobile-teams-headline">
-                                    <a href="#"
-                                        class="group flex items-center rounded-md px-3 py-2 text-base font-medium leading-5 text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                                        <span class="mr-4 h-2.5 w-2.5 bg-indigo-500 rounded-full"
-                                            aria-hidden="true"></span>
-                                        <span class="truncate">Engineering</span>
-                                    </a>
-                                    <a href="#"
-                                        class="group flex items-center rounded-md px-3 py-2 text-base font-medium leading-5 text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                                        <span class="mr-4 h-2.5 w-2.5 bg-green-500 rounded-full"
-                                            aria-hidden="true"></span>
-                                        <span class="truncate">Human Resources</span>
-                                    </a>
-                                    <a href="#"
-                                        class="group flex items-center rounded-md px-3 py-2 text-base font-medium leading-5 text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                                        <span class="mr-4 h-2.5 w-2.5 bg-yellow-500 rounded-full"
-                                            aria-hidden="true"></span>
-                                        <span class="truncate">Customer Success</span>
-                                    </a>
-                                </div>
-                            </div>
+
                         </nav>
                     </div>
-                </div>
-
-                <div class="w-14 flex-shrink-0" aria-hidden="true">
-                    <!-- Dummy element to force sidebar to shrink to fit close icon -->
                 </div>
             </div>
         </div>
@@ -160,7 +167,7 @@
         <div
             class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-gray-100 lg:pb-4 lg:pt-5">
             <div class="flex flex-shrink-0 items-center px-6">
-                <a href="{{ url('home') }}" >
+                <a href="{{ url('home') }}">
                     <img class="h-6 w-auto" src="{{ static('images/logo.svg') }}" alt="OpenUnited Logo">
                 </a>
             </div>
@@ -206,7 +213,8 @@
                         focus:outline-none" role="menu" aria-orientation="vertical"
                         aria-labelledby="options-menu-button" tabindex="-1">
                         <div class="py-1" role="none">
-                            <a href="{{ url('profile', args=(request.user.person.pk,) ) }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
+                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-0">View profile</a>
                             <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
                                 id="options-menu-item-1">Settings</a>
@@ -317,7 +325,7 @@
             <!-- Search header -->
             <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:hidden">
                 <!-- Sidebar toggle, controls the 'sidebarOpen' sidebar state. -->
-                <button type="button"
+                <button type="button" _="on click remove .hidden from #mobile-menu-navbar"
                     class="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden">
                     <span class="sr-only">Open sidebar</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -369,7 +377,7 @@
                 From: "transform opacity-100 scale-100"
                 To: "transform opacity-0 scale-95"
             -->
-                            <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                            <div class="absolute hidden right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
                                 tabindex="-1">
                                 <div class="py-1" role="none">
