@@ -282,6 +282,9 @@ def generate_sample_data():
             bcd["person"] = people[i % MAX_PERSON_INDEX]
             bcd["bounty"] = bounties[i]
             bounty_claims.append(BountyClaimService.create(**bcd))
+            bb = Bounty.objects.get(id=bounties[i].id)
+            bb.challenge.status = 3
+            bb.save()
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -357,6 +360,7 @@ if __name__ == "__main__":
     django.setup()
 
     from talent.models import Skill, Expertise
+    from product_management.models import Bounty
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,
