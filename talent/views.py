@@ -117,6 +117,8 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             )
             skill_and_expertise.save()
 
+            return HttpResponseRedirect(reverse("profile", args=(person.pk,)))
+
         return super().post(request, *args, **kwargs)
 
 
