@@ -396,3 +396,24 @@ class BountyDeliveryAttemptDetail(DetailView):
     model = BountyDeliveryAttempt
     context_object_name = "object"
     template_name = "product_management/bounty_delivery_attempt_detail.html"
+
+    TRIGGER_KEY = "bounty-delivery-action"
+    APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
+    REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        value = request.POST.get(self.TRIGGER_KEY)
+        success = False
+        if value == self.APPROVE_TRIGGER_NAME:
+            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED
+            success = True
+        elif value == self.REJECT_TRIGGER_NAME:
+            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED
+            success = True
+
+        if success:
+            self.object.save()
+            return HttpResponseRedirect(reverse("dashboard"))
+
+        return super().post(request, *args, **kwargs)

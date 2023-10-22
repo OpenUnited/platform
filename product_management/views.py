@@ -910,5 +910,8 @@ def bounty_claim_actions(request, pk):
 class DashboardReviewWorkView(LoginRequiredMixin, ListView):
     model = BountyDeliveryAttempt
     context_object_name = "bounty_deliveries"
+    queryset = BountyDeliveryAttempt.objects.filter(
+        kind=BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
+    )
     template_name = "product_management/dashboard/review_work.html"
     login_url = "sign_in"
