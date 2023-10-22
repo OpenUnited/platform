@@ -1,7 +1,7 @@
 [
     {
         "points": 25,
-        "status": 3,
+        "status": 2,
         "is_active": true
     },
     {
@@ -21,17 +21,17 @@
     },
     {
         "points": 75,
-        "status": 4,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 18,
-        "status": 5,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 32,
-        "status": 3,
+        "status": 2,
         "is_active": true
     },
     {
@@ -51,17 +51,17 @@
     },
     {
         "points": 82,
-        "status": 4,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 22,
-        "status": 5,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 28,
-        "status": 3,
+        "status": 2,
         "is_active": true
     },
     {
@@ -81,17 +81,17 @@
     },
     {
         "points": 80,
-        "status": 4,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 15,
-        "status": 5,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 29,
-        "status": 3,
+        "status": 2,
         "is_active": true
     },
     {
@@ -111,17 +111,17 @@
     },
     {
         "points": 85,
-        "status": 4,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 20,
-        "status": 5,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 35,
-        "status": 3,
+        "status": 2,
         "is_active": true
     },
     {
@@ -141,12 +141,12 @@
     },
     {
         "points": 90,
-        "status": 4,
+        "status": 2,
         "is_active": true
     },
     {
         "points": 12,
-        "status": 5,
+        "status": 2,
         "is_active": true
     }
 ]
