@@ -3,20 +3,20 @@
 {% block title %}Product - Ideas&Bugs{% endblock %}
 {% block product_content %}
 
-<div class="">
+<div>
     <div class="flex items-center">
         <div class="mr-3 w-10 h-10">
+            {% set photo_url, _ = idea.person.get_photo_url() %}
             <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                src="https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Emma Dorsey">
+                src="{{ photo_url }}"
+                alt="">
         </div>
 
-        <!-- TODO: Later, create a jinja filter to time formatting -->
         <div>
             <span>
                 <!-- Add a link to the person's profile -->
                 <a href="#" class="font-semibold">{{ idea.person.user.username }}</a> commented on
-                <span class="text-gray-500">{{ idea.created_at.strftime("%d/%m/%Y, %H:%M:%S") }}</span>
+                <span class="text-gray-500">{{ idea.created_at|date }}</span>
             </span>
         </div>
 

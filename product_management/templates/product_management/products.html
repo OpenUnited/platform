@@ -47,7 +47,8 @@
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMUM0LjEzNDM4IDEgMSA0LjEzNDM4IDEgOEMxIDExLjg2NTYgNC4xMzQzOCAxNSA4IDE1QzExLjg2NTYgMTUgMTUgMTEuODY1NiAxNSA4QzE1IDQuMTM0MzggMTEuODY1NiAxIDggMVpNMTEuMDIzNCA1LjcxNDA2TDcuNzMyODEgMTAuMjc2NkM3LjY4NjgyIDEwLjM0MDggNy42MjYxOSAxMC4zOTMxIDcuNTU1OTUgMTAuNDI5MUM3LjQ4NTcxIDEwLjQ2NTIgNy40MDc4NyAxMC40ODQxIDcuMzI4OTEgMTAuNDg0MUM3LjI0OTk0IDEwLjQ4NDEgNy4xNzIxMSAxMC40NjUyIDcuMTAxODYgMTAuNDI5MUM3LjAzMTYyIDEwLjM5MzEgNi45NzA5OSAxMC4zNDA4IDYuOTI1IDEwLjI3NjZMNC45NzY1NiA3LjU3NjU2QzQuOTE3MTkgNy40OTM3NSA0Ljk3NjU2IDcuMzc4MTMgNS4wNzgxMiA3LjM3ODEzSDUuODEwOTRDNS45NzAzMSA3LjM3ODEzIDYuMTIxODcgNy40NTQ2OSA2LjIxNTYyIDcuNTg1OTRMNy4zMjgxMiA5LjEyOTY5TDkuNzg0MzggNS43MjM0NEM5Ljg3ODEzIDUuNTkzNzUgMTAuMDI4MSA1LjUxNTYyIDEwLjE4OTEgNS41MTU2MkgxMC45MjE5QzExLjAyMzQgNS41MTU2MiAxMS4wODI4IDUuNjMxMjUgMTEuMDIzNCA1LjcxNDA2WiIgZmlsbD0iIzM4OUUwRCIvPgo8L3N2Zz4K"
                             class="check-circle-icon" alt="status">
                         <a href="/{{ product.slug }}/challenges">
-                            {{ product.challenge_set.all()|count }} available challenges
+                            <!-- Filter the available challenges -->
+                            {{ product.challenge_set.filter(status=2)|count }} available challenges
                         </a>
                     </p>
                     <p class="text-sm text-gray-900">
