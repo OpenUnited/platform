@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
-from .models import Idea, Product, Challenge, Bounty, Initiative
+from .models import Idea, Product, Challenge, Bounty, Initiative, Capability
 from security.models import ProductRoleAssignment
 
 
@@ -459,5 +459,57 @@ class InitiativeForm(forms.ModelForm):
                     "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
                 },
                 choices=Initiative.INITIATIVE_STATUS,
+            ),
+        }
+
+
+class CapabilityForm(forms.ModelForm):
+    root = forms.ModelChoiceField(
+        required=False,
+        empty_label="Select a capability",
+        queryset=Capability.objects.all(),
+        widget=forms.Select(
+            attrs={
+                "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+            }
+        ),
+        help_text="If you want to create a root capability, you can left this field empty.",
+    )
+
+    CHOICES = [
+        ("1", "Add root"),
+        ("2", "Add sibling"),
+        ("3", "Add children"),
+    ]
+
+    creation_method = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=CHOICES,
+    )
+
+    # def __init__(self, *args, **kwargs):
+    #     self.slug = kwargs.pop("slug", None)
+    #     super().__init__(*args, **kwargs)
+
+    #     if self.slug:
+    #         product = Product.objects.get(slug=self.slug)
+    #         self.fields["root"].queryset = Capability.objects.filter(product=product)
+
+    class Meta:
+        model = Capability
+        fields = ["name", "description"]
+
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Initiative Name",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Describe your initiative in detail",
+                }
             ),
         }

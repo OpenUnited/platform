@@ -31,6 +31,7 @@ from .forms import (
     ChallengeForm,
     BountyForm,
     InitiativeForm,
+    CapabilityForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -357,10 +358,46 @@ class InitiativeDetailView(BaseProductDetailView, TemplateView):
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
-    model = Capability
-    fields = "__all__"
+    form_class = CapabilityForm
     template_name = "product_management/create_capability.html"
     login_url = "sign_in"
+
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs["slug"] = self.kwargs.get("product_slug", None)
+
+    #     return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            description = form.cleaned_data.get("description")
+            capability = form.cleaned_data.get("root")
+            creation_method = form.cleaned_data.get("creation_method")
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+            if capability is None or creation_method == "1":
+                root = Capability.add_root(name=name, description=description)
+                root.product.add(product)
+            elif creation_method == "2":
+                sibling = capability.add_sibling(name=name, description=description)
+                sibling.product.add(product)
+            elif creation_method == "3":
+                sibling = capability.add_child(name=name, description=description)
+                capability.add_child(sibling)
+
+            return redirect(
+                reverse(
+                    "product_tree",
+                    args=(
+                        kwargs.get(
+                            "product_slug",
+                        ),
+                    ),
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
 
 
 class CapabilityDetailView(BaseProductDetailView, TemplateView):

@@ -67,7 +67,11 @@ class Product(ProductMixin):
         Attachment, related_name="product_attachments", blank=True
     )
     capability_start = models.ForeignKey(
-        Capability, on_delete=models.CASCADE, null=True, editable=False
+        Capability,
+        on_delete=models.CASCADE,
+        null=True,
+        editable=False,
+        related_name="product",
     )
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
