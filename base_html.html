@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- tailwind version 3.3.2 -->
+    <link rel="stylesheet" href="{{ static('styles/tailwind.css') }}">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="{{ static('styles/styles.css') }}">
+
+    <!-- Favicon stuff -->
+    <link rel="icon" href="{{ static ('images/favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ static ('images/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ static ('images/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ static ('images/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ static ('images/favicon/site.webmanifest') }}">
+
+    {% block media %}{% endblock %}
+
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+    {% block header %}{% endblock %}
+
+    <main class="mx-auto flex flex-col w-full max-w-7xl px-4 py-6 lg:px-8 flex-1 relative z-[1]">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}{% endblock %}
+
+    <script src="https://unpkg.com/htmx.org@1.9.4"
+        integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous">
+    </script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
