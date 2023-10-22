@@ -2,7 +2,7 @@ name: Cleanup old Docker images
 on:
   schedule:
     - cron: '12 */6 * * *'
-  workflow_run:
+  workflow_dispatch:
 
 jobs:
   cleanup_images:
