@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     "django_jinja",
     "formtools",
     "debug_toolbar",
-    'dbbackup',
+    "storages",
+    "dbbackup",
     "openunited_backup",
 ]
 
@@ -114,12 +115,12 @@ DATABASES = {
 }
 
 if os.environ.get("DBBACKUP_BUCKET"):
-    DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_STORAGE_OPTIONS = {
-        'access_key': os.environ.get("DBBACKUP_ACCESS_KEY"),
-        'secret_key': os.environ.get("DBBACKUP_SECRET_KEY"),
-        'bucket_name': os.environ.get("DBBACKUP_BUCKET"),
-        'default_acl': 'private',
+        "access_key": os.environ.get("DBBACKUP_ACCESS_KEY"),
+        "secret_key": os.environ.get("DBBACKUP_SECRET_KEY"),
+        "bucket_name": os.environ.get("DBBACKUP_BUCKET"),
+        "default_acl": "private",
     }
 
 AUTH_USER_MODEL = "security.User"
