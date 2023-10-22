@@ -356,6 +356,13 @@ class InitiativeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/initiative_detail.html"
 
 
+class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    model = Capability
+    fields = "__all__"
+    template_name = "product_management/create_capability.html"
+    login_url = "sign_in"
+
+
 class CapabilityDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/capability_detail.html"
 
