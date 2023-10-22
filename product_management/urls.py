@@ -38,6 +38,7 @@ from .views import (
     DashboardBountyClaimsView,
     DeleteBountyClaimView,
     bounty_claim_actions,
+    DashboardReviewWorkView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -145,6 +146,11 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/bounties/filter/",
         DashboardProductBountyFilterView.as_view(),
         name="dashboard-product-bounty-filter",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/review-work",
+        DashboardReviewWorkView.as_view(),
+        name="dashboard-review-work",
     ),
 ]
 

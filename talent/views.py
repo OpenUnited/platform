@@ -3,10 +3,11 @@ from typing import Any
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -389,3 +390,9 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
             return HttpResponseRedirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
+
+
+class BountyDeliveryAttemptDetail(DetailView):
+    model = BountyDeliveryAttempt
+    context_object_name = "object"
+    template_name = "product_management/bounty_delivery_attempt_detail.html"

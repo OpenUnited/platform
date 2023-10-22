@@ -31,7 +31,7 @@ from .forms import (
     ChallengeForm,
     BountyForm,
 )
-from talent.models import BountyClaim
+from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
     Challenge,
     Product,
@@ -905,3 +905,10 @@ def bounty_claim_actions(request, pk):
             "dashboard-product-bounties", args=(instance.bounty.challenge.product.slug,)
         )
     )
+
+
+class DashboardReviewWorkView(LoginRequiredMixin, ListView):
+    model = BountyDeliveryAttempt
+    context_object_name = "bounty_deliveries"
+    template_name = "product_management/dashboard/review_work.html"
+    login_url = "sign_in"
