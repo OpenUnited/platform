@@ -372,6 +372,12 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
     template_name = "talent/bounty_claim_attempt.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
