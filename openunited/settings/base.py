@@ -27,7 +27,10 @@ INSTALLED_APPS = [
     "formtools",
     "debug_toolbar",
     "storages",
+    "dbbackup",
+    "openunited_backup",
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -110,6 +113,15 @@ DATABASES = {
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
+
+if os.environ.get("DBBACKUP_BUCKET"):
+    DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    DBBACKUP_STORAGE_OPTIONS = {
+        "access_key": os.environ.get("DBBACKUP_ACCESS_KEY"),
+        "secret_key": os.environ.get("DBBACKUP_SECRET_KEY"),
+        "bucket_name": os.environ.get("DBBACKUP_BUCKET"),
+        "default_acl": "private",
+    }
 
 AUTH_USER_MODEL = "security.User"
 

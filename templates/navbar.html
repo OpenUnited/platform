@@ -4,6 +4,9 @@
         <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">
             Find a Challenge
         </a>
+        <a href="{{ url('about') }}" class="text-sm font-semibold leading-6 text-gray-900">
+            About
+        </a>
     </div>
     <div class="flex justify-start lg:justify-center grow w-full h-8 lg:inset-x-0 lg:absolute z-[1]">
         <a href="{{ url('home') }}" class="-m-1.5 p-1.5">
@@ -152,9 +155,11 @@
             <ul class="space-y-5 flex flex-col pt-4 sm:pt-[30%] pb-10">
 
             <li class="flex">
-                <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">Find a
-                    Challenge</a>
-                </li>
+                <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">Find a Challenge</a>
+            </li>
+            <li class="flex">
+                <a href="{{ url('about') }}" class="text-sm font-semibold leading-6 text-gray-900">About</a>
+            </li>
                 
 
             {% if not request.user.is_authenticated %}
