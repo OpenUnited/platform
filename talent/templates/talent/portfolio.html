@@ -14,6 +14,7 @@
             <div class="relative z-[2] w-[272px] sm:w-[306px] h-[272px] sm:h-[306px] mx-auto">
                 <div
                     class="w-full h-full mx-auto rounded-full shadow-xl bg-white flex shrink-0 item-center justify-center">
+                    {% set photo_url, _ = person.get_photo_url() %}
                     <img src="{{ photo_url }}" class="h-full w-full object-cover object-center rounded-full"
                         alt="Profile Picture">
                 </div>
@@ -102,231 +103,29 @@
                     </a>
                     {% endif %}
                 </div>
-                <div class="pt-4 mt-4 border-t border-solid border-[#d8dee4] flex flex-col">
-                    <a href="#" class="text-lg font-semibold text-gray-900">Achievements</a>
-                    <div class="flex flex-wrap">
-                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="1">
-                            <div
-                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
-                                <img src="/static/assets/images/achievement-1.svg"
-                                    class="w-full h-full object-contain object-center" alt="#">
-                            </div>
-                            <div
-                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                x3</div>
-                            <div
-                                class="hidden group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
-                                <div
-                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
-                                    <img src="/static/assets/images/achievement-1.svg"
-                                        class="w-full h-full object-contain object-center" alt="#">
-                                </div>
-                                <div class="pt-3">
-                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
-                                        Created Challenges
-                                        <div
-                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                            x3</div>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <div class="text-[#656d76] text-xs mb-2">List of created Challenges</div>
-                                        <div class="flex flex-col">
-                                            <div
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
-                                                Bronze and Silver unlocked
-                                            </div>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                Tweak "add product" logic
-                                            </a>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                UserInvitation, ProductInvitation and Contributor role
-                                            </a>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                Others
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="2">
-                            <div
-                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
-                                <img src="/static/assets/images/achievement-2.svg"
-                                    class="w-full h-full object-contain object-center" alt="#">
-                            </div>
-                            <div
-                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                x2</div>
-                            <div
-                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
-                                <div
-                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
-                                    <img src="/static/assets/images/achievement-2.svg"
-                                        class="w-full h-full object-contain object-center" alt="#">
-                                </div>
-                                <div class="pt-3">
-                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
-                                        Participate in Products <div
-                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                            x2</div>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
-                                        <div class="flex flex-col">
-                                            <div
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
-                                                Bronze and Silver locked
-                                            </div>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                Tweak "add product" logic
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="3">
-                            <div
-                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
-                                <img src="/static/assets/images/achievement-3.svg"
-                                    class="w-full h-full object-contain object-center" alt="#">
-                            </div>
-                            <div
-                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                x2</div>
-                            <div
-                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 -left-[134px] lg:right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
-                                <div
-                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
-                                    <img src="/static/assets/images/achievement-2.svg"
-                                        class="w-full h-full object-contain object-center" alt="#">
-                                </div>
-                                <div class="pt-3">
-                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
-                                        Participate in Products <div
-                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                            x2</div>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
-                                        <div class="flex flex-col">
-                                            <div
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
-                                                Bronze and Silver locked
-                                            </div>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                Tweak "add product" logic
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="4">
-                            <div
-                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
-                                <img src="/static/assets/images/achievement-4.svg"
-                                    class="w-full h-full object-contain object-center" alt="#">
-                            </div>
-                            <div
-                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                x2</div>
-                            <div
-                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
-                                <div
-                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
-                                    <img src="/static/assets/images/achievement-2.svg"
-                                        class="w-full h-full object-contain object-center" alt="#">
-                                </div>
-                                <div class="pt-3">
-                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
-                                        Participate in Products <div
-                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                            x2</div>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
-                                        <div class="flex flex-col">
-                                            <div
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
-                                                Bronze and Silver locked
-                                            </div>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                Tweak "add product" logic
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="group relative mt-2.5 mr-2.5 last:mr-0 w-14 h-14" data-achievemnt="5">
-                            <div
-                                class="w-full h-full flex shrink-0 items-center justify-center relative z-[1] p-1 bg-white shadow-md rounded-md">
-                                <img src="/static/assets/images/achievement-2.svg"
-                                    class="w-full h-full object-contain object-center" alt="#">
-                            </div>
-                            <div
-                                class="absolute -bottom-1.5 -right-1.5 z-[2] bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                x2</div>
-                            <div
-                                class="hidden group-focus:block group-hover:block absolute z-[3] bottom-10 right-auto w-[280px] p-3 bg-white border border-solid border-[#d0d7de] shadow-md rounded-md">
-                                <div
-                                    class="h-20 w-20 flex shrink-0 items-center justify-center mx-auto bg-white shadow-md rounded-md">
-                                    <img src="/static/assets/images/achievement-2.svg"
-                                        class="w-full h-full object-contain object-center" alt="#">
-                                </div>
-                                <div class="pt-3">
-                                    <div class="flex items-center border-b border-solid border-[#d0d7de] pb-3 mb-3">
-                                        Participate in Products <div
-                                            class="ml-3 bg-gray-50 text-blue-400 rounded-lg text-xs px-1 py-0.5 border border-solid border-blue-400">
-                                            x2</div>
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <div class="text-[#656d76] text-xs mb-2">List of participation in Products</div>
-                                        <div class="flex flex-col">
-                                            <div
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500">
-                                                Bronze and Silver locked
-                                            </div>
-                                            <a href="#"
-                                                class="relative my-1.5 pl-3 w-full truncate border-l border-dashed border-[#d0d7de]  text-xs text-gray-500 hover:text-blue-400 transition-all">
-                                                Tweak "add product" logic
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- {% include 'talent/partials/portfolio_achievements.html' %} -->
             </div>
         </div>
         <div class="grow border border-solid border-[#d0d7de] px-4 py-5 sm:p-6 bg-white rounded-md mt-[54px]">
             {% if request.user.person != person %}
-            <button type="button"
-                class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
+            <a href="{{ url('sign-up') }}">
+                <button type="button"
+                    class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
         border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
-                Create a Portfolio like this
-            </button>
+                    Create a Portfolio like this
+                </button>
+            </a>
             {% endif %}
             <div class="flex items-center pb-2.5 mb-4 border-b border-solid border-[#d0d7de]">
-                <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">{{ person.headline }}</h2>
+                <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">
+                    {{ person.headline }}</h2>
             </div>
             <div class="flex flex-col text-sm leading-6 text-gray-500">
                 <p>{{ person.overview }}</p>
             </div>
             <div class="text-lg font-semibold mb-2.5 mt-6">My Skills / Expertise</div>
             <div class="flex items-center flex-wrap">
+                {% if expertise %}
                 {% for exp in expertise %}
                 <div
                     class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
@@ -344,6 +143,9 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                <p class="text-sm italic">There are no expertise to list.</p>
+                {% endif %}
             </div>
             <div class="text-lg font-semibold mb-2.5 mt-6">Open Products I contribute to</div>
 

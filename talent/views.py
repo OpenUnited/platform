@@ -3,10 +3,11 @@ from typing import Any
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -221,7 +222,6 @@ def list_skill_and_expertise(request):
     return JsonResponse([], safe=False)
 
 
-# NOTE: The links in this view are not completed
 class TalentPortfolio(TemplateView):
     User = get_user_model()
     template_name = "talent/portfolio.html"
@@ -229,17 +229,17 @@ class TalentPortfolio(TemplateView):
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(self.User, username=username)
         person = user.person
-        photo_url, _ = person.get_photo_url()
 
-        status = person.status
         person_skill = person.skills.all().first()
         bounty_claims = BountyClaim.objects.filter(
             person=person, bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE
         ).select_related("bounty__challenge")
         received_feedbacks = Feedback.objects.filter(recipient=person)
 
-        if request.user == user or received_feedbacks.filter(
-            provider=request.user.person
+        if (
+            request.user.is_anonymous
+            or request.user == user
+            or received_feedbacks.filter(provider=request.user.person)
         ):
             can_leave_feedback = False
         else:
@@ -247,13 +247,11 @@ class TalentPortfolio(TemplateView):
 
         context = {
             "user": user,
-            "photo_url": photo_url,
             "person": person,
             "person_linkedin_link": get_path_from_url(person.linkedin_link, True),
             "person_twitter_link": get_path_from_url(person.twitter_link, True),
-            "status": status,
-            "skills": person_skill.skill if person_skill else None,
-            "expertise": person_skill.expertise if person_skill else None,
+            "status": person.status,
+            "expertise": person_skill.expertise if person_skill else [],
             "bounty_claims": bounty_claims,
             "FeedbackService": FeedbackService,
             "received_feedbacks": received_feedbacks,
@@ -375,6 +373,12 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
     template_name = "talent/bounty_claim_attempt.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
@@ -384,5 +388,32 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
             instance.save()
 
             return HttpResponseRedirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class BountyDeliveryAttemptDetail(DetailView):
+    model = BountyDeliveryAttempt
+    context_object_name = "object"
+    template_name = "product_management/bounty_delivery_attempt_detail.html"
+
+    TRIGGER_KEY = "bounty-delivery-action"
+    APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
+    REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        value = request.POST.get(self.TRIGGER_KEY)
+        success = False
+        if value == self.APPROVE_TRIGGER_NAME:
+            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED
+            success = True
+        elif value == self.REJECT_TRIGGER_NAME:
+            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED
+            success = True
+
+        if success:
+            self.object.save()
+            return HttpResponseRedirect(reverse("dashboard"))
 
         return super().post(request, *args, **kwargs)

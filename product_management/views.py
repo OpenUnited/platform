@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -30,8 +30,10 @@ from .forms import (
     OrganisationForm,
     ChallengeForm,
     BountyForm,
+    InitiativeForm,
+    CapabilityForm,
 )
-from talent.models import BountyClaim
+from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
     Challenge,
     Product,
@@ -320,8 +322,82 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         return context
 
 
+class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    form_class = InitiativeForm
+    template_name = "product_management/create_initiative.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["slug"] = self.kwargs.get("product_slug")
+
+        return kwargs
+
+    def get_success_url(self):
+        return reverse(
+            "product_initiatives",
+            args=(self.kwargs.get("product_slug"),),
+        )
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            product = form.cleaned_data.get("product")
+            instance.product = product
+            instance.save()
+
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super().post(request, *args, **kwargs)
+
+
 class InitiativeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/initiative_detail.html"
+
+
+class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    form_class = CapabilityForm
+    template_name = "product_management/create_capability.html"
+    login_url = "sign_in"
+
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs["slug"] = self.kwargs.get("product_slug", None)
+
+    #     return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            description = form.cleaned_data.get("description")
+            capability = form.cleaned_data.get("root")
+            creation_method = form.cleaned_data.get("creation_method")
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+            if capability is None or creation_method == "1":
+                root = Capability.add_root(name=name, description=description)
+                root.product.add(product)
+            elif creation_method == "2":
+                sibling = capability.add_sibling(name=name, description=description)
+                sibling.product.add(product)
+            elif creation_method == "3":
+                sibling = capability.add_child(name=name, description=description)
+                capability.add_child(sibling)
+
+            return redirect(
+                reverse(
+                    "product_tree",
+                    args=(
+                        kwargs.get(
+                            "product_slug",
+                        ),
+                    ),
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
 
 
 class CapabilityDetailView(BaseProductDetailView, TemplateView):
@@ -905,3 +981,13 @@ def bounty_claim_actions(request, pk):
             "dashboard-product-bounties", args=(instance.bounty.challenge.product.slug,)
         )
     )
+
+
+class DashboardReviewWorkView(LoginRequiredMixin, ListView):
+    model = BountyDeliveryAttempt
+    context_object_name = "bounty_deliveries"
+    queryset = BountyDeliveryAttempt.objects.filter(
+        kind=BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
+    )
+    template_name = "product_management/dashboard/review_work.html"
+    login_url = "sign_in"
