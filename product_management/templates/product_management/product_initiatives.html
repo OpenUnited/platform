@@ -29,11 +29,15 @@
         {% for initiative in initiatives %}
         <div class="group relative border border-solid border-[#D9D9D9] rounded flex flex-col">
             <div class="w-full h-[172px] group-hover:opacity-90 rounded-t p-px">
-                <iframe class="rounded-t" width="100%" height="100%"
+                {% if initiative.video_url %}
+                <!-- <iframe class="rounded-t" width="100%" height="100%"
                     src="{{ initiative.video_url }}?autoplay=0&mute=0&controls=0&origin=https%3A%2F%2Fopenunited.com&playsinline=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&widgetid=1"
                     title="OpenUnited Short Explainer Contributor Focus" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+                    allowfullscreen></iframe> -->
+                {% else %}
+                <div class="bg-sky-400 w-full h-[172px] group-hover:opacity-90 rounded-t p-px"></div>
+                {% endif %}
             </div>
             <div class="py-3 px-4 flex flex-col grow">
                 <div class="flex flex-wrap mb-1.5">
@@ -45,8 +49,7 @@
                     {% endfor %}
                 </div>
                 <div class="mt-auto space-y-3 flex flex-col">
-                    <!-- TODO: remove the hard-coded initiativate id -->
-                    <a href="{{ url('initiative_details', args=(product_slug, 1)) }}"
+                    <a href="{{ url('initiative_details', args=(product_slug, initiative.id,)) }}"
                         class="text-base text-black transition-all hover:text-blue-400">
                         {{ initiative.name }}
                     </a>
