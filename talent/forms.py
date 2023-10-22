@@ -207,3 +207,5 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
                 }
             ),
         }
+
+        labels = {"attachment": "Attachment"}
