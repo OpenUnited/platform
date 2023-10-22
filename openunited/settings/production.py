@@ -22,8 +22,8 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = "no-reply@openunited.com"
 
 # AWS S3 Static File Configuration
-AWS_ACCESS_KEY_ID = "DO00V4BX9UXEBKQL9YX2"
-AWS_SECRET_ACCESS_KEY = "8TpvtNkeXf3nxT6xz0oap6My4f4yyZJ2E1lABi2k0Mc"
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = "openunited-object-storage-key"
 AWS_S3_ENDPOINT_URL = "https://openunited.ams3.digitaloceanspaces.com"
 AWS_S3_OBJECT_PARAMETERS = {
