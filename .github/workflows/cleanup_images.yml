@@ -16,5 +16,5 @@ jobs:
         uses: ripplr-io/docr-image-remove@v1
         with:
           image_repository: core
-          buffer_size: 20
+          buffer_size: 16
             
