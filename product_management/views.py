@@ -644,10 +644,6 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class DashboardBountyClaimsView(TemplateView):
-    template_name = "product_management/dashboard/accepted_bounty_claims.html"
-
-
 class DashboardProductDetailView(DashboardBaseView, DetailView):
     model = Product
     template_name = "product_management/dashboard/product_detail.html"
