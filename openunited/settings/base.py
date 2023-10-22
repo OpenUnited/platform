@@ -96,6 +96,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "openunited.wsgi.application"
 
+# When running in a DigitalOcean app, Django sits behind a proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
