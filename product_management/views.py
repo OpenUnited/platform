@@ -107,7 +107,9 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = context["product"]
-        challenges = Challenge.objects.filter(product=product)
+        challenges = Challenge.objects.filter(
+            product=product, status=Challenge.CHALLENGE_STATUS_AVAILABLE
+        )
         context.update(
             {
                 "product": product,
