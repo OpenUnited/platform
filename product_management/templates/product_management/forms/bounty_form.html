@@ -28,6 +28,13 @@
                     <div class="mt-2">
                         {{ form.challenge }}
                     </div>
+                    {% if form.errors.challenge %}
+                    <div>
+                        {% for error in form.errors.challenge %}
+                        <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
 
