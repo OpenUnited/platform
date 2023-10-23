@@ -29,7 +29,7 @@ services:
         source: pgdb-data
         target: "/var/lib/postgresql/data"
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: ${DBNAME}
       POSTGRES_USER: ${DBUSER}
       POSTGRES_PASSWORD: ${DBPASS}
     ports:
