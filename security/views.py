@@ -52,12 +52,6 @@ class SignUpWizard(SessionWizardView):
         return data
 
     def done(self, form_list, **kwargs):
-        import ipdb
-
-        ipdb.set_trace()
-
-        # TODO: create SignUpRequest instance
-
         first_form_data = form_list[0].cleaned_data
         second_form_data = form_list[1].cleaned_data
         third_form_data = form_list[2].cleaned_data
@@ -81,10 +75,11 @@ class SignUpWizard(SessionWizardView):
             user=user,
         )
 
+        # TODO: create SignUpRequest instance when JS library for fingerprinting is set up
+
         _ = Status.objects.create(person=person)
 
-        # SignUpRequestService.create_from_steps_form(form_list, 0)
-
+        # TODO: add next if there is a next url
         return redirect(
             reverse("sign_in") + f"?next={self.request.GET.get('next', '')}"
         )
