@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  STAGING_ID: 0fe572eb-1984-47e3-aabd-d1056b014486
+  STAGING_ID: cc67ac7f-d41b-4a9c-a2ce-37f322690cb8
 
 jobs:
   deploy:
