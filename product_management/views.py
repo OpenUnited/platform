@@ -64,6 +64,9 @@ class ChallengeListView(ListView):
         response = super().get(request, *args, **kwargs)
 
         return response
+    
+    def get_queryset(self):
+        return Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
 
 
 class ProductListView(ListView):
