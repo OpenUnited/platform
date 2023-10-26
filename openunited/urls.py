@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.generic.base import RedirectView
 
 from . import views
 
@@ -22,7 +23,7 @@ urlpatterns += [
     path("terms-of-use/", views.terms_of_use, name="terms-of-use"),
     path("enterprise-customers/", views.enterprise_customers, name="enterprise-customers"),
     path("freshlatte/", include("freshlatte.urls")),
-    path("freshlatte", include("freshlatte.urls")),
+    path("freshlatte", RedirectView.as_view(url="/freshlatte/")),
     path("version/", views.version_view, name="version"),
     path("talent/", include("talent.urls")),
     path("", include("security.urls")),
