@@ -18,15 +18,9 @@ from django.contrib.auth.views import (
 from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
 from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
-from .services import (
-    SignUpRequestService,
-    create_and_send_verification_code,
-)
 from talent.models import Person, Status
 from .models import User
 from .services import UserService
-
-from .constants import SIGN_UP_REQUEST_ID
 
 
 class SignUpWizard(SessionWizardView):
@@ -35,9 +29,6 @@ class SignUpWizard(SessionWizardView):
     initial_dict = {"0": {}, "1": {}, "2": {}}
 
     def process_step(self, form):
-        import ipdb
-
-        ipdb.set_trace()
         data = super().process_step(form)
 
         if self.get_step_index() == 0:
