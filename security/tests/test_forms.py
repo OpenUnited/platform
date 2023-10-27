@@ -1,10 +1,8 @@
 from django.test import TestCase
 from django.forms import ValidationError
 
-from security.models import SignUpRequest
-from security.forms import SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from security.forms import SignUpStepOneForm, SignUpStepThreeForm
 from .factories import UserFactory
-from security.constants import SIGN_UP_REQUEST_ID
 
 
 class SignUpStepOneFormTest(TestCase):
@@ -68,44 +66,6 @@ class SignUpStepOneFormTest(TestCase):
         cleaned_email = form.clean_email()
 
         self.assertEqual(email, cleaned_email)
-
-
-class SignUpStepTwoFormTest(TestCase):
-    def setUp(self):
-        self.signup_request = SignUpRequest.objects.create(verification_code="123456")
-
-    def test_missing_verification_code(self):
-        form_data = {
-            "verification_code": "",
-        }
-        form = SignUpStepTwoForm(
-            data=form_data, initial={SIGN_UP_REQUEST_ID: self.signup_request.id}
-        )
-
-        self.assertFalse(form.is_valid())
-
-    def test_clean_method_invalid_verification_code(self):
-        form_data = {
-            "verification_code": "654321",
-        }
-        form = SignUpStepTwoForm(
-            data=form_data, initial={SIGN_UP_REQUEST_ID: self.signup_request.id}
-        )
-
-        self.assertFalse(form.is_valid())
-        with self.assertRaises(ValidationError):
-            form.clean()
-
-    def test_clean_method_valid_verification_code(self):
-        form_data = {
-            "verification_code": "123456",
-        }
-        form = SignUpStepTwoForm(
-            data=form_data, initial={SIGN_UP_REQUEST_ID: self.signup_request.id}
-        )
-
-        self.assertTrue(form.is_valid())
-        form.clean()
 
 
 class SignUpStepThreeFormTest(TestCase):
