@@ -99,7 +99,7 @@ class SignUpStepThreeFormTest(TestCase):
         cleaned_username = form.clean_username()
         self.assertIsNone(cleaned_username)
 
-        expected_error = "Username is already exist"
+        expected_error = "Username already exists"
         self.assertIn(expected_error, form.errors.get("username"), [])
 
     def test_valid_clean(self):
