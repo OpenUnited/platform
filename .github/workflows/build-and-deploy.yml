@@ -21,7 +21,14 @@ jobs:
       with:
         fetch-depth: 0
     - name: Update the project version
-      run: pip install python-semantic-release && python -m semantic_release version --no-changelog
+      run: |
+        OLD_VERSION=$(python -c 'import version; print(version.version)')
+        pip install python-semantic-release && python -m semantic_release version --no-changelog
+        NEW_VERSION=$(python -c 'import version; print(version.version)')
+        if [[ "$OLD_VERSION" == "$NEW_VERSION" ]]; then
+          echo "No new version generated, can't deploy"
+          exit 1
+        fi
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
     - name: Build the Docker image
