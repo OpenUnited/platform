@@ -2,59 +2,60 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 
+from security.constants import SIGN_UP_REQUEST_ID
 from .factories import UserFactory
 
 
-# class SignUpViewTest(TestCase):
-#     def setUp(self):
-#         self.url = reverse("sign-up")
-#         self.client = Client()
+class SignUpViewTest(TestCase):
+    def setUp(self):
+        self.url = reverse("sign-up")
+        self.client = Client()
 
-#     def test_done(self):
-#         response = self.client.get(self.url)
+    def test_done(self):
+        response = self.client.get(self.url)
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-#         form_one = {
-#             "0-full_name": "John Doe",
-#             "0-email": "testuser@example.com",
-#             "0-preferred_name": "John",
-#             "sign_up_wizard-current_step": "0",
-#         }
+        form_one = {
+            "0-full_name": "John Doe",
+            "0-email": "testuser@example.com",
+            "0-preferred_name": "John",
+            "sign_up_wizard-current_step": "0",
+        }
 
-#         form_two = {
-#             "1-verification_code": "123456",
-#             "sign_up_wizard-current_step": "1",
-#         }
+        form_two = {
+            "1-verification_code": "123456",
+            "sign_up_wizard-current_step": "1",
+        }
 
-#         form_three = {
-#             "2-username": "john",
-#             "2-password": "password",
-#             "2-password_confirm": "password",
-#             "sign_up_wizard-current_step": "2",
-#         }
+        form_three = {
+            "2-username": "john",
+            "2-password": "password",
+            "2-password_confirm": "password",
+            "sign_up_wizard-current_step": "2",
+        }
 
-#         SIGN_UP_STEPS_DATA = [form_one, form_two, form_three]
+        SIGN_UP_STEPS_DATA = [form_one, form_two, form_three]
 
-#         for data in SIGN_UP_STEPS_DATA:
-#             response = self.client.post(self.url, data)
+        for data in SIGN_UP_STEPS_DATA:
+            response = self.client.post(self.url, data)
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-#     def test_get_context_data_step_1(self):
-#         form_one = {
-#             "0-full_name": "John Doe",
-#             "0-email": "testuser@example.com",
-#             "0-preferred_name": "John",
-#             "sign_up_wizard-current_step": "0",
-#         }
+    def test_get_context_data_step_1(self):
+        form_one = {
+            "0-full_name": "John Doe",
+            "0-email": "testuser@example.com",
+            "0-preferred_name": "John",
+            "sign_up_wizard-current_step": "0",
+        }
 
-#         response = self.client.post(self.url, form_one)
-#         initial_dict = response.context_data.get("view").initial_dict
-#         initial_dict_data_form_one = initial_dict.get("1")
+        response = self.client.post(self.url, form_one)
+        initial_dict = response.context_data.get("view").initial_dict
+        initial_dict_data_form_one = initial_dict.get("1")
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIsNotNone(initial_dict_data_form_one.get(SIGN_UP_REQUEST_ID))
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(initial_dict_data_form_one.get(SIGN_UP_REQUEST_ID))
 
 
 class SignInViewTest(TestCase):
