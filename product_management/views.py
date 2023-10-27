@@ -65,7 +65,7 @@ class ChallengeListView(ListView):
         response = super().get(request, *args, **kwargs)
 
         return response
-    
+
     def get_queryset(self):
         return Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
 
@@ -280,6 +280,7 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
+# TODO: replace TemplateView with DetailView
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/challenge_detail.html"
@@ -406,8 +407,17 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class CapabilityDetailView(BaseProductDetailView, TemplateView):
+class CapabilityDetailView(BaseProductDetailView, DetailView):
+    model = Capability
+    context_object_name = "capability"
     template_name = "product_management/capability_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["challenges"] = Challenge.objects.filter(capability=self.object)
+
+        return context
 
 
 class BountyClaimView(LoginRequiredMixin, FormView):
