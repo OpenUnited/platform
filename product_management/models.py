@@ -85,17 +85,14 @@ class Product(ProductMixin):
         self.is_private = False
         self.save()
 
-    # TODO: this method also exists in Person model. Move it in a mixin and
-    # separate requires_upload variable from this method
-    def get_photo_url(self) -> [str, bool]:
-        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
-        requires_upload = True
-
+    # TODO: this method also exists in Person model. Move it in a mixin
+    def get_photo_url(self):
+        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "product-empty.png"
+        
         if self.photo:
             image_url = self.photo.url
-            requires_upload = False
-
-        return image_url, requires_upload
+        
+        return image_url
 
     @staticmethod
     def check_slug_from_name(product_name: str) -> str | None:
