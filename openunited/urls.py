@@ -23,9 +23,10 @@ urlpatterns += [
     path("terms-of-use/", views.terms_of_use, name="terms-of-use"),
     path("enterprise-customers/", views.enterprise_customers, name="enterprise-customers"),
     path("canopy/", include("canopy.urls")),
-    path("freshlatte", RedirectView.as_view(url="/canopy/")),
+    path("canopy", RedirectView.as_view(url="/canopy/")),
     path("version/", views.version_view, name="version"),
     path("talent/", include("talent.urls")),
+    path("freshlatte", RedirectView.as_view(url="/canopy/")),
     path("", include("security.urls")),
     path("", include("product_management.urls")),
 ]
