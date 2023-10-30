@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "formtools",
     "debug_toolbar",
     "storages",
-    "freshlatte",
+    "canopy",
 ]
 
 MIDDLEWARE = [

@@ -223,7 +223,7 @@ urlpatterns += [
         name="create-capability",
     ),
     path(
-        "<str:product_slug>/capability/<int:capability_id>",
+        "<str:product_slug>/capability/<int:pk>",
         CapabilityDetailView.as_view(),
         name="capability_detail",
     ),

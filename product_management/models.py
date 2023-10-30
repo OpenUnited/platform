@@ -341,14 +341,11 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
         return queryset.order_by(sorted_by).all()
 
-    def get_challenge_link(self, show_domain_name=True):
-        try:
-            product = self.productchallenge_set.first().product
-            product_owner = product.get_product_owner()
-            domain_name = settings.FRONT_END_SERVER if show_domain_name else ""
-            return f"{domain_name}/{product_owner.username}/{product.slug}/challenges/{self.published_id}"
-        except ProductChallenge.DoesNotExist:
-            return None
+    def get_absolute_url(self):
+        return reverse(
+            "challenge_detail",
+            kwargs={"product_slug": self.product.slug, "challenge_id": self.pk},
+        )
 
 
 class Bounty(TimeStampMixin):
