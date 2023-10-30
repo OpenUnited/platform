@@ -6,9 +6,8 @@
 <div>
     <div class="flex items-center">
         <div class="mr-3 w-10 h-10">
-            {% set photo_url, _ = idea.person.get_photo_url() %}
             <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                src="{{ photo_url }}"
+                src="{{ idea.person.get_photo_url() }}"
                 alt="">
         </div>
 

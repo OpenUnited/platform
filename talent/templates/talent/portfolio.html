@@ -14,8 +14,7 @@
             <div class="relative z-[2] w-[272px] sm:w-[306px] h-[272px] sm:h-[306px] mx-auto">
                 <div
                     class="w-full h-full mx-auto rounded-full shadow-xl bg-white flex shrink-0 item-center justify-center">
-                    {% set photo_url, _ = person.get_photo_url() %}
-                    <img src="{{ photo_url }}" class="h-full w-full object-cover object-center rounded-full"
+                    <img src="{{ person.get_photo_url() }}" class="h-full w-full object-cover object-center rounded-full"
                         alt="Profile Picture">
                 </div>
                 <div class="group absolute rounded-full bg-white py-0.5 px-2 right-2 bottom-10 border border-solid border-green-600 
@@ -254,8 +253,7 @@
                     <div class="flex flex-col py-4 first:pt-0 last:pb-0">
                         <div class="grid grid-cols-6">
                             <div class="col-span-1">
-                                {% set photo_url, _ = feedback.provider.get_photo_url() %}
-                                <img src="{{ photo_url }}" alt="Feedback Provider" class="h-12 w-12 rounded-full">
+                                <img src="{{ feedback.provider.get_photo_url() }}" alt="Feedback Provider" class="h-12 w-12 rounded-full">
                             </div>
                             <div class="col-span-4">
                                 <h4 class="text-sm font-bold text-gray-900">{{ feedback.provider.get_full_name() }}</h4>

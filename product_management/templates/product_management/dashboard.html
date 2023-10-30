@@ -351,9 +351,8 @@
                                     id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                     <span class="absolute -inset-1.5"></span>
                                     <span class="sr-only">Open user menu</span>
-                                    {% set photo_url, _ = person.get_photo_url() %}
                                     <img class="h-8 w-8 rounded-full"
-                                        src="{{ photo_url }}"
+                                        src="{{ person.get_photo_url() }}"
                                         alt="Profile Picture">
                                 </button>
                             </div>

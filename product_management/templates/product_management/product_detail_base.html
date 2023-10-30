@@ -23,8 +23,7 @@
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
                     <div class="flex shrink-0 items-center">
-                        {% set photo_url, _ = product.get_photo_url() %}
-                        <img class="h-16 w-auto rounded-full overflow-hidden" src="{{ photo_url }}" alt="Product Logo">
+                        <img class="h-16 w-auto rounded-full overflow-hidden" src="{{ product.get_photo_url() }}" alt="Product Logo">
                     </div>
                     <nav class="flex flex-1 flex-col">
                         <div class="flex flex-1 flex-col gap-y-7">
@@ -110,9 +109,8 @@
         <!-- Sidebar component, swap this element with another sidebar if you like -->
         <div class="flex grow flex-col gap-y-5 overflow-y-auto lg:border-r border-gray-200 bg-white lg:px-6">
             <div class="hidden lg:flex shrink-0 items-center">
-                {% set photo_url, _ = product.get_photo_url() %}
                 <img class="h-20 w-auto rounded-full overflow-hidden"
-                    src="{{ photo_url }}" alt="Product Logo">
+                    src="{{ product.get_photo_url() }}" alt="Product Logo">
             </div>
             <nav class="flex flex-1 flex-col">
                 <div class="flex flex-1 flex-col gap-y-7">
