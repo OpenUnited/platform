@@ -89,7 +89,7 @@ local_settings.py
 docker.env
 db.sqlite3
 /.venv
-media/
+# media/
 
 .vscode/
 openunited/settings/local.py
