@@ -10,7 +10,7 @@ from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
-from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
+from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
 
@@ -85,10 +85,9 @@ class Product(ProductMixin):
         self.is_private = False
         self.save()
 
-    # TODO: this method also exists in Person model. Move it in a mixin.
     def get_photo_url(self):
-        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "product-empty.png"
-        
+        image_url = MEDIA_URL + "products/product-empty.png"
+
         if self.photo:
             image_url = self.photo.url
 
