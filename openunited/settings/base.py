@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "storages",
     "canopy",
+    "ckeditor",
 ]
 
 MIDDLEWARE = [
@@ -165,9 +166,17 @@ if os.getenv("AWS_STORAGE_BUCKET_NAME"):
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "static"),
     ]
-    STATIC_URL = "%s/%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_STORAGE_BUCKET_NAME, AWS_STATIC_LOCATION)
+    STATIC_URL = "%s/%s/%s/" % (
+        AWS_S3_ENDPOINT_URL,
+        AWS_STORAGE_BUCKET_NAME,
+        AWS_STATIC_LOCATION,
+    )
     STATICFILES_STORAGE = "openunited.storage_backends.StaticStorage"
-    MEDIA_URL = "%s/%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_STORAGE_BUCKET_NAME, AWS_MEDIA_LOCATION)
+    MEDIA_URL = "%s/%s/%s/" % (
+        AWS_S3_ENDPOINT_URL,
+        AWS_STORAGE_BUCKET_NAME,
+        AWS_MEDIA_LOCATION,
+    )
     DEFAULT_FILE_STORAGE = "openunited.storage_backends.PublicMediaStorage"
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

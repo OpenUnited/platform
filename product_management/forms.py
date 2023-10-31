@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-
+from ckeditor.fields import RichTextFormField
 
 from django.contrib.contenttypes.models import ContentType
 from commerce.models import Organisation
@@ -309,11 +309,7 @@ class ChallengeForm(forms.ModelForm):
                     "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 }
             ),
-            "description": forms.Textarea(
-                attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                }
-            ),
+            "description": RichTextFormField(),
             "reward_type": forms.RadioSelect(
                 attrs={
                     "class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600",
