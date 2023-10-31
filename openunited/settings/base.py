@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "storages",
     "canopy",
+    "ckeditor",
 ]
 
 MIDDLEWARE = [
