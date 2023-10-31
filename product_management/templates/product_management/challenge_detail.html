@@ -26,7 +26,7 @@
             <a href="#" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                     <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                        {% set photo_url, _ = challenge.created_by.get_photo_url() %} src="{{ photo_url }}"
+                        src="{{ challenge.created_by.get_photo_url() }}"
                         alt="Created By">
                 </div>
                 <div class="text-neutral-800">{{ challenge.created_by.get_full_name() }}</div>
@@ -43,8 +43,7 @@
             <strong>Reviewer:</strong>
             <a href="#" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
-                    {% set photo_url, _ = challenge.reviewer.get_photo_url() %}
-                    <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white" src="{{ photo_url }}"
+                    <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white" src="{{ challenge.reviewer.get_photo_url() }}"
                         alt="Reviewer Photo">
                 </div>
                 <div class="text-neutral-800">{{ challenge.reviewer.get_full_name() }}</div>

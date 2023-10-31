@@ -56,9 +56,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
         context["pk"] = person.pk
 
-        image_url, requires_upload = person.get_photo_url()
-        context["photo_url"] = image_url
-        context["requires_upload"] = requires_upload
+        context["photo_url"] = person.get_photo_url()
 
         return context
 

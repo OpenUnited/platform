@@ -60,15 +60,13 @@ class Person(TimeStampMixin):
     def get_username(self):
         return self.user.username if self.user else ""
 
-    def get_photo_url(self) -> [str, bool]:
+    def get_photo_url(self):
         image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
-        requires_upload = True
 
         if self.photo:
             image_url = self.photo.url
-            requires_upload = False
 
-        return image_url, requires_upload
+        return image_url
 
     def get_products(self):
         return self.products.all()

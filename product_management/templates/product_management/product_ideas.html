@@ -38,9 +38,8 @@
                                 {{ idea.title }}
                             </h3>
                             <div class="flex items-center justify-center shrink-0 w-6 h-6">
-                                {% set photo_url, _ = idea.person.get_photo_url()%}
                                 <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                                    src="{{ photo_url }}"
+                                    src="{{ idea.person.get_photo_url() }}"
                                     alt="Idea Owner">
                             </div>
                         </div>

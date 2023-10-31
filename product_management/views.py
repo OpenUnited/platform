@@ -594,7 +594,7 @@ class DashboardBaseView(LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
 
         person = self.request.user.person
-        photo_url, _ = person.get_photo_url()
+        photo_url = person.get_photo_url()
         product_queryset = Product.objects.filter(
             content_type__model="person", object_id=person.id
         )
