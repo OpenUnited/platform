@@ -280,15 +280,14 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
-# TODO: replace TemplateView with DetailView
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
-class ChallengeDetailView(BaseProductDetailView, TemplateView):
+class ChallengeDetailView(BaseProductDetailView, DetailView):
+    model = Challenge
     template_name = "product_management/challenge_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        challenge_id = context.get("challenge_id")
-        challenge = get_object_or_404(Challenge, id=challenge_id)
+        challenge = self.object
         bounty = challenge.bounty_set.all().first()
         bounty_claim = BountyClaim.objects.filter(
             bounty=bounty,
