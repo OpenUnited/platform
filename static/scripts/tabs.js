@@ -1,7 +1,8 @@
 // Get all tab links and tab bodies
 const tabLinks = document.querySelectorAll('.tab-link');
 const tabBodies = document.querySelectorAll('.tab-body');
-const ideasBtnModal = document.querySelector('.ideas-btn-modal');
+const ideaBtnModal = document.querySelector('.idea-btn-modal');
+const bugBtnModal = document.querySelector('.bug-btn-modal');
 
 // Add click event listeners to tab links
 tabLinks.forEach((tabLink, index) => {
@@ -17,11 +18,11 @@ tabLinks.forEach((tabLink, index) => {
     tabBodies[index].classList.add('active');
 
     if (tabLink.classList.contains('active') && tabLink.classList.contains('tab-link-ideas')) {
-      ideasBtnModal.innerHTML = "Add Idea";
-      ideasBtnModal.dataset.id = "modal-idea"
+      bugBtnModal.classList.add("hidden");
+      ideaBtnModal.classList.remove("hidden");
     } else {
-      ideasBtnModal.innerHTML = "Add Bug";
-      ideasBtnModal.dataset.id = "modal-bug"
+      ideaBtnModal.classList.add("hidden");
+      bugBtnModal.classList.remove("hidden");
     }
 
   });

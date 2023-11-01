@@ -10,7 +10,7 @@ from ckeditor.fields import RichTextFormField
 from django.contrib.contenttypes.models import ContentType
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
-from .models import Idea, Product, Challenge, Bounty, Initiative, Capability
+from .models import Idea, Bug, Product, Challenge, Bounty, Initiative, Capability
 from security.models import ProductRoleAssignment
 
 
@@ -61,6 +61,24 @@ class IdeaForm(forms.ModelForm):
             ),
         }
 
+class BugForm(forms.ModelForm):
+    class Meta:
+        model = Bug
+        fields = ["title", "description"]
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Write the title of the bug",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Describe the bug in detail",
+                }
+            ),
+        }
 
 class ProductForm(forms.ModelForm):
     organisation = forms.ModelChoiceField(

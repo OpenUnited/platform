@@ -11,6 +11,9 @@ from .views import (
     CreateProductIdea,
     UpdateProductIdea,
     ProductIdeaDetail,
+    CreateProductBug,
+    UpdateProductBug,
+    ProductBugDetail,
     ProductChallengesView,
     ProductRoleAssignmentView,
     ChallengeDetailView,
@@ -197,6 +200,21 @@ urlpatterns += [
         "<str:product_slug>/ideas/update/<int:pk>",
         UpdateProductIdea.as_view(),
         name="update_product_idea",
+    ),
+    path(
+        "<str:product_slug>/bugs/new",
+        CreateProductBug.as_view(),
+        name="add_product_bug",
+    ),
+    path(
+        "<str:product_slug>/bug/<int:pk>",
+        ProductBugDetail.as_view(),
+        name="product_bug_detail",
+    ),
+    path(
+        "<str:product_slug>/bugs/update/<int:pk>",
+        UpdateProductBug.as_view(),
+        name="update_product_bug",
     ),
     path(
         "<str:product_slug>/people",

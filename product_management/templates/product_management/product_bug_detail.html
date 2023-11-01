@@ -1,0 +1,79 @@
+{% extends 'product_management/product_detail_base.html' %}
+
+{% block title %}Product - Ideas&Bugs{% endblock %}
+{% block product_content %}
+
+<div>
+    <div class="flex items-center">
+        <div class="mr-3 w-10 h-10">
+            <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
+                src="{{ bug.person.get_photo_url() }}"
+                alt="">
+        </div>
+
+        <div>
+            <span>
+                <!-- Add a link to the person's profile -->
+                <a href="#" class="font-semibold">{{ bug.person.user.username }}</a> commented on
+                <span class="text-gray-500">{{ bug.created_at|date }}</span>
+            </span>
+        </div>
+
+        <div class="flex justify-end px-3 py-1.5 py-2.5 cursor-pointer ml-auto">
+            <div id="bug-menu-button" class="relative inline-block text-left">
+                <div class="w-fit flex justify-end px-3 py-1.5 py-2.5 cursor-pointer ml-auto">
+                    <span class="w-4 h-4 mr-3">
+                        <img src="{{ static('images/three-dots.svg') }}" alt="Three dots">
+                    </span>
+                </div>
+
+                <div id="bug-menu"
+                    class="absolute right-0 z-10 mt-2 w-56 hidden origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                    <div class="py-1" role="none">
+                        <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            id="menu-item-0">Copy</a>
+                        <a href="{{ url('update_product_bug', args=(product_slug, pk)) }}"
+                            class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                            id="menu-item-1">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="my-4">
+        <h1 class="font-medium">{{ bug.title }}</h1>
+        <br>
+        <p class="font-normal">{{ bug.description }}</p>
+    </div>
+
+</div>
+
+<hr>
+
+{% if request.user.is_authenticated %}
+<button type="submit"
+    class="appearance-none w-fit flex items-center justify-center mt-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all">Add
+    Comment
+</button>
+{% else %}
+<div class="">
+    <a href="{{ url('sign-up') }}"
+        class="appearance-none w-fit inline-block justify-center mt-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all">Sign
+        up for free </a><span class="font-semibold"> to join this conversation.</span> Already have an account?
+    <a href="{{ url('sign_in') }}" class="text-blue-800">Sign in to comment</a>
+</div>
+{% endif %}
+
+<script>
+    const bugMenuButton = document.getElementById("bug-menu-button");
+    const bugMenu = document.getElementById("bug-menu");
+
+    bugMenuButton.addEventListener("click", () => {
+        bugMenu.classList.toggle("hidden");
+    });
+</script>
+
+{% endblock %}

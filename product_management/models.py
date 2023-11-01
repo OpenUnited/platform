@@ -472,3 +472,15 @@ class Idea(TimeStampMixin):
 
     def __str__(self):
         return f"{self.person} - {self.title}"
+    
+class Bug(TimeStampMixin):
+    title = models.CharField(max_length=256)
+    description = models.TextField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse("add_product_bug", kwargs={"pk": self.pk})
+
+    def __str__(self):
+        return f"{self.person} - {self.title}"
