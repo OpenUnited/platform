@@ -312,12 +312,15 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
             context.update(
                 {
                     "current_user_created_claim_request": bounty_claims.count() > 0,
+                    "actions_available": challenge.created_by
+                    == self.request.user.person,
                 }
             )
         else:
             context.update(
                 {
                     "current_user_created_claim_request": False,
+                    "actions_available": False,
                 }
             )
 
