@@ -192,7 +192,12 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
 
-        context.update({"ideas": Idea.objects.filter(product=product), "bugs": Bug.objects.filter(product=product)})
+        context.update(
+            {
+                "ideas": Idea.objects.filter(product=product),
+                "bugs": Bug.objects.filter(product=product),
+            }
+        )
 
         return context
 
@@ -1006,6 +1011,7 @@ class DashboardReviewWorkView(LoginRequiredMixin, ListView):
     template_name = "product_management/dashboard/review_work.html"
     login_url = "sign_in"
 
+
 class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
     login_url = "sign_in"
     template_name = "product_management/add_product_bug.html"
@@ -1027,6 +1033,7 @@ class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
 
         return super().post(request, *args, **kwargs)
 
+
 class ProductBugDetail(BaseProductDetailView, DetailView):
     template_name = "product_management/product_bug_detail.html"
     model = Bug
@@ -1042,6 +1049,7 @@ class ProductBugDetail(BaseProductDetailView, DetailView):
         )
 
         return context
+
 
 class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     login_url = "sign_in"

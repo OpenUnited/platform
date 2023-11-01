@@ -68,6 +68,7 @@ class IdeaService:
 
         return idea
 
+
 class BugService:
     @staticmethod
     def create(**kwargs):

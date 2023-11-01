@@ -61,6 +61,7 @@ class IdeaForm(forms.ModelForm):
             ),
         }
 
+
 class BugForm(forms.ModelForm):
     class Meta:
         model = Bug
@@ -79,6 +80,7 @@ class BugForm(forms.ModelForm):
                 }
             ),
         }
+
 
 class ProductForm(forms.ModelForm):
     organisation = forms.ModelChoiceField(

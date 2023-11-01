@@ -472,7 +472,8 @@ class Idea(TimeStampMixin):
 
     def __str__(self):
         return f"{self.person} - {self.title}"
-    
+
+
 class Bug(TimeStampMixin):
     title = models.CharField(max_length=256)
     description = models.TextField()
