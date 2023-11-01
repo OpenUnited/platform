@@ -341,12 +341,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
         return queryset.order_by(sorted_by).all()
 
-    def get_absolute_url(self):
-        return reverse(
-            "challenge_detail",
-            kwargs={"product_slug": self.product.slug, "pk": self.pk},
-        )
-
 
 class Bounty(TimeStampMixin):
     BOUNTY_STATUS_DRAFT = 0
