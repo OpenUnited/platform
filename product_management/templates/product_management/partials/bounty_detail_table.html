@@ -2,7 +2,7 @@
 <div class="mb-2.5 font-medium text-sm text-black/[0.85]">Bounty</div>
 
 <div class="relative overflow-x-auto">
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
                 <th scope="col" class="px-6 py-3">
@@ -24,8 +24,8 @@
         </thead>
         <tbody>
             {% for bounty in challenge.bounty_set.all() %}
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <tr class="bg-white border-b">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                     {{ bounty.skill }}
                 </th>
                 <td class="px-6 py-4">
@@ -37,7 +37,7 @@
                 <td class="px-6 py-4">
                     {% if is_claimed %}
                     Assigned to <a href={{ claimed_by.get_absolute_url() }}
-                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{ claimed_by }}</a>
+                        class="font-medium text-blue-600 hover:underline">{{ claimed_by }}</a>
                     {% elif current_user_created_claim_request %}
                     <p>You have created a claim request for this bounty.</p>
                     {% else %}
