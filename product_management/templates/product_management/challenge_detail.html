@@ -15,6 +15,7 @@
         {% endif %}
 
         <p>{{ challenge.description|safe }}</p>
+        {% if request.user.person == challenge.created_by %}
         <div class="ml-auto">
             <a href="{{ url('update-challenge', args=(challenge.pk,)) }}">
                 <button type="button"
@@ -22,6 +23,7 @@
                     Challenge</button>
             </a>
         </div>
+        {% endif %}
     </div>
 
     <div class="flex flex-col">
