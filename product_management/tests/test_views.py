@@ -71,6 +71,33 @@ class ChallengeListViewTest(TestCase):
         self.assertEqual(response.context_data.get("challenges").count(), 4)
 
 
+class ProductListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("products")
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("products").count(), 0)
+
+        _ = [OwnedProductFactory() for _ in range(12)]
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("products").count(), 8)
+
+        response = self.client.get(f"{self.url}?page=2")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("products").count(), 4)
+
+
 class CreateChallengeViewTestCase(TestCase):
     """
     docker-compose --env-file docker.env exec platform sh -c "python manage.py test product_management.tests.test_views.CreateChallengeViewTestCase"
