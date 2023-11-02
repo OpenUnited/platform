@@ -8,12 +8,20 @@
 
 <div class="flex flex-col">
     {% include 'product_management/partials/breadcrumbs.html' %}
-    <h2 class="mt-2.5 mb-[50px] max-w-[536px] w-full text-neutral-800 text-xl">{{ challenge.title }}</h2>
-    <div class="flex flex-col mb-6 space-y-3.5 text-sm text-black/[0.85]">
-        <p{{ challenge.short_description }}>
-            </p>
+    <h2 class="mt-2.5 mb-4 w-full text-neutral-800 text-xl">{{ challenge.title }}</h2>
+    <div class="flex items-center space-y-3.5 text-sm text-black/[0.85]">
+        {% if challenge.short_description %}
+        <p>{{ challenge.short_description }}</p>
+        {% endif %}
 
-            <p>{{ challenge.description|safe }}</p>
+        <p>{{ challenge.description|safe }}</p>
+        <div class="ml-auto">
+            <a href="{{ url('update-challenge', args=(challenge.pk,)) }}">
+                <button type="button"
+                    class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-2 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Edit
+                    Challenge</button>
+            </a>
+        </div>
     </div>
 
     <div class="flex flex-col">
@@ -28,8 +36,7 @@
             <a href="#" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                     <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                        src="{{ challenge.created_by.get_photo_url() }}"
-                        alt="Created By">
+                        src="{{ challenge.created_by.get_photo_url() }}" alt="Created By">
                 </div>
                 <div class="text-neutral-800">{{ challenge.created_by.get_full_name() }}</div>
             </a>
@@ -45,8 +52,8 @@
             <strong>Reviewer:</strong>
             <a href="#" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
-                    <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white" src="{{ challenge.reviewer.get_photo_url() }}"
-                        alt="Reviewer Photo">
+                    <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
+                        src="{{ challenge.reviewer.get_photo_url() }}" alt="Reviewer Photo">
                 </div>
                 <div class="text-neutral-800">{{ challenge.reviewer.get_full_name() }}</div>
             </a>
