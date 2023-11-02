@@ -8,9 +8,10 @@ from django.contrib.contenttypes.models import ContentType
 from model_utils import FieldTracker
 from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
+from ckeditor.fields import RichTextField
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
-from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
+from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
 
@@ -67,7 +68,11 @@ class Product(ProductMixin):
         Attachment, related_name="product_attachments", blank=True
     )
     capability_start = models.ForeignKey(
-        Capability, on_delete=models.CASCADE, null=True, editable=False
+        Capability,
+        on_delete=models.CASCADE,
+        null=True,
+        editable=False,
+        related_name="product",
     )
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -81,17 +86,13 @@ class Product(ProductMixin):
         self.is_private = False
         self.save()
 
-    # TODO: this method also exists in Person model. Move it in a mixin and
-    # separate requires_upload variable from this method
-    def get_photo_url(self) -> [str, bool]:
-        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
-        requires_upload = True
+    def get_photo_url(self):
+        image_url = MEDIA_URL + "products/product-empty.png"
 
         if self.photo:
             image_url = self.photo.url
-            requires_upload = False
 
-        return image_url, requires_upload
+        return image_url
 
     @staticmethod
     def check_slug_from_name(product_name: str) -> str | None:
@@ -219,7 +220,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
         Capability, on_delete=models.SET_NULL, blank=True, null=True
     )
     title = models.TextField()
-    description = models.TextField()
+    description = RichTextField()
     short_description = models.TextField(max_length=256)
     status = models.IntegerField(choices=CHALLENGE_STATUS, default=0)
     attachment = models.ManyToManyField(
@@ -277,10 +278,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def get_absolute_url(self):
         return reverse(
             "challenge_detail",
-            kwargs={
-                "product_slug": self.product.slug,
-                "challenge_id": self.pk,
-            },
+            kwargs={"product_slug": self.product.slug, "pk": self.pk},
         )
 
     def can_delete_challenge(self, person):
@@ -356,15 +354,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
             queryset = queryset.exclude(**exclude_data)
 
         return queryset.order_by(sorted_by).all()
-
-    def get_challenge_link(self, show_domain_name=True):
-        try:
-            product = self.productchallenge_set.first().product
-            product_owner = product.get_product_owner()
-            domain_name = settings.FRONT_END_SERVER if show_domain_name else ""
-            return f"{domain_name}/{product_owner.username}/{product.slug}/challenges/{self.published_id}"
-        except ProductChallenge.DoesNotExist:
-            return None
 
 
 class Bounty(TimeStampMixin):

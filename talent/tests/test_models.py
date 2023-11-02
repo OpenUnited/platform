@@ -28,17 +28,15 @@ class PersonModelTest(TestCase):
         )
 
     def test_get_photo_url(self):
-        actual_url, requires_upload = self.person.get_photo_url()
+        actual_url = self.person.get_photo_url()
         expected_url = "/media/avatars/profile-empty.png"
 
         self.assertEqual(actual_url, expected_url)
-        self.assertTrue(requires_upload)
 
-        actual_url, requires_upload = self.person_with_photo.get_photo_url()
+        actual_url = self.person_with_photo.get_photo_url()
         expected_url = self.person_with_photo.photo.url
 
         self.assertEqual(actual_url, expected_url)
-        self.assertFalse(requires_upload)
 
         os.remove(self.person_with_photo.photo.path)
 

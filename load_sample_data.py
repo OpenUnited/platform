@@ -80,6 +80,9 @@ def generate_sample_data():
 
     clear_rows_by_model_name(model_app_mapping)
 
+    # Create Capability model instances
+    capabilities = create_capabilities()
+
     # Create User model instances
     user_data = read_json_data("utility/sample_data/user.json", "user")
 
@@ -143,6 +146,7 @@ def generate_sample_data():
 
     products = []
     for pd in product_data:
+        pd["capability_start"] = capabilities.first()
         if bool(getrandbits(1)):
             pd["content_object"] = choice(organisations)
         else:
@@ -193,9 +197,6 @@ def generate_sample_data():
     initiatives = []
     for i_data in initiative_data:
         initiatives.append(InitiativeService.create(**i_data))
-
-    # Create Capability model instances
-    capabilities = create_capabilities()
 
     # Create Skill model instances
     skill_data = read_json_data("utility/sample_data/skill.json", "skill")
@@ -295,6 +296,9 @@ def generate_sample_data():
             bcd["person"] = people[i % MAX_PERSON_INDEX]
             bcd["bounty"] = bounties[i]
             bounty_claims.append(BountyClaimService.create(**bcd))
+            bb = Bounty.objects.get(id=bounties[i].id)
+            bb.challenge.status = 3
+            bb.save()
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -370,6 +374,7 @@ if __name__ == "__main__":
     django.setup()
 
     from talent.models import Skill, Expertise
+    from product_management.models import Bounty
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,

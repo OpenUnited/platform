@@ -3,8 +3,7 @@
         <div class="flex items-start space-x-5">
             <div class="flex-shrink-0">
                 <div class="relative">
-                    {% set photo_url, _ = product.get_photo_url() %}
-                    <img class="h-16 w-16 rounded-full" src="{{ photo_url }}" alt="Product Photo">
+                    <img class="h-16 w-16 rounded-full" src="{{ product.get_photo_url() }}" alt="Product Photo">
                     <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
                 </div>
             </div>
@@ -70,8 +69,10 @@
                         hx-target="#manage-product-tabs" hx-swap="innerHTML"
                         class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">Bounty
                         Claim Requests</a>
-                    <a href="#"
-                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">Review Work</a>
+                    <a hx-get="{{ url('dashboard-review-work', args=(product.slug,)) }}"
+                        hx-target="#manage-product-tabs" hx-swap="innerHTML"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">Review
+                        Work</a>
                 </nav>
             </div>
         </div>

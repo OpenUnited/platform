@@ -1,8 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
+
+import version
 
 
 def home(request):
     return render(request, "home.html", context={"request": request})
+
+
+def about(request):
+    return render(request, "about.html", context={"request": request})
 
 
 def privacy_policy(request):
@@ -19,3 +25,7 @@ def enterprise_customers(request):
 
 def custom_404_view(request, exception):
     return render(request, "404.html")
+
+
+def version_view(request):
+    return HttpResponse(f"Version Number: {version.version}")

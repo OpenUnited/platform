@@ -34,6 +34,7 @@ class ChallengeFactory(DjangoModelFactory):
     description = Faker("paragraph")
     short_description = Faker("sentence")
     product = SubFactory(OwnedProductFactory)
+    created_by = SubFactory(PersonFactory)
     # Looping is required because we cannot pass a list of sets.
     # Integer list is required.
     status = FuzzyChoice([status[0] for status in Challenge.CHALLENGE_STATUS])

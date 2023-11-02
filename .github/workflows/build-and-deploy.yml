@@ -1,11 +1,13 @@
 name: Deploy to Staging
 
+concurrency: deploy_to_staging
+
 on:
   push:
     branches: [ "main" ]
 
 env:
-  STAGING_ID: 0fe572eb-1984-47e3-aabd-d1056b014486
+  STAGING_ID: cc67ac7f-d41b-4a9c-a2ce-37f322690cb8
 
 jobs:
   deploy:
@@ -19,7 +21,14 @@ jobs:
       with:
         fetch-depth: 0
     - name: Update the project version
-      run: pip install python-semantic-release && python -m semantic_release version --no-changelog
+      run: |
+        OLD_VERSION=$(python -c 'import version; print(version.version)')
+        pip install python-semantic-release && python -m semantic_release version --no-changelog
+        NEW_VERSION=$(python -c 'import version; print(version.version)')
+        if [[ "$OLD_VERSION" == "$NEW_VERSION" ]]; then
+          echo "No new version generated, can't deploy"
+          exit 1
+        fi
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
     - name: Build the Docker image

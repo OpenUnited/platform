@@ -10,8 +10,6 @@ def get_person_data(person):
 def to_dict(instance):
     result = model_to_dict(instance)
     return {
-        key: str(result[key])
-        if isinstance(result[key], uuid.UUID)
-        else result[key]
+        key: str(result[key]) if isinstance(result[key], uuid.UUID) else result[key]
         for key in result.keys()
     }

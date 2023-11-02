@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from product_management.models import Challenge
-from .factories import OwnedProductFactory, PersonFactory
+from product_management.models import Challenge, Capability
+from .factories import OwnedProductFactory, PersonFactory, ChallengeFactory
 
 
 class CreateChallengeViewTestCase(TestCase):
@@ -53,3 +53,44 @@ class CreateChallengeViewTestCase(TestCase):
 
     def tearDown(self):
         Challenge.objects.get(created_by=self.person).delete()
+
+
+class CapabilityDetailViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.root_capability = Capability.add_root(
+            name="capability name", description="capability description"
+        )
+        self.url = reverse(
+            "capability_detail",
+            args=(
+                self.product.slug,
+                self.root_capability.pk,
+            ),
+        )
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/capability_detail.html", response.template_name
+        )
+        self.assertEqual(response.context_data.get("challenges").count(), 0)
+
+        challenge_count = 5
+        self.challenge_list = [
+            ChallengeFactory(capability=self.root_capability)
+            for _ in range(challenge_count)
+        ]
+
+        response = self.client.get(self.url)
+        self.assertEqual(
+            response.context_data.get("challenges").count(), challenge_count
+        )
+
+        [ch.delete() for ch in self.challenge_list]
+
+    def tearDown(self):
+        self.root_capability.delete()

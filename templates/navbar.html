@@ -4,6 +4,9 @@
         <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">
             Find a Challenge
         </a>
+        <a href="{{ url('about') }}" class="text-sm font-semibold leading-6 text-gray-900">
+            About
+        </a>
     </div>
     <div class="flex justify-start lg:justify-center grow w-full h-8 lg:inset-x-0 lg:absolute z-[1]">
         <a href="{{ url('home') }}" class="-m-1.5 p-1.5">
@@ -32,8 +35,7 @@
                     aria-expanded="false" aria-haspopup="true">
                     <span class="flex w-full items-center justify-between">
                         <span class="flex min-w-0 items-center justify-between space-x-3">
-                            {% set photo_url, _ = person.get_photo_url() %}
-                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ photo_url }}"
+                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ person.get_photo_url() }}"
                                 alt="Profile Picture">
                             <span class="flex min-w-0 flex-1 flex-col">
                                 <span
@@ -118,8 +120,7 @@
                     aria-expanded="false" aria-haspopup="true">
                     <span class="flex w-full items-center justify-between">
                         <span class="flex min-w-0 items-center justify-between space-x-3">
-                            {% set photo_url, _ = person.get_photo_url() %}
-                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ photo_url }}"
+                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ person.get_photo_url() }}"
                                 alt="Profile Picture">
                             <span class="flex min-w-0 flex-1 flex-col">
                                 <span
@@ -152,9 +153,11 @@
             <ul class="space-y-5 flex flex-col pt-4 sm:pt-[30%] pb-10">
 
             <li class="flex">
-                <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">Find a
-                    Challenge</a>
-                </li>
+                <a href="{{ url('challenges') }}" class="text-sm font-semibold leading-6 text-gray-900">Find a Challenge</a>
+            </li>
+            <li class="flex">
+                <a href="{{ url('about') }}" class="text-sm font-semibold leading-6 text-gray-900">About</a>
+            </li>
                 
 
             {% if not request.user.is_authenticated %}

@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db.models import Sum
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -30,8 +30,10 @@ from .forms import (
     OrganisationForm,
     ChallengeForm,
     BountyForm,
+    InitiativeForm,
+    CapabilityForm,
 )
-from talent.models import BountyClaim
+from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
     Challenge,
     Product,
@@ -51,6 +53,7 @@ class ChallengeListView(ListView):
     model = Challenge
     context_object_name = "challenges"
     template_name = "product_management/challenges.html"
+    paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,6 +65,9 @@ class ChallengeListView(ListView):
         response = super().get(request, *args, **kwargs)
 
         return response
+
+    def get_queryset(self):
+        return Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
 
 
 class ProductListView(ListView):
@@ -107,7 +113,9 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = context["product"]
-        challenges = Challenge.objects.filter(product=product)
+        challenges = Challenge.objects.filter(
+            product=product, status=Challenge.CHALLENGE_STATUS_AVAILABLE
+        )
         context.update(
             {
                 "product": product,
@@ -283,13 +291,13 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
 
 
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
-class ChallengeDetailView(BaseProductDetailView, TemplateView):
+class ChallengeDetailView(BaseProductDetailView, DetailView):
+    model = Challenge
     template_name = "product_management/challenge_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        challenge_id = context.get("challenge_id")
-        challenge = get_object_or_404(Challenge, id=challenge_id)
+        challenge = self.object
         bounty = challenge.bounty_set.all().first()
         bounty_claim = BountyClaim.objects.filter(
             bounty=bounty,
@@ -315,14 +323,16 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
 
             context.update(
                 {
-                    "current_user_created_claim_request": bounty_claims.count()
-                    > 0,
+                    "current_user_created_claim_request": bounty_claims.count() > 0,
+                    "actions_available": challenge.created_by
+                    == self.request.user.person,
                 }
             )
         else:
             context.update(
                 {
                     "current_user_created_claim_request": False,
+                    "actions_available": False,
                 }
             )
 
@@ -336,12 +346,95 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
         return context
 
 
+class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    form_class = InitiativeForm
+    template_name = "product_management/create_initiative.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["slug"] = self.kwargs.get("product_slug")
+
+        return kwargs
+
+    def get_success_url(self):
+        return reverse(
+            "product_initiatives",
+            args=(self.kwargs.get("product_slug"),),
+        )
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            product = form.cleaned_data.get("product")
+            instance.product = product
+            instance.save()
+
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super().post(request, *args, **kwargs)
+
+
 class InitiativeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/initiative_detail.html"
 
 
-class CapabilityDetailView(BaseProductDetailView, TemplateView):
+class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    form_class = CapabilityForm
+    template_name = "product_management/create_capability.html"
+    login_url = "sign_in"
+
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs["slug"] = self.kwargs.get("product_slug", None)
+
+    #     return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            description = form.cleaned_data.get("description")
+            capability = form.cleaned_data.get("root")
+            creation_method = form.cleaned_data.get("creation_method")
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+            if capability is None or creation_method == "1":
+                root = Capability.add_root(name=name, description=description)
+                root.product.add(product)
+            elif creation_method == "2":
+                sibling = capability.add_sibling(name=name, description=description)
+                sibling.product.add(product)
+            elif creation_method == "3":
+                sibling = capability.add_child(name=name, description=description)
+                capability.add_child(sibling)
+
+            return redirect(
+                reverse(
+                    "product_tree",
+                    args=(
+                        kwargs.get(
+                            "product_slug",
+                        ),
+                    ),
+                )
+            )
+
+        return super().post(request, *args, **kwargs)
+
+
+class CapabilityDetailView(BaseProductDetailView, DetailView):
+    model = Capability
+    context_object_name = "capability"
     template_name = "product_management/capability_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["challenges"] = Challenge.objects.filter(capability=self.object)
+
+        return context
 
 
 class BountyClaimView(LoginRequiredMixin, FormView):
@@ -528,7 +621,7 @@ class DashboardBaseView(LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
 
         person = self.request.user.person
-        photo_url, _ = person.get_photo_url()
+        photo_url = person.get_photo_url()
         product_queryset = Product.objects.filter(
             content_type__model="person", object_id=person.id
         )
@@ -592,10 +685,6 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
         person = self.request.user.person
         queryset = BountyClaim.objects.filter(person=person)
         return queryset
-
-
-class DashboardBountyClaimsView(TemplateView):
-    template_name = "product_management/dashboard/accepted_bounty_claims.html"
 
 
 class DashboardProductDetailView(DashboardBaseView, DetailView):
@@ -944,3 +1033,13 @@ def bounty_claim_actions(request, pk):
             args=(instance.bounty.challenge.product.slug,),
         )
     )
+
+
+class DashboardReviewWorkView(LoginRequiredMixin, ListView):
+    model = BountyDeliveryAttempt
+    context_object_name = "bounty_deliveries"
+    queryset = BountyDeliveryAttempt.objects.filter(
+        kind=BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
+    )
+    template_name = "product_management/dashboard/review_work.html"
+    login_url = "sign_in"

@@ -1,0 +1,20 @@
+name: Cleanup old Docker images
+on:
+  schedule:
+    - cron: '12 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup_images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: DigitalOcean Container Registry Remove
+        uses: ripplr-io/docr-image-remove@v1
+        with:
+          image_repository: core
+          buffer_size: 16
+            

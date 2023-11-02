@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     "django_jinja",
     "formtools",
     "debug_toolbar",
+    "storages",
+    "canopy",
+    "ckeditor",
 ]
 
 MIDDLEWARE = [
@@ -95,6 +98,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "openunited.wsgi.application"
 
+# When running in a DigitalOcean app, Django sits behind a proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -145,21 +151,43 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+if os.getenv("AWS_STORAGE_BUCKET_NAME"):
+    # AWS S3 Static File Configuration
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=86400",
+    }
+    AWS_STATIC_LOCATION = "openunited-static"
+    AWS_MEDIA_LOCATION = "openunited-media"
 
-STATIC_URL = "static/"
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
-MEDIA_URL = "/media/"
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "static"),
+    ]
+    STATIC_URL = "%s/%s/%s/" % (
+        AWS_S3_ENDPOINT_URL,
+        AWS_STORAGE_BUCKET_NAME,
+        AWS_STATIC_LOCATION,
+    )
+    STATICFILES_STORAGE = "openunited.storage_backends.StaticStorage"
+    MEDIA_URL = "%s/%s/%s/" % (
+        AWS_S3_ENDPOINT_URL,
+        AWS_STORAGE_BUCKET_NAME,
+        AWS_MEDIA_LOCATION,
+    )
+    DEFAULT_FILE_STORAGE = "openunited.storage_backends.PublicMediaStorage"
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STATIC_URL = "static/"
+    STATICFILES_DIRS = [
+        BASE_DIR / "static",
+    ]
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 PERSON_PHOTO_UPLOAD_TO = "avatars/"
-
-PROFILE_PICTURE_ROOT = os.path.join(MEDIA_ROOT, PERSON_PHOTO_UPLOAD_TO)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

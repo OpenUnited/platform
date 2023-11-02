@@ -2,7 +2,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 
-from security.constants import SIGN_UP_REQUEST_ID
 from .factories import UserFactory
 
 
@@ -40,9 +39,10 @@ class SignUpViewTest(TestCase):
         for data in SIGN_UP_STEPS_DATA:
             response = self.client.post(self.url, data)
 
-        self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("security/sign_up/sign_up.html", response.template_name)
 
-    def test_get_context_data_step_1(self):
+    def test_process_step_0(self):
         form_one = {
             "0-full_name": "John Doe",
             "0-email": "testuser@example.com",
@@ -51,13 +51,30 @@ class SignUpViewTest(TestCase):
         }
 
         response = self.client.post(self.url, form_one)
-        initial_dict = response.context_data.get("view").initial_dict
-        initial_dict_data_form_one = initial_dict.get("1")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(
-            initial_dict_data_form_one.get(SIGN_UP_REQUEST_ID)
-        )
+        self.assertIsNotNone(response.client.session.get("verification_code"))
+
+    def test_process_step_1(self):
+        form_one = {
+            "0-full_name": "John Doe",
+            "0-email": "testuser@example.com",
+            "0-preferred_name": "John",
+            "sign_up_wizard-current_step": "0",
+        }
+
+        response = self.client.post(self.url, form_one)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("security/sign_up/sign_up.html", response.template_name)
+
+        form_two = {
+            "1-verification_code": "123456",
+            "sign_up_wizard-current_step": "1",
+        }
+
+        response = self.client.post(self.url, form_two)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("security/sign_up/sign_up.html", response.template_name)
 
 
 class SignInViewTest(TestCase):

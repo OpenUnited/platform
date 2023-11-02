@@ -1,11 +1,9 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.password_validation import validate_password
-from django.forms import ValidationError
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 
 from .models import User
-from .constants import SIGN_UP_REQUEST_ID
 from security.models import SignUpRequest
 
 
@@ -69,20 +67,6 @@ class SignUpStepTwoForm(forms.Form):
         )
     )
 
-    def clean(self):
-        cleaned_data = super().clean()
-        verification_code = cleaned_data.get("verification_code")
-
-        req_id = self.initial.get(SIGN_UP_REQUEST_ID)
-        actual_verification_code = SignUpRequest.objects.get(id=req_id)
-
-        if verification_code != actual_verification_code.verification_code:
-            raise ValidationError(
-                _("Invalid verification code. Please try again.")
-            )
-
-        return cleaned_data
-
 
 class SignUpStepThreeForm(forms.Form):
     username = forms.CharField(
@@ -123,7 +107,7 @@ class SignUpStepThreeForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError(_("Username is already exist"))
+            raise forms.ValidationError(_("Username already exists"))
 
         return username
 

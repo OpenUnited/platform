@@ -1,5 +1,7 @@
+from random import randrange
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.core.mail import send_mail
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
@@ -15,17 +17,10 @@ from django.contrib.auth.views import (
 
 from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
-from .forms import (
-    SignInForm,
-    SignUpStepOneForm,
-    SignUpStepTwoForm,
-    SignUpStepThreeForm,
-)
-from .services import (
-    SignUpRequestService,
-    create_and_send_verification_code,
-)
-from .constants import SIGN_UP_REQUEST_ID
+from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from talent.models import Person, Status
+from .models import User
+from .services import UserService
 
 
 class SignUpWizard(SessionWizardView):
@@ -33,30 +28,58 @@ class SignUpWizard(SessionWizardView):
     template_name = "security/sign_up/sign_up.html"
     initial_dict = {"0": {}, "1": {}, "2": {}}
 
-    def get_context_data(self, form, **kwargs):
-        ctx = super().get_context_data(form=form, **kwargs)
+    def process_step(self, form):
+        data = super().process_step(form)
 
-        if self.steps.current == "1":
-            cleaned_data = self.get_cleaned_data_for_step("0")
-            email = cleaned_data.get("email")
+        if self.get_step_index() == 0:
+            six_digit_number = str(randrange(100_000, 1_000_000))
+            self.request.session["verification_code"] = six_digit_number
+            email = form.cleaned_data.get("email")
+            send_mail(
+                "Verification Code",
+                f"Code: {six_digit_number}",
+                None,
+                [email],
+            )
 
-            initial_form_data = self.initial_dict.get("1", None)
+        elif self.get_step_index() == 1:
+            expected_code = self.request.session.get("verification_code")
+            actual_code = form.cleaned_data.get("verification_code")
 
-            req_id = None
-            if initial_form_data:
-                req_id = initial_form_data.get(SIGN_UP_REQUEST_ID)
+            if expected_code != actual_code:
+                form.add_error(None, _("Invalid verification code. Please try again."))
 
-            if not req_id:
-                req_id = create_and_send_verification_code(email)
-
-            self.initial_dict.get("1").update({SIGN_UP_REQUEST_ID: req_id})
-
-        return ctx
+        return data
 
     def done(self, form_list, **kwargs):
-        sign_up_req_id = self.initial_dict.get("1").get(SIGN_UP_REQUEST_ID)
-        SignUpRequestService.create_from_steps_form(form_list, sign_up_req_id)
+        first_form_data = form_list[0].cleaned_data
+        second_form_data = form_list[1].cleaned_data
+        third_form_data = form_list[2].cleaned_data
 
+        full_name = first_form_data.get("full_name")
+        preferred_name = first_form_data.get("preferred_name")
+        email = first_form_data.get("email")
+        verification_code = second_form_data.get("verification_code")
+        username = third_form_data.get("username")
+        password = third_form_data.get("password")
+
+        user = UserService.create(
+            username=username,
+            password=password,
+            email=email,
+        )
+
+        person = Person.objects.create(
+            full_name=full_name,
+            preferred_name=preferred_name,
+            user=user,
+        )
+
+        # TODO: create SignUpRequest instance when JS library for fingerprinting is set up
+
+        _ = Status.objects.create(person=person)
+
+        # TODO: add next if there is a next url
         return redirect(
             reverse("sign_in") + f"?next={self.request.GET.get('next', '')}"
         )

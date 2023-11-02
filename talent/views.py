@@ -3,15 +3,11 @@ from typing import Any
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.http import (
-    HttpRequest,
-    HttpResponse,
-    JsonResponse,
-    HttpResponseRedirect,
-)
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -62,9 +58,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
         context["pk"] = person.pk
 
-        image_url, requires_upload = person.get_photo_url()
-        context["photo_url"] = image_url
-        context["requires_upload"] = requires_upload
+        context["photo_url"] = person.get_photo_url()
 
         return context
 
@@ -124,6 +118,8 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
                 request.POST.get("selected_expertise_ids")
             )
             skill_and_expertise.save()
+
+            return HttpResponseRedirect(reverse("profile", args=(person.pk,)))
 
         return super().post(request, *args, **kwargs)
 
@@ -400,6 +396,12 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
     template_name = "talent/bounty_claim_attempt.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
@@ -409,5 +411,32 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
             instance.save()
 
             return HttpResponseRedirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class BountyDeliveryAttemptDetail(DetailView):
+    model = BountyDeliveryAttempt
+    context_object_name = "object"
+    template_name = "product_management/bounty_delivery_attempt_detail.html"
+
+    TRIGGER_KEY = "bounty-delivery-action"
+    APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
+    REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        value = request.POST.get(self.TRIGGER_KEY)
+        success = False
+        if value == self.APPROVE_TRIGGER_NAME:
+            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED
+            success = True
+        elif value == self.REJECT_TRIGGER_NAME:
+            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED
+            success = True
+
+        if success:
+            self.object.save()
+            return HttpResponseRedirect(reverse("dashboard"))
 
         return super().post(request, *args, **kwargs)

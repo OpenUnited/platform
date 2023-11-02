@@ -35,9 +35,11 @@ from .views import (
     DashboardProductChallengeFilterView,
     DashboardProductBountyFilterView,
     DashboardBountyClaimRequestsView,
-    DashboardBountyClaimsView,
     DeleteBountyClaimView,
     bounty_claim_actions,
+    DashboardReviewWorkView,
+    CreateInitiativeView,
+    CreateCapability,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -122,11 +124,6 @@ urlpatterns += [
         name="dashboard-bounty-requests",
     ),
     path(
-        "dashboard/bounties/bounty-claims",
-        DashboardBountyClaimsView.as_view(),
-        name="dashboard-bounty-claims",
-    ),
-    path(
         "dashboard/product/<str:product_slug>/",
         DashboardProductDetailView.as_view(),
         name="dashboard-product-detail",
@@ -155,6 +152,11 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/bounties/filter/",
         DashboardProductBountyFilterView.as_view(),
         name="dashboard-product-bounty-filter",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/review-work",
+        DashboardReviewWorkView.as_view(),
+        name="dashboard-review-work",
     ),
 ]
 
@@ -216,17 +218,27 @@ urlpatterns += [
 # URL patterns for initiative, capability, and challenge detail views
 urlpatterns += [
     path(
+        "<str:product_slug>/initiative/create",
+        CreateInitiativeView.as_view(),
+        name="create-initiative",
+    ),
+    path(
         "<str:product_slug>/initiative/<int:initiative_id>",
         InitiativeDetailView.as_view(),
         name="initiative_details",
     ),
     path(
-        "<str:product_slug>/capability/<int:capability_id>",
+        "<str:product_slug>/capability/create",
+        CreateCapability.as_view(),
+        name="create-capability",
+    ),
+    path(
+        "<str:product_slug>/capability/<int:pk>",
         CapabilityDetailView.as_view(),
         name="capability_detail",
     ),
     path(
-        "<str:product_slug>/challenge/<int:challenge_id>",
+        "<str:product_slug>/challenge/<int:pk>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
     ),

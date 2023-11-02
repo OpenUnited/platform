@@ -45,7 +45,7 @@ class SignUpRequest(TimeStampMixin):
     region_code = models.CharField(max_length=8, null=True, blank=True)
     city = models.CharField(max_length=128, null=True, blank=True)
     verification_code = models.CharField(max_length=6)
-    successful = models.BooleanField(default=True)
+    successful = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user} - {self.successful}"
