@@ -13,11 +13,11 @@ ALLOWED_HOSTS = os.environ.get(
 TEMPLATES[0]["OPTIONS"]["auto_reload"] = DEBUG
 
 # Required for django-debug-toolbar
-hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
-    "127.0.0.1",
-    "10.0.2.2",
-]
+# hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+# INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
+#     "127.0.0.1",
+#     "10.0.2.2",
+# ]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST = "localhost"
