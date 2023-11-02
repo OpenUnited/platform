@@ -10,7 +10,15 @@ from ckeditor.fields import RichTextFormField
 from django.contrib.contenttypes.models import ContentType
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
-from .models import Idea, Bug, Product, Challenge, Bounty, Initiative, Capability
+from .models import (
+    Idea,
+    Bug,
+    Product,
+    Challenge,
+    Bounty,
+    Initiative,
+    Capability,
+)
 from security.models import ProductRoleAssignment
 
 

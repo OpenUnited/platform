@@ -1,4 +1,13 @@
-from .models import Challenge, Initiative, Capability, Tag, Product, Bounty, Idea, Bug
+from .models import (
+    Challenge,
+    Initiative,
+    Capability,
+    Tag,
+    Product,
+    Bounty,
+    Idea,
+    Bug,
+)
 
 
 class ChallengeService:

@@ -14,7 +14,11 @@ from factory import (
 
 from product_management.models import Challenge, Product, Bounty
 from talent.models import BountyClaim
-from talent.tests.factories import PersonFactory, SkillFactory, ExpertiseFactory
+from talent.tests.factories import (
+    PersonFactory,
+    SkillFactory,
+    ExpertiseFactory,
+)
 
 
 class ProductFactory(DjangoModelFactory):

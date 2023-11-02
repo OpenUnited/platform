@@ -1107,14 +1107,18 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     model = Bug
     form_class = BugForm
 
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+    def get(
+        self, request: HttpRequest, *args: str, **kwargs: Any
+    ) -> HttpResponse:
         bug_pk = kwargs.get("pk")
         bug = Bug.objects.get(pk=bug_pk)
         form = BugForm(request.GET, instance=bug)
 
         return super().get(request, *args, **kwargs)
 
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+    def post(
+        self, request: HttpRequest, *args: str, **kwargs: Any
+    ) -> HttpResponse:
         bug_pk = kwargs.get("pk")
         bug = Bug.objects.get(pk=bug_pk)
 

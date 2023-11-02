@@ -23,14 +23,18 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("title", models.CharField(max_length=256)),
                 ("description", models.TextField()),
                 (
                     "person",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="talent.person"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="talent.person",
                     ),
                 ),
                 (
