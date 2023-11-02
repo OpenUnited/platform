@@ -126,7 +126,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             {
                 "product": product,
                 "challenges": challenges,
-                "capabilities": Capability.get_root_nodes(),
+                "capabilities": Capability.objects.filter(product=product),
             }
         )
         return context
