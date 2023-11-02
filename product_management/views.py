@@ -69,7 +69,7 @@ class ChallengeListView(ListView):
     def get_queryset(self):
         return Challenge.objects.exclude(
             status=Challenge.CHALLENGE_STATUS_DONE
-        )
+        ).order_by("-id")
 
 
 class ProductListView(ListView):
