@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from django.test.client import RequestFactory
 from django.urls import reverse
 
 from talent.models import BountyClaim
@@ -96,6 +97,21 @@ class ProductListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context_data.get("is_paginated"))
         self.assertEqual(response.context_data.get("products").count(), 4)
+
+
+class ProductRedirectViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_detail", args=(self.product.slug,))
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, reverse("product_summary", args=(self.product.slug,))
+        )
 
 
 class CreateChallengeViewTestCase(TestCase):
