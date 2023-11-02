@@ -113,6 +113,7 @@ class ProductRedirectView(BaseProductDetailView, RedirectView):
         return redirect(url)
 
 
+# TODO: take a deeper look at the capability part
 class ProductSummaryView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_summary.html"
 
