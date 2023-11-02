@@ -67,7 +67,9 @@ class ChallengeListView(ListView):
         return response
 
     def get_queryset(self):
-        return Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
+        return Challenge.objects.exclude(
+            status=Challenge.CHALLENGE_STATUS_DONE
+        )
 
 
 class ProductListView(ListView):
@@ -323,7 +325,8 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
 
             context.update(
                 {
-                    "current_user_created_claim_request": bounty_claims.count() > 0,
+                    "current_user_created_claim_request": bounty_claims.count()
+                    > 0,
                     "actions_available": challenge.created_by
                     == self.request.user.person,
                 }
@@ -346,7 +349,9 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
         return context
 
 
-class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
+class CreateInitiativeView(
+    LoginRequiredMixin, BaseProductDetailView, CreateView
+):
     form_class = InitiativeForm
     template_name = "product_management/create_initiative.html"
     login_url = "sign_in"
@@ -404,10 +409,14 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
                 root = Capability.add_root(name=name, description=description)
                 root.product.add(product)
             elif creation_method == "2":
-                sibling = capability.add_sibling(name=name, description=description)
+                sibling = capability.add_sibling(
+                    name=name, description=description
+                )
                 sibling.product.add(product)
             elif creation_method == "3":
-                sibling = capability.add_child(name=name, description=description)
+                sibling = capability.add_child(
+                    name=name, description=description
+                )
                 capability.add_child(sibling)
 
             return redirect(
@@ -432,7 +441,9 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["challenges"] = Challenge.objects.filter(capability=self.object)
+        context["challenges"] = Challenge.objects.filter(
+            capability=self.object
+        )
 
         return context
 

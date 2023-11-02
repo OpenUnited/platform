@@ -431,7 +431,9 @@ class InitiativeForm(forms.ModelForm):
 
         if self.slug:
             queryset = Product.objects.filter(slug=self.slug)
-            self.fields["product"].queryset = Product.objects.filter(slug=self.slug)
+            self.fields["product"].queryset = Product.objects.filter(
+                slug=self.slug
+            )
             self.fields["product"].initial = queryset.first()
 
     class Meta:

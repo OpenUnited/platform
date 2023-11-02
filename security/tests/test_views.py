@@ -40,7 +40,9 @@ class SignUpViewTest(TestCase):
             response = self.client.post(self.url, data)
 
             self.assertEqual(response.status_code, 200)
-            self.assertIn("security/sign_up/sign_up.html", response.template_name)
+            self.assertIn(
+                "security/sign_up/sign_up.html", response.template_name
+            )
 
     def test_process_step_0(self):
         form_one = {
