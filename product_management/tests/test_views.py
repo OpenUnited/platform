@@ -110,7 +110,8 @@ class ChallengeDetailViewTest(TestCase):
         self.person = PersonFactory()
         self.challenge = ChallengeFactory(created_by=self.person)
         self.url = reverse(
-            "challenge_detail", args=(self.challenge.product.slug, self.challenge.pk)
+            "challenge_detail",
+            args=(self.challenge.product.slug, self.challenge.pk),
         )
 
     def test_get_anon(self):
@@ -153,9 +154,15 @@ class ChallengeDetailViewTest(TestCase):
 
         b_one = BountyFactory(challenge=challenge)
         b_two = BountyFactory(challenge=challenge)
-        bc_one = BountyClaimFactory(bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE)
-        _ = BountyClaimFactory(bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE)
-        _ = BountyClaimFactory(bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE)
+        bc_one = BountyClaimFactory(
+            bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+        _ = BountyClaimFactory(
+            bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+        _ = BountyClaimFactory(
+            bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
 
         response = self.client.get(url)
 
@@ -185,10 +192,16 @@ class ChallengeDetailViewTest(TestCase):
         b_one = BountyFactory(challenge=challenge)
         b_two = BountyFactory(challenge=challenge)
         bc_one = BountyClaimFactory(
-            bounty=b_one, person=self.person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            bounty=b_one,
+            person=self.person,
+            kind=BountyClaim.CLAIM_TYPE_ACTIVE,
         )
-        _ = BountyClaimFactory(bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE)
-        _ = BountyClaimFactory(bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE)
+        _ = BountyClaimFactory(
+            bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+        _ = BountyClaimFactory(
+            bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
 
         response = self.client.get(url)
 
