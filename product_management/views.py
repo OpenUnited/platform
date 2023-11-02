@@ -48,6 +48,7 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 
+# TODO: get rid of the UnorderedObjectListWarning warning
 class ChallengeListView(ListView):
     model = Challenge
     context_object_name = "challenges"
@@ -76,6 +77,7 @@ class ProductListView(ListView):
     context_object_name = "products"
     queryset = Product.objects.filter(is_private=False)
     template_name = "product_management/products.html"
+    paginate_by = 8
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
