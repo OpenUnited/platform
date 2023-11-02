@@ -72,6 +72,9 @@ class ChallengeListView(ListView):
         ).order_by("-id")
 
 
+# TODO: This view throws UnorderedObjectListWarning warning.
+# Currently, this is the expected behavior but we should have
+# consistent results every single time.
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
