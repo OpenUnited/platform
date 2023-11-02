@@ -626,6 +626,46 @@ class CreateChallengeView(
         return super().post(request, *args, **kwargs)
 
 
+class UpdateChallengeView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
+):
+    model = Challenge
+    form_class = ChallengeForm
+    template_name = "product_management/update_challenge.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+
+        instance = kwargs.get("instance")
+        kwargs.update({"initial": {"product_id": instance.product.pk}})
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(
+                request, _("The challenge is successfully updated!")
+            )
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    instance.product.slug,
+                    instance.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
 class DashboardBaseView(LoginRequiredMixin):
     login_url = "sign_in"
 
@@ -846,46 +886,6 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         context.update({"bounties": queryset})
 
         return render(request, self.template_name, context)
-
-
-class UpdateChallengeView(
-    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
-):
-    model = Challenge
-    form_class = ChallengeForm
-    template_name = "product_management/update_challenge.html"
-    login_url = "sign_in"
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-
-        instance = kwargs.get("instance")
-        kwargs.update({"initial": {"product_id": instance.product.pk}})
-        return kwargs
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=self.object)
-        if form.is_valid():
-            instance = form.save()
-            messages.success(
-                request, _("The challenge is successfully updated!")
-            )
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    instance.product.slug,
-                    instance.id,
-                ),
-            )
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
 
 
 class DeleteChallengeView(LoginRequiredMixin, DeleteView):
