@@ -228,7 +228,7 @@ urlpatterns += [
         name="capability_detail",
     ),
     path(
-        "<str:product_slug>/challenge/<int:challenge_id>",
+        "<str:product_slug>/challenge/<int:pk>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
     ),

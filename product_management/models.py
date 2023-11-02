@@ -264,7 +264,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
     def get_absolute_url(self):
         return reverse(
             "challenge_detail",
-            kwargs={"product_slug": self.product.slug, "challenge_id": self.pk},
+            kwargs={"product_slug": self.product.slug, "pk": self.pk},
         )
 
     def can_delete_challenge(self, person):
@@ -340,12 +340,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
             queryset = queryset.exclude(**exclude_data)
 
         return queryset.order_by(sorted_by).all()
-
-    def get_absolute_url(self):
-        return reverse(
-            "challenge_detail",
-            kwargs={"product_slug": self.product.slug, "challenge_id": self.pk},
-        )
 
 
 class Bounty(TimeStampMixin):
