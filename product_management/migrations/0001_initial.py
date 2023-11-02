@@ -28,7 +28,10 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=512)),
                 ("path", models.URLField()),
-                ("file_type", models.CharField(blank=True, max_length=5, null=True)),
+                (
+                    "file_type",
+                    models.CharField(blank=True, max_length=5, null=True),
+                ),
             ],
             options={
                 "ordering": ["name"],
@@ -46,7 +49,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("points", models.IntegerField()),
                 (
@@ -86,7 +92,10 @@ class Migration(migrations.Migration):
                 ("numchild", models.PositiveIntegerField(default=0)),
                 ("name", models.CharField(max_length=255)),
                 ("description", models.TextField(default="", max_length=1000)),
-                ("video_link", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "video_link",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
             ],
             options={
                 "verbose_name_plural": "capabilities",
@@ -122,7 +131,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("title", models.TextField()),
@@ -147,19 +159,26 @@ class Migration(migrations.Migration):
                 (
                     "priority",
                     models.IntegerField(
-                        choices=[(0, "High"), (1, "Medium"), (2, "Low")], default=1
+                        choices=[(0, "High"), (1, "Medium"), (2, "Low")],
+                        default=1,
                     ),
                 ),
                 (
                     "published_id",
                     models.IntegerField(blank=True, default=0, editable=False),
                 ),
-                ("auto_approve_task_claims", models.BooleanField(default=True)),
+                (
+                    "auto_approve_task_claims",
+                    models.BooleanField(default=True),
+                ),
                 ("video_url", models.URLField(blank=True, null=True)),
                 (
                     "reward_type",
                     models.IntegerField(
-                        choices=[(0, "Liquid Points"), (1, "Non-liquid Points")],
+                        choices=[
+                            (0, "Liquid Points"),
+                            (1, "Non-liquid Points"),
+                        ],
                         default=1,
                     ),
                 ),
@@ -215,7 +234,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("accepted_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "accepted_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
             ],
             options={
                 "db_table": "contribution_management_contributor_agreement_acceptance",
@@ -249,7 +271,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("title", models.CharField(max_length=256)),
                 ("description", models.TextField()),
@@ -271,17 +296,25 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
                     "photo",
-                    models.ImageField(blank=True, null=True, upload_to="avatars/"),
+                    models.ImageField(
+                        blank=True, null=True, upload_to="avatars/"
+                    ),
                 ),
                 ("name", models.TextField()),
                 ("short_description", models.TextField()),
                 ("full_description", models.TextField(blank=True, null=True)),
-                ("website", models.CharField(blank=True, max_length=512, null=True)),
+                (
+                    "website",
+                    models.CharField(blank=True, max_length=512, null=True),
+                ),
                 ("detail_url", models.URLField(blank=True, null=True)),
                 ("video_url", models.URLField(blank=True, null=True)),
                 ("slug", models.SlugField(unique=True)),
@@ -329,7 +362,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("name", models.CharField(max_length=128)),
             ],
@@ -349,7 +385,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
@@ -383,7 +422,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("name", models.TextField()),

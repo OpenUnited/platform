@@ -29,10 +29,16 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
-                ("expected_finish_date", models.DateField(default=datetime.date.today)),
+                (
+                    "expected_finish_date",
+                    models.DateField(default=datetime.date.today),
+                ),
                 (
                     "kind",
                     models.IntegerField(
@@ -69,23 +75,34 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("full_name", models.CharField(max_length=256)),
                 ("preferred_name", models.CharField(max_length=128)),
                 (
                     "photo",
-                    models.ImageField(blank=True, null=True, upload_to="avatars/"),
+                    models.ImageField(
+                        blank=True, null=True, upload_to="avatars/"
+                    ),
                 ),
                 ("headline", models.TextField()),
                 ("overview", models.TextField(blank=True)),
-                ("location", models.TextField(blank=True, max_length=128, null=True)),
+                (
+                    "location",
+                    models.TextField(blank=True, max_length=128, null=True),
+                ),
                 ("send_me_bounties", models.BooleanField(default=True)),
                 (
                     "current_position",
                     models.CharField(blank=True, max_length=256, null=True),
                 ),
-                ("twitter_link", models.URLField(blank=True, default="", null=True)),
+                (
+                    "twitter_link",
+                    models.URLField(blank=True, default="", null=True),
+                ),
                 ("linkedin_link", models.URLField(blank=True, null=True)),
                 ("github_link", models.URLField(blank=True, null=True)),
                 ("website_link", models.URLField(blank=True, null=True)),
@@ -155,7 +172,10 @@ class Migration(migrations.Migration):
                 ),
                 ("active", models.BooleanField(db_index=True, default=False)),
                 ("selectable", models.BooleanField(default=False)),
-                ("display_boost_factor", models.PositiveSmallIntegerField(default=1)),
+                (
+                    "display_boost_factor",
+                    models.PositiveSmallIntegerField(default=1),
+                ),
                 ("name", models.CharField(max_length=100, unique=True)),
                 (
                     "parent",
@@ -188,7 +208,9 @@ class Migration(migrations.Migration):
                 ("website", models.CharField(max_length=200)),
                 (
                     "type",
-                    models.IntegerField(choices=[(0, "Personal"), (1, "Company")]),
+                    models.IntegerField(
+                        choices=[(0, "Personal"), (1, "Company")]
+                    ),
                 ),
                 (
                     "person",
@@ -444,7 +466,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 (
                     "kind",
@@ -454,7 +479,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("is_canceled", models.BooleanField(default=False)),
-                ("delivery_message", models.CharField(default=None, max_length=2000)),
+                (
+                    "delivery_message",
+                    models.CharField(default=None, max_length=2000),
+                ),
                 (
                     "bounty_claim",
                     models.ForeignKey(

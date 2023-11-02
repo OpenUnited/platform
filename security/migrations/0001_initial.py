@@ -27,7 +27,10 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "password",
+                    models.CharField(max_length=128, verbose_name="password"),
+                ),
                 (
                     "last_login",
                     models.DateTimeField(
@@ -72,7 +75,9 @@ class Migration(migrations.Migration):
                 (
                     "email",
                     models.EmailField(
-                        blank=True, max_length=254, verbose_name="email address"
+                        blank=True,
+                        max_length=254,
+                        verbose_name="email address",
                     ),
                 ),
                 (
@@ -94,19 +99,28 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
+                        default=django.utils.timezone.now,
+                        verbose_name="date joined",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 (
                     "remaining_budget_for_failed_logins",
                     models.PositiveSmallIntegerField(default=3),
                 ),
-                ("password_reset_required", models.BooleanField(default=False)),
+                (
+                    "password_reset_required",
+                    models.BooleanField(default=False),
+                ),
                 (
                     "is_test_user",
-                    models.BooleanField(default=False, verbose_name="Test User"),
+                    models.BooleanField(
+                        default=False, verbose_name="Test User"
+                    ),
                 ),
             ],
             options={
@@ -148,13 +162,20 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
                     "role",
                     models.IntegerField(
-                        choices=[(0, "Contributor"), (1, "Manager"), (2, "Admin")],
+                        choices=[
+                            (0, "Contributor"),
+                            (1, "Manager"),
+                            (2, "Admin"),
+                        ],
                         default=0,
                     ),
                 ),
@@ -175,12 +196,27 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
-                ("device_hash", models.CharField(blank=True, max_length=64, null=True)),
-                ("country", models.CharField(blank=True, max_length=64, null=True)),
-                ("region_code", models.CharField(blank=True, max_length=8, null=True)),
-                ("city", models.CharField(blank=True, max_length=128, null=True)),
+                (
+                    "device_hash",
+                    models.CharField(blank=True, max_length=64, null=True),
+                ),
+                (
+                    "country",
+                    models.CharField(blank=True, max_length=64, null=True),
+                ),
+                (
+                    "region_code",
+                    models.CharField(blank=True, max_length=8, null=True),
+                ),
+                (
+                    "city",
+                    models.CharField(blank=True, max_length=128, null=True),
+                ),
                 ("verification_code", models.CharField(max_length=6)),
                 ("successful", models.BooleanField(default=True)),
                 (
@@ -209,12 +245,27 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, null=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True, null=True)),
-                ("device_hash", models.CharField(blank=True, max_length=64, null=True)),
-                ("country", models.CharField(blank=True, max_length=64, null=True)),
-                ("region_code", models.CharField(blank=True, max_length=8, null=True)),
-                ("city", models.CharField(blank=True, max_length=128, null=True)),
+                (
+                    "device_hash",
+                    models.CharField(blank=True, max_length=64, null=True),
+                ),
+                (
+                    "country",
+                    models.CharField(blank=True, max_length=64, null=True),
+                ),
+                (
+                    "region_code",
+                    models.CharField(blank=True, max_length=8, null=True),
+                ),
+                (
+                    "city",
+                    models.CharField(blank=True, max_length=128, null=True),
+                ),
                 ("successful", models.BooleanField(default=True)),
                 (
                     "user",

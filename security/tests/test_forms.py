@@ -48,7 +48,9 @@ class SignUpStepOneFormTest(TestCase):
         cleaned_email = form.clean_email()
         self.assertIsNone(cleaned_email)
 
-        expected_error_message = "That email isn't available, please try another"
+        expected_error_message = (
+            "That email isn't available, please try another"
+        )
         self.assertIn(expected_error_message, form.errors.get("email", []))
 
     def test_valid_clean(self):
