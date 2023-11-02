@@ -924,6 +924,11 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
