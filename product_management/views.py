@@ -49,6 +49,7 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 
+# TODO: get rid of the UnorderedObjectListWarning warning
 class ChallengeListView(ListView):
     model = Challenge
     context_object_name = "challenges"
