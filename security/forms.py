@@ -147,6 +147,7 @@ class SignInForm(forms.Form):
             }
         )
     )
+    remember_me = forms.BooleanField(required=False)
 
 
 class PasswordResetForm(PasswordResetForm):

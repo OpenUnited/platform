@@ -100,6 +100,9 @@ class SignInView(TemplateView):
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
+            remember_me = form.cleaned_data["remember_me"]
+            if not remember_me:
+                request.session.set_expiry(0)
 
             user_obj = User.objects.get_or_none(username=username)
             if user_obj:

@@ -31,11 +31,9 @@
     </div>
 
     <div class="flex items-center justify-between">
-        <div class="checkbox__wrap">
-            <input class="checkbox__input" id="check-remember" name="rememberMe" type="checkbox">
-            <label for="check-remember" class="checkbox__label">
-                <div class="checkbox__text">Remember Me</div>
-            </label>
+        <div class="flex items-center">
+            {{ form.remember_me }}
+            <span class="text-sm ml-2">Remember me</span>
         </div>
 
         <div class="text-sm leading-6">
