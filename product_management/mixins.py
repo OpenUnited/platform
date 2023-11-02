@@ -1,4 +1,9 @@
-from django_lifecycle import LifecycleModelMixin, hook, BEFORE_CREATE, BEFORE_SAVE
+from django_lifecycle import (
+    LifecycleModelMixin,
+    hook,
+    BEFORE_CREATE,
+    BEFORE_SAVE,
+)
 from django.db import models
 from django.urls import reverse
 from openunited.mixins import TimeStampMixin, UUIDMixin

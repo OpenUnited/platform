@@ -55,7 +55,11 @@ from .views import (
 # URL patterns for challenge and product list views
 urlpatterns = [
     path("challenges/", ChallengeListView.as_view(), name="challenges"),
-    path("challenge/create/", CreateChallengeView.as_view(), name="create-challenge"),
+    path(
+        "challenge/create/",
+        CreateChallengeView.as_view(),
+        name="create-challenge",
+    ),
     path(
         "challenge/update/<int:pk>/",
         UpdateChallengeView.as_view(),
@@ -87,10 +91,16 @@ urlpatterns = [
         name="delete-bounty-claim",
     ),
     path("products/", ProductListView.as_view(), name="products"),
-    path("bounty-claim/<int:pk>/", BountyClaimView.as_view(), name="bounty-claim"),
+    path(
+        "bounty-claim/<int:pk>/",
+        BountyClaimView.as_view(),
+        name="bounty-claim",
+    ),
     path("product/create", CreateProductView.as_view(), name="create-product"),
     path(
-        "product/update/<int:pk>/", UpdateProductView.as_view(), name="update-product"
+        "product/update/<int:pk>/",
+        UpdateProductView.as_view(),
+        name="update-product",
     ),
     path(
         "organisation/create",
@@ -246,7 +256,7 @@ urlpatterns += [
         name="capability_detail",
     ),
     path(
-        "<str:product_slug>/challenge/<int:challenge_id>",
+        "<str:product_slug>/challenge/<int:pk>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
     ),

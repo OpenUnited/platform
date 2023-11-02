@@ -20,7 +20,9 @@ class Notification(models.Model):
         GENERIC_COMMENT = 12, _("Generic Comment")
         BOUNTY_SUBMISSION_MADE = 13, _("Bounty Submission Made")
         BOUNTY_SUBMISSION_READY_TO_REVIEW = 14, _("Task Ready To Review")
-        BOUNTY_DELIVERY_ATTEMPT_CREATED = 15, _("Task Delivery Attempt Created")
+        BOUNTY_DELIVERY_ATTEMPT_CREATED = 15, _(
+            "Task Delivery Attempt Created"
+        )
         CONTRIBUTOR_ABANDONED_BOUNTY = 16, _("Contributor Abandoned Bounty")
         SUBMISSION_REVISION_REQUESTED = 17, _("Submission Revision Requested")
 
@@ -28,7 +30,9 @@ class Notification(models.Model):
         EMAIL = 0
         SMS = 1
 
-    event_type = models.IntegerField(choices=EventType.choices, primary_key=True)
+    event_type = models.IntegerField(
+        choices=EventType.choices, primary_key=True
+    )
     permitted_params = models.CharField(max_length=500)
 
     class Meta:

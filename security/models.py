@@ -12,7 +12,9 @@ from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
 
 # This model will be used for advanced authentication methods
 class User(AbstractUser, TimeStampMixin):
-    remaining_budget_for_failed_logins = models.PositiveSmallIntegerField(default=3)
+    remaining_budget_for_failed_logins = models.PositiveSmallIntegerField(
+        default=3
+    )
     password_reset_required = models.BooleanField(default=False)
     is_test_user = models.BooleanField(_("Test User"), default=False)
 
@@ -35,7 +37,9 @@ class User(AbstractUser, TimeStampMixin):
 
 
 class SignUpRequest(TimeStampMixin):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, blank=True
+    )
     device_hash = models.CharField(max_length=64, null=True, blank=True)
     country = models.CharField(max_length=64, null=True, blank=True)
     region_code = models.CharField(max_length=8, null=True, blank=True)

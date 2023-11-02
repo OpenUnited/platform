@@ -69,7 +69,9 @@ class ChallengeListView(ListView):
         return response
 
     def get_queryset(self):
-        return Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
+        return Challenge.objects.exclude(
+            status=Challenge.CHALLENGE_STATUS_DONE
+        )
 
 
 class ProductListView(ListView):
@@ -88,7 +90,9 @@ class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
+        product = get_object_or_404(
+            Product, slug=self.kwargs.get("product_slug", None)
+        )
 
         context.update(
             {
@@ -233,14 +237,18 @@ class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     model = Idea
     form_class = IdeaForm
 
-    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+    def get(
+        self, request: HttpRequest, *args: str, **kwargs: Any
+    ) -> HttpResponse:
         idea_pk = kwargs.get("pk")
         idea = Idea.objects.get(pk=idea_pk)
         form = IdeaForm(request.GET, instance=idea)
 
         return super().get(request, *args, **kwargs)
 
-    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+    def post(
+        self, request: HttpRequest, *args: str, **kwargs: Any
+    ) -> HttpResponse:
         idea_pk = kwargs.get("pk")
         idea = Idea.objects.get(pk=idea_pk)
 
@@ -263,7 +271,9 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
 
         context.update(
             {
-                "product_people": ProductRoleAssignment.objects.filter(product=product),
+                "product_people": ProductRoleAssignment.objects.filter(
+                    product=product
+                ),
             }
         )
 
@@ -287,19 +297,22 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
-# TODO: replace TemplateView with DetailView
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
-class ChallengeDetailView(BaseProductDetailView, TemplateView):
+class ChallengeDetailView(BaseProductDetailView, DetailView):
+    model = Challenge
     template_name = "product_management/challenge_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        challenge_id = context.get("challenge_id")
-        challenge = get_object_or_404(Challenge, id=challenge_id)
+        challenge = self.object
         bounty = challenge.bounty_set.all().first()
+        # TODO: we need to allow multiple bounties for a challenge
         bounty_claim = BountyClaim.objects.filter(
             bounty=bounty,
-            kind__in=[BountyClaim.CLAIM_TYPE_DONE, BountyClaim.CLAIM_TYPE_ACTIVE],
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_DONE,
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+            ],
         ).first()
 
         context.update(
@@ -318,25 +331,33 @@ class ChallengeDetailView(BaseProductDetailView, TemplateView):
 
             context.update(
                 {
-                    "current_user_created_claim_request": bounty_claims.count() > 0,
+                    "current_user_created_claim_request": bounty_claims.count()
+                    > 0,
+                    "actions_available": challenge.created_by
+                    == self.request.user.person,
                 }
             )
         else:
             context.update(
                 {
                     "current_user_created_claim_request": False,
+                    "actions_available": False,
                 }
             )
 
         if bounty_claim:
-            context.update({"is_claimed": True, "claimed_by": bounty_claim.person})
+            context.update(
+                {"is_claimed": True, "claimed_by": bounty_claim.person}
+            )
         else:
             context.update({"is_claimed": False})
 
         return context
 
 
-class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
+class CreateInitiativeView(
+    LoginRequiredMixin, BaseProductDetailView, CreateView
+):
     form_class = InitiativeForm
     template_name = "product_management/create_initiative.html"
     login_url = "sign_in"
@@ -394,10 +415,14 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
                 root = Capability.add_root(name=name, description=description)
                 root.product.add(product)
             elif creation_method == "2":
-                sibling = capability.add_sibling(name=name, description=description)
+                sibling = capability.add_sibling(
+                    name=name, description=description
+                )
                 sibling.product.add(product)
             elif creation_method == "3":
-                sibling = capability.add_child(name=name, description=description)
+                sibling = capability.add_child(
+                    name=name, description=description
+                )
                 capability.add_child(sibling)
 
             return redirect(
@@ -422,7 +447,9 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["challenges"] = Challenge.objects.filter(capability=self.object)
+        context["challenges"] = Challenge.objects.filter(
+            capability=self.object
+        )
 
         return context
 
@@ -456,7 +483,9 @@ class BountyClaimView(LoginRequiredMixin, FormView):
             instance.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
             instance.save()
 
-            messages.success(request, "Your bounty claim request is successfully sent!")
+            messages.success(
+                request, "Your bounty claim request is successfully sent!"
+            )
 
             self.success_url = reverse(
                 "challenge_detail",
@@ -493,7 +522,9 @@ class CreateProductView(LoginRequiredMixin, CreateView):
                 product=instance,
                 role=ProductRoleAssignment.PRODUCT_ADMIN,
             )
-            self.success_url = reverse("product_summary", args=(instance.slug,))
+            self.success_url = reverse(
+                "product_summary", args=(instance.slug,)
+            )
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -528,7 +559,9 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
 
         form = self.form_class(instance=self.object, initial=initial)
         return render(
-            request, self.template_name, {"form": form, "product_instance": self.object}
+            request,
+            self.template_name,
+            {"form": form, "product_instance": self.object},
         )
 
     def post(self, request, *args, **kwargs):
@@ -538,7 +571,9 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
         )
         if form.is_valid():
             instance = form.save()
-            self.success_url = reverse("product_summary", args=(instance.slug,))
+            self.success_url = reverse(
+                "product_summary", args=(instance.slug,)
+            )
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -581,7 +616,9 @@ class CreateChallengeView(
             instance.created_by = request.user.person
             instance.save()
 
-            messages.success(request, _("The challenge is successfully created!"))
+            messages.success(
+                request, _("The challenge is successfully created!")
+            )
             self.success_url = reverse(
                 "challenge_detail",
                 args=(
@@ -679,9 +716,9 @@ class DashboardProductDetailView(DashboardBaseView, DetailView):
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "challenges": Challenge.objects.filter(product=self.object).order_by(
-                    "-created_at"
-                )
+                "challenges": Challenge.objects.filter(
+                    product=self.object
+                ).order_by("-created_at")
             }
         )
         return context
@@ -702,9 +739,9 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        queryset = Challenge.objects.filter(product__slug=product_slug).order_by(
-            "-created_at"
-        )
+        queryset = Challenge.objects.filter(
+            product__slug=product_slug
+        ).order_by("-created_at")
         return queryset
 
 
@@ -742,7 +779,9 @@ class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
         # Handle search
         query_parameter = request.GET.get("search-challenge")
         if query_parameter:
-            queryset = Challenge.objects.filter(title__icontains=query_parameter)
+            queryset = Challenge.objects.filter(
+                title__icontains=query_parameter
+            )
 
         context.update({"challenges": queryset})
 
@@ -765,7 +804,8 @@ class DashboardProductBountiesView(LoginRequiredMixin, ListView):
         product_slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=product_slug)
         queryset = BountyClaim.objects.filter(
-            bounty__challenge__product=product, kind=BountyClaim.CLAIM_TYPE_IN_REVIEW
+            bounty__challenge__product=product,
+            kind=BountyClaim.CLAIM_TYPE_IN_REVIEW,
         )
         return queryset
 
@@ -837,7 +877,9 @@ class UpdateChallengeView(
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
             instance = form.save()
-            messages.success(request, _("The challenge is successfully updated!"))
+            messages.success(
+                request, _("The challenge is successfully updated!")
+            )
 
             self.success_url = reverse(
                 "challenge_detail",
@@ -861,7 +903,9 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
         challenge_obj = self.get_object()
         if challenge_obj.can_delete_challenge(request.user.person):
             Challenge.objects.get(pk=challenge_obj.pk).delete()
-            messages.success(request, _("The challenge is successfully deleted!"))
+            messages.success(
+                request, _("The challenge is successfully deleted!")
+            )
             return redirect(self.success_url)
         else:
             messages.error(
@@ -937,7 +981,10 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
 
             self.success_url = reverse(
                 "challenge_detail",
-                args=(self.object.challenge.product.slug, self.object.challenge.id),
+                args=(
+                    self.object.challenge.product.slug,
+                    self.object.challenge.id,
+                ),
             )
             return redirect(self.success_url)
 
@@ -965,7 +1012,9 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
         instance = BountyClaim.objects.get(pk=self.object.pk)
         if instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW:
             instance.delete
-            messages.success(request, _("The bounty claim is successfully deleted."))
+            messages.success(
+                request, _("The bounty claim is successfully deleted.")
+            )
         else:
             messages.error(
                 request,
@@ -997,7 +1046,8 @@ def bounty_claim_actions(request, pk):
 
     return redirect(
         reverse(
-            "dashboard-product-bounties", args=(instance.bounty.challenge.product.slug,)
+            "dashboard-product-bounties",
+            args=(instance.bounty.challenge.product.slug,),
         )
     )
 

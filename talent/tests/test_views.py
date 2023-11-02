@@ -70,7 +70,9 @@ class TalentAppFunctionBasedViewsTest(TestCase):
         ]
 
         _ = PersonSkillFactory(
-            person=self.person, skill=self.skill_data, expertise=self.expertise_data
+            person=self.person,
+            skill=self.skill_data,
+            expertise=self.expertise_data,
         )
 
     def tearDown(self):
@@ -102,7 +104,9 @@ class TalentAppFunctionBasedViewsTest(TestCase):
     def test_get_expertise(self):
         url = reverse("get_expertise")
 
-        response = self.client.get(url, data={"selected_skills": f"{self.skill_ids}"})
+        response = self.client.get(
+            url, data={"selected_skills": f"{self.skill_ids}"}
+        )
         actual_data = response.json()
         expected_data = {
             "expertiseList": list(self.expertise_queryset),
@@ -151,13 +155,19 @@ class TalentAppFunctionBasedViewsTest(TestCase):
 
         response = self.client.get(
             url,
-            data={"skills": f"{self.skill_ids}", "expertise": f"{self.expertise_ids}"},
+            data={
+                "skills": f"{self.skill_ids}",
+                "expertise": f"{self.expertise_ids}",
+            },
         )
         self.assertEqual(response.json(), [])
 
         response = self.client.get(
             url,
-            data={"skills": f"{self.skill_ids}", "expertise": f"{self.expertise_ids}"},
+            data={
+                "skills": f"{self.skill_ids}",
+                "expertise": f"{self.expertise_ids}",
+            },
             headers={"Referer": "http://example.com/talent/profile/"},
         )
 
@@ -282,7 +292,11 @@ class UpdateProfileViewTest(TestCase):
         )
         self.assertEqual(
             person_skill.expertise,
-            list(Expertise.objects.filter(id__in=expertise_ids).values("id", "name")),
+            list(
+                Expertise.objects.filter(id__in=expertise_ids).values(
+                    "id", "name"
+                )
+            ),
         )
 
         Skill.objects.filter(id__in=skill_ids).delete()
@@ -321,9 +335,12 @@ class CreateFeedbackViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            response.url, reverse("portfolio", args=(self.recipient.user.username,))
+            response.url,
+            reverse("portfolio", args=(self.recipient.user.username,)),
         )
-        self.assertGreater(Feedback.objects.filter(provider=self.provider).count(), 0)
+        self.assertGreater(
+            Feedback.objects.filter(provider=self.provider).count(), 0
+        )
 
 
 class UpdateFeedbackViewTest(TestCase):
@@ -350,7 +367,9 @@ class UpdateFeedbackViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            reverse("portfolio", args=(self.feedback.recipient.user.username,)),
+            reverse(
+                "portfolio", args=(self.feedback.recipient.user.username,)
+            ),
         )
 
         obj = Feedback.objects.get(pk=self.feedback.pk)
@@ -381,7 +400,9 @@ class DeleteFeedbackViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            reverse("portfolio", args=(self.feedback.recipient.user.username,)),
+            reverse(
+                "portfolio", args=(self.feedback.recipient.user.username,)
+            ),
         )
 
         with self.assertRaises(ObjectDoesNotExist):

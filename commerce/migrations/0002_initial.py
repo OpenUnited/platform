@@ -18,14 +18,16 @@ class Migration(migrations.Migration):
             model_name="productaccountreservation",
             name="bounty_claim",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.bountyclaim"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="talent.bountyclaim",
             ),
         ),
         migrations.AddField(
             model_name="productaccountdebit",
             name="bounty_claim",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.bountyclaim"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="talent.bountyclaim",
             ),
         ),
         migrations.AddField(
@@ -71,7 +73,8 @@ class Migration(migrations.Migration):
             model_name="outboundpayment",
             name="payment_order",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="commerce.paymentorder"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="commerce.paymentorder",
             ),
         ),
         migrations.AddField(
@@ -94,14 +97,16 @@ class Migration(migrations.Migration):
             model_name="organisationaccount",
             name="organisation",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="commerce.organisation"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="commerce.organisation",
             ),
         ),
         migrations.AddField(
             model_name="inboundpayment",
             name="sales_order",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="commerce.salesorder"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="commerce.salesorder",
             ),
         ),
         migrations.AddField(
@@ -159,14 +164,16 @@ class Migration(migrations.Migration):
             model_name="contributoraccountdebit",
             name="payment_order",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="commerce.paymentorder"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="commerce.paymentorder",
             ),
         ),
         migrations.AddField(
             model_name="contributoraccountcredit",
             name="bounty_claim",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.bountyclaim"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="talent.bountyclaim",
             ),
         ),
         migrations.AddField(
@@ -189,7 +196,8 @@ class Migration(migrations.Migration):
             model_name="contributoraccountcredit",
             name="payment_order",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="commerce.paymentorder"
+                on_delete=django.db.models.deletion.CASCADE,
+                to="commerce.paymentorder",
             ),
         ),
         migrations.AddField(

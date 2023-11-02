@@ -175,7 +175,9 @@ class Migration(migrations.Migration):
             model_name="challenge",
             name="tag",
             field=models.ManyToManyField(
-                blank=True, related_name="challenge_tags", to="product_management.tag"
+                blank=True,
+                related_name="challenge_tags",
+                to="product_management.tag",
             ),
         ),
         migrations.AddField(

@@ -4,7 +4,14 @@ from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyInteger
 from random import randint
 
-from talent.models import Person, Feedback, Status, Skill, Expertise, PersonSkill
+from talent.models import (
+    Person,
+    Feedback,
+    Status,
+    Skill,
+    Expertise,
+    PersonSkill,
+)
 
 
 class PersonFactory(DjangoModelFactory):

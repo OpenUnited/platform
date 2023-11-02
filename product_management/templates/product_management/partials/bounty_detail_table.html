@@ -51,12 +51,18 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex">
+                    {% if actions_available %}
                         <a href="{{ url('update-bounty', args=(bounty.id,)) }}"
                             class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Edit</a>
                         <a hx-get="{{ url('delete-bounty', args=(bounty.id,)) }}"
                             hx-confirm="Are you sure to delete this bounty?"
                             class="cursor-pointer font-medium text-red-600 hover:underline">Delete</a>
+
+                    {% else %}
+                        <p>No action is available for this bounty.</p>
+                    {% endif  %}
                     </div>
+
                 </td>
             </tr>
             {% endfor %}
