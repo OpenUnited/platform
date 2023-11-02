@@ -860,7 +860,7 @@ class UpdateChallengeView(
         kwargs = super().get_form_kwargs(*args, **kwargs)
 
         instance = kwargs.get("instance")
-        kwargs.update({"initial": {"product": instance.product.pk}})
+        kwargs.update({"initial": {"product_id": instance.product.pk}})
         return kwargs
 
     def get(self, request, *args, **kwargs):
