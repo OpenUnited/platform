@@ -289,6 +289,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
         context = super().get_context_data(**kwargs)
         challenge = self.object
         bounty = challenge.bounty_set.all().first()
+        # TODO: we need to allow multiple bounties for a challenge
         bounty_claim = BountyClaim.objects.filter(
             bounty=bounty,
             kind__in=[BountyClaim.CLAIM_TYPE_DONE, BountyClaim.CLAIM_TYPE_ACTIVE],
