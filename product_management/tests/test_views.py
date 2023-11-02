@@ -114,6 +114,41 @@ class ProductRedirectViewTest(TestCase):
         )
 
 
+class ProductSummaryViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_summary", args=(self.product.slug,))
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data.get("product"), self.product)
+        self.assertEqual(response.context_data.get("challenges").count(), 0)
+        self.assertEqual(response.context_data.get("capabilities").count(), 0)
+
+        _ = [
+            ChallengeFactory(
+                product=self.product,
+                status=Challenge.CHALLENGE_STATUS_AVAILABLE,
+            )
+            for _ in range(0, 5)
+        ]
+
+        root_capability = Capability.add_root(
+            name="dummy name", description="dummy description"
+        )
+        root_capability.product.add(self.product)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data.get("product"), self.product)
+        self.assertEqual(response.context_data.get("challenges").count(), 5)
+        self.assertEqual(response.context_data.get("capabilities").count(), 1)
+
+
 class CreateChallengeViewTestCase(TestCase):
     """
     docker-compose --env-file docker.env exec platform sh -c "python manage.py test product_management.tests.test_views.CreateChallengeViewTestCase"
