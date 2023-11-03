@@ -17,7 +17,12 @@ from django.contrib.auth.views import (
 
 from .forms import PasswordResetForm, SetPasswordForm
 from .models import User
-from .forms import SignInForm, SignUpStepOneForm, SignUpStepTwoForm, SignUpStepThreeForm
+from .forms import (
+    SignInForm,
+    SignUpStepOneForm,
+    SignUpStepTwoForm,
+    SignUpStepThreeForm,
+)
 from talent.models import Person, Status
 from .models import User
 from .services import UserService
@@ -47,7 +52,9 @@ class SignUpWizard(SessionWizardView):
             actual_code = form.cleaned_data.get("verification_code")
 
             if expected_code != actual_code:
-                form.add_error(None, _("Invalid verification code. Please try again."))
+                form.add_error(
+                    None, _("Invalid verification code. Please try again.")
+                )
 
         return data
 
@@ -91,7 +98,10 @@ class SignInView(TemplateView):
     template_name = "security/sign_in/sign_in.html"
 
     def get(self, request, *args, **kwargs):
-        context = {"form": self.form_class(), "next": request.GET.get("next", "")}
+        context = {
+            "form": self.form_class(),
+            "next": request.GET.get("next", ""),
+        }
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):

@@ -103,7 +103,8 @@ class FeedbackService:
         stars_counts = feedbacks.values("stars").annotate(count=Count("id"))
 
         stars_percentages = {
-            star: int(round(0 / total_feedbacks * 100, 2)) for star in range(1, 6)
+            star: int(round(0 / total_feedbacks * 100, 2))
+            for star in range(1, 6)
         }
 
         for entry in stars_counts:

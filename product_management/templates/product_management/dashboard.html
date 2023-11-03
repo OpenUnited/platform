@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="{{ static('styles/tailwind.css') }}">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
+    <!-- Favicon stuff -->
+    <link rel="icon" href="{{ static ('images/favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ static ('images/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ static ('images/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ static ('images/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ static ('images/favicon/site.webmanifest') }}">
+
     <title>Dashboard</title>
 
 </head>
@@ -123,10 +130,12 @@
                                 <button _="on click
                                         toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu-mobile
                                         then toggle .hidden on #sub-menu-1-mobile" type="button" class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center
-                            rounded-md px-2 py-2 text-sm font-medium" aria-controls="sub-menu-1-mobile" aria-expanded="false">
+                            rounded-md px-2 py-2 text-sm font-medium" aria-controls="sub-menu-1-mobile"
+                                    aria-expanded="false">
                                     <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
-                                    <svg id="side-arrow-for-expandable-menu-mobile" class="text-gray-400 mr-3 h-6 w-6 shrink-0"
-                                        viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <svg id="side-arrow-for-expandable-menu-mobile"
+                                        class="text-gray-400 mr-3 h-6 w-6 shrink-0" viewBox="0 0 20 20"
+                                        fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd"
                                             d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                                             clip-rule="evenodd" />
@@ -351,8 +360,7 @@
                                     id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                     <span class="absolute -inset-1.5"></span>
                                     <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full"
-                                        src="{{ person.get_photo_url() }}"
+                                    <img class="h-8 w-8 rounded-full" src="{{ person.get_photo_url() }}"
                                         alt="Profile Picture">
                                 </button>
                             </div>

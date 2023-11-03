@@ -44,7 +44,9 @@ def send_email(event_type, **kwargs):
         .filter(id=kwargs["receiver"])
         .get()
     )
-    email_notification = EmailNotification.objects.filter(event_type=event_type).get()
+    email_notification = EmailNotification.objects.filter(
+        event_type=event_type
+    ).get()
 
     email_subject = email_notification.title.format(**kwargs)
     email_content = email_notification.template.format(**kwargs)

@@ -40,7 +40,9 @@ class SignUpViewTest(TestCase):
             response = self.client.post(self.url, data)
 
             self.assertEqual(response.status_code, 200)
-            self.assertIn("security/sign_up/sign_up.html", response.template_name)
+            self.assertIn(
+                "security/sign_up/sign_up.html", response.template_name
+            )
 
     def test_process_step_0(self):
         form_one = {
@@ -153,14 +155,18 @@ class PasswordResetViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post_invalid_form(self):
-        response = self.client.post(self.url, {"email": "not_exist@example.com"})
+        response = self.client.post(
+            self.url, {"email": "not_exist@example.com"}
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "This e-mail does not exist")
 
     def test_post_valid_form(self):
         user = UserFactory(email="exist@example.com")
-        response = self.client.post(self.url, {"email": user.email}, follow=True)
+        response = self.client.post(
+            self.url, {"email": user.email}, follow=True
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, reverse("password_reset_done"))

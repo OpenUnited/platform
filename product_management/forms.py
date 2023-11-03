@@ -260,9 +260,9 @@ class OrganisationForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get("username")
 
-        if Organisation.objects.filter(username=username) or Person.objects.filter(
-            user__username=username
-        ):
+        if Organisation.objects.filter(
+            username=username
+        ) or Person.objects.filter(user__username=username):
             raise ValidationError(_("This username is already taken."))
 
         return username
@@ -275,9 +275,6 @@ class ChallengeForm(forms.ModelForm):
         widget=forms.Select(
             attrs={
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
-                # "hx-get": reverse_lazy("get-people-of-product"),
-                # "hx-target": "#id_reviewer",
-                # "hx-swap": "outerHTML",
             }
         ),
     )
@@ -291,6 +288,15 @@ class ChallengeForm(forms.ModelForm):
     #         }
     #     ),
     # )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        product_id = kwargs.get("initial").get("product_id")
+        if product_id:
+            queryset = Product.objects.filter(pk=product_id)
+            self.fields["product"].empty_label = None
+            self.fields["product"].queryset = queryset
+            self.fields["product"].initial = queryset.first()
 
     class Meta:
         model = Challenge
@@ -337,7 +343,9 @@ class ChallengeForm(forms.ModelForm):
 class BountyForm(forms.ModelForm):
     challenge = forms.ModelChoiceField(
         empty_label="Select a challenge",
-        queryset=Challenge.objects.filter(status=Challenge.CHALLENGE_STATUS_AVAILABLE),
+        queryset=Challenge.objects.filter(
+            status=Challenge.CHALLENGE_STATUS_AVAILABLE
+        ),
         widget=forms.Select(
             attrs={
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
@@ -354,6 +362,16 @@ class BountyForm(forms.ModelForm):
             attrs={"id": "selected-expert", "name": "selected-expert"}
         )
     )
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)
+        super().__init__(*args, **kwargs)
+        challenge_id = self.request.GET.get("challenge_id", None)
+        if challenge_id:
+            queryset = Challenge.objects.filter(pk=challenge_id)
+            self.fields["challenge"].queryset = queryset
+            self.fields["challenge"].initial = queryset.first()
+            self.fields["challenge"].empty_label = None
 
     def clean_challenge(self):
         challenge = self.cleaned_data.get("challenge")
@@ -429,7 +447,9 @@ class InitiativeForm(forms.ModelForm):
 
         if self.slug:
             queryset = Product.objects.filter(slug=self.slug)
-            self.fields["product"].queryset = Product.objects.filter(slug=self.slug)
+            self.fields["product"].queryset = Product.objects.filter(
+                slug=self.slug
+            )
             self.fields["product"].initial = queryset.first()
 
     class Meta:

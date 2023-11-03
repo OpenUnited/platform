@@ -9,5 +9,11 @@ from .models import (
 )
 
 admin.site.register(
-    [User, SignInAttempt, SignUpRequest, ProductRoleAssignment, BlacklistedUsernames]
+    [
+        User,
+        SignInAttempt,
+        SignUpRequest,
+        ProductRoleAssignment,
+        BlacklistedUsernames,
+    ]
 )
