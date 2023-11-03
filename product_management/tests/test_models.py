@@ -1,7 +1,9 @@
 from django.test import TestCase
+from django.urls import reverse
 
 from security.models import ProductRoleAssignment
-from .factories import ChallengeFactory, OwnedProductFactory
+from .factories import ChallengeFactory, OwnedProductFactory, ProductBugFactory
+from product_management.models import Bug
 from security.tests.factories import ProductRoleAssignmentFactory
 from talent.tests.factories import PersonFactory
 
@@ -34,3 +36,15 @@ class ChallengeModelTest(TestCase):
 
         response = self.challenge.can_delete_challenge(self.person)
         self.assertTrue(response)
+
+
+class BugModelTest(TestCase):
+    def setUp(self):
+        self.product = OwnedProductFactory.create()
+        self.bug = ProductBugFactory(product=self.product)
+
+    def test_get_str(self):
+        expected_str = f"{self.bug.person} - {self.bug.title}"
+        actual_str = str(self.bug)
+
+        self.assertEqual(actual_str, expected_str)

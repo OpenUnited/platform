@@ -503,7 +503,7 @@ class Bug(TimeStampMixin):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
-        return reverse("add_product_bug", kwargs={"pk": self.pk})
+        return reverse("add_product_bug", kwargs={"slug": self.product.slug})
 
     def __str__(self):
         return f"{self.person} - {self.title}"

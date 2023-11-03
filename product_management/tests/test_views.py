@@ -2,13 +2,14 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from talent.models import BountyClaim
-from product_management.models import Challenge, Capability
+from product_management.models import Challenge, Capability, Bug
 from .factories import (
     OwnedProductFactory,
     PersonFactory,
     ChallengeFactory,
     BountyFactory,
     BountyClaimFactory,
+    ProductBugFactory,
 )
 
 
@@ -215,3 +216,96 @@ class ChallengeDetailViewTest(TestCase):
             "claimed_by": bc_one.person,
         }
         self.assertDictContainsSubset(expected_data, response.context_data)
+
+
+class CreateProductBugTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.person = PersonFactory()
+        self.url = reverse("add_product_bug", args=(self.product.slug,))
+        self.login_url = reverse("sign_in")
+
+    def test_post(self):
+        # Test login required
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
+
+        # Test Bug object creation
+        self.client.force_login(self.person.user)
+        data = {
+            "title": "Bug",
+            "description": "Bug Description",
+            "product": self.product,
+            "person": self.person,
+        }
+
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse(
+                "product_ideas_bugs",
+                args=(self.product.slug,),
+            ),
+        )
+        self.assertGreater(Bug.objects.filter(person=self.person).count(), 0)
+
+
+class ProductBugDetailViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.bug = ProductBugFactory()
+        self.url = reverse(
+            "product_bug_detail", args=(self.bug.product.slug, self.bug.id)
+        )
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_bug_detail.html",
+            response.template_name,
+        )
+
+
+class UpdateProductBugViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.bug = ProductBugFactory()
+        self.product = OwnedProductFactory()
+        self.person = PersonFactory()
+        self.url = reverse(
+            "update_product_bug", args=(self.bug.product.slug, self.bug.id)
+        )
+        self.login_url = reverse("sign_in")
+
+    def test_post(self):
+        # Test login required
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
+
+        # Test Feedback object update
+        self.client.force_login(self.person.user)
+        data = {
+            "title": "Update Bug",
+            "description": "Update Bug Description",
+            "product": self.bug.product,
+            "person": self.bug.person,
+        }
+
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            reverse(
+                "product_bug_detail", args=(self.bug.product.slug, self.bug.id)
+            ),
+        )
+
+        obj = Bug.objects.get(pk=self.bug.pk)
+        self.assertEqual(obj.title, data.get("title"))
+        self.assertEqual(obj.description, data.get("description"))
