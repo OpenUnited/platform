@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from django.test.client import RequestFactory
 from django.urls import reverse
 
 from talent.models import BountyClaim
@@ -10,6 +11,142 @@ from .factories import (
     BountyFactory,
     BountyClaimFactory,
 )
+
+
+class ChallengeListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("challenges")
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.context_data.get("request"))
+        self.assertFalse(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("challenges").count(), 0)
+
+        _ = [
+            ChallengeFactory(status=Challenge.CHALLENGE_STATUS_DRAFT)
+            for _ in range(0, 4)
+        ]
+        _ = [
+            ChallengeFactory(status=Challenge.CHALLENGE_STATUS_BLOCKED)
+            for _ in range(0, 4)
+        ]
+        _ = [
+            ChallengeFactory(status=Challenge.CHALLENGE_STATUS_AVAILABLE)
+            for _ in range(0, 4)
+        ]
+        _ = [
+            ChallengeFactory(status=Challenge.CHALLENGE_STATUS_CLAIMED)
+            for _ in range(0, 4)
+        ]
+        _ = [
+            ChallengeFactory(status=Challenge.CHALLENGE_STATUS_DONE)
+            for _ in range(0, 4)
+        ]
+        _ = [
+            ChallengeFactory(status=Challenge.CHALLENGE_STATUS_IN_REVIEW)
+            for _ in range(0, 4)
+        ]
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.context_data.get("request"))
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("challenges").count(), 8)
+
+        response = self.client.get(f"{self.url}?page=2")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.context_data.get("request"))
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("challenges").count(), 8)
+
+        response = self.client.get(f"{self.url}?page=3")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(response.context_data.get("request"))
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("challenges").count(), 4)
+
+
+class ProductListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("products")
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("products").count(), 0)
+
+        _ = [OwnedProductFactory() for _ in range(12)]
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("products").count(), 8)
+
+        response = self.client.get(f"{self.url}?page=2")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context_data.get("is_paginated"))
+        self.assertEqual(response.context_data.get("products").count(), 4)
+
+
+class ProductRedirectViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_detail", args=(self.product.slug,))
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response, reverse("product_summary", args=(self.product.slug,))
+        )
+
+
+class ProductSummaryViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_summary", args=(self.product.slug,))
+
+    def test_get(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data.get("product"), self.product)
+        self.assertEqual(response.context_data.get("challenges").count(), 0)
+        self.assertEqual(response.context_data.get("capabilities").count(), 0)
+
+        _ = [
+            ChallengeFactory(
+                product=self.product,
+                status=Challenge.CHALLENGE_STATUS_AVAILABLE,
+            )
+            for _ in range(0, 5)
+        ]
+
+        root_capability = Capability.add_root(
+            name="dummy name", description="dummy description"
+        )
+        root_capability.product.add(self.product)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data.get("product"), self.product)
+        self.assertEqual(response.context_data.get("challenges").count(), 5)
+        self.assertEqual(response.context_data.get("capabilities").count(), 1)
 
 
 class CreateChallengeViewTestCase(TestCase):

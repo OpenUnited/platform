@@ -72,6 +72,9 @@ class ChallengeListView(ListView):
         ).order_by("-id")
 
 
+# TODO: This view throws UnorderedObjectListWarning warning.
+# Currently, this is the expected behavior but we should have
+# consistent results every single time.
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
@@ -110,6 +113,7 @@ class ProductRedirectView(BaseProductDetailView, RedirectView):
         return redirect(url)
 
 
+# TODO: take a deeper look at the capability part
 class ProductSummaryView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_summary.html"
 
@@ -123,7 +127,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             {
                 "product": product,
                 "challenges": challenges,
-                "capabilities": Capability.get_root_nodes(),
+                "capabilities": Capability.objects.filter(product=product),
             }
         )
         return context
