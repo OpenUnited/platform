@@ -1,4 +1,3 @@
-import json
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
@@ -51,6 +50,7 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 
+# TODO: get rid of the UnorderedObjectListWarning warning
 class ChallengeListView(ListView):
     model = Challenge
     context_object_name = "challenges"
@@ -71,14 +71,18 @@ class ChallengeListView(ListView):
     def get_queryset(self):
         return Challenge.objects.exclude(
             status=Challenge.CHALLENGE_STATUS_DONE
-        )
+        ).order_by("-id")
 
 
+# TODO: This view throws UnorderedObjectListWarning warning.
+# Currently, this is the expected behavior but we should have
+# consistent results every single time.
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
     queryset = Product.objects.filter(is_private=False)
     template_name = "product_management/products.html"
+    paginate_by = 8
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -111,6 +115,7 @@ class ProductRedirectView(BaseProductDetailView, RedirectView):
         return redirect(url)
 
 
+# TODO: take a deeper look at the capability part
 class ProductSummaryView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_summary.html"
 
@@ -124,7 +129,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             {
                 "product": product,
                 "challenges": challenges,
-                "capabilities": Capability.get_root_nodes(),
+                "capabilities": Capability.objects.filter(product=product),
             }
         )
         return context
@@ -631,6 +636,46 @@ class CreateChallengeView(
         return super().post(request, *args, **kwargs)
 
 
+class UpdateChallengeView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
+):
+    model = Challenge
+    form_class = ChallengeForm
+    template_name = "product_management/update_challenge.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+
+        instance = kwargs.get("instance")
+        kwargs.update({"initial": {"product_id": instance.product.pk}})
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST, instance=self.object)
+        if form.is_valid():
+            instance = form.save()
+            messages.success(
+                request, _("The challenge is successfully updated!")
+            )
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    instance.product.slug,
+                    instance.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
 class DashboardBaseView(LoginRequiredMixin):
     login_url = "sign_in"
 
@@ -853,46 +898,6 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class UpdateChallengeView(
-    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
-):
-    model = Challenge
-    form_class = ChallengeForm
-    template_name = "product_management/update_challenge.html"
-    login_url = "sign_in"
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-
-        instance = kwargs.get("instance")
-        kwargs.update({"initial": {"product": instance.product.pk}})
-        return kwargs
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=self.object)
-        if form.is_valid():
-            instance = form.save()
-            messages.success(
-                request, _("The challenge is successfully updated!")
-            )
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    instance.product.slug,
-                    instance.id,
-                ),
-            )
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
-
-
 class DeleteChallengeView(LoginRequiredMixin, DeleteView):
     model = Challenge
     template_name = "product_management/delete_challenge.html"
@@ -928,6 +933,11 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
     form_class = BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
