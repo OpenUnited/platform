@@ -40,11 +40,18 @@ class ChallengeModelTest(TestCase):
 
 class BugModelTest(TestCase):
     def setUp(self):
-        self.product = OwnedProductFactory.create()
-        self.bug = ProductBugFactory(product=self.product)
+        self.bug = ProductBugFactory()
 
     def test_get_str(self):
         expected_str = f"{self.bug.person} - {self.bug.title}"
         actual_str = str(self.bug)
 
         self.assertEqual(actual_str, expected_str)
+
+    def test_get_absolute_url(self):
+        expected_url = reverse(
+            "add_product_bug", args=(self.bug.product.slug,)
+        )
+        actual_url = self.bug.get_absolute_url()
+
+        self.assertEqual(actual_url, expected_url)
