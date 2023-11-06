@@ -6,6 +6,7 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
+from django.db.models import Case, Value, When
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
@@ -67,9 +68,18 @@ class ChallengeListView(ListView):
         return response
 
     def get_queryset(self):
-        return Challenge.objects.exclude(
-            status=Challenge.CHALLENGE_STATUS_DONE
-        ).order_by("-id")
+        custom_order = Case(
+            When(status=Challenge.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
+            When(status=Challenge.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
+            When(status=Challenge.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
+            When(status=Challenge.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
+            When(status=Challenge.CHALLENGE_STATUS_DONE, then=Value(4)),
+        )
+        return (
+            Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
+            .annotate(custom_order=custom_order)
+            .order_by("custom_order", "-id")
+        )
 
 
 # TODO: This view throws UnorderedObjectListWarning warning.
@@ -140,6 +150,16 @@ class ProductChallengesView(BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
         challenges = Challenge.objects.filter(product=product)
+        custom_order = Case(
+            When(status=Challenge.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
+            When(status=Challenge.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
+            When(status=Challenge.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
+            When(status=Challenge.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
+            When(status=Challenge.CHALLENGE_STATUS_DONE, then=Value(4)),
+        )
+        challenges = challenges.annotate(custom_order=custom_order).order_by(
+            "custom_order"
+        )
         context.update(
             {
                 "challenges": challenges,
