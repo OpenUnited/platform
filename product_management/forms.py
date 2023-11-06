@@ -34,6 +34,9 @@ class BountyClaimForm(forms.ModelForm):
     class Meta:
         model = BountyClaim
         fields = ["expected_finish_date"]
+        labels = {
+            "expected_finish_date": "Expected Submission Date",
+        }
 
         widgets = {
             "expected_finish_date": DateInput(),
@@ -319,12 +322,14 @@ class ChallengeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        product = kwargs.get("initial")
-        if product:
-            queryset = Product.objects.filter(pk=product.get("product_id"))
-            self.fields["product"].empty_label = None
-            self.fields["product"].queryset = queryset
-            self.fields["product"].initial = queryset.first()
+        initial = kwargs.get("initial", None)
+        if initial:
+            product_id = initial.get("product_id", None)
+            if product_id:
+                queryset = Product.objects.filter(pk=product_id)
+                self.fields["product"].empty_label = None
+                self.fields["product"].queryset = queryset
+                self.fields["product"].initial = queryset.first()
 
     class Meta:
         model = Challenge

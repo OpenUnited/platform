@@ -90,25 +90,102 @@ class SignInViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post_reset_required(self):
-        user = UserFactory(username="testuser", password_reset_required=True)
+        user = UserFactory(
+            username="testuser",
+            password_reset_required=True,
+        )
 
         response = self.client.post(
             self.url,
-            {"username": user.username, "password": user.password},
+            {"username_or_email": user.username, "password": user.password},
             follow=True,
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, reverse("password_reset_required"))
 
-    def test_post_invalid_username(self):
+    def test_post_reset_view(self):
+        plain_password = "testuser"
+        user = UserFactory(
+            email="testuser@example.com",
+            password=make_password(plain_password),
+        )
+
         response = self.client.post(
             self.url,
-            {"username": "non_existent_user", "password": "12345"},
+            {"username_or_email": user.username, "password": "wrong password"},
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "This username is not registered")
+        self.assertContains(response, "The given credentials are not correct!")
+
+        response = self.client.post(
+            self.url,
+            {"username_or_email": user.username, "password": "wrong password"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "The given credentials are not correct!")
+
+        response = self.client.post(
+            self.url,
+            {"username_or_email": user.username, "password": "wrong password"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "The given credentials are not correct!")
+
+        response = self.client.post(
+            self.url,
+            {"username_or_email": user.username, "password": "wrong password"},
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse("password_reset_required"))
+
+    def test_post_valid_email(self):
+        plain_password = "testuser"
+        user = UserFactory(
+            email="testuser@example.com",
+            password=make_password(plain_password),
+        )
+
+        response = self.client.post(
+            self.url,
+            data={
+                "username_or_email": user.email,
+                "password": plain_password,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("challenges"))
+
+    def test_post_invalid_email(self):
+        response = self.client.post(
+            self.url,
+            data={
+                "username_or_email": "invalid_email@example.com",
+                "password": "wrong_password",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "This username or e-mail is not registered"
+        )
+
+    def test_post_invalid_username(self):
+        response = self.client.post(
+            self.url,
+            {"username_or_email": "non_existent_user", "password": "12345"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "This username or e-mail is not registered"
+        )
 
     def test_post_valid_credentials(self):
         plain_password = "12345"
@@ -120,7 +197,10 @@ class SignInViewTest(TestCase):
 
         response = self.client.post(
             self.url,
-            data={"username": user.username, "password": plain_password},
+            data={
+                "username_or_email": user.username,
+                "password": plain_password,
+            },
         )
 
         self.assertEqual(response.status_code, 302)
@@ -136,12 +216,15 @@ class SignInViewTest(TestCase):
 
         response = self.client.post(
             self.url,
-            data={"username": user.username, "password": invalid_password},
+            data={
+                "username_or_email": user.username,
+                "password": invalid_password,
+            },
             follow=True,
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Username or password is not correct")
+        self.assertContains(response, "The given credentials are not correct!")
 
 
 class PasswordResetViewTest(TestCase):
