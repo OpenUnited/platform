@@ -108,19 +108,21 @@ class SignInView(TemplateView):
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            username = form.cleaned_data["username"]
+            username_or_email = form.cleaned_data["username_or_email"]
             password = form.cleaned_data["password"]
 
-            user_obj = User.objects.get_or_none(username=username)
-            if user_obj:
-                if user_obj.password_reset_required:
-                    return redirect("password_reset_required")
-
-            else:
-                form.add_error(None, _("This username is not registered"))
+            user_obj = User.objects.get_user_by_username_or_email(
+                username_or_email
+            )
+            if not user_obj:
+                form.add_error(
+                    None, _("This username or e-mail is not registered")
+                )
                 return render(request, self.template_name, {"form": form})
 
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(
+                request, username=username_or_email, password=password
+            )
 
             # TODO: create SignInAttempt for the both cases
             if user is not None:
@@ -131,8 +133,13 @@ class SignInView(TemplateView):
                 else:
                     return redirect("challenges")
             else:
-                user_obj.update_failed_login_budget_and_check_reset()
-                form.add_error(None, _("Username or password is not correct"))
+                if user_obj.password_reset_required:
+                    return redirect("password_reset_required")
+                else:
+                    user_obj.update_failed_login_budget_and_check_reset()
+                    form.add_error(
+                        None, _("The given credentials are not correct!")
+                    )
 
         return render(request, self.template_name, {"form": form})
 
