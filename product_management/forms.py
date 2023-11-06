@@ -26,6 +26,9 @@ class BountyClaimForm(forms.ModelForm):
     class Meta:
         model = BountyClaim
         fields = ["expected_finish_date"]
+        labels = {
+            "expected_finish_date": "Expected Submission Date",
+        }
 
         widgets = {
             "expected_finish_date": DateInput(),
