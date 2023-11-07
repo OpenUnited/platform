@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.core.exceptions import BadRequest
+from django.core.exceptions import BadRequest, PermissionDenied
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -1125,6 +1125,8 @@ class ProductBugDetail(BaseProductDetailView, DetailView):
         context.update(
             {
                 "pk": self.object.pk,
+                "actions_available": self.object.person
+                == self.request.user.person,
             }
         )
 
@@ -1142,7 +1144,9 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     ) -> HttpResponse:
         bug_pk = kwargs.get("pk")
         bug = Bug.objects.get(pk=bug_pk)
-        form = BugForm(request.GET, instance=bug)
+
+        if bug.person != self.request.user.person:
+            raise PermissionDenied
 
         return super().get(request, *args, **kwargs)
 

@@ -18,7 +18,8 @@
                 <span class="text-gray-500">{{ bug.created_at|date }}</span>
             </span>
         </div>
-
+        
+        {% if actions_available %}
         <div class="flex justify-end px-3 py-1.5 py-2.5 cursor-pointer ml-auto">
             <div id="bug-menu-button" class="relative inline-block text-left">
                 <div class="w-fit flex justify-end px-3 py-1.5 py-2.5 cursor-pointer ml-auto">
@@ -40,6 +41,7 @@
                 </div>
             </div>
         </div>
+        {% endif  %}
     </div>
 
 
