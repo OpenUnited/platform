@@ -49,7 +49,12 @@
             </a>
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
-            <strong>Status:</strong> <span class="font-bold ml-1">{{ challenge.get_status_display() }}</span>
+            <strong>Status:</strong>
+            {% if current_user_created_claim_request %}
+            <span class="font-bold ml-1">Claim Request Under Review</span>
+            {% else %}
+            <span class="font-bold ml-1">{{ challenge.get_status_display() }}</span>
+            {% endif %}
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Priority:</strong> <span class="text-green-400 ml-1">{{ challenge.get_priority_display() }}</span>
