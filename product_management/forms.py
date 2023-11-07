@@ -371,12 +371,13 @@ class BountyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
-        challenge_id = self.request.GET.get("challenge_id", None)
-        if challenge_id:
-            queryset = Challenge.objects.filter(pk=challenge_id)
-            self.fields["challenge"].queryset = queryset
-            self.fields["challenge"].initial = queryset.first()
-            self.fields["challenge"].empty_label = None
+        if self.request:
+            challenge_id = self.request.GET.get("challenge_id", None)
+            if challenge_id:
+                queryset = Challenge.objects.filter(pk=challenge_id)
+                self.fields["challenge"].queryset = queryset
+                self.fields["challenge"].initial = queryset.first()
+                self.fields["challenge"].empty_label = None
 
     def clean_challenge(self):
         challenge = self.cleaned_data.get("challenge")
