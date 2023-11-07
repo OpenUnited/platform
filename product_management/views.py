@@ -1125,10 +1125,18 @@ class ProductBugDetail(BaseProductDetailView, DetailView):
         context.update(
             {
                 "pk": self.object.pk,
-                "actions_available": self.object.person
-                == self.request.user.person,
             }
         )
+
+        if self.request.user.is_authenticated:
+            context.update(
+                {
+                    "actions_available": self.object.person
+                    == self.request.user.person,
+                }
+            )
+        else:
+            context.update({"actions_available": False})
 
         return context
 
