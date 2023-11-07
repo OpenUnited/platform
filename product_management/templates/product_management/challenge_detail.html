@@ -40,7 +40,7 @@
     <div class="flex flex-col space-y-2.5 my-6">
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Created By:</strong>
-            <a href="#" class="flex items-center ml-4">
+            <a href="{{ challenge.created_by.get_absolute_url() }}" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                     <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
                         src="{{ challenge.created_by.get_photo_url() }}" alt="Created By">
@@ -49,7 +49,12 @@
             </a>
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
-            <strong>Status:</strong> <span class="font-bold ml-1">{{ challenge.get_status_display() }}</span>
+            <strong>Status:</strong>
+            {% if current_user_created_claim_request %}
+            <span class="font-bold ml-1">Claim Request Under Review</span>
+            {% else %}
+            <span class="font-bold ml-1">{{ challenge.get_status_display() }}</span>
+            {% endif %}
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Priority:</strong> <span class="text-green-400 ml-1">{{ challenge.get_priority_display() }}</span>
@@ -57,7 +62,7 @@
         {% if challenge.reviewer %}
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Reviewer:</strong>
-            <a href="#" class="flex items-center ml-4">
+            <a href="{{ challenge.reviewer.get_absolute_url() }}" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                     <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
                         src="{{ challenge.reviewer.get_photo_url() }}" alt="Reviewer Photo">
