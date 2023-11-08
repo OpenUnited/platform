@@ -20,12 +20,14 @@
                     {% endif %}
 
                     <!-- TODO: add product owner logic here -->
+                    {% if can_edit_product %}
                     <a href="{{ url('update-product', args=(product.id,)) }}">
                         <button type="button"
                             class="w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                             Edit Product
                         </button>
                     </a>
+                    {% endif %}
             </div>
         </div>
         <div class="w-full h-[232px]">
