@@ -82,15 +82,17 @@
     const showMoreButton = document.getElementById('showMore');
     const contentElement = document.getElementById('productFullDescription');
 
-    showMoreButton.addEventListener('click', function () {
-        if (contentElement.classList.contains('line-clamp-3')) {
-            contentElement.classList.remove('line-clamp-3');
-            showMoreButton.textContent = 'Show less';
-        } else {
-            contentElement.classList.add('line-clamp-3');
-            showMoreButton.textContent = 'Show more';
-        }
-    });
+    if (showMoreButton) {
+        showMoreButton.addEventListener('click', function () {
+            if (contentElement.classList.contains('line-clamp-3')) {
+                contentElement.classList.remove('line-clamp-3');
+                showMoreButton.textContent = 'Show less';
+            } else {
+                contentElement.classList.add('line-clamp-3');
+                showMoreButton.textContent = 'Show more';
+            }
+        });
+    }
 </script>
 
 {% endblock %}
