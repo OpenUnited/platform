@@ -2,11 +2,10 @@ from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.db.models import Sum
+from django.db import models
+from django.db.models import Q, Sum, Case, Value, When
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import models
-from django.db.models import Case, Value, When
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
@@ -82,6 +81,7 @@ class ChallengeListView(ListView):
         )
 
 
+# TODO: add pagination to this view
 # TODO: This view throws UnorderedObjectListWarning warning.
 # Currently, this is the expected behavior but we should have
 # consistent results every single time.
@@ -90,7 +90,6 @@ class ProductListView(ListView):
     context_object_name = "products"
     queryset = Product.objects.filter(is_private=False)
     template_name = "product_management/products.html"
-    paginate_by = 8
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
@@ -133,11 +132,15 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         challenges = Challenge.objects.filter(
             product=product, status=Challenge.CHALLENGE_STATUS_AVAILABLE
         )
+        product_role_assignments = ProductRoleAssignment.objects.filter(
+            Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
+        )
         context.update(
             {
                 "product": product,
                 "challenges": challenges,
                 "capabilities": Capability.objects.filter(product=product),
+                "can_edit_product": product_role_assignments.exists(),
             }
         )
         return context
@@ -534,6 +537,9 @@ class CreateProductView(LoginRequiredMixin, CreateView):
         if self._is_htmx_request(request):
             return super().post(request, *args, **kwargs)
 
+        # import ipdb
+
+        # ipdb.set_trace()
         form = self.form_class(request.POST, request.FILES, request=request)
         if form.is_valid():
             instance = form.save()
