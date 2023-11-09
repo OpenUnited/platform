@@ -4,6 +4,8 @@ from django.urls import reverse
 
 from talent.models import BountyClaim
 from product_management.models import Challenge, Capability, Bug
+from security.models import ProductRoleAssignment
+from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
     OwnedProductFactory,
     PersonFactory,
@@ -128,6 +130,7 @@ class ProductSummaryViewTest(TestCase):
         self.assertEqual(response.context_data.get("product"), self.product)
         self.assertEqual(response.context_data.get("challenges").count(), 0)
         self.assertEqual(response.context_data.get("capabilities").count(), 0)
+        self.assertEqual(response.context_data.get("can_edit_product"), False)
 
         _ = [
             ChallengeFactory(
@@ -148,6 +151,18 @@ class ProductSummaryViewTest(TestCase):
         self.assertEqual(response.context_data.get("product"), self.product)
         self.assertEqual(response.context_data.get("challenges").count(), 5)
         self.assertEqual(response.context_data.get("capabilities").count(), 1)
+        self.assertEqual(response.context_data.get("can_edit_product"), False)
+
+        _ = ProductRoleAssignmentFactory(
+            person=self.product.content_object,
+            product=self.product,
+            role=ProductRoleAssignment.PRODUCT_ADMIN,
+        )
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data.get("can_edit_product"), True)
 
 
 class CreateChallengeViewTestCase(TestCase):

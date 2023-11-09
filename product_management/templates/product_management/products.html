@@ -29,9 +29,14 @@
         {% for product in products %}
         <li class="overflow-hidden rounded-xl border border-gray-200">
             <div class="bg-gray-400/30">
+                {% if product.video_url %}
                 <iframe src="{{ product.video_url }}" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowfullscreen></iframe>
+                {% else %}
+                <div class="bg-cover bg-no-repeat w-[300px] h-[150px]"
+                    style="background-image: url({{ product.get_photo_url() }});"></div>
+                {% endif %}
             </div>
             <div class="flex flex-1 flex-col space-y-2 p-4">
                 <h3 class="text-sm font-medium text-gray-900">
