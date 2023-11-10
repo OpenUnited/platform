@@ -219,7 +219,7 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 
 class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_ideas.html"
+    template_name = "product_management/product_ideas_and_bugs.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

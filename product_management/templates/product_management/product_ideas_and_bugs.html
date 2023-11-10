@@ -4,7 +4,7 @@
 {% block product_content %}
 
 <!-- TODO: fix the color on ideas and bugs -->
-<div class="border-b border-blue-200 flex items-center justify-between grow w-full">
+<div class="border-b border-gray-200 flex items-center justify-between grow w-full">
     <nav class="-mb-px flex space-x-3 md:space-x-8">
         <a hx-get="{{ url('product_idea_list', args=(product_slug,)) }}" hx-target="#ideas_and_bugs_content"
             hx-swap="innerHTML"
@@ -30,6 +30,6 @@
 </div>
 
 <div id="ideas_and_bugs_content">
-
+    {% include 'product_management/product_idea_list.html' %}
 </div>
 {% endblock %}

@@ -204,7 +204,7 @@ urlpatterns += [
         name="product_bug_list",
     ),
     path(
-        "<str:product_slug>/ideas",
+        "<str:product_slug>/ideas-and-bugs",
         ProductIdeasAndBugsView.as_view(),
         name="product_ideas_bugs",
     ),
