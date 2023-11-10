@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.core.exceptions import BadRequest
+from django.core.exceptions import BadRequest, PermissionDenied
 from django.views.generic import (
     ListView,
     TemplateView,
@@ -25,6 +25,7 @@ from django.views.generic import (
 from .forms import (
     BountyClaimForm,
     IdeaForm,
+    BugForm,
     ProductForm,
     OrganisationForm,
     ChallengeForm,
@@ -40,6 +41,7 @@ from .models import (
     Bounty,
     Capability,
     Idea,
+    Bug,
     Skill,
     Expertise,
 )
@@ -223,7 +225,10 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         product = context["product"]
 
         context.update(
-            {"ideas": Idea.objects.filter(product=product), "bugs": []}
+            {
+                "ideas": Idea.objects.filter(product=product),
+                "bugs": Bug.objects.filter(product=product),
+            }
         )
 
         return context
@@ -1091,3 +1096,85 @@ class DashboardReviewWorkView(LoginRequiredMixin, ListView):
     )
     template_name = "product_management/dashboard/review_work.html"
     login_url = "sign_in"
+
+
+class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
+    login_url = "sign_in"
+    template_name = "product_management/add_product_bug.html"
+    form_class = BugForm
+
+    def post(self, request, *args, **kwargs):
+        form = BugForm(request.POST)
+
+        if form.is_valid():
+            person = self.request.user.person
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+
+            bug = form.save(commit=False)
+            bug.person = person
+            bug.product = product
+            bug.save()
+
+            return redirect("product_ideas_bugs", **kwargs)
+
+        return super().post(request, *args, **kwargs)
+
+
+class ProductBugDetail(BaseProductDetailView, DetailView):
+    template_name = "product_management/product_bug_detail.html"
+    model = Bug
+    context_object_name = "bug"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            {
+                "pk": self.object.pk,
+            }
+        )
+
+        if self.request.user.is_authenticated:
+            context.update(
+                {
+                    "actions_available": self.object.person
+                    == self.request.user.person,
+                }
+            )
+        else:
+            context.update({"actions_available": False})
+
+        return context
+
+
+class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
+    login_url = "sign_in"
+    template_name = "product_management/update_product_bug.html"
+    model = Bug
+    form_class = BugForm
+
+    def get(
+        self, request: HttpRequest, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        bug_pk = kwargs.get("pk")
+        bug = Bug.objects.get(pk=bug_pk)
+
+        if bug.person != self.request.user.person:
+            raise PermissionDenied
+
+        return super().get(request, *args, **kwargs)
+
+    def post(
+        self, request: HttpRequest, *args: str, **kwargs: Any
+    ) -> HttpResponse:
+        bug_pk = kwargs.get("pk")
+        bug = Bug.objects.get(pk=bug_pk)
+
+        form = BugForm(request.POST, instance=bug)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect("product_bug_detail", **kwargs)
+
+        return super().post(request, *args, **kwargs)

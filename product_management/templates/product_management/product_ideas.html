@@ -20,8 +20,11 @@
         </a>
     </nav>
     <a href="{{ url('add_product_idea', args=(product_slug,)) }}"
-        class="ideas-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50">
+        class="idea-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50" data-id="modal-idea">
         Add Idea</a>
+    <a href="{{ url('add_product_bug', args=(product_slug,)) }}"
+        class="bug-btn-modal btn-add-modal__open appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50 hidden" data-id="modal-bug">
+        Add Bug</a>
 </div>
 
 <div class="tab-content">
@@ -70,7 +73,29 @@
     <div class="tab-body">
         <div class="pt-6 text-gray-700 text-lg leading-6 font-semibold">Bugs Tab</div>
         {% if bugs|length %}
-
+        <ul role="list" class="divide-y divide-gray-100">
+            {% for bug in bugs %}
+            <li class="flex flex-col items-start justify-between gap-y-4 py-5">
+                <a href="{{ url('product_bug_detail', args=(product_slug, bug.pk,)) }}">
+                    <div class="flex flex-col gap-y-2">
+                        <div class="flex items-start justify-between gap-x-4 xl:gap-x-6">
+                            <h3 class="text-sm font-semibold leading-6 text-gray-900">
+                                {{ bug.title }}
+                            </h3>
+                            <div class="flex items-center justify-center shrink-0 w-6 h-6">
+                                <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
+                                    src="{{ bug.person.get_photo_url() }}"
+                                    alt="Bug Owner">
+                            </div>
+                        </div>
+                        <div class="mt-1 flex flex-col gap-y-2 text-xs leading-5 text-gray-500 ideas-list__text">
+                            {{ bug.description|safe }}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
         {% else %}
         <div class="flex flex-col text-center items-center mt-5">
             <div class="flex items-center justify-center w-[184px] h-[152px] mb-2">

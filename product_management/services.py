@@ -6,6 +6,7 @@ from .models import (
     Product,
     Bounty,
     Idea,
+    Bug,
 )
 
 
@@ -75,3 +76,12 @@ class IdeaService:
         idea.save()
 
         return idea
+
+
+class BugService:
+    @staticmethod
+    def create(**kwargs):
+        bug = Bug(**kwargs)
+        bug.save()
+
+        return bug
