@@ -13,8 +13,7 @@
 
         <div>
             <span>
-                <!-- Add a link to the person's profile -->
-                <a href="#" class="font-semibold">{{ idea.person.user.username }}</a> commented on
+                <a href="{{ idea.person.get_absolute_url() }}" class="font-semibold">{{ idea.person.user.username }}</a> commented on
                 <span class="text-gray-500">{{ idea.created_at|date }}</span>
             </span>
         </div>
