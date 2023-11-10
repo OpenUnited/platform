@@ -1,4 +1,3 @@
-import './tabs.js';
 import './product-tree.js';
 import './menu-mobile.js';
 import './modals.js';
