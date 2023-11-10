@@ -33,6 +33,7 @@ urlpatterns += [
     path("freshlatte", RedirectView.as_view(url="/canopy/")),
     path("", include("security.urls")),
     path("", include("product_management.urls")),
+    path("", include("social_django.urls", namespace="social")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
