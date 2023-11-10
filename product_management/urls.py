@@ -43,6 +43,8 @@ from .views import (
     DashboardReviewWorkView,
     CreateInitiativeView,
     CreateCapability,
+    ProductIdeaListView,
+    ProductBugListView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -190,6 +192,16 @@ urlpatterns += [
         "<str:product_slug>/tree",
         ProductTreeView.as_view(),
         name="product_tree",
+    ),
+    path(
+        "<str:product_slug>/idea-list",
+        ProductIdeaListView.as_view(),
+        name="product_idea_list",
+    ),
+    path(
+        "<str:product_slug>/bug-list",
+        ProductBugListView.as_view(),
+        name="product_bug_list",
     ),
     path(
         "<str:product_slug>/ideas",

@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -232,6 +233,30 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         )
 
         return context
+
+
+class ProductIdeaListView(BaseProductDetailView, ListView):
+    model = Idea
+    template_name = "product_management/product_idea_list.html"
+    context_object_name = "ideas"
+    object_list = []
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return self.model.objects.filter(product=product)
+
+
+class ProductBugListView(BaseProductDetailView, ListView):
+    model = Bug
+    template_name = "product_management/product_bug_list.html"
+    context_object_name = "bugs"
+    object_list = []
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return self.model.objects.filter(product=product)
 
 
 # If the user is not authenticated, we redirect him to the sign up page using LoginRequiredMixing.
