@@ -1,4 +1,4 @@
-from .models import Person
+from .models import Person, Status
 
 
 def create_person(
@@ -31,8 +31,10 @@ def create_person(
             full_name = username
             preferred_name = username
 
-    Person.objects.create(
+    person = Person.objects.create(
         user=user,
         full_name=full_name,
         preferred_name=preferred_name,
     )
+
+    Status.objects.create(person=person)
