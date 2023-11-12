@@ -205,6 +205,12 @@ INTERNAL_IPS = [
 
 SESSION_COOKIE_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
 
+# Adds prefix to the admin URL
+# For instance, when ADMIN_CONTEXT="abc", the admin url will
+# be accessible via http://<domain_name>/abc/admin
+# Note: Don't include slash
+ADMIN_CONTEXT = os.getenv("ADMIN_CONTEXT", None)
+
 AUTHENTICATION_BACKENDS = []
 
 AUTH_PROVIDER = os.getenv("AUTH_PROVIDER", "django")
