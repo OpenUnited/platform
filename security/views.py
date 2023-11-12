@@ -123,7 +123,14 @@ class SignInView(TemplateView):
                 form.add_error(
                     None, _("This username or e-mail is not registered")
                 )
-                return render(request, self.template_name, {"form": form})
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "auth_provider": settings.AUTH_PROVIDER,
+                    },
+                )
 
             user = authenticate(
                 request, username=username_or_email, password=password
