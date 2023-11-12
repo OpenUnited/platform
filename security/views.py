@@ -87,10 +87,11 @@ class SignUpWizard(SessionWizardView):
 
         _ = Status.objects.create(person=person)
 
-        # TODO: add next if there is a next url
-        return redirect(
-            reverse("sign_in") + f"?next={self.request.GET.get('next', '')}"
+        authenticated_user = authenticate(
+            self.request, username=username, password=password
         )
+        login(self.request, authenticated_user)
+        return redirect(reverse("challenges"))
 
 
 class SignInView(TemplateView):
