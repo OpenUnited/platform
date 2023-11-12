@@ -758,7 +758,20 @@ class DashboardView(DashboardBaseView, TemplateView):
         active_bounty_claims = BountyClaim.objects.filter(
             person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
         )
-        context.update({"active_bounty_claims": active_bounty_claims})
+        product_roles_queryset = ProductRoleAssignment.objects.filter(
+            person=person
+        ).exclude(role=ProductRoleAssignment.CONTRIBUTOR)
+
+        product_ids = product_roles_queryset.values_list(
+            "product_id", flat=True
+        )
+        products = Product.objects.filter(id__in=product_ids)
+        context.update(
+            {
+                "active_bounty_claims": active_bounty_claims,
+                "products": products,
+            }
+        )
         return context
 
 
@@ -772,7 +785,19 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         active_bounty_claims = BountyClaim.objects.filter(
             person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
         )
-        context.update({"active_bounty_claims": active_bounty_claims})
+        product_roles_queryset = ProductRoleAssignment.objects.filter(
+            person=person
+        ).exclude(role=ProductRoleAssignment.CONTRIBUTOR)
+        product_ids = product_roles_queryset.values_list(
+            "product_id", flat=True
+        )
+        products = Product.objects.filter(id__in=product_ids)
+        context.update(
+            {
+                "active_bounty_claims": active_bounty_claims,
+                "products": products,
+            }
+        )
         return context
 
 
