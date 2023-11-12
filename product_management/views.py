@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -218,7 +219,7 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 
 class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_ideas.html"
+    template_name = "product_management/product_ideas_and_bugs.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -232,6 +233,30 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         )
 
         return context
+
+
+class ProductIdeaListView(BaseProductDetailView, ListView):
+    model = Idea
+    template_name = "product_management/product_idea_list.html"
+    context_object_name = "ideas"
+    object_list = []
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return self.model.objects.filter(product=product)
+
+
+class ProductBugListView(BaseProductDetailView, ListView):
+    model = Bug
+    template_name = "product_management/product_bug_list.html"
+    context_object_name = "bugs"
+    object_list = []
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return self.model.objects.filter(product=product)
 
 
 # If the user is not authenticated, we redirect him to the sign up page using LoginRequiredMixing.
@@ -733,7 +758,20 @@ class DashboardView(DashboardBaseView, TemplateView):
         active_bounty_claims = BountyClaim.objects.filter(
             person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
         )
-        context.update({"active_bounty_claims": active_bounty_claims})
+        product_roles_queryset = ProductRoleAssignment.objects.filter(
+            person=person
+        ).exclude(role=ProductRoleAssignment.CONTRIBUTOR)
+
+        product_ids = product_roles_queryset.values_list(
+            "product_id", flat=True
+        )
+        products = Product.objects.filter(id__in=product_ids)
+        context.update(
+            {
+                "active_bounty_claims": active_bounty_claims,
+                "products": products,
+            }
+        )
         return context
 
 
@@ -747,7 +785,19 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         active_bounty_claims = BountyClaim.objects.filter(
             person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
         )
-        context.update({"active_bounty_claims": active_bounty_claims})
+        product_roles_queryset = ProductRoleAssignment.objects.filter(
+            person=person
+        ).exclude(role=ProductRoleAssignment.CONTRIBUTOR)
+        product_ids = product_roles_queryset.values_list(
+            "product_id", flat=True
+        )
+        products = Product.objects.filter(id__in=product_ids)
+        context.update(
+            {
+                "active_bounty_claims": active_bounty_claims,
+                "products": products,
+            }
+        )
         return context
 
 
