@@ -69,8 +69,6 @@ markdown2==2.4.10
 MarkupSafe==2.1.3
 matplotlib-inline==0.1.6
 mccabe==0.7.0
-mongoengine==0.27.0
-ms-identity-web @ git+https://github.com/azure-samples/ms-identity-python-utilities@9b32cef36c6c0b73c1b3237fdd66128d89f90a62
 msal==1.25.0
 mypy-extensions==1.0.0
 nicegui==1.3.7
@@ -95,7 +93,6 @@ pydot==1.4.2
 pyflakes==3.0.1
 Pygments==2.15.1
 PyJWT==2.8.0
-pymongo==4.6.0
 pyOpenSSL==23.3.0
 pyparsing==3.1.0
 pytailwindcss==0.2.0
