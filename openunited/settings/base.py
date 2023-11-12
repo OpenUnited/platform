@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "storages",
     "canopy",
     "ckeditor",
+    "social_django",
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,8 @@ TEMPLATES = [
             ],
             "context_processors": [
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
             "bytecode_cache": {
                 "name": "default",
@@ -91,6 +94,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -117,7 +122,6 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "security.User"
-AUTHENTICATION_BACKENDS = ["security.backends.EmailOrUsernameModelBackend"]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -200,3 +204,57 @@ INTERNAL_IPS = [
 ]
 
 SESSION_COOKIE_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
+
+# Adds prefix to the admin URL
+# For instance, when ADMIN_CONTEXT="abc", the admin url will
+# be accessible via http://<domain_name>/abc/admin
+# Note: Don't include slash
+ADMIN_CONTEXT = os.getenv("ADMIN_CONTEXT", None)
+
+AUTHENTICATION_BACKENDS = []
+
+AUTH_PROVIDER = os.getenv("AUTH_PROVIDER", "django")
+if AUTH_PROVIDER == "django":
+    AUTHENTICATION_BACKENDS += [
+        "security.backends.EmailOrUsernameModelBackend",
+    ]
+
+elif AUTH_PROVIDER == "AzureAD":
+    AUTHENTICATION_BACKENDS += [
+        "social_core.backends.azuread.AzureADOAuth2",
+    ]
+else:
+    raise ValueError(
+        "Invalid value for AUTH_PROVIDER. Supported values are 'django' or 'AzureAD'."
+    )
+
+# social auth config
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+SOCIAL_AUTH_USER_MODEL = "security.User"
+SOCIAL_AUTH_JSONFIELD_CUSTOM = "django.db.models.JSONField"
+
+# Below two values should be retrieved from Microsoft Azure Portal
+
+# Application (client) ID
+SOCIAL_AUTH_AZUREAD_OAUTH2_KEY = os.getenv("AZURE_AD_CLIENT_ID")
+# Directory (tenant) ID
+SOCIAL_AUTH_AZUREAD_TENANT_OAUTH2_TENANT_ID = os.getenv("AZURE_AD_TENANT_ID")
+# Certificates & secrets -> Client Secrets -> Value
+SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET = os.getenv("AZURE_AD_CLIENT_SECRET")
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = os.getenv("REDIRECT_URI", "/challenges")
+AZUREAD_OAUTH2_SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.associate_by_email",
+    "social_core.pipeline.user.create_user",
+    "talent.pipelines.create_person",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+)

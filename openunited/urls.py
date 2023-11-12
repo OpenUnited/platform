@@ -15,8 +15,16 @@ if settings.DEBUG:
         path("__debug__/", include("debug_toolbar.urls")),
     ]
 
+if settings.ADMIN_CONTEXT:
+    urlpatterns += [
+        path(f"{settings.ADMIN_CONTEXT}/admin/", admin.site.urls),
+    ]
+else:
+    urlpatterns += [
+        path("admin/", admin.site.urls),
+    ]
+
 urlpatterns += [
-    path("admin/", admin.site.urls),
     path("", views.home, name="home"),
     path("about/", views.about, name="about"),
     path("privacy-policy/", views.privacy_policy, name="privacy-policy"),
@@ -33,6 +41,7 @@ urlpatterns += [
     path("freshlatte", RedirectView.as_view(url="/canopy/")),
     path("", include("security.urls")),
     path("", include("product_management.urls")),
+    path("", include("social_django.urls", namespace="social")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

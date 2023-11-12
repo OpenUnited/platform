@@ -1,3 +1,4 @@
+from django.conf import settings
 from random import randrange
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -101,6 +102,7 @@ class SignInView(TemplateView):
         context = {
             "form": self.form_class(),
             "next": request.GET.get("next", ""),
+            "auth_provider": settings.AUTH_PROVIDER,
         }
         return render(request, self.template_name, context)
 
@@ -121,7 +123,14 @@ class SignInView(TemplateView):
                 form.add_error(
                     None, _("This username or e-mail is not registered")
                 )
-                return render(request, self.template_name, {"form": form})
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "auth_provider": settings.AUTH_PROVIDER,
+                    },
+                )
 
             user = authenticate(
                 request, username=username_or_email, password=password
@@ -144,7 +153,14 @@ class SignInView(TemplateView):
                         None, _("The given credentials are not correct!")
                     )
 
-        return render(request, self.template_name, {"form": form})
+        return render(
+            request,
+            self.template_name,
+            {
+                "form": form,
+                "auth_provider": settings.AUTH_PROVIDER,
+            },
+        )
 
 
 class PasswordResetRequiredView(TemplateView):
