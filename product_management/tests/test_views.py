@@ -3,7 +3,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from talent.models import BountyClaim
-from product_management.models import Product, Challenge, Capability, Idea, Bug
+from product_management.models import Challenge, Capability, Idea, Bug
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
@@ -25,6 +25,9 @@ class ChallengeListViewTest(TestCase):
     def test_get_none(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/challenges.html", response.template_name
+        )
 
         actual = response.context_data
 
@@ -74,6 +77,9 @@ class ChallengeListViewTest(TestCase):
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/challenges.html", response.template_name
+        )
 
         actual = response.context_data
 
@@ -130,8 +136,10 @@ class ProductListViewTest(TestCase):
 
     def test_get(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/products.html", response.template_name
+        )
         self.assertFalse(response.context_data.get("is_paginated"))
         self.assertEqual(response.context_data.get("products").count(), 0)
 
@@ -174,6 +182,9 @@ class ProductSummaryViewTest(TestCase):
     def test_get_none(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_summary.html", response.template_name
+        )
 
         actual = response.context_data
 
@@ -208,6 +219,9 @@ class ProductSummaryViewTest(TestCase):
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_summary.html", response.template_name
+        )
 
         actual = response.context_data
 
@@ -343,8 +357,20 @@ class ChallengeDetailViewTest(TestCase):
 
     def test_get_anon(self):
         response = self.client.get(self.url)
+        self.assertIn(
+            "product_management/challenge_detail.html", response.template_name
+        )
 
-        expected_data = {
+        actual = response.context_data
+
+        # Don't need them
+        actual.pop("view")
+        actual.pop("bounty_claim_form")
+        actual.pop("object")
+
+        expected = {
+            "product": self.challenge.product,
+            "product_slug": self.challenge.product.slug,
             "actions_available": False,
             "bounty": None,
             "bounty_claim": None,
@@ -352,14 +378,26 @@ class ChallengeDetailViewTest(TestCase):
             "current_user_created_claim_request": False,
             "is_claimed": False,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictEqual(actual, expected)
 
     def test_get_auth(self):
         self.client.force_login(user=self.person.user)
 
         response = self.client.get(self.url)
+        self.assertIn(
+            "product_management/challenge_detail.html", response.template_name
+        )
 
-        expected_data = {
+        actual = response.context_data
+
+        # Don't need them
+        actual.pop("view")
+        actual.pop("bounty_claim_form")
+        actual.pop("object")
+
+        expected = {
+            "product": self.challenge.product,
+            "product_slug": self.challenge.product.slug,
             "actions_available": True,
             "challenge": self.challenge,
             "bounty": None,
@@ -367,7 +405,7 @@ class ChallengeDetailViewTest(TestCase):
             "current_user_created_claim_request": False,
             "is_claimed": False,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictEqual(actual, expected)
 
     def test_get_with_bounties(self):
         challenge = ChallengeFactory()
@@ -393,7 +431,16 @@ class ChallengeDetailViewTest(TestCase):
 
         response = self.client.get(url)
 
-        expected_data = {
+        actual = response.context_data
+
+        # Don't need them
+        actual.pop("view")
+        actual.pop("bounty_claim_form")
+        actual.pop("object")
+
+        expected = {
+            "product": challenge.product,
+            "product_slug": challenge.product.slug,
             "challenge": challenge,
             "bounty": b_one,
             "bounty_claim": bc_one,
@@ -402,7 +449,7 @@ class ChallengeDetailViewTest(TestCase):
             "is_claimed": True,
             "claimed_by": bc_one.person,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictContainsSubset(actual, expected)
 
     def test_get_with_bounties_auth(self):
         self.client.force_login(self.person.user)
@@ -432,7 +479,16 @@ class ChallengeDetailViewTest(TestCase):
 
         response = self.client.get(url)
 
-        expected_data = {
+        actual = response.context_data
+
+        # Don't need them
+        actual.pop("view")
+        actual.pop("bounty_claim_form")
+        actual.pop("object")
+
+        expected = {
+            "product": challenge.product,
+            "product_slug": challenge.product.slug,
             "challenge": challenge,
             "bounty": b_one,
             "bounty_claim": bc_one,
@@ -441,7 +497,7 @@ class ChallengeDetailViewTest(TestCase):
             "is_claimed": True,
             "claimed_by": bc_one.person,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictEqual(actual, expected)
 
 
 class CreateProductBugTest(TestCase):
@@ -545,8 +601,11 @@ class ProductIdeasAndBugsViewTest(TestCase):
 
     def test_get_context_data_none(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_ideas_and_bugs.html",
+            response.template_name,
+        )
 
         actual = response.context_data
 
@@ -602,6 +661,9 @@ class ProductIdeaListViewTest(TestCase):
     def test_get_queryset(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_idea_list.html", response.template_name
+        )
 
         actual = response.context_data
 
@@ -631,6 +693,9 @@ class ProductBugListViewTest(TestCase):
     def test_get_queryset(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_bug_list.html", response.template_name
+        )
 
         actual = response.context_data
 
