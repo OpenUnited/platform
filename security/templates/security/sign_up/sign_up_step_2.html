@@ -74,7 +74,8 @@
         /(?=.*[!@#$%^&*()_+\[\]{};':"\\|,.<>/?])/ // At least one special character
     ];
 
-    const colorCode = "bg-[#38f32f]"
+    const OLD_COLOR_CLASS = "bg-[#c4c4c4]";
+    const NEW_COLOR_CLASS = "bg-[#38f32f]"
     const passwordStrengthList = document.getElementById("password-strength-list");
     const passwordStrength = document.getElementById("password-checker-result")
     const listItemCount = passwordStrengthList.childElementCount;
@@ -86,7 +87,8 @@
 
         if (password === "") {
             for (let i = 0; i < listItemCount; i++) {
-                passwordStrengthList.children[i].classList.remove(colorCode);
+                passwordStrengthList.children[i].classList.add(OLD_COLOR_CLASS);
+                passwordStrengthList.children[i].classList.remove(NEW_COLOR_CLASS);
             }
             return;
         }
@@ -114,9 +116,11 @@
 
         for (let i = 0; i < listItemCount; i++) {
             if (i < score) {
-                passwordStrengthList.children[i].classList.add(colorCode);
+                passwordStrengthList.children[i].classList.add(NEW_COLOR_CLASS);
+                passwordStrengthList.children[i].classList.remove(OLD_COLOR_CLASS);
             } else {
-                passwordStrengthList.children[i].classList.remove(colorCode);
+                passwordStrengthList.children[i].classList.add(OLD_COLOR_CLASS);
+                passwordStrengthList.children[i].classList.remove(NEW_COLOR_CLASS);
             }
         }
     });

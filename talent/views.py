@@ -242,7 +242,7 @@ class TalentPortfolio(TemplateView):
         bounty_claims = BountyClaim.objects.filter(
             person=person,
             bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE,
-        ).select_related("bounty__challenge")
+        ).select_related("bounty__challenge", "bounty__challenge__product")
         received_feedbacks = Feedback.objects.filter(recipient=person)
 
         if (

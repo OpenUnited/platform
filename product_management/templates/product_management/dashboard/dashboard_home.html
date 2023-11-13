@@ -7,7 +7,6 @@
 
 <div class="mt-6 px-4 sm:px-6 lg:px-8">
     <h2 class="text-xl font-medium text-gray-900">My Products</h2>
-    {% set products = person.get_products() %}
     {% if products %}
     <ul role="list" class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4">
         {% for product in products %}
