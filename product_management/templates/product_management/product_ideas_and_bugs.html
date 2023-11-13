@@ -6,22 +6,23 @@
 <!-- TODO: fix the color on ideas and bugs -->
 <div class="border-b border-gray-200 flex items-center justify-between grow w-full">
     <nav class="-mb-px flex space-x-3 md:space-x-8">
-        <a hx-get="{{ url('product_idea_list', args=(product_slug,)) }}" hx-target="#ideas_and_bugs_content"
-            hx-swap="innerHTML"
+        <a id="ideas-link" hx-get="{{ url('product_idea_list', args=(product_slug,)) }}"
+            hx-target="#ideas_and_bugs_content" hx-swap="innerHTML"
             _="on click set { innerText: 'Add Idea', href: '{{ url("add_product_idea", args=(product_slug,)) }}' } on #idea-bug-button"
-            class="cursor-pointer border-transparent border-blue-900 text-blue-500 hover:border-blue-900 hover:text-blue-700 flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+            class="cursor-pointer text-blue-500 flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium
+            border-blue-400 hover:border-blue-600 hover:text-blue-600">
             Ideas
             <span
-                class="bg-blue-100 text-blue-900 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ ideas|length }}</span>
+                class="bg-gray-100 text-blue-500 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ ideas|length }}</span>
         </a>
-        <a hx-get="{{ url('product_bug_list', args=(product_slug,)) }}" hx-target="#ideas_and_bugs_content"
-            hx-swap="innerHTML"
+        <a id="bugs-link" hx-get="{{ url('product_bug_list', args=(product_slug,)) }}"
+            hx-target="#ideas_and_bugs_content" hx-swap="innerHTML"
             _="on click set { innerText: 'Add Bug', href: '{{ url("add_product_bug", args=(product_slug,)) }}' } on #idea-bug-button"
-            class="cursor-pointer border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700 flex
-            whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+            class="cursor-pointer text-gray-500 flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium
+            hover:border-gray-600 hover:text-gray-600">
             Bugs
             <span
-                class="bg-gray-100 text-gray-900 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ bugs|length }}</span>
+                class="bg-gray-100 text-gray-500 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ bugs|length }}</span>
         </a>
     </nav>
     <a href="{{ url('add_product_idea', args=(product_slug,)) }}" id="idea-bug-button"
@@ -32,4 +33,65 @@
 <div id="ideas_and_bugs_content">
     {% include 'product_management/product_idea_list.html' %}
 </div>
+
+<script>
+    const ideasAnchorTag = document.getElementById("ideas-link");
+    const ideasSpanTag = ideasAnchorTag.children[0];
+    const bugsAnchorTag = document.getElementById("bugs-link");
+    const bugsSpanTag = bugsAnchorTag.children[0];
+
+    ideasAnchorTag.addEventListener("click", event => {
+        ideasAnchorTag.classList.remove("text-gray-500");
+        ideasAnchorTag.classList.remove("hover:border-gray-600");
+        ideasAnchorTag.classList.remove("hover:text-gray-600");
+
+        ideasAnchorTag.classList.add("text-blue-500");
+        ideasAnchorTag.classList.add("border-blue-400")
+        ideasAnchorTag.classList.add("hover:border-blue-600")
+        ideasAnchorTag.classList.add("hover:text-blue-600")
+
+        bugsAnchorTag.classList.remove("text-blue-500");
+        bugsAnchorTag.classList.remove("border-blue-400");
+        bugsAnchorTag.classList.remove("hover:border-blue-600");
+        bugsAnchorTag.classList.remove("hover:text-blue-600");
+
+        bugsAnchorTag.classList.add("text-gray-500");
+        bugsAnchorTag.classList.add("hover:border-gray-600");
+        bugsAnchorTag.classList.add("hover:text-gray-600");
+
+        // spans
+        ideasSpanTag.classList.remove("text-gray-500");
+        ideasSpanTag.classList.add("text-blue-500");
+
+        bugsSpanTag.classList.remove("text-blue-500");
+        bugsSpanTag.classList.add("text-gray-500");
+    });
+
+    bugsAnchorTag.addEventListener("click", event => {
+        bugsAnchorTag.classList.remove("text-gray-500");
+        bugsAnchorTag.classList.remove("hover:border-gray-600");
+        bugsAnchorTag.classList.remove("hover:text-gray-600");
+
+        bugsAnchorTag.classList.add("text-blue-500");
+        bugsAnchorTag.classList.add("border-blue-400")
+        bugsAnchorTag.classList.add("hover:border-blue-600")
+        bugsAnchorTag.classList.add("hover:text-blue-600")
+
+        ideasAnchorTag.classList.remove("text-blue-500");
+        ideasAnchorTag.classList.remove("border-blue-400");
+        ideasAnchorTag.classList.remove("hover:border-blue-600");
+        ideasAnchorTag.classList.remove("hover:text-blue-600");
+
+        ideasAnchorTag.classList.add("text-gray-500");
+        ideasAnchorTag.classList.add("hover:border-gray-600");
+        ideasAnchorTag.classList.add("hover:text-gray-600");
+
+        // spans
+        bugsSpanTag.classList.remove("text-gray-500");
+        bugsSpanTag.classList.add("text-blue-500");
+
+        ideasSpanTag.classList.remove("text-blue-500");
+        ideasSpanTag.classList.add("text-gray-500");
+    });
+</script>
 {% endblock %}
