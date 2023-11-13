@@ -13,7 +13,7 @@
             border-blue-400 hover:border-blue-600 hover:text-blue-600">
             Ideas
             <span
-                class="bg-gray-100 text-gray-500 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ ideas|length }}</span>
+                class="bg-gray-100 text-blue-500 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ ideas|length }}</span>
         </a>
         <a id="bugs-link" hx-get="{{ url('product_bug_list', args=(product_slug,)) }}"
             hx-target="#ideas_and_bugs_content" hx-swap="innerHTML"
