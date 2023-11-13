@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
+from openunited.tests.base import clean_up
 from talent.models import BountyClaim
 from product_management.models import Challenge, Capability, Idea, Bug
 from security.models import ProductRoleAssignment
@@ -16,9 +17,17 @@ from .factories import (
 )
 
 
-class ChallengeListViewTest(TestCase):
+class BaseProductTestCase(TestCase):
     def setUp(self):
+        super().setUp()
         self.client = Client()
+        self.product = OwnedProductFactory()
+        self.login_url = reverse("sign_in")
+
+
+class ChallengeListViewTest(BaseProductTestCase):
+    def setUp(self):
+        super().setUp()
         self.url = reverse("challenges")
 
     def test_get_none(self):
@@ -29,14 +38,9 @@ class ChallengeListViewTest(TestCase):
         )
 
         actual = response.context_data
+        clean_up(actual, exclude=["object_list"])
 
         self.assertIsNotNone(actual.pop("request"))
-
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("view")
-
         self.assertQuerySetEqual(
             actual.pop("challenges"), Challenge.objects.none()
         )
@@ -81,15 +85,9 @@ class ChallengeListViewTest(TestCase):
         )
 
         actual = response.context_data
+        clean_up(actual)
 
         self.assertIsNotNone(actual.pop("request"))
-
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("view")
-        actual.pop("object_list")
-
         self.assertEqual(actual.pop("challenges").count(), 8)
 
         expected = {"is_paginated": True}
@@ -99,15 +97,9 @@ class ChallengeListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
+        clean_up(actual)
 
         self.assertIsNotNone(actual.pop("request"))
-
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("view")
-        actual.pop("object_list")
-
         self.assertEqual(actual.pop("challenges").count(), 8)
         self.assertDictEqual(actual, expected)
 
@@ -115,15 +107,9 @@ class ChallengeListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
+        clean_up(actual)
 
         self.assertIsNotNone(actual.pop("request"))
-
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("view")
-        actual.pop("object_list")
-
         self.assertEqual(actual.pop("challenges").count(), 4)
         self.assertDictEqual(actual, expected)
 
@@ -157,10 +143,9 @@ class ProductListViewTest(TestCase):
         # self.assertEqual(response.context_data.get("products").count(), 4)
 
 
-class ProductRedirectViewTest(TestCase):
+class ProductRedirectViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_detail", args=(self.product.slug,))
 
     def test_get(self):
@@ -172,10 +157,9 @@ class ProductRedirectViewTest(TestCase):
         )
 
 
-class ProductSummaryViewTest(TestCase):
+class ProductSummaryViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_summary", args=(self.product.slug,))
 
     def test_get_none(self):
@@ -186,9 +170,7 @@ class ProductSummaryViewTest(TestCase):
         )
 
         actual = response.context_data
-
-        # Don't need it
-        actual.pop("view")
+        clean_up(actual)
 
         expected = {
             "product": self.product,
@@ -223,9 +205,7 @@ class ProductSummaryViewTest(TestCase):
         )
 
         actual = response.context_data
-
-        # Don't need it
-        actual.pop("view")
+        clean_up(actual)
 
         expected = {
             "product": self.product,
@@ -252,17 +232,15 @@ class ProductSummaryViewTest(TestCase):
         self.assertEqual(response.context_data.get("can_edit_product"), True)
 
 
-class CreateChallengeViewTestCase(TestCase):
+class CreateChallengeViewTestCase(BaseProductTestCase):
     """
     docker-compose --env-file docker.env exec platform sh -c "python manage.py test product_management.tests.test_views.CreateChallengeViewTestCase"
     """
 
     def setUp(self):
+        super().setUp()
         self.person = PersonFactory()
-        self.product = OwnedProductFactory()
-        self.client = Client()
         self.url = reverse("create-challenge")
-        self.login_url = reverse("sign_in")
 
     def test_post(self):
         # Test login required
@@ -303,10 +281,9 @@ class CreateChallengeViewTestCase(TestCase):
         Challenge.objects.get(created_by=self.person).delete()
 
 
-class CapabilityDetailViewTest(TestCase):
+class CapabilityDetailViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.root_capability = Capability.add_root(
             name="capability name", description="capability description"
         )
@@ -344,9 +321,9 @@ class CapabilityDetailViewTest(TestCase):
         self.root_capability.delete()
 
 
-class ChallengeDetailViewTest(TestCase):
+class ChallengeDetailViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
+        super().setUp()
         self.person = PersonFactory()
         self.challenge = ChallengeFactory(created_by=self.person)
         self.url = reverse(
@@ -361,11 +338,7 @@ class ChallengeDetailViewTest(TestCase):
         )
 
         actual = response.context_data
-
-        # Don't need them
-        actual.pop("view")
-        actual.pop("bounty_claim_form")
-        actual.pop("object")
+        clean_up(actual, extra=["bounty_claim_form"])
 
         expected = {
             "product": self.challenge.product,
@@ -388,11 +361,7 @@ class ChallengeDetailViewTest(TestCase):
         )
 
         actual = response.context_data
-
-        # Don't need them
-        actual.pop("view")
-        actual.pop("bounty_claim_form")
-        actual.pop("object")
+        clean_up(actual, extra=["bounty_claim_form"])
 
         expected = {
             "product": self.challenge.product,
@@ -431,11 +400,7 @@ class ChallengeDetailViewTest(TestCase):
         response = self.client.get(url)
 
         actual = response.context_data
-
-        # Don't need them
-        actual.pop("view")
-        actual.pop("bounty_claim_form")
-        actual.pop("object")
+        clean_up(actual, extra=["bounty_claim_form"])
 
         expected = {
             "product": challenge.product,
@@ -479,11 +444,7 @@ class ChallengeDetailViewTest(TestCase):
         response = self.client.get(url)
 
         actual = response.context_data
-
-        # Don't need them
-        actual.pop("view")
-        actual.pop("bounty_claim_form")
-        actual.pop("object")
+        clean_up(actual, extra=["bounty_claim_form"])
 
         expected = {
             "product": challenge.product,
@@ -499,13 +460,11 @@ class ChallengeDetailViewTest(TestCase):
         self.assertDictEqual(actual, expected)
 
 
-class CreateProductBugTest(TestCase):
+class CreateProductBugTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.person = PersonFactory()
         self.url = reverse("add_product_bug", args=(self.product.slug,))
-        self.login_url = reverse("sign_in")
 
     def test_post(self):
         # Test login required
@@ -534,9 +493,9 @@ class CreateProductBugTest(TestCase):
         self.assertGreater(Bug.objects.filter(person=self.person).count(), 0)
 
 
-class ProductBugDetailViewTest(TestCase):
+class ProductBugDetailViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
+        super().setUp()
         self.bug = ProductBugFactory()
         self.url = reverse(
             "product_bug_detail", args=(self.bug.product.slug, self.bug.id)
@@ -552,16 +511,14 @@ class ProductBugDetailViewTest(TestCase):
         )
 
 
-class UpdateProductBugViewTest(TestCase):
+class UpdateProductBugViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
+        super().setUp()
         self.bug = ProductBugFactory()
-        self.product = OwnedProductFactory()
         self.person = PersonFactory()
         self.url = reverse(
             "update_product_bug", args=(self.bug.product.slug, self.bug.id)
         )
-        self.login_url = reverse("sign_in")
 
     def test_post(self):
         # Test login required
@@ -592,10 +549,9 @@ class UpdateProductBugViewTest(TestCase):
         self.assertEqual(obj.description, data.get("description"))
 
 
-class ProductIdeasAndBugsViewTest(TestCase):
+class ProductIdeasAndBugsViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_ideas_bugs", args=(self.product.slug,))
 
     def test_get_context_data_none(self):
@@ -607,14 +563,10 @@ class ProductIdeasAndBugsViewTest(TestCase):
         )
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need it
-        actual.pop("view")
-
-        actual_ideas = actual.pop("ideas")
-        actual_bugs = actual.pop("bugs")
-        self.assertQuerySetEqual(actual_ideas, Idea.objects.none())
-        self.assertQuerySetEqual(actual_bugs, Bug.objects.none())
+        self.assertQuerySetEqual(actual.pop("ideas"), Idea.objects.none())
+        self.assertQuerySetEqual(actual.pop("bugs"), Bug.objects.none())
 
         expected = {
             "product_slug": self.product.slug,
@@ -632,16 +584,14 @@ class ProductIdeasAndBugsViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need it
-        actual.pop("view")
-
-        actual_ideas = actual.pop("ideas")
-        actual_bugs = actual.pop("bugs")
         self.assertQuerySetEqual(
-            actual_ideas, Idea.objects.all(), ordered=False
+            actual.pop("ideas"), Idea.objects.all(), ordered=False
         )
-        self.assertQuerySetEqual(actual_bugs, Bug.objects.all(), ordered=False)
+        self.assertQuerySetEqual(
+            actual.pop("bugs"), Bug.objects.all(), ordered=False
+        )
 
         expected = {
             "product_slug": self.product.slug,
@@ -651,10 +601,9 @@ class ProductIdeasAndBugsViewTest(TestCase):
         self.assertDictEqual(expected, actual)
 
 
-class ProductIdeaListViewTest(TestCase):
+class ProductIdeaListViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_idea_list", args=(self.product.slug,))
 
     def test_get_queryset(self):
@@ -665,28 +614,21 @@ class ProductIdeaListViewTest(TestCase):
         )
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("is_paginated")
-        actual.pop("view")
-        actual.pop("object_list")
-
-        actual_ideas = actual.pop("ideas")
-        self.assertQuerySetEqual(actual_ideas, Idea.objects.none())
+        self.assertQuerySetEqual(actual.pop("ideas"), Idea.objects.none())
 
         expected = {
             "product": self.product,
             "product_slug": self.product.slug,
+            "is_paginated": False,
         }
         self.assertDictEqual(actual, expected)
 
 
-class ProductBugListViewTest(TestCase):
+class ProductBugListViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_bug_list", args=(self.product.slug,))
 
     def test_get_queryset(self):
@@ -697,18 +639,12 @@ class ProductBugListViewTest(TestCase):
         )
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("is_paginated")
-        actual.pop("view")
-        actual.pop("object_list")
-
-        actual_bugs = actual.pop("bugs")
-        self.assertQuerySetEqual(actual_bugs, Bug.objects.none())
+        self.assertQuerySetEqual(actual.pop("bugs"), Bug.objects.none())
 
         expected = {
+            "is_paginated": False,
             "product": self.product,
             "product_slug": self.product.slug,
         }
