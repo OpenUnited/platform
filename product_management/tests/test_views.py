@@ -22,14 +22,31 @@ class ChallengeListViewTest(TestCase):
         self.client = Client()
         self.url = reverse("challenges")
 
-    def test_get(self):
+    def test_get_none(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertFalse(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 0)
 
+        actual = response.context_data
+
+        self.assertIsNotNone(actual.pop("request"))
+
+        # don't need them
+        actual.pop("paginator")
+        actual.pop("page_obj")
+        actual.pop("view")
+
+        self.assertQuerySetEqual(
+            actual.pop("challenges"), Challenge.objects.none()
+        )
+        self.assertQuerySetEqual(
+            actual.pop("object_list"), Challenge.objects.none()
+        )
+
+        expected = {"is_paginated": False}
+
+        self.assertDictEqual(actual, expected)
+
+    def test_get_some(self):
         _ = [
             ChallengeFactory(status=Challenge.CHALLENGE_STATUS_DRAFT)
             for _ in range(0, 4)
@@ -54,26 +71,56 @@ class ChallengeListViewTest(TestCase):
             ChallengeFactory(status=Challenge.CHALLENGE_STATUS_IN_REVIEW)
             for _ in range(0, 4)
         ]
-        response = self.client.get(self.url)
 
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 8)
+
+        actual = response.context_data
+
+        self.assertIsNotNone(actual.pop("request"))
+
+        # don't need them
+        actual.pop("paginator")
+        actual.pop("page_obj")
+        actual.pop("view")
+        actual.pop("object_list")
+
+        self.assertEqual(actual.pop("challenges").count(), 8)
+
+        expected = {"is_paginated": True}
+        self.assertDictEqual(actual, expected)
 
         response = self.client.get(f"{self.url}?page=2")
-
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 8)
+
+        actual = response.context_data
+
+        self.assertIsNotNone(actual.pop("request"))
+
+        # don't need them
+        actual.pop("paginator")
+        actual.pop("page_obj")
+        actual.pop("view")
+        actual.pop("object_list")
+
+        self.assertEqual(actual.pop("challenges").count(), 8)
+        self.assertDictEqual(actual, expected)
 
         response = self.client.get(f"{self.url}?page=3")
-
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 4)
+
+        actual = response.context_data
+
+        self.assertIsNotNone(actual.pop("request"))
+
+        # don't need them
+        actual.pop("paginator")
+        actual.pop("page_obj")
+        actual.pop("view")
+        actual.pop("object_list")
+
+        self.assertEqual(actual.pop("challenges").count(), 4)
+        self.assertDictEqual(actual, expected)
 
 
 class ProductListViewTest(TestCase):
