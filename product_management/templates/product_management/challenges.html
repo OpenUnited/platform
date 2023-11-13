@@ -26,7 +26,7 @@
     <a href="{{ url('create-challenge') }}">
       <button type="button"
         class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">Create
-        a Challenge</button>
+        Challenge</button>
     </a>
   </div>
 
@@ -138,20 +138,23 @@
   <!-- Pagination -->
   <div class="flex mx-auto gap-x-2 mt-10">
 
-      {% if page_obj.has_previous() %}
-      <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a href="?page={{ page_obj.previous_page_number() }}">&laquo;</a></div>
-      {% endif %}
+    {% if page_obj.has_previous() %}
+    <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
+        href="?page={{ page_obj.previous_page_number() }}">&laquo;</a></div>
+    {% endif %}
 
-      {% for i in paginator.page_range %}
-        {% if page_obj.number == i %}
-          <div class=" flex items-center justify-center w-8 h-8  text-md bg-blue-400 rounded-md text-white">{{ i }}</div>
-        {% else %}
-          <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a href="?page={{ i }}">{{ i }}</a></div>
-        {% endif %}
-      {% endfor %}
+    {% for i in paginator.page_range %}
+    {% if page_obj.number == i %}
+    <div class=" flex items-center justify-center w-8 h-8  text-md bg-blue-400 rounded-md text-white">{{ i }}</div>
+    {% else %}
+    <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
+        href="?page={{ i }}">{{ i }}</a></div>
+    {% endif %}
+    {% endfor %}
 
-      {% if page_obj.has_next() %}
-      <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a href="?page={{ page_obj.next_page_number() }}">&raquo;</a></div>
+    {% if page_obj.has_next() %}
+    <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
+        href="?page={{ page_obj.next_page_number() }}">&raquo;</a></div>
     {% endif %}
   </div>
 

@@ -3,9 +3,15 @@
 {% block title %}Product - Challenges{% endblock %}
 {% block product_content %}
 
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div class="relative sm:rounded-lg">
+    <a class="mb-6 float-right" href="{{ url('create-challenge') }}">
+        <button type="button"
+            class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">Create
+            Challenge</button>
+    </a>
+
     {% if challenges|length > 0 %}
-    <table class="w-full text-sm text-left text-gray-500">
+    <table class="w-full shadow-md text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
                 <th scope="col" class="px-6 py-3">
