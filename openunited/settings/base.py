@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_jinja",
     "formtools",
-    "debug_toolbar",
     "storages",
     "canopy",
     "ckeditor",
@@ -40,7 +39,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "openunited.urls"
