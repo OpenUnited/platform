@@ -12,7 +12,7 @@ from factory import (
     post_generation,
 )
 
-from product_management.models import Challenge, Product, Bounty, Bug
+from product_management.models import Challenge, Product, Bounty, Idea, Bug
 from talent.models import BountyClaim
 from talent.tests.factories import (
     PersonFactory,
@@ -92,6 +92,16 @@ class BountyClaimFactory(DjangoModelFactory):
 
     class Meta:
         model = BountyClaim
+
+
+class ProductIdeaFactory(DjangoModelFactory):
+    title = Sequence(lambda n: f"title-{n}")
+    description = Faker("paragraph")
+    person = SubFactory(PersonFactory)
+    product = SubFactory(OwnedProductFactory)
+
+    class Meta:
+        model = Idea
 
 
 class ProductBugFactory(DjangoModelFactory):

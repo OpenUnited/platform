@@ -3,7 +3,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from talent.models import BountyClaim
-from product_management.models import Challenge, Capability, Bug
+from product_management.models import Challenge, Capability, Idea, Bug
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
@@ -12,6 +12,7 @@ from .factories import (
     ChallengeFactory,
     BountyFactory,
     BountyClaimFactory,
+    ProductIdeaFactory,
     ProductBugFactory,
 )
 
@@ -461,3 +462,117 @@ class UpdateProductBugViewTest(TestCase):
         obj = Bug.objects.get(pk=self.bug.pk)
         self.assertEqual(obj.title, data.get("title"))
         self.assertEqual(obj.description, data.get("description"))
+
+
+class ProductIdeasAndBugsViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_ideas_bugs", args=(self.product.slug,))
+
+    def test_get_context_data_none(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        actual = response.context_data
+
+        # don't need it
+        actual.pop("view")
+
+        actual_ideas = actual.pop("ideas")
+        actual_bugs = actual.pop("bugs")
+        self.assertQuerySetEqual(actual_ideas, Idea.objects.none())
+        self.assertQuerySetEqual(actual_bugs, Bug.objects.none())
+
+        expected = {
+            "product_slug": self.product.slug,
+            "product": self.product,
+        }
+
+        self.assertDictEqual(expected, actual)
+
+    def test_get_context_data(self):
+        [ProductIdeaFactory(product=self.product) for _ in range(0, 5)]
+        [ProductBugFactory(product=self.product) for _ in range(0, 3)]
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        actual = response.context_data
+
+        # don't need it
+        actual.pop("view")
+
+        actual_ideas = actual.pop("ideas")
+        actual_bugs = actual.pop("bugs")
+        self.assertQuerySetEqual(
+            actual_ideas, Idea.objects.all(), ordered=False
+        )
+        self.assertQuerySetEqual(actual_bugs, Bug.objects.all(), ordered=False)
+
+        expected = {
+            "product_slug": self.product.slug,
+            "product": self.product,
+        }
+
+        self.assertDictEqual(expected, actual)
+
+
+class ProductIdeaListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_idea_list", args=(self.product.slug,))
+
+    def test_get_queryset(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        actual = response.context_data
+
+        # don't need them
+        actual.pop("paginator")
+        actual.pop("page_obj")
+        actual.pop("is_paginated")
+        actual.pop("view")
+        actual.pop("object_list")
+
+        actual_ideas = actual.pop("ideas")
+        self.assertQuerySetEqual(actual_ideas, Idea.objects.none())
+
+        expected = {
+            "product": self.product,
+            "product_slug": self.product.slug,
+        }
+        self.assertDictEqual(actual, expected)
+
+
+class ProductBugListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.product = OwnedProductFactory()
+        self.url = reverse("product_bug_list", args=(self.product.slug,))
+
+    def test_get_queryset(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        actual = response.context_data
+
+        # don't need them
+        actual.pop("paginator")
+        actual.pop("page_obj")
+        actual.pop("is_paginated")
+        actual.pop("view")
+        actual.pop("object_list")
+
+        actual_bugs = actual.pop("bugs")
+        self.assertQuerySetEqual(actual_bugs, Bug.objects.none())
+
+        expected = {
+            "product": self.product,
+            "product_slug": self.product.slug,
+        }
+        self.assertDictEqual(actual, expected)
