@@ -3,7 +3,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from talent.models import BountyClaim
-from product_management.models import Challenge, Capability, Idea, Bug
+from product_management.models import Product, Challenge, Capability, Idea, Bug
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
@@ -171,22 +171,35 @@ class ProductSummaryViewTest(TestCase):
         self.product = OwnedProductFactory()
         self.url = reverse("product_summary", args=(self.product.slug,))
 
-    def test_get(self):
+    def test_get_none(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.get("product"), self.product)
-        self.assertEqual(response.context_data.get("challenges").count(), 0)
-        self.assertEqual(response.context_data.get("capabilities").count(), 0)
-        self.assertEqual(response.context_data.get("can_edit_product"), False)
 
-        _ = [
+        actual = response.context_data
+
+        # Don't need it
+        actual.pop("view")
+
+        expected = {
+            "product": self.product,
+            "product_slug": self.product.slug,
+            "can_edit_product": False,
+        }
+
+        self.assertQuerySetEqual(
+            actual.pop("challenges"), Challenge.objects.none()
+        )
+        self.assertQuerySetEqual(
+            actual.pop("capabilities"), Challenge.objects.none()
+        )
+        self.assertDictEqual(actual, expected)
+
+    def test_get_some(self):
+        for _ in range(0, 5):
             ChallengeFactory(
                 product=self.product,
                 status=Challenge.CHALLENGE_STATUS_AVAILABLE,
             )
-            for _ in range(0, 5)
-        ]
 
         root_capability = Capability.add_root(
             name="dummy name", description="dummy description"
@@ -194,12 +207,26 @@ class ProductSummaryViewTest(TestCase):
         root_capability.product.add(self.product)
 
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.get("product"), self.product)
-        self.assertEqual(response.context_data.get("challenges").count(), 5)
-        self.assertEqual(response.context_data.get("capabilities").count(), 1)
-        self.assertEqual(response.context_data.get("can_edit_product"), False)
+
+        actual = response.context_data
+
+        # Don't need it
+        actual.pop("view")
+
+        expected = {
+            "product": self.product,
+            "product_slug": self.product.slug,
+            "can_edit_product": False,
+        }
+
+        self.assertQuerySetEqual(
+            actual.pop("challenges"), Challenge.objects.all(), ordered=False
+        )
+        self.assertQuerySetEqual(
+            actual.pop("capabilities"), Capability.objects.all(), ordered=False
+        )
+        self.assertDictEqual(actual, expected)
 
         _ = ProductRoleAssignmentFactory(
             person=self.product.content_object,
@@ -208,7 +235,6 @@ class ProductSummaryViewTest(TestCase):
         )
 
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data.get("can_edit_product"), True)
 
