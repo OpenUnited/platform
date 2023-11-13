@@ -1,5 +1,4 @@
 from django.test import TestCase, Client
-from django.test.client import RequestFactory
 from django.urls import reverse
 
 from talent.models import BountyClaim
