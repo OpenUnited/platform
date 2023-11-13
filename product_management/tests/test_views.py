@@ -146,6 +146,8 @@ class ProductSummaryViewTest(TestCase):
         )
         root_capability.product.add(self.product)
 
+        # TODO: write one more case for this case
+        self.client.force_login(self.product.content_object.user)
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)

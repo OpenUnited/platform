@@ -138,12 +138,21 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         product_role_assignments = ProductRoleAssignment.objects.filter(
             Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
         )
+        if self.request.user.is_authenticated:
+            context.update(
+                {
+                    "can_edit_product": product_role_assignments.filter(
+                        person=self.request.user.person
+                    ).exists()
+                }
+            )
+        else:
+            context.update({"can_edit_product": False})
         context.update(
             {
                 "product": product,
                 "challenges": challenges,
                 "capabilities": Capability.objects.filter(product=product),
-                "can_edit_product": product_role_assignments.exists(),
             }
         )
         return context
