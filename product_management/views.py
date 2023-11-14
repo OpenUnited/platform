@@ -674,6 +674,16 @@ class CreateChallengeView(
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        product_slug = self.kwargs.get("product_slug", None)
+        if product_slug:
+            kwargs.update(
+                initial={"product": Product.objects.get(slug=product_slug)}
+            )
+
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():

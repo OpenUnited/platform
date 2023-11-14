@@ -331,6 +331,14 @@ class ChallengeForm(forms.ModelForm):
                 self.fields["product"].queryset = queryset
                 self.fields["product"].initial = queryset.first()
 
+            product = initial.get("product", None)
+            if product:
+                self.fields["product"].empty_label = None
+                self.fields["product"].queryset = Product.objects.filter(
+                    id=product.id
+                )
+                self.fields["product"].initial = product
+
     class Meta:
         model = Challenge
         fields = [
