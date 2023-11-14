@@ -324,13 +324,6 @@ class ChallengeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         initial = kwargs.get("initial", None)
         if initial:
-            product_id = initial.get("product_id", None)
-            if product_id:
-                queryset = Product.objects.filter(pk=product_id)
-                self.fields["product"].empty_label = None
-                self.fields["product"].queryset = queryset
-                self.fields["product"].initial = queryset.first()
-
             product = initial.get("product", None)
             if product:
                 self.fields["product"].empty_label = None
