@@ -281,7 +281,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
             kwargs={"product_slug": self.product.slug, "pk": self.pk},
         )
 
-    # TODO: refactor
     def can_delete_challenge(self, person):
         from security.models import ProductRoleAssignment
 
@@ -292,14 +291,18 @@ class Challenge(TimeStampMixin, UUIDMixin):
         if product is None:
             return False
 
-        product_role_assignment = ProductRoleAssignment.objects.filter(
-            person=person, product=product
-        ).first()
+        try:
+            product_role_assignment = ProductRoleAssignment.objects.get(
+                person=person, product=product
+            )
 
-        if product_role_assignment is None:
-            return False
+            if (
+                product_role_assignment.role
+                == ProductRoleAssignment.CONTRIBUTOR
+            ):
+                return False
 
-        if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
+        except ProductRoleAssignment.DoesNotExist:
             return False
 
         return True
