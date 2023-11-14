@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.messages import get_messages
 
 from openunited.tests.base import clean_up
 from talent.models import BountyClaim
@@ -351,6 +352,66 @@ class UpdateChallengeViewTest(BaseProductTestCase):
         self.challenge.refresh_from_db()
         self.assertEqual(self.challenge.title, data.get("title"))
         self.assertEqual(self.challenge.description, data.get("description"))
+
+
+class DeleteChallengeViewTest(BaseProductTestCase):
+    def setUp(self):
+        super().setUp()
+        self.challenge = ChallengeFactory()
+        self.person = PersonFactory()
+        self.url = reverse(
+            "delete-challenge",
+            args=(self.challenge.product.slug, self.challenge.id),
+        )
+
+    def test_post_login_required(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
+
+    def test_delete_without_permission(self):
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse(
+                "challenge_detail",
+                args=(
+                    self.challenge.product.slug,
+                    self.challenge.pk,
+                ),
+            ),
+        )
+
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(
+            "You do not have rights to remove this challenge.", messages
+        )
+
+    def test_delete_with_permission(self):
+        self.client.force_login(self.person.user)
+
+        _ = ProductRoleAssignmentFactory(
+            person=self.person,
+            product=self.challenge.product,
+            role=ProductRoleAssignment.PRODUCT_ADMIN,
+        )
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse("challenges"),
+        )
+
+        with self.assertRaises(Challenge.DoesNotExist):
+            self.challenge.refresh_from_db()
+
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn("The challenge is successfully deleted!", messages)
 
 
 class CapabilityDetailViewTest(BaseProductTestCase):
