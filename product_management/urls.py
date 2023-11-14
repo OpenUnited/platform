@@ -63,7 +63,7 @@ urlpatterns = [
         name="create-challenge",
     ),
     path(
-        "challenge/update/<int:pk>/",
+        "<str:product_slug>/challenge/update/<int:pk>/",
         UpdateChallengeView.as_view(),
         name="update-challenge",
     ),
