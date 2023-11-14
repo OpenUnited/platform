@@ -750,6 +750,36 @@ class UpdateChallengeView(
         return super().post(request, *args, **kwargs)
 
 
+class DeleteChallengeView(LoginRequiredMixin, DeleteView):
+    model = Challenge
+    template_name = "product_management/delete_challenge.html"
+    login_url = "sign_in"
+    success_url = reverse_lazy("challenges")
+
+    def get(self, request, *args, **kwargs):
+        challenge_obj = self.get_object()
+        if challenge_obj.can_delete_challenge(request.user.person):
+            Challenge.objects.get(pk=challenge_obj.pk).delete()
+            messages.success(
+                request, _("The challenge is successfully deleted!")
+            )
+            return redirect(self.success_url)
+        else:
+            messages.error(
+                request, _("You do not have rights to remove this challenge.")
+            )
+
+            return redirect(
+                reverse(
+                    "challenge_detail",
+                    args=(
+                        challenge_obj.product.slug,
+                        challenge_obj.pk,
+                    ),
+                )
+            )
+
+
 class DashboardBaseView(LoginRequiredMixin):
     login_url = "sign_in"
 
@@ -995,36 +1025,6 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         context.update({"bounties": queryset})
 
         return render(request, self.template_name, context)
-
-
-class DeleteChallengeView(LoginRequiredMixin, DeleteView):
-    model = Challenge
-    template_name = "product_management/delete_challenge.html"
-    login_url = "sign_in"
-    success_url = reverse_lazy("challenges")
-
-    def get(self, request, *args, **kwargs):
-        challenge_obj = self.get_object()
-        if challenge_obj.can_delete_challenge(request.user.person):
-            Challenge.objects.get(pk=challenge_obj.pk).delete()
-            messages.success(
-                request, _("The challenge is successfully deleted!")
-            )
-            return redirect(self.success_url)
-        else:
-            messages.error(
-                request, _("You do not have rights to remove this challenge.")
-            )
-
-            return redirect(
-                reverse(
-                    "challenge_detail",
-                    args=(
-                        challenge_obj.product.slug,
-                        challenge_obj.pk,
-                    ),
-                )
-            )
 
 
 class CreateBountyView(LoginRequiredMixin, CreateView):
