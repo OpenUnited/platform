@@ -3,7 +3,6 @@ from django.urls import reverse
 
 from security.models import ProductRoleAssignment
 from .factories import ChallengeFactory, OwnedProductFactory, ProductBugFactory
-from product_management.models import Bug
 from security.tests.factories import ProductRoleAssignmentFactory
 from talent.tests.factories import PersonFactory
 
@@ -32,6 +31,12 @@ class ChallengeModelTest(TestCase):
         self.assertFalse(response)
 
         product_role_assignment.role = ProductRoleAssignment.PRODUCT_ADMIN
+        product_role_assignment.save()
+
+        response = self.challenge.can_delete_challenge(self.person)
+        self.assertTrue(response)
+
+        product_role_assignment.role = ProductRoleAssignment.PRODUCT_MANAGER
         product_role_assignment.save()
 
         response = self.challenge.can_delete_challenge(self.person)

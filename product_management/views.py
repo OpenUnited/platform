@@ -100,6 +100,7 @@ class ProductListView(ListView):
         return response
 
 
+# TODO: give a better name to this view, ideally make it a mixin
 class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -674,6 +675,16 @@ class CreateChallengeView(
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        product_slug = self.kwargs.get("product_slug", None)
+        if product_slug:
+            kwargs.update(
+                initial={"product": Product.objects.get(slug=product_slug)}
+            )
+
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -706,9 +717,12 @@ class UpdateChallengeView(
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
+        product_slug = self.kwargs.get("product_slug", None)
+        if product_slug:
+            kwargs.update(
+                initial={"product": Product.objects.get(slug=product_slug)}
+            )
 
-        instance = kwargs.get("instance")
-        kwargs.update({"initial": {"product_id": instance.product.pk}})
         return kwargs
 
     def get(self, request, *args, **kwargs):
@@ -734,6 +748,36 @@ class UpdateChallengeView(
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
+
+
+class DeleteChallengeView(LoginRequiredMixin, DeleteView):
+    model = Challenge
+    template_name = "product_management/delete_challenge.html"
+    login_url = "sign_in"
+    success_url = reverse_lazy("challenges")
+
+    def get(self, request, *args, **kwargs):
+        challenge_obj = self.get_object()
+        if challenge_obj.can_delete_challenge(request.user.person):
+            Challenge.objects.get(pk=challenge_obj.pk).delete()
+            messages.success(
+                request, _("The challenge is successfully deleted!")
+            )
+            return redirect(self.success_url)
+        else:
+            messages.error(
+                request, _("You do not have rights to remove this challenge.")
+            )
+
+            return redirect(
+                reverse(
+                    "challenge_detail",
+                    args=(
+                        challenge_obj.product.slug,
+                        challenge_obj.pk,
+                    ),
+                )
+            )
 
 
 class DashboardBaseView(LoginRequiredMixin):
@@ -981,36 +1025,6 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         context.update({"bounties": queryset})
 
         return render(request, self.template_name, context)
-
-
-class DeleteChallengeView(LoginRequiredMixin, DeleteView):
-    model = Challenge
-    template_name = "product_management/delete_challenge.html"
-    login_url = "sign_in"
-    success_url = reverse_lazy("challenges")
-
-    def get(self, request, *args, **kwargs):
-        challenge_obj = self.get_object()
-        if challenge_obj.can_delete_challenge(request.user.person):
-            Challenge.objects.get(pk=challenge_obj.pk).delete()
-            messages.success(
-                request, _("The challenge is successfully deleted!")
-            )
-            return redirect(self.success_url)
-        else:
-            messages.error(
-                request, _("You do not have rights to remove this challenge.")
-            )
-
-            return redirect(
-                reverse(
-                    "challenge_detail",
-                    args=(
-                        challenge_obj.product.slug,
-                        challenge_obj.pk,
-                    ),
-                )
-            )
 
 
 class CreateBountyView(LoginRequiredMixin, CreateView):

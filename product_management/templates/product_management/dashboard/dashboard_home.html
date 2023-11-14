@@ -17,7 +17,7 @@
             <div
                 class="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
                 <div class="flex-1 truncate px-4 py-2 text-sm">
-                    <a href="#" class="font-medium text-gray-900 hover:text-gray-600">{{ product.name }}</a>
+                    <a href="{{ product.get_absolute_url() }}" class="font-medium text-gray-900 hover:text-gray-600">{{ product.name }}</a>
                     <!-- Get the following information from the database -->
                     <p class="text-gray-500">12 People</p>
                 </div>
