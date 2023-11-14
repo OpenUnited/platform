@@ -310,6 +310,49 @@ class CreateChallengeViewTest(BaseProductTestCase):
         Challenge.objects.get(created_by=self.person).delete()
 
 
+class UpdateChallengeViewTest(BaseProductTestCase):
+    def setUp(self):
+        super().setUp()
+        self.challenge = ChallengeFactory()
+        self.person = PersonFactory()
+        self.url = reverse(
+            "update-challenge",
+            args=(self.product.slug, self.challenge.id),
+        )
+
+    def test_post_login_required(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
+
+    def test_post_valid(self):
+        self.client.force_login(self.person.user)
+
+        data = {
+            "title": "updated title",
+            "description": "updated description",
+            "product": self.challenge.product.id,
+            "reward_type": self.challenge.reward_type,
+            "priority": self.challenge.priority,
+            "status": self.challenge.status,
+        }
+        response = self.client.post(self.url, data=data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse(
+                "challenge_detail",
+                args=(self.challenge.product.slug, self.challenge.id),
+            ),
+        )
+
+        self.challenge.refresh_from_db()
+        self.assertEqual(self.challenge.title, data.get("title"))
+        self.assertEqual(self.challenge.description, data.get("description"))
+
+
 class CapabilityDetailViewTest(BaseProductTestCase):
     def setUp(self):
         super().setUp()
