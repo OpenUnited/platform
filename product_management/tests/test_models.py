@@ -37,6 +37,12 @@ class ChallengeModelTest(TestCase):
         response = self.challenge.can_delete_challenge(self.person)
         self.assertTrue(response)
 
+        product_role_assignment.role = ProductRoleAssignment.PRODUCT_MANAGER
+        product_role_assignment.save()
+
+        response = self.challenge.can_delete_challenge(self.person)
+        self.assertTrue(response)
+
 
 class BugModelTest(TestCase):
     def setUp(self):

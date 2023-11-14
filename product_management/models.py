@@ -282,7 +282,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         )
 
     # TODO: refactor
-    # TODO: write tests
     def can_delete_challenge(self, person):
         from security.models import ProductRoleAssignment
 
