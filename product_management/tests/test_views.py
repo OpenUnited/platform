@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
-from django.test.client import RequestFactory
 from django.urls import reverse
 
+from openunited.tests.base import clean_up
 from talent.models import BountyClaim
 from product_management.models import Challenge, Capability, Idea, Bug
 from security.models import ProductRoleAssignment
@@ -17,19 +17,42 @@ from .factories import (
 )
 
 
-class ChallengeListViewTest(TestCase):
+class BaseProductTestCase(TestCase):
     def setUp(self):
+        super().setUp()
         self.client = Client()
+        self.product = OwnedProductFactory()
+        self.login_url = reverse("sign_in")
+
+
+class ChallengeListViewTest(BaseProductTestCase):
+    def setUp(self):
+        super().setUp()
         self.url = reverse("challenges")
 
-    def test_get(self):
+    def test_get_none(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertFalse(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 0)
+        self.assertIn(
+            "product_management/challenges.html", response.template_name
+        )
 
+        actual = response.context_data
+        clean_up(actual, exclude=["object_list"])
+
+        self.assertIsNotNone(actual.pop("request"))
+        self.assertQuerySetEqual(
+            actual.pop("challenges"), Challenge.objects.none()
+        )
+        self.assertQuerySetEqual(
+            actual.pop("object_list"), Challenge.objects.none()
+        )
+
+        expected = {"is_paginated": False}
+
+        self.assertDictEqual(actual, expected)
+
+    def test_get_some(self):
         _ = [
             ChallengeFactory(status=Challenge.CHALLENGE_STATUS_DRAFT)
             for _ in range(0, 4)
@@ -54,26 +77,41 @@ class ChallengeListViewTest(TestCase):
             ChallengeFactory(status=Challenge.CHALLENGE_STATUS_IN_REVIEW)
             for _ in range(0, 4)
         ]
-        response = self.client.get(self.url)
 
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 8)
+        self.assertIn(
+            "product_management/challenges.html", response.template_name
+        )
+
+        actual = response.context_data
+        clean_up(actual)
+
+        self.assertIsNotNone(actual.pop("request"))
+        self.assertEqual(actual.pop("challenges").count(), 8)
+
+        expected = {"is_paginated": True}
+        self.assertDictEqual(actual, expected)
 
         response = self.client.get(f"{self.url}?page=2")
-
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 8)
+
+        actual = response.context_data
+        clean_up(actual)
+
+        self.assertIsNotNone(actual.pop("request"))
+        self.assertEqual(actual.pop("challenges").count(), 8)
+        self.assertDictEqual(actual, expected)
 
         response = self.client.get(f"{self.url}?page=3")
-
         self.assertEqual(response.status_code, 200)
-        self.assertIsNotNone(response.context_data.get("request"))
-        self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("challenges").count(), 4)
+
+        actual = response.context_data
+        clean_up(actual)
+
+        self.assertIsNotNone(actual.pop("request"))
+        self.assertEqual(actual.pop("challenges").count(), 4)
+        self.assertDictEqual(actual, expected)
 
 
 class ProductListViewTest(TestCase):
@@ -83,8 +121,10 @@ class ProductListViewTest(TestCase):
 
     def test_get(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/products.html", response.template_name
+        )
         self.assertFalse(response.context_data.get("is_paginated"))
         self.assertEqual(response.context_data.get("products").count(), 0)
 
@@ -103,10 +143,9 @@ class ProductListViewTest(TestCase):
         # self.assertEqual(response.context_data.get("products").count(), 4)
 
 
-class ProductRedirectViewTest(TestCase):
+class ProductRedirectViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_detail", args=(self.product.slug,))
 
     def test_get(self):
@@ -118,28 +157,41 @@ class ProductRedirectViewTest(TestCase):
         )
 
 
-class ProductSummaryViewTest(TestCase):
+class ProductSummaryViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_summary", args=(self.product.slug,))
 
-    def test_get(self):
+    def test_get_none(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.get("product"), self.product)
-        self.assertEqual(response.context_data.get("challenges").count(), 0)
-        self.assertEqual(response.context_data.get("capabilities").count(), 0)
-        self.assertEqual(response.context_data.get("can_edit_product"), False)
+        self.assertIn(
+            "product_management/product_summary.html", response.template_name
+        )
 
-        _ = [
+        actual = response.context_data
+        clean_up(actual)
+
+        expected = {
+            "product": self.product,
+            "product_slug": self.product.slug,
+            "can_edit_product": False,
+        }
+
+        self.assertQuerySetEqual(
+            actual.pop("challenges"), Challenge.objects.none()
+        )
+        self.assertQuerySetEqual(
+            actual.pop("capabilities"), Challenge.objects.none()
+        )
+        self.assertDictEqual(actual, expected)
+
+    def test_get_some(self):
+        for _ in range(0, 5):
             ChallengeFactory(
                 product=self.product,
                 status=Challenge.CHALLENGE_STATUS_AVAILABLE,
             )
-            for _ in range(0, 5)
-        ]
 
         root_capability = Capability.add_root(
             name="dummy name", description="dummy description"
@@ -147,12 +199,27 @@ class ProductSummaryViewTest(TestCase):
         root_capability.product.add(self.product)
 
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.get("product"), self.product)
-        self.assertEqual(response.context_data.get("challenges").count(), 5)
-        self.assertEqual(response.context_data.get("capabilities").count(), 1)
-        self.assertEqual(response.context_data.get("can_edit_product"), False)
+        self.assertIn(
+            "product_management/product_summary.html", response.template_name
+        )
+
+        actual = response.context_data
+        clean_up(actual)
+
+        expected = {
+            "product": self.product,
+            "product_slug": self.product.slug,
+            "can_edit_product": False,
+        }
+
+        self.assertQuerySetEqual(
+            actual.pop("challenges"), Challenge.objects.all(), ordered=False
+        )
+        self.assertQuerySetEqual(
+            actual.pop("capabilities"), Capability.objects.all(), ordered=False
+        )
+        self.assertDictEqual(actual, expected)
 
         _ = ProductRoleAssignmentFactory(
             person=self.product.content_object,
@@ -161,22 +228,19 @@ class ProductSummaryViewTest(TestCase):
         )
 
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data.get("can_edit_product"), True)
 
 
-class CreateChallengeViewTestCase(TestCase):
+class CreateChallengeViewTestCase(BaseProductTestCase):
     """
     docker-compose --env-file docker.env exec platform sh -c "python manage.py test product_management.tests.test_views.CreateChallengeViewTestCase"
     """
 
     def setUp(self):
+        super().setUp()
         self.person = PersonFactory()
-        self.product = OwnedProductFactory()
-        self.client = Client()
         self.url = reverse("create-challenge")
-        self.login_url = reverse("sign_in")
 
     def test_post(self):
         # Test login required
@@ -217,10 +281,9 @@ class CreateChallengeViewTestCase(TestCase):
         Challenge.objects.get(created_by=self.person).delete()
 
 
-class CapabilityDetailViewTest(TestCase):
+class CapabilityDetailViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.root_capability = Capability.add_root(
             name="capability name", description="capability description"
         )
@@ -258,9 +321,9 @@ class CapabilityDetailViewTest(TestCase):
         self.root_capability.delete()
 
 
-class ChallengeDetailViewTest(TestCase):
+class ChallengeDetailViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
+        super().setUp()
         self.person = PersonFactory()
         self.challenge = ChallengeFactory(created_by=self.person)
         self.url = reverse(
@@ -270,8 +333,16 @@ class ChallengeDetailViewTest(TestCase):
 
     def test_get_anon(self):
         response = self.client.get(self.url)
+        self.assertIn(
+            "product_management/challenge_detail.html", response.template_name
+        )
 
-        expected_data = {
+        actual = response.context_data
+        clean_up(actual, extra=["bounty_claim_form"])
+
+        expected = {
+            "product": self.challenge.product,
+            "product_slug": self.challenge.product.slug,
             "actions_available": False,
             "bounty": None,
             "bounty_claim": None,
@@ -279,14 +350,22 @@ class ChallengeDetailViewTest(TestCase):
             "current_user_created_claim_request": False,
             "is_claimed": False,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictEqual(actual, expected)
 
     def test_get_auth(self):
         self.client.force_login(user=self.person.user)
 
         response = self.client.get(self.url)
+        self.assertIn(
+            "product_management/challenge_detail.html", response.template_name
+        )
 
-        expected_data = {
+        actual = response.context_data
+        clean_up(actual, extra=["bounty_claim_form"])
+
+        expected = {
+            "product": self.challenge.product,
+            "product_slug": self.challenge.product.slug,
             "actions_available": True,
             "challenge": self.challenge,
             "bounty": None,
@@ -294,7 +373,7 @@ class ChallengeDetailViewTest(TestCase):
             "current_user_created_claim_request": False,
             "is_claimed": False,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictEqual(actual, expected)
 
     def test_get_with_bounties(self):
         challenge = ChallengeFactory()
@@ -320,7 +399,12 @@ class ChallengeDetailViewTest(TestCase):
 
         response = self.client.get(url)
 
-        expected_data = {
+        actual = response.context_data
+        clean_up(actual, extra=["bounty_claim_form"])
+
+        expected = {
+            "product": challenge.product,
+            "product_slug": challenge.product.slug,
             "challenge": challenge,
             "bounty": b_one,
             "bounty_claim": bc_one,
@@ -329,7 +413,7 @@ class ChallengeDetailViewTest(TestCase):
             "is_claimed": True,
             "claimed_by": bc_one.person,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictContainsSubset(actual, expected)
 
     def test_get_with_bounties_auth(self):
         self.client.force_login(self.person.user)
@@ -359,7 +443,12 @@ class ChallengeDetailViewTest(TestCase):
 
         response = self.client.get(url)
 
-        expected_data = {
+        actual = response.context_data
+        clean_up(actual, extra=["bounty_claim_form"])
+
+        expected = {
+            "product": challenge.product,
+            "product_slug": challenge.product.slug,
             "challenge": challenge,
             "bounty": b_one,
             "bounty_claim": bc_one,
@@ -368,16 +457,14 @@ class ChallengeDetailViewTest(TestCase):
             "is_claimed": True,
             "claimed_by": bc_one.person,
         }
-        self.assertDictContainsSubset(expected_data, response.context_data)
+        self.assertDictEqual(actual, expected)
 
 
-class CreateProductBugTest(TestCase):
+class CreateProductBugTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.person = PersonFactory()
         self.url = reverse("add_product_bug", args=(self.product.slug,))
-        self.login_url = reverse("sign_in")
 
     def test_post(self):
         # Test login required
@@ -406,9 +493,9 @@ class CreateProductBugTest(TestCase):
         self.assertGreater(Bug.objects.filter(person=self.person).count(), 0)
 
 
-class ProductBugDetailViewTest(TestCase):
+class ProductBugDetailViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
+        super().setUp()
         self.bug = ProductBugFactory()
         self.url = reverse(
             "product_bug_detail", args=(self.bug.product.slug, self.bug.id)
@@ -424,16 +511,14 @@ class ProductBugDetailViewTest(TestCase):
         )
 
 
-class UpdateProductBugViewTest(TestCase):
+class UpdateProductBugViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
+        super().setUp()
         self.bug = ProductBugFactory()
-        self.product = OwnedProductFactory()
         self.person = PersonFactory()
         self.url = reverse(
             "update_product_bug", args=(self.bug.product.slug, self.bug.id)
         )
-        self.login_url = reverse("sign_in")
 
     def test_post(self):
         # Test login required
@@ -464,26 +549,24 @@ class UpdateProductBugViewTest(TestCase):
         self.assertEqual(obj.description, data.get("description"))
 
 
-class ProductIdeasAndBugsViewTest(TestCase):
+class ProductIdeasAndBugsViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_ideas_bugs", args=(self.product.slug,))
 
     def test_get_context_data_none(self):
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_ideas_and_bugs.html",
+            response.template_name,
+        )
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need it
-        actual.pop("view")
-
-        actual_ideas = actual.pop("ideas")
-        actual_bugs = actual.pop("bugs")
-        self.assertQuerySetEqual(actual_ideas, Idea.objects.none())
-        self.assertQuerySetEqual(actual_bugs, Bug.objects.none())
+        self.assertQuerySetEqual(actual.pop("ideas"), Idea.objects.none())
+        self.assertQuerySetEqual(actual.pop("bugs"), Bug.objects.none())
 
         expected = {
             "product_slug": self.product.slug,
@@ -501,16 +584,14 @@ class ProductIdeasAndBugsViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need it
-        actual.pop("view")
-
-        actual_ideas = actual.pop("ideas")
-        actual_bugs = actual.pop("bugs")
         self.assertQuerySetEqual(
-            actual_ideas, Idea.objects.all(), ordered=False
+            actual.pop("ideas"), Idea.objects.all(), ordered=False
         )
-        self.assertQuerySetEqual(actual_bugs, Bug.objects.all(), ordered=False)
+        self.assertQuerySetEqual(
+            actual.pop("bugs"), Bug.objects.all(), ordered=False
+        )
 
         expected = {
             "product_slug": self.product.slug,
@@ -520,58 +601,50 @@ class ProductIdeasAndBugsViewTest(TestCase):
         self.assertDictEqual(expected, actual)
 
 
-class ProductIdeaListViewTest(TestCase):
+class ProductIdeaListViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_idea_list", args=(self.product.slug,))
 
     def test_get_queryset(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_idea_list.html", response.template_name
+        )
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("is_paginated")
-        actual.pop("view")
-        actual.pop("object_list")
-
-        actual_ideas = actual.pop("ideas")
-        self.assertQuerySetEqual(actual_ideas, Idea.objects.none())
+        self.assertQuerySetEqual(actual.pop("ideas"), Idea.objects.none())
 
         expected = {
             "product": self.product,
             "product_slug": self.product.slug,
+            "is_paginated": False,
         }
         self.assertDictEqual(actual, expected)
 
 
-class ProductBugListViewTest(TestCase):
+class ProductBugListViewTest(BaseProductTestCase):
     def setUp(self):
-        self.client = Client()
-        self.product = OwnedProductFactory()
+        super().setUp()
         self.url = reverse("product_bug_list", args=(self.product.slug,))
 
     def test_get_queryset(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/product_bug_list.html", response.template_name
+        )
 
         actual = response.context_data
+        clean_up(actual)
 
-        # don't need them
-        actual.pop("paginator")
-        actual.pop("page_obj")
-        actual.pop("is_paginated")
-        actual.pop("view")
-        actual.pop("object_list")
-
-        actual_bugs = actual.pop("bugs")
-        self.assertQuerySetEqual(actual_bugs, Bug.objects.none())
+        self.assertQuerySetEqual(actual.pop("bugs"), Bug.objects.none())
 
         expected = {
+            "is_paginated": False,
             "product": self.product,
             "product_slug": self.product.slug,
         }
