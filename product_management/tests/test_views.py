@@ -234,45 +234,59 @@ class ProductSummaryViewTest(BaseProductTestCase):
         self.assertEqual(response.context_data.get("can_edit_product"), True)
 
 
-class CreateChallengeViewTestCase(BaseProductTestCase):
-    """
-    docker-compose --env-file docker.env exec platform sh -c "python manage.py test product_management.tests.test_views.CreateChallengeViewTestCase"
-    """
-
+class CreateChallengeViewTest(BaseProductTestCase):
     def setUp(self):
         super().setUp()
-        self.person = PersonFactory()
-        self.product = OwnedProductFactory()
-        self.client = Client()
         self.url = reverse("create-challenge", args=(self.product.slug,))
-        self.login_url = reverse("sign_in")
+        self.person = PersonFactory()
 
-    def test_post(self):
-        # Test login required
+    def test_post_login_required(self):
         response = self.client.get(self.url)
+
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, f"{self.login_url}?next={self.url}")
-        # Test Challenge object creation
+
+    def test_post_invalid(self):
         self.client.force_login(self.person.user)
-        data = {
+
+        # "title" is missing
+        expected = {
+            "description": "desc challenge 1",
+            "product": self.product.id,
+            "reward_type": Challenge.REWARD_TYPE[1][0],
+            "priority": 0,
+            "status": 2,
+        }
+
+        response = self.client.post(self.url, data=expected)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/create_challenge.html", response.template_name
+        )
+
+        form = response.context_data.get("form")
+        self.assertFalse(form.is_valid())
+        self.assertEqual({"title": ["This field is required."]}, form.errors)
+
+    def test_post_valid(self):
+        self.client.force_login(self.person.user)
+
+        expected = {
             "title": "title challenge 1",
             "description": "desc challenge 1",
             "product": self.product.id,
-            "priority": "0",
-            "status": "2",
             "reward_type": Challenge.REWARD_TYPE[1][0],
+            "priority": 0,
+            "status": 2,
         }
-        res = self.client.post(self.url, data=data)
-        instance = Challenge.objects.get(title=data["title"])
-        self.assertEqual(res.status_code, 302)
+
+        response = self.client.post(self.url, data=expected)
+        self.assertEqual(response.status_code, 302)
+
+        instance = Challenge.objects.get(title=expected["title"])
         self.assertEqual(instance.created_by.id, self.person.id)
-        self.assertEqual(instance.title, data["title"])
-        self.assertEqual(instance.description, data["description"])
-        self.assertEqual(instance.status, int(data["status"]))
-        self.assertEqual(instance.priority, int(data["priority"]))
-        self.assertEqual(instance.reward_type, data["reward_type"])
         self.assertEqual(
-            res.url,
+            response.url,
             reverse(
                 "challenge_detail",
                 args=(
@@ -282,7 +296,17 @@ class CreateChallengeViewTestCase(BaseProductTestCase):
             ),
         )
 
-    def tearDown(self):
+        actual = {
+            "title": instance.title,
+            "description": instance.description,
+            "product": instance.product.id,
+            "reward_type": instance.reward_type,
+            "priority": instance.priority,
+            "status": instance.status,
+        }
+
+        self.assertDictEqual(actual, expected)
+
         Challenge.objects.get(created_by=self.person).delete()
 
 
