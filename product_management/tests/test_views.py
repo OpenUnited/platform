@@ -318,7 +318,7 @@ class UpdateChallengeViewTest(BaseProductTestCase):
         self.person = PersonFactory()
         self.url = reverse(
             "update-challenge",
-            args=(self.product.slug, self.challenge.id),
+            args=(self.challenge.product.slug, self.challenge.id),
         )
 
     def test_post_login_required(self):
