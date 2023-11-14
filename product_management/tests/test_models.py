@@ -3,7 +3,6 @@ from django.urls import reverse
 
 from security.models import ProductRoleAssignment
 from .factories import ChallengeFactory, OwnedProductFactory, ProductBugFactory
-from product_management.models import Bug
 from security.tests.factories import ProductRoleAssignmentFactory
 from talent.tests.factories import PersonFactory
 
