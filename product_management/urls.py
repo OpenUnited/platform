@@ -68,7 +68,7 @@ urlpatterns = [
         name="update-challenge",
     ),
     path(
-        "challenge/delete/<int:pk>/",
+        "<str:product_slug>/challenge/delete/<int:pk>/",
         DeleteChallengeView.as_view(),
         name="delete-challenge",
     ),
