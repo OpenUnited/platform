@@ -281,6 +281,8 @@ class Challenge(TimeStampMixin, UUIDMixin):
             kwargs={"product_slug": self.product.slug, "pk": self.pk},
         )
 
+    # TODO: refactor
+    # TODO: write tests
     def can_delete_challenge(self, person):
         from security.models import ProductRoleAssignment
 
