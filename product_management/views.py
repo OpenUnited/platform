@@ -100,6 +100,7 @@ class ProductListView(ListView):
         return response
 
 
+# TODO: give a better name to this view, ideally make it a mixin
 class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
