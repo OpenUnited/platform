@@ -58,7 +58,7 @@ from .views import (
 urlpatterns = [
     path("challenges/", ChallengeListView.as_view(), name="challenges"),
     path(
-        "challenge/create/",
+        "<str:product_slug>/challenge/create/",
         CreateChallengeView.as_view(),
         name="create-challenge",
     ),

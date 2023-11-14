@@ -177,7 +177,7 @@ class CreateChallengeViewTestCase(TestCase):
         self.person = PersonFactory()
         self.product = OwnedProductFactory()
         self.client = Client()
-        self.url = reverse("create-challenge")
+        self.url = reverse("create-challenge", args=(self.product.slug,))
         self.login_url = reverse("sign_in")
 
     def test_post(self):
