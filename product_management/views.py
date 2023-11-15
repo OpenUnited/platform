@@ -84,15 +84,15 @@ class ChallengeListView(ListView):
         )
 
 
-# TODO: add pagination to this view
-# TODO: This view throws UnorderedObjectListWarning warning.
-# Currently, this is the expected behavior but we should have
-# consistent results every single time.
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
     queryset = Product.objects.filter(is_private=False)
     template_name = "product_management/products.html"
+    paginate_by = 8
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by("created_at")
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
