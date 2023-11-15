@@ -8,7 +8,6 @@ from .factories import (
     SkillFactory,
     ExpertiseFactory,
     PersonFactory,
-    StatusFactory,
     PersonSkillFactory,
     FeedbackFactory,
 )
@@ -191,7 +190,6 @@ class TalentPortfolioViewTest(TestCase):
         self.client.force_login(person_auth.user)
 
         self.person = PersonFactory()
-        _ = StatusFactory(person=self.person)
         self.person_skill = PersonSkillFactory(person=self.person)
         self.url = reverse("portfolio", args=(self.person.user.username,))
 
