@@ -70,14 +70,14 @@ class ChallengeListView(ListView):
 
     def get_queryset(self):
         custom_order = Case(
-            When(status=Challenge.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
-            When(status=Challenge.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
-            When(status=Challenge.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
-            When(status=Challenge.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
-            When(status=Challenge.CHALLENGE_STATUS_DONE, then=Value(4)),
+            When(status=self.model.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
+            When(status=self.model.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
+            When(status=self.model.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
+            When(status=self.model.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
+            When(status=self.model.CHALLENGE_STATUS_DONE, then=Value(4)),
         )
         return (
-            Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
+            self.model.objects.exclude(status=self.model.CHALLENGE_STATUS_DONE)
             .annotate(custom_order=custom_order)
             .order_by("custom_order", "-id")
         )
