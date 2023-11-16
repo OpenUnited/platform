@@ -1,5 +1,4 @@
 from typing import Any, Dict
-from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -51,7 +50,6 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 
-# TODO: get rid of the UnorderedObjectListWarning warning
 class ChallengeListView(ListView):
     model = Challenge
     context_object_name = "challenges"
@@ -71,28 +69,28 @@ class ChallengeListView(ListView):
 
     def get_queryset(self):
         custom_order = Case(
-            When(status=Challenge.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
-            When(status=Challenge.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
-            When(status=Challenge.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
-            When(status=Challenge.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
-            When(status=Challenge.CHALLENGE_STATUS_DONE, then=Value(4)),
+            When(status=self.model.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
+            When(status=self.model.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
+            When(status=self.model.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
+            When(status=self.model.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
+            When(status=self.model.CHALLENGE_STATUS_DONE, then=Value(4)),
         )
         return (
-            Challenge.objects.exclude(status=Challenge.CHALLENGE_STATUS_DONE)
+            self.model.objects.exclude(status=self.model.CHALLENGE_STATUS_DONE)
             .annotate(custom_order=custom_order)
             .order_by("custom_order", "-id")
         )
 
 
-# TODO: add pagination to this view
-# TODO: This view throws UnorderedObjectListWarning warning.
-# Currently, this is the expected behavior but we should have
-# consistent results every single time.
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
     queryset = Product.objects.filter(is_private=False)
     template_name = "product_management/products.html"
+    paginate_by = 8
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by("created_at")
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)

@@ -4,7 +4,7 @@ from django.contrib.messages import get_messages
 
 from openunited.tests.base import clean_up
 from talent.models import BountyClaim
-from product_management.models import Challenge, Capability, Idea, Bug
+from product_management.models import Product, Challenge, Capability, Idea, Bug
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
@@ -120,7 +120,7 @@ class ProductListViewTest(TestCase):
         self.client = Client()
         self.url = reverse("products")
 
-    def test_get(self):
+    def test_get_none(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn(
@@ -129,19 +129,32 @@ class ProductListViewTest(TestCase):
         self.assertFalse(response.context_data.get("is_paginated"))
         self.assertEqual(response.context_data.get("products").count(), 0)
 
+    def test_get_some(self):
         _ = [OwnedProductFactory() for _ in range(12)]
 
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
-        # self.assertTrue(response.context_data.get("is_paginated"))
-        self.assertEqual(response.context_data.get("products").count(), 12)
 
-        # response = self.client.get(f"{self.url}?page=2")
+        actual = response.context_data
+        clean_up(actual)
 
-        # self.assertEqual(response.status_code, 200)
-        # self.assertTrue(response.context_data.get("is_paginated"))
-        # self.assertEqual(response.context_data.get("products").count(), 4)
+        products = Product.objects.all().order_by("created_at")
+
+        self.assertQuerySetEqual(actual.pop("products"), products[:8])
+
+        expected = {"is_paginated": True}
+        self.assertDictEqual(actual, expected)
+
+        response = self.client.get(f"{self.url}?page=2")
+        self.assertEqual(response.status_code, 200)
+
+        actual = response.context_data
+        clean_up(actual)
+
+        self.assertQuerySetEqual(actual.pop("products"), products[8:])
+
+        expected = {"is_paginated": True}
+        self.assertDictEqual(actual, expected)
 
 
 class ProductRedirectViewTest(BaseProductTestCase):
