@@ -31,10 +31,8 @@ def create_person(
             full_name = username
             preferred_name = username
 
-    person = Person.objects.create(
+    _ = Person.objects.create(
         user=user,
         full_name=full_name,
         preferred_name=preferred_name,
     )
-
-    Status.objects.create(person=person)

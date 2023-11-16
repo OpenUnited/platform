@@ -24,7 +24,7 @@ from .forms import (
     SignUpStepTwoForm,
     SignUpStepThreeForm,
 )
-from talent.models import Person, Status
+from talent.models import Person
 from .models import User
 from .services import UserService
 
@@ -77,15 +77,13 @@ class SignUpWizard(SessionWizardView):
             email=email,
         )
 
-        person = Person.objects.create(
+        _ = Person.objects.create(
             full_name=full_name,
             preferred_name=preferred_name,
             user=user,
         )
 
         # TODO: create SignUpRequest instance when JS library for fingerprinting is set up
-
-        _ = Status.objects.create(person=person)
 
         authenticated_user = authenticate(
             self.request, username=username, password=password
