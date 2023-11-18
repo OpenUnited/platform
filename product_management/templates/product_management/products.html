@@ -34,8 +34,8 @@
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowfullscreen></iframe>
                 {% else %}
-                <div class="bg-cover bg-no-repeat w-[300px] h-[150px]"
-                    style="background-image: url({{ product.get_photo_url() }});"></div>
+                <div class="bg-cover bg-no-repeat w-[300px] h-[150px]">
+                    <img src="{{ product.get_photo_url() }}" alt="Product Photo"></div>
                 {% endif %}
             </div>
             <div class="flex flex-1 flex-col space-y-2 p-4">
