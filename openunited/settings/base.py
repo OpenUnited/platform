@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     "formtools",
     "storages",
     "canopy",
-    "ckeditor",
     "social_django",
 ]
 
