@@ -8,7 +8,6 @@ from django.contrib.contenttypes.models import ContentType
 from model_utils import FieldTracker
 from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
-from ckeditor.fields import RichTextField
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from openunited.settings.base import MEDIA_URL
@@ -220,7 +219,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
         Capability, on_delete=models.SET_NULL, blank=True, null=True
     )
     title = models.TextField()
-    description = RichTextField()
+    description = models.TextField()
     short_description = models.TextField(max_length=256)
     status = models.IntegerField(choices=CHALLENGE_STATUS, default=0)
     attachment = models.ManyToManyField(
