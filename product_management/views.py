@@ -85,12 +85,9 @@ class ChallengeListView(ListView):
 class ProductListView(ListView):
     model = Product
     context_object_name = "products"
-    queryset = Product.objects.filter(is_private=False)
+    queryset = Product.objects.filter(is_private=False).order_by("created_at")
     template_name = "product_management/products.html"
     paginate_by = 8
-
-    def get_queryset(self):
-        return self.model.objects.all().order_by("created_at")
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
