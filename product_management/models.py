@@ -388,7 +388,7 @@ class Bounty(TimeStampMixin):
     expertise = models.ManyToManyField(
         Expertise, related_name="bounty_expertise"
     )
-    points = models.IntegerField()
+    points = models.PositiveIntegerField()
     status = models.IntegerField(
         choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE
     )
