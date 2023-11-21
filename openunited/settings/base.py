@@ -164,7 +164,7 @@ if os.getenv("AWS_STORAGE_BUCKET_NAME"):
     }
     AWS_STATIC_LOCATION = "openunited-static"
     AWS_MEDIA_LOCATION = "openunited-media"
-
+    AWS_QUERYSTRING_AUTH = False
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "static"),
     ]
