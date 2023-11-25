@@ -5,8 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.contrib.contenttypes.models import ContentType
+
+from openunited.forms import MultipleFileField
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
 from .models import (
@@ -308,6 +309,7 @@ class ChallengeForm(forms.ModelForm):
             }
         ),
     )
+    attachments = MultipleFileField()
     # TODO: limit this with ProductRoleAssignment
     # reviewer = forms.ModelChoiceField(
     #     empty_label="Select a reviewer",
