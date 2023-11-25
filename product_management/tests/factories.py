@@ -1,7 +1,7 @@
 from datetime import date
 from random import randint
 from django.contrib.contenttypes.models import ContentType
-from factory.django import DjangoModelFactory
+from factory.django import DjangoModelFactory, FileField
 from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyDate
 from factory import (
     Faker,
@@ -12,7 +12,14 @@ from factory import (
     post_generation,
 )
 
-from product_management.models import Challenge, Product, Bounty, Idea, Bug
+from product_management.models import (
+    Challenge,
+    Product,
+    Bounty,
+    Idea,
+    Bug,
+    Attachment,
+)
 from talent.models import BountyClaim
 from talent.tests.factories import (
     PersonFactory,
@@ -112,3 +119,10 @@ class ProductBugFactory(DjangoModelFactory):
 
     class Meta:
         model = Bug
+
+
+class AttachmentFactory(DjangoModelFactory):
+    file = FileField(filename="image.png")
+
+    class Meta:
+        model = Attachment

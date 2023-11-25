@@ -5,8 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.contrib.contenttypes.models import ContentType
+
+from openunited.forms import MultipleFileField
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
 from .models import (
@@ -307,6 +308,9 @@ class ChallengeForm(forms.ModelForm):
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
             }
         ),
+    )
+    attachments = MultipleFileField(
+        help_text="To select multiple files, hold 'Shift' key for Windows, 'Command' for MacOS"
     )
     # TODO: limit this with ProductRoleAssignment
     # reviewer = forms.ModelChoiceField(

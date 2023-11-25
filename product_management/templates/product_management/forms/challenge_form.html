@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.media }}
     <!-- TODO: add a dropdown to select the reviewer -->
@@ -40,6 +40,17 @@
                     </div>
                 </div>
 
+                <div class="col-span-full">
+                    <label for="{{ form.attachments.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.attachments.label }}</label>
+                    <div class="mt-2">
+                        {{ form.attachments }}
+                    </div>
+                    <p class="text-xs leading-6 mt-2 text-blue-900">
+                        {{ form.attachments.help_text }}
+                    </p>
+                </div>
+
                 <div class="col-span-4">
                     <label for="{{ form.product.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.product.label }}</label>
@@ -69,7 +80,7 @@
                     </div>
                     {% endfor %}
 
-                    <p class="text-xs leading-6 mt-2 text-black-900">
+                    <p class="text-xs leading-6 mt-2 text-blue-900">
                         {{ form.reward_type.help_text }}
                     </p>
 
@@ -88,7 +99,9 @@
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
+            <a href="javascript:history.go(-1)">
+                <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
+            </a>
             <button type="submit"
                 class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
         </div>

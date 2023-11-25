@@ -45,6 +45,7 @@ from .views import (
     CreateCapability,
     ProductIdeaListView,
     ProductBugListView,
+    DeleteAttachmentView,
 )
 
 # Developer's Note: I separated the urlpatterns because I found it convenient to do like this.
@@ -271,5 +272,10 @@ urlpatterns += [
         "<str:product_slug>/challenge/<int:pk>",
         ChallengeDetailView.as_view(),
         name="challenge_detail",
+    ),
+    path(
+        "attachment/delete/<int:pk>",
+        DeleteAttachmentView.as_view(),
+        name="delete-attachment",
     ),
 ]

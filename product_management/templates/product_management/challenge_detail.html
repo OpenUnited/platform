@@ -36,6 +36,22 @@
             {% endif %}
             {% endif %}
         </div>
+
+        <div class="my-4">
+            {% for attachment in challenge.attachment.all() %}
+            <div class="relative inline">
+                <img class="inline mx-3" src="{{ attachment.file.url }}" alt="Attachment"
+                    style="max-width: 400px; max-height:300px">
+                {% if request.user.person == challenge.created_by %}
+                <a hx-get="{{ url('delete-attachment', args=(attachment.id,)) }}" hx-target="body" hx-swap="innerHTML"
+                    hx-confirm="Are you sure to want to delete the attachment?">
+                    <img class="absolute top-[-140px] right-[16px] hover:bg-gray-600 hover:cursor-pointer"
+                        src="{{ static('images/cross-icon.svg') }}" alt="Cross Icon" style="width: 16px; height: 16px;">
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
     </div>
 
     <div class="flex flex-col">

@@ -1,10 +1,19 @@
+import os
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from openunited.tests.base import clean_up
 from talent.models import BountyClaim
-from product_management.models import Product, Challenge, Capability, Idea, Bug
+from product_management.models import (
+    Product,
+    Challenge,
+    Capability,
+    Idea,
+    Bug,
+    Attachment,
+)
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
@@ -15,6 +24,7 @@ from .factories import (
     BountyClaimFactory,
     ProductIdeaFactory,
     ProductBugFactory,
+    AttachmentFactory,
 )
 
 
@@ -285,6 +295,15 @@ class CreateChallengeViewTest(BaseProductTestCase):
     def test_post_valid(self):
         self.client.force_login(self.person.user)
 
+        images = [
+            SimpleUploadedFile(
+                "image_one.png", b"image_content", content_type="image/png"
+            ),
+            SimpleUploadedFile(
+                "image_two.png", b"image_content", content_type="image/png"
+            ),
+        ]
+
         expected = {
             "title": "title challenge 1",
             "description": "desc challenge 1",
@@ -292,6 +311,7 @@ class CreateChallengeViewTest(BaseProductTestCase):
             "reward_type": Challenge.REWARD_TYPE[1][0],
             "priority": 0,
             "status": 2,
+            "attachment": images,
         }
 
         response = self.client.post(self.url, data=expected)
@@ -317,6 +337,7 @@ class CreateChallengeViewTest(BaseProductTestCase):
             "reward_type": instance.reward_type,
             "priority": instance.priority,
             "status": instance.status,
+            "attachment": images,
         }
 
         self.assertDictEqual(actual, expected)
@@ -814,3 +835,40 @@ class ProductBugListViewTest(BaseProductTestCase):
             "product_slug": self.product.slug,
         }
         self.assertDictEqual(actual, expected)
+
+
+class DeleteAttachmentViewTest(BaseProductTestCase):
+    def setUp(self):
+        super().setUp()
+        self.challenge = ChallengeFactory(
+            created_by=self.product.content_object
+        )
+        self.attachment_one = AttachmentFactory()
+        self.challenge.attachment.add(self.attachment_one)
+        self.url = reverse(
+            "delete-attachment",
+            args=(self.attachment_one.id,),
+        )
+
+    def test_get_anon(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            f"{self.login_url}?next=/attachment/delete/{self.attachment_one.id}",
+        )
+
+    def test_get_auth(self):
+        self.client.force_login(self.product.content_object.user)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            f"/{self.challenge.product.slug}/challenge/{self.challenge.id}",
+        )
+
+        # add test to make sure the request owner has rights to delete the image(s)
+        with self.assertRaises(Attachment.DoesNotExist):
+            self.attachment_one.refresh_from_db()
