@@ -309,7 +309,9 @@ class ChallengeForm(forms.ModelForm):
             }
         ),
     )
-    attachments = MultipleFileField()
+    attachments = MultipleFileField(
+        help_text="To select multiple files, hold 'Shift' key for Windows, 'Command' for MacOS"
+    )
     # TODO: limit this with ProductRoleAssignment
     # reviewer = forms.ModelChoiceField(
     #     empty_label="Select a reviewer",

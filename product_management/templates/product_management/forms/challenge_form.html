@@ -46,6 +46,9 @@
                     <div class="mt-2">
                         {{ form.attachments }}
                     </div>
+                    <p class="text-xs leading-6 mt-2 text-blue-900">
+                        {{ form.attachments.help_text }}
+                    </p>
                 </div>
 
                 <div class="col-span-4">
@@ -77,7 +80,7 @@
                     </div>
                     {% endfor %}
 
-                    <p class="text-xs leading-6 mt-2 text-black-900">
+                    <p class="text-xs leading-6 mt-2 text-blue-900">
                         {{ form.reward_type.help_text }}
                     </p>
 
