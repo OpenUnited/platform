@@ -1260,3 +1260,25 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
             return redirect("product_bug_detail", **kwargs)
 
         return super().post(request, *args, **kwargs)
+
+
+class DeleteAttachmentView(LoginRequiredMixin, DeleteView):
+    model = Attachment
+    template_name = "product_management/delete_attachment.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        attachment = self.get_object()
+        try:
+            challenge = Challenge.objects.get(attachment=attachment)
+            return reverse(
+                "challenge_detail", args=(challenge.product.slug, challenge.id)
+            )
+
+        except Challenge.DoesNotExist:
+            # TODO: test this line
+            # we shouldn't hit this line
+            return reverse("challenges")
+
+    def get(self, request, *args, **kwargs):
+        return redirect(self.get_success_url())
