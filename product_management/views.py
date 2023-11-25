@@ -753,7 +753,11 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
 
     def get(self, request, *args, **kwargs):
         challenge_obj = self.get_object()
-        if challenge_obj.can_delete_challenge(request.user.person):
+        person = request.user.person
+        if (
+            challenge_obj.can_delete_challenge(person)
+            or challenge_obj.created_by == person
+        ):
             Challenge.objects.get(pk=challenge_obj.pk).delete()
             messages.success(
                 request, _("The challenge is successfully deleted!")
