@@ -43,15 +43,10 @@ class Capability(MP_Node):
 
 
 class Attachment(models.Model):
-    name = models.CharField(max_length=512)
-    path = models.URLField()
-    file_type = models.CharField(max_length=5, null=True, blank=True)
-
-    class Meta:
-        ordering = ["name"]
+    file = models.FileField(upload_to="attachments")
 
     def __str__(self):
-        return self.name
+        return self.file.name
 
 
 class CapabilityAttachment(models.Model):
