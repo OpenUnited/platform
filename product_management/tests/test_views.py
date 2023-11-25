@@ -836,7 +836,7 @@ class DeleteAttachmentViewTest(BaseProductTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
-            f"{self.login_url}?next=/{self.product.slug}/attachment/delete/{self.attachment_one.id}",
+            f"{self.login_url}?next=/attachment/delete/{self.attachment_one.id}",
         )
 
     def test_get_auth(self):
