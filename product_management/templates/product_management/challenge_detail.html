@@ -19,6 +19,7 @@
         <div class="flex items-center mb-2">
             <p>{{ challenge.description|linebreaksbr|safe }}</p>
 
+            {% if request.is_authenticated %}
             {% if request.user.person == challenge.created_by or challenge.can_delete_challenge(request.user.person) %}
             <div class="ml-auto">
                 <a href="{{ url('update-challenge', args=(challenge.product.slug, challenge.pk,)) }}">
@@ -32,6 +33,7 @@
                         Challenge</button>
                 </a>
             </div>
+            {% endif %}
             {% endif %}
         </div>
     </div>
