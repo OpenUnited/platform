@@ -19,7 +19,7 @@
         <div class="flex items-center mb-2">
             <p>{{ challenge.description|linebreaksbr|safe }}</p>
 
-            {% if request.user.person == challenge.created_by %}
+            {% if request.user.person == challenge.created_by or challenge.can_delete_challenge(request.user.person) %}
             <div class="ml-auto">
                 <a href="{{ url('update-challenge', args=(challenge.product.slug, challenge.pk,)) }}">
                     <button type="button"
