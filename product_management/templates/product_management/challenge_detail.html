@@ -37,7 +37,7 @@
                     style="max-width: 400px; max-height:300px">
                 <a hx-get="{{ url('delete-attachment', args=(attachment.id,)) }}" hx-target="body" hx-swap="innerHTML"
                     hx-confirm="Are you sure to want to delete the attachment?">
-                    <img class="absolute top-[-140px] right-[16px] hover:bg-red-600 hover:cursor-pointer"
+                    <img class="absolute top-[-140px] right-[16px] hover:bg-gray-600 hover:cursor-pointer"
                         src="{{ static('images/cross-icon.svg') }}" alt="Cross Icon" style="width: 16px; height: 16px;">
                 </a>
             </div>
