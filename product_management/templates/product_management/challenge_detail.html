@@ -29,6 +29,18 @@
             </div>
             {% endif %}
         </div>
+
+        <div class="my-4">
+            {% for attachment in challenge.attachment.all() %}
+            {% set is_pdf = attachment.file.name.split(".")[-1] == "pdf" %}
+            {% if is_pdf %}
+            <iframe class="inline mx-3" src="{{ attachment.file.url }}"
+                style="max-width: 400px; max-height:300px"></iframe>
+            {% else %}
+            <img class="inline mx-3" src="{{ attachment.file.url }}" style="max-width: 400px; max-height:300px">
+            {% endif %}
+            {% endfor %}
+        </div>
     </div>
 
     <div class="flex flex-col">

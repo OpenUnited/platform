@@ -44,6 +44,7 @@ from .models import (
     Bug,
     Skill,
     Expertise,
+    Attachment,
 )
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
@@ -681,11 +682,17 @@ class CreateChallengeView(
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.created_by = request.user.person
             instance.save()
+
+            if request.FILES:
+                for file in request.FILES.getlist("attachments"):
+                    instance.attachment.add(
+                        Attachment.objects.create(file=file)
+                    )
 
             messages.success(
                 request, _("The challenge is successfully created!")
@@ -726,9 +733,16 @@ class UpdateChallengeView(
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, instance=self.object)
+        form = self.form_class(
+            request.POST, request.FILES, instance=self.object
+        )
         if form.is_valid():
             instance = form.save()
+            if request.FILES:
+                for file in request.FILES.getlist("attachments"):
+                    instance.attachment.add(
+                        Attachment.objects.create(file=file)
+                    )
             messages.success(
                 request, _("The challenge is successfully updated!")
             )
