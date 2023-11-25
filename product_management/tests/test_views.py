@@ -1,10 +1,19 @@
+import os
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.messages import get_messages
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from openunited.tests.base import clean_up
 from talent.models import BountyClaim
-from product_management.models import Product, Challenge, Capability, Idea, Bug
+from product_management.models import (
+    Product,
+    Challenge,
+    Capability,
+    Idea,
+    Bug,
+    Attachment,
+)
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
 from .factories import (
@@ -285,6 +294,15 @@ class CreateChallengeViewTest(BaseProductTestCase):
     def test_post_valid(self):
         self.client.force_login(self.person.user)
 
+        images = [
+            SimpleUploadedFile(
+                "image_one.png", b"image_content", content_type="image/png"
+            ),
+            SimpleUploadedFile(
+                "image_two.png", b"image_content", content_type="image/png"
+            ),
+        ]
+
         expected = {
             "title": "title challenge 1",
             "description": "desc challenge 1",
@@ -292,6 +310,7 @@ class CreateChallengeViewTest(BaseProductTestCase):
             "reward_type": Challenge.REWARD_TYPE[1][0],
             "priority": 0,
             "status": 2,
+            "attachment": images,
         }
 
         response = self.client.post(self.url, data=expected)
@@ -317,6 +336,7 @@ class CreateChallengeViewTest(BaseProductTestCase):
             "reward_type": instance.reward_type,
             "priority": instance.priority,
             "status": instance.status,
+            "attachment": images,
         }
 
         self.assertDictEqual(actual, expected)
