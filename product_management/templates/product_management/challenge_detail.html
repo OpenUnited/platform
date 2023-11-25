@@ -37,7 +37,12 @@
             <iframe class="inline mx-3" src="{{ attachment.file.url }}"
                 style="max-width: 400px; max-height:300px"></iframe>
             {% else %}
-            <img class="inline mx-3" src="{{ attachment.file.url }}" style="max-width: 400px; max-height:300px">
+            <div class="relative inline">
+                <img class="inline mx-3" src="{{ attachment.file.url }}" alt="Attachment"
+                    style="max-width: 400px; max-height:300px">
+                <img class="absolute top-[-140px] right-[16px] hover:bg-red-600 hover:cursor-pointer"
+                    src="{{ static('images/cross-icon.svg') }}" alt="Cross Icon" style="width: 16px; height: 16px;">
+            </div>
             {% endif %}
             {% endfor %}
         </div>
