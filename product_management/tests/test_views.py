@@ -404,7 +404,7 @@ class DeleteChallengeViewTest(BaseProductTestCase):
             "You do not have rights to remove this challenge.", messages
         )
 
-    def test_delete_with_permission(self):
+    def test_delete_with_permission_one(self):
         self.client.force_login(self.person.user)
 
         _ = ProductRoleAssignmentFactory(
@@ -422,6 +422,25 @@ class DeleteChallengeViewTest(BaseProductTestCase):
 
         with self.assertRaises(Challenge.DoesNotExist):
             self.challenge.refresh_from_db()
+
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn("The challenge is successfully deleted!", messages)
+
+    def test_delete_with_permission_two(self):
+        self.client.force_login(self.person.user)
+
+        challenge = ChallengeFactory(created_by=self.person)
+        url = reverse(
+            "delete-challenge",
+            args=(challenge.product.slug, challenge.id),
+        )
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("challenges"))
+
+        with self.assertRaises(Challenge.DoesNotExist):
+            challenge.refresh_from_db()
 
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn("The challenge is successfully deleted!", messages)
