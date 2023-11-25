@@ -12,12 +12,12 @@
     <div class="space-y-3.5 text-sm text-black/[0.85]">
         {% if challenge.short_description %}
         <div class="my-2">
-            <p>{{ challenge.short_description }}</p>
+            <p>{{ challenge.short_description|linebreaks }}</p>
         </div>
         {% endif %}
 
         <div class="flex items-center mb-2">
-            <p>{{ challenge.description|safe }}</p>
+            <p>{{ challenge.description|linebreaksbr|safe }}</p>
 
             {% if request.user.person == challenge.created_by %}
             <div class="ml-auto">
