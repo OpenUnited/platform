@@ -1267,18 +1267,18 @@ class DeleteAttachmentView(LoginRequiredMixin, DeleteView):
     template_name = "product_management/delete_attachment.html"
     login_url = "sign_in"
 
-    def get_success_url(self):
+    def get(self, request, *args, **kwargs):
         attachment = self.get_object()
-        try:
-            challenge = Challenge.objects.get(attachment=attachment)
-            return reverse(
-                "challenge_detail", args=(challenge.product.slug, challenge.id)
+        challenge = Challenge.objects.get(attachment=attachment)
+        if request.user.person == challenge.created_by:
+            attachment.delete()
+            messages.success(
+                request, _("The attachment is successfully deleted!")
             )
 
-        except Challenge.DoesNotExist:
-            # TODO: test this line
-            # we shouldn't hit this line
-            return reverse("challenges")
-
-    def get(self, request, *args, **kwargs):
-        return redirect(self.get_success_url())
+        return redirect(
+            reverse(
+                "challenge_detail",
+                args=(challenge.product.slug, challenge.id),
+            )
+        )
