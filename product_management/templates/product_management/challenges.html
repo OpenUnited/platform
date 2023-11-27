@@ -41,7 +41,7 @@
             </div>
           </div>
           {% endif %}
-          <div class="py-3">
+          <div class="py-1">
             <div class="w-full font-semibold text-gray-500">Product</div>
             <div class="flex justify-between gap-x-2">
               {% if challenge.product.video_url %}
@@ -64,7 +64,7 @@
             </div>
           </div>
           {% if challenge.initiative %}
-          <div class="py-3">
+          <div class="py-1">
             <div class="w-full font-semibold text-gray-500">Initiative</div>
             <div class="flex justify-between gap-x-2">
               {% if challenge.initiative.video_url %}
@@ -88,13 +88,13 @@
             </div>
           </div>
           {% endif %}
-          <div class="flex gap-x-4 py-3">
+          <div class="flex gap-x-2 py-2">
             <div class="font-semibold text-gray-500">Priority</div>
             <div class="text-gray-500">
               {{ challenge.get_priority_display() }}
             </div>
           </div>
-          <div class="flex gap-x-4 py-3">
+          <div class="flex gap-x-2 py-2">
             <div class="font-semibold text-gray-500">Status</div>
             <div class="text-gray-500">
               {% if TASK_TYPES[challenge.status] == 'Claimed' %}
@@ -107,8 +107,8 @@
               {% endif %}
             </div>
           </div>
-          <div class="flex gap-x-4 py-3">
-            <div class="font-semibold text-gray-500">Created By</div>
+          <div class="flex gap-x-2 py-2">
+            <div class="font-semibold text-gray-500 shrink-0">Created By</div>
             <div class="text-gray-500">
               <a class="font-medium text-blue-600 hover:underline"
                 href="{{ challenge.created_by.get_absolute_url() }}">{{ challenge.created_by.get_full_name() }}</a> at
