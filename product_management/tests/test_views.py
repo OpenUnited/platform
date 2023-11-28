@@ -886,6 +886,11 @@ class CreateBountyViewTest(BaseTestCase):
         super().setUp()
         self.url = reverse("create-bounty")
         self.person = PersonFactory()
+        self.challenge = ChallengeFactory()
+        self.success_url = reverse(
+            "challenge_detail",
+            args=(self.challenge.product.slug, self.challenge.pk),
+        )
 
     def test_anon(self):
         response = self.client.get(self.url)
@@ -905,33 +910,28 @@ class CreateBountyViewTest(BaseTestCase):
     def test_post(self):
         self.client.force_login(self.person.user)
 
-        challenge = ChallengeFactory()
-        success_url = reverse(
-            "challenge_detail",
-            args=(challenge.product.slug, challenge.pk),
-        )
-
         skill = SkillFactory()
-        expertise_one, expertise_two = ExpertiseFactory(
-            skill=skill
-        ), ExpertiseFactory(skill=skill)
+        expertise_one = ExpertiseFactory(skill=skill)
+        expertise_two = ExpertiseFactory(skill=skill)
+
         data = {
-            "challenge": challenge.id,
+            "challenge": self.challenge.id,
             "selected_skill_ids": f"[{skill.id}]",
             "selected_expertise_ids": f"[{expertise_one.id}, {expertise_two.id}]",
             "points": 10,
             "status": 2,
             "is_active": True,
         }
+
         response = self.client.post(
-            f"{self.url}?challenge_id={challenge.id}", data
+            f"{self.url}?challenge_id={self.challenge.id}", data
         )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, success_url)
+        self.assertRedirects(response, self.success_url)
 
-        challenge.refresh_from_db()
+        self.challenge.refresh_from_db()
 
-        bounties = challenge.bounty_set.all()
+        bounties = self.challenge.bounty_set.all()
         self.assertNotEqual(bounties.count(), 0)
 
         bounty = bounties.last()
@@ -941,7 +941,6 @@ class CreateBountyViewTest(BaseTestCase):
         self.assertEqual(bounty.skill, skill)
         self.assertEqual(bounty.expertise.count(), 2)
 
-        challenge.delete()
         skill.delete()
         expertise_one.delete()
         expertise_two.delete()
