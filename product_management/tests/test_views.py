@@ -20,6 +20,8 @@ from .factories import (
     OwnedProductFactory,
     PersonFactory,
     ChallengeFactory,
+    SkillFactory,
+    ExpertiseFactory,
     BountyFactory,
     BountyClaimFactory,
     ProductIdeaFactory,
@@ -877,3 +879,69 @@ class DeleteAttachmentViewTest(BaseProductTestCase):
         # add test to make sure the request owner has rights to delete the image(s)
         with self.assertRaises(Attachment.DoesNotExist):
             self.attachment_one.refresh_from_db()
+
+
+class CreateBountyViewTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("create-bounty")
+        self.person = PersonFactory()
+
+    def test_anon(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+
+    def test_get_auth(self):
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/create_bounty.html", response.template_name
+        )
+
+    def test_post(self):
+        self.client.force_login(self.person.user)
+
+        challenge = ChallengeFactory()
+        success_url = reverse(
+            "challenge_detail",
+            args=(challenge.product.slug, challenge.pk),
+        )
+
+        skill = SkillFactory()
+        expertise_one, expertise_two = ExpertiseFactory(
+            skill=skill
+        ), ExpertiseFactory(skill=skill)
+        data = {
+            "challenge": challenge.id,
+            "selected_skill_ids": f"[{skill.id}]",
+            "selected_expertise_ids": f"[{expertise_one.id}, {expertise_two.id}]",
+            "points": 10,
+            "status": 2,
+            "is_active": True,
+        }
+        response = self.client.post(
+            f"{self.url}?challenge_id={challenge.id}", data
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, success_url)
+
+        challenge.refresh_from_db()
+
+        bounties = challenge.bounty_set.all()
+        self.assertNotEqual(bounties.count(), 0)
+
+        bounty = bounties.last()
+        self.assertEqual(bounty.points, data.get("points"))
+        self.assertEqual(bounty.status, data.get("status"))
+        self.assertEqual(bounty.is_active, data.get("is_active"))
+        self.assertEqual(bounty.skill, skill)
+        self.assertEqual(bounty.expertise.count(), 2)
+
+        challenge.delete()
+        skill.delete()
+        expertise_one.delete()
+        expertise_two.delete()
