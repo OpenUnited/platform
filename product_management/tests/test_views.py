@@ -28,12 +28,17 @@ from .factories import (
 )
 
 
-class BaseProductTestCase(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
         super().setUp()
         self.client = Client()
-        self.product = OwnedProductFactory()
         self.login_url = reverse("sign_in")
+
+
+class BaseProductTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.product = OwnedProductFactory()
 
 
 class ChallengeListViewTest(BaseProductTestCase):
