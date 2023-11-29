@@ -1133,7 +1133,7 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
         self.object = self.get_object()
         instance = BountyClaim.objects.get(pk=self.object.pk)
         if instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW:
-            instance.delete
+            instance.delete()
             messages.success(
                 request, _("The bounty claim is successfully deleted.")
             )
