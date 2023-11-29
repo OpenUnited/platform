@@ -3,7 +3,13 @@ from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 import factory
 
-from talent.models import Skill, Expertise, PersonSkill, Feedback
+from talent.models import (
+    Skill,
+    Expertise,
+    PersonSkill,
+    Feedback,
+    BountyDeliveryAttempt,
+)
 from .factories import (
     SkillFactory,
     ExpertiseFactory,
@@ -11,6 +17,7 @@ from .factories import (
     PersonSkillFactory,
     FeedbackFactory,
 )
+from product_management.tests.factories import BountyClaimFactory
 
 
 class TalentAppLoginRequiredTest(TestCase):
@@ -405,3 +412,40 @@ class DeleteFeedbackViewTest(TestCase):
 
         with self.assertRaises(ObjectDoesNotExist):
             Feedback.objects.get(pk=self.feedback.pk)
+
+
+class CreateBountyDeliveryAttempViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = reverse("create-bounty-delivery-attempt")
+        self.person = PersonFactory()
+        self.login_url = reverse("sign_in")
+
+    def test_anon(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+
+    def test_valid_post(self):
+        self.client.force_login(self.person.user)
+
+        bounty_claim = BountyClaimFactory(person=self.person)
+        data = {
+            "bounty_claim": bounty_claim.id,
+            "kind": 0,  # SUBMISSION_TYPE_NEW
+            "person": self.person.id,
+            "delivery_message": "test test test",
+        }
+        response = self.client.post(f"{self.url}?id={bounty_claim.id}", data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("dashboard"))
+
+        work_submission = BountyDeliveryAttempt.objects.last()
+
+        self.assertEqual(work_submission.kind, data.get("kind"))
+        self.assertEqual(
+            work_submission.delivery_message, data.get("delivery_message")
+        )
+        self.assertEqual(work_submission.person.id, data.get("person"))

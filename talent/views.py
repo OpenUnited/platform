@@ -403,7 +403,7 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST, request.FILES, request=request)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.person = request.user.person
