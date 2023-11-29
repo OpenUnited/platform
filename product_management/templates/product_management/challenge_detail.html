@@ -69,6 +69,7 @@
                 </div>
                 <div class="text-neutral-800">{{ challenge.created_by.get_full_name() }}</div>
             </a>
+            <span>&nbsp;at {{ challenge.created_at|date }}</span>
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Status:</strong>
