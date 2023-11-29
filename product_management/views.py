@@ -1040,6 +1040,7 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+# TODO: add the challenge id to the url path, not as a parameter
 class CreateBountyView(LoginRequiredMixin, CreateView):
     model = Bounty
     form_class = BountyForm
