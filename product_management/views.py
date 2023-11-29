@@ -1040,6 +1040,7 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+# TODO: make sure the user can't manipulate the URL to create a bounty
 class CreateBountyView(LoginRequiredMixin, CreateView):
     model = Bounty
     form_class = BountyForm
