@@ -899,36 +899,36 @@ class CreateBountyViewTest(BaseTestCase):
             args=(self.challenge.product.slug, self.challenge.pk),
         )
 
-    # def test_anon(self):
-    #     response = self.client.get(self.url)
+    def test_anon(self):
+        response = self.client.get(self.url)
 
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
 
-    # def test_get_auth(self):
-    #     self.client.force_login(self.person.user)
+    def test_get_auth(self):
+        self.client.force_login(self.person.user)
 
-    #     response = self.client.get(self.url)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn(
-    #         "product_management/create_bounty.html", response.template_name
-    #     )
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/create_bounty.html", response.template_name
+        )
 
-    # def test_invalid_post(self):
-    #     self.client.force_login(self.person.user)
+    def test_invalid_post(self):
+        self.client.force_login(self.person.user)
 
-    #     # challenge, skill and expertise are missing
-    #     data = {
-    #         "points": 10,
-    #         "status": 2,
-    #         "is_active": True,
-    #     }
+        # challenge, skill and expertise are missing
+        data = {
+            "points": 10,
+            "status": 2,
+            "is_active": True,
+        }
 
-    #     response = self.client.post(self.url, data)
-    #     self.assertEqual(response.status_code, 200)
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
 
-    #     form = response.context_data.get("form")
-    #     self.assertFalse(form.is_valid())
+        form = response.context_data.get("form")
+        self.assertFalse(form.is_valid())
 
     def test_post(self):
         self.client.force_login(self.person.user)
