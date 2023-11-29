@@ -1040,15 +1040,26 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-# TODO: add the challenge id to the url path, not as a parameter
 class CreateBountyView(LoginRequiredMixin, CreateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["challenge_queryset"] = Challenge.objects.filter(
+            pk=self.kwargs.get("challenge_id")
+        )
+        return kwargs
+
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request=request)
+        challenge_queryset = Challenge.objects.filter(
+            pk=self.kwargs.get("challenge_id")
+        )
+        form = self.form_class(
+            request.POST, challenge_queryset=challenge_queryset
+        )
         if form.is_valid():
             instance = form.save(commit=False)
             challenge = form.cleaned_data.get("challenge")
@@ -1082,13 +1093,20 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["request"] = self.request
+        kwargs["challenge_queryset"] = Challenge.objects.filter(
+            pk=self.kwargs.get("challenge_id")
+        )
         return kwargs
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        challenge_queryset = Challenge.objects.filter(
+            pk=self.kwargs.get("challenge_id")
+        )
         form = self.form_class(
-            request.POST, instance=self.object, request=request
+            request.POST,
+            instance=self.object,
+            challenge_queryset=challenge_queryset,
         )
         if form.is_valid():
             instance = form.save(commit=False)

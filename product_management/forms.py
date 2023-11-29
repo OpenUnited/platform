@@ -405,15 +405,13 @@ class BountyForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self._challenge_queryset = kwargs.pop("challenge_queryset", None)
         super().__init__(*args, **kwargs)
-        if self.request:
-            challenge_id = self.request.GET.get("challenge_id", None)
-            if challenge_id:
-                queryset = Challenge.objects.filter(pk=challenge_id)
-                self.fields["challenge"].queryset = queryset
-                self.fields["challenge"].initial = queryset.first()
-                self.fields["challenge"].empty_label = None
+
+        if self._challenge_queryset:
+            self.fields["challenge"].queryset = self._challenge_queryset
+            self.fields["challenge"].initial = self._challenge_queryset.first()
+            self.fields["challenge"].empty_label = None
 
     def clean_selected_skill_ids(self):
         skill_id = self.cleaned_data.get("selected_skill_ids")
