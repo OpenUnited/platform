@@ -54,7 +54,7 @@
                         {% if actions_available %}
                         <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Edit</a>
-                        <a hx-get="{{ url('delete-bounty', args=(bounty.id,)) }}"
+                        <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
                             hx-push-url="true"
                             class="cursor-pointer font-medium text-red-600 hover:underline">Delete</a>

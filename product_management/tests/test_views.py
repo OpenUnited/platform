@@ -1066,7 +1066,15 @@ class DeleteBountyViewTest(BaseTestCase):
     def setUp(self):
         super().setUp()
         self.bounty = BountyFactory()
-        self.url = reverse("delete-bounty", args=(self.bounty.id,))
+        challenge = self.bounty.challenge
+        self.url = reverse(
+            "delete-bounty",
+            args=(
+                challenge.product.slug,
+                challenge.id,
+                self.bounty.id,
+            ),
+        )
         self.success_url = reverse("challenges")
         self.person = PersonFactory()
 

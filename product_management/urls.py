@@ -84,7 +84,7 @@ urlpatterns = [
         name="update-bounty",
     ),
     path(
-        "bounty/delete/<int:pk>",
+        "<str:product_slug>/challenge/<int:challenge_id>/bounty/delete/<int:pk>",
         DeleteBountyView.as_view(),
         name="delete-bounty",
     ),
