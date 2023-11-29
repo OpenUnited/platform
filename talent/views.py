@@ -410,6 +410,10 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
             instance.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
             instance.save()
 
+            bounty_claim = instance.bounty_claim
+            bounty_claim.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
+            bounty_claim.save()
+
             return HttpResponseRedirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
