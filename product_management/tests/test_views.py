@@ -907,6 +907,22 @@ class CreateBountyViewTest(BaseTestCase):
             "product_management/create_bounty.html", response.template_name
         )
 
+    def test_invalid_post(self):
+        self.client.force_login(self.person.user)
+
+        # challenge, skill and expertise are missing
+        data = {
+            "points": 10,
+            "status": 2,
+            "is_active": True,
+        }
+
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+
+        form = response.context_data.get("form")
+        self.assertFalse(form.is_valid())
+
     def test_post(self):
         self.client.force_login(self.person.user)
 
