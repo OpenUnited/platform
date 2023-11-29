@@ -1087,7 +1087,9 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(request.POST, instance=self.object)
+        form = self.form_class(
+            request.POST, instance=self.object, request=request
+        )
         if form.is_valid():
             instance = form.save(commit=False)
             skill_id = form.cleaned_data.get("selected_skill_ids")[0]
