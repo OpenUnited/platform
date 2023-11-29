@@ -356,7 +356,7 @@ class BountyDeliveryAttempt(TimeStampMixin):
         )
 
     def __str__(self):
-        return f"{self.person} - {self.delivery_message}"
+        return f"{self.person} - {self.get_kind_display()}"
 
 
 class Feedback(models.Model):
