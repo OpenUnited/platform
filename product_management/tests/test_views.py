@@ -13,6 +13,7 @@ from product_management.models import (
     Idea,
     Bug,
     Attachment,
+    Bounty,
 )
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
@@ -1059,3 +1060,29 @@ class UpdateBountyViewTest(BaseTestCase):
         skill.delete()
         expertise_one.delete()
         expertise_two.delete()
+
+
+class DeleteBountyViewTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.bounty = BountyFactory()
+        self.url = reverse("delete-bounty", args=(self.bounty.id,))
+        self.success_url = reverse("challenges")
+        self.person = PersonFactory()
+
+    def test_anon(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+
+    def test_get(self):
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("challenges"))
+
+        with self.assertRaises(Bounty.DoesNotExist):
+            self.bounty.refresh_from_db()
