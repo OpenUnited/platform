@@ -1001,7 +1001,7 @@ class UpdateBountyViewTest(BaseTestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertIn(
-            "product_management/create_bounty.html", response.template_name
+            "product_management/update_bounty.html", response.template_name
         )
 
     def test_invalid_post(self):

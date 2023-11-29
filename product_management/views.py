@@ -1088,7 +1088,7 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
 class UpdateBountyView(LoginRequiredMixin, UpdateView):
     model = Bounty
     form_class = BountyForm
-    template_name = "product_management/create_bounty.html"
+    template_name = "product_management/update_bounty.html"
     login_url = "sign_in"
 
     def get_form_kwargs(self):
