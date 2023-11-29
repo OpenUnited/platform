@@ -415,18 +415,6 @@ class BountyForm(forms.ModelForm):
                 self.fields["challenge"].initial = queryset.first()
                 self.fields["challenge"].empty_label = None
 
-    def clean_challenge(self):
-        challenge = self.cleaned_data.get("challenge")
-
-        if challenge.has_bounty():
-            raise ValidationError(
-                _(
-                    "This challenge has already bounty on it. To create this bounty, either delete the current bounty or create another challenge."
-                )
-            )
-
-        return challenge
-
     def clean_selected_skill_ids(self):
         skill_id = self.cleaned_data.get("selected_skill_ids")
         skill_id = json.loads(skill_id)

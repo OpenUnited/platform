@@ -1080,12 +1080,16 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.challenge = form.cleaned_data.get("challenge")
             skill_id = form.cleaned_data.get("selected_skill_ids")[0]
             instance.skill = Skill.objects.get(id=skill_id)
             instance.save()
