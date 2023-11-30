@@ -403,12 +403,16 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST, request.FILES, request=request)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.person = request.user.person
             instance.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
             instance.save()
+
+            bounty_claim = instance.bounty_claim
+            bounty_claim.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
+            bounty_claim.save()
 
             return HttpResponseRedirect(self.success_url)
 

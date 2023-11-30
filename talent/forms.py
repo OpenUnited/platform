@@ -188,8 +188,10 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.request:
             pk = self.request.GET.get("id", None)
-            instance = BountyClaim.objects.get(id=pk)
-            self.fields["bounty_claim"].initial = instance
+            queryset = BountyClaim.objects.filter(id=pk)
+            self.fields["bounty_claim"].queryset = queryset
+            self.fields["bounty_claim"].initial = queryset.first()
+            self.fields["bounty_claim"].empty_label = None
 
     class Meta:
         model = BountyDeliveryAttempt
