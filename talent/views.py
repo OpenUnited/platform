@@ -434,16 +434,13 @@ class BountyDeliveryAttemptDetail(DetailView):
         success = False
         if value == self.APPROVE_TRIGGER_NAME:
             self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED
-            self.object.bounty_claim.kind = BountyClaim.CLAIM_TYPE_DONE
             success = True
         elif value == self.REJECT_TRIGGER_NAME:
             self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED
-            self.object.bounty_claim.kind = BountyClaim.CLAIM_TYPE_FAILED
             success = True
 
         if success:
             self.object.save()
-            self.object.bounty_claim.save()
             return HttpResponseRedirect(reverse("dashboard"))
 
         return super().post(request, *args, **kwargs)
