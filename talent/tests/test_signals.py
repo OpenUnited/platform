@@ -1,7 +1,27 @@
 from django.test import TestCase
+import factory
+from factory.django import DjangoModelFactory
+from factory.fuzzy import FuzzyChoice, FuzzyText
 
+from .factories import PersonFactory
 from talent.models import Status, BountyDeliveryAttempt
-from .factories import BountyDeliveryAttemptFactory
+from product_management.tests.factories import BountyClaimFactory
+
+
+# This class should be in talent/tests/factories.py but putting in
+# there creates a very complex circular import error. That is why
+# it is put in here.
+class BountyDeliveryAttemptFactory(DjangoModelFactory):
+    bounty_claim = factory.SubFactory(BountyClaimFactory)
+    person = factory.SubFactory(PersonFactory)
+    delivery_message = FuzzyText()
+    kind = FuzzyChoice(
+        [kind[0] for kind in BountyDeliveryAttempt.SUBMISSION_TYPES]
+    )
+    is_canceled = False
+
+    class Meta:
+        model = BountyDeliveryAttempt
 
 
 class PersonRelatedTest(TestCase):

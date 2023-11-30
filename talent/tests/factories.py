@@ -1,7 +1,7 @@
 import factory
 import json
 from factory.django import DjangoModelFactory
-from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyText
+from factory.fuzzy import FuzzyInteger
 from random import randint
 
 from talent.models import (
@@ -11,7 +11,6 @@ from talent.models import (
     Skill,
     Expertise,
     PersonSkill,
-    BountyDeliveryAttempt,
 )
 
 
@@ -102,20 +101,3 @@ class PersonSkillFactory(DjangoModelFactory):
 
     class Meta:
         model = PersonSkill
-
-
-# Note: Moving this import creates a circular import error.
-from product_management.tests.factories import BountyClaimFactory
-
-
-class BountyDeliveryAttemptFactory(DjangoModelFactory):
-    bounty_claim = factory.SubFactory(BountyClaimFactory)
-    person = factory.SubFactory(PersonFactory)
-    delivery_message = FuzzyText()
-    kind = FuzzyChoice(
-        [kind[0] for kind in BountyDeliveryAttempt.SUBMISSION_TYPES]
-    )
-    is_canceled = False
-
-    class Meta:
-        model = BountyDeliveryAttempt
