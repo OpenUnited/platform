@@ -385,7 +385,12 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
 
         if self.request.user.is_authenticated:
             bounty_claims = BountyClaim.objects.filter(
-                bounty=bounty, person=self.request.user.person
+                bounty=bounty,
+                person=self.request.user.person,
+                kind__in=[
+                    BountyClaim.CLAIM_TYPE_ACTIVE,
+                    BountyClaim.CLAIM_TYPE_IN_REVIEW,
+                ],
             )
 
             context.update(
