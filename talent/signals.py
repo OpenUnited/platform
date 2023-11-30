@@ -33,7 +33,7 @@ def update_bounty_delivery_status(sender, instance, created, **kwargs):
             instance.bounty_claim.kind = actions["bounty_claim_kind"]
             instance.bounty_claim.save()
 
-            instance.bounty_claim.bounty.kind = actions["bounty_status"]
+            instance.bounty_claim.bounty.status = actions["bounty_status"]
             instance.bounty_claim.bounty.save()
 
             instance.bounty_claim.bounty.challenge.status = actions[
