@@ -142,6 +142,25 @@ class Status(models.Model):
     )
     points = models.PositiveIntegerField(default=0)
 
+    def get_status_from_points(self, provided_points=None):
+        if provided_points is None:
+            provided_points = self.points
+
+        for status in reversed(Status.STATUS_POINT_MAPPING.keys()):
+            current_points = Status.STATUS_POINT_MAPPING.get(status)
+            if current_points <= provided_points:
+                return status
+
+        return Status.DRONE
+
+    def add_points(self, points):
+        self.points += points
+        expected_status = self.get_status_from_points()
+        if self.name != expected_status:
+            self.name = expected_status
+
+        self.save()
+
     @classmethod
     def get_privileges(cls, status: str) -> str:
         return cls.STATUS_PRIVILEGES_MAPPING.get(status)
@@ -292,6 +311,12 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
 
     def get_product_detail_url(self):
         return self.bounty.challenge.product.get_absolute_url()
+
+    def save(self, *args, **kwargs):
+        if self.kind == self.CLAIM_TYPE_DONE:
+            self.person.status.add_points(self.bounty.points)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"

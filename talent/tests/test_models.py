@@ -2,9 +2,15 @@ import os
 from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+import factory
 
-from talent.models import Status
-from .factories import PersonFactory
+from talent import signals
+from talent.models import Status, BountyClaim
+from .factories import PersonFactory, StatusFactory
+from product_management.tests.factories import (
+    BountyClaimFactory,
+    BountyFactory,
+)
 
 
 def create_image(image_name):
@@ -55,6 +61,10 @@ class PersonModelTest(TestCase):
 
 
 class StatusModelTest(TestCase):
+    @factory.django.mute_signals(signals.post_save)
+    def setUp(self):
+        self.status = StatusFactory(points=200)
+
     def test_get_display_points(self):
         self.assertEqual(Status.get_display_points(Status.DRONE), "< 50")
         self.assertEqual(Status.get_display_points(Status.HONEYBEE), "< 500")
@@ -65,3 +75,112 @@ class StatusModelTest(TestCase):
         self.assertEqual(
             Status.get_display_points(Status.BEEKEEPER), ">= 8000"
         )
+
+    def test_get_status_from_points(self):
+        self.assertEqual(self.status.get_status_from_points(), Status.HONEYBEE)
+        self.assertEqual(self.status.get_status_from_points(10), Status.DRONE)
+        self.assertEqual(self.status.get_status_from_points(49), Status.DRONE)
+        self.assertEqual(
+            self.status.get_status_from_points(50), Status.HONEYBEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(499), Status.HONEYBEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(500), Status.TRUSTED_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(1999), Status.TRUSTED_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(2_000), Status.QUEEN_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(7999), Status.QUEEN_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(8_000), Status.BEEKEEPER
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(100_00), Status.BEEKEEPER
+        )
+
+
+class BountyClaimTest(TestCase):
+    def setUp(self):
+        self.bounty_one = BountyFactory(points=20)
+        self.claim_one = BountyClaimFactory(
+            bounty=self.bounty_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+
+        self.bounty_two = BountyFactory(points=100)
+        self.claim_two = BountyClaimFactory(
+            bounty=self.bounty_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+        )
+
+        self.person = PersonFactory()
+        self.bounty_three = BountyFactory(points=49)
+        self.claim_three = BountyClaimFactory(
+            person=self.person,
+            bounty=self.bounty_three,
+            kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+        )
+
+        self.bounty_four = BountyFactory(points=100)
+        self.claim_four = BountyClaimFactory(
+            person=self.person,
+            bounty=self.bounty_four,
+            kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+        )
+
+    def test_save_one(self):
+        status = Status.objects.get(person=self.claim_one.person)
+        self.claim_one.save()
+
+        self.assertEqual(status.name, Status.DRONE)
+        self.assertEqual(status.points, 0)
+
+        self.claim_one.kind = BountyClaim.CLAIM_TYPE_DONE
+        self.claim_one.save()
+
+        status.refresh_from_db()
+
+        self.assertEqual(status.name, Status.DRONE)
+        self.assertEqual(status.points, 20)
+
+    def test_save_two(self):
+        status = Status.objects.get(person=self.claim_two.person)
+        self.claim_two.save()
+
+        self.assertEqual(status.name, Status.DRONE)
+        self.assertEqual(status.points, 0)
+
+        self.claim_two.kind = BountyClaim.CLAIM_TYPE_DONE
+        self.claim_two.save()
+
+        status.refresh_from_db()
+
+        self.assertEqual(status.name, Status.HONEYBEE)
+        self.assertEqual(status.points, 100)
+
+    def test_save_three(self):
+        status = Status.objects.get(person=self.person)
+
+        self.assertEqual(status.name, Status.DRONE)
+        self.assertEqual(status.points, 0)
+
+        self.claim_three.kind = BountyClaim.CLAIM_TYPE_DONE
+        self.claim_three.save()
+
+        status.refresh_from_db()
+
+        self.assertEqual(status.name, Status.DRONE)
+        self.assertEqual(status.points, 49)
+
+        self.claim_four.kind = BountyClaim.CLAIM_TYPE_DONE
+        self.claim_four.save()
+
+        status.refresh_from_db()
+
+        self.assertEqual(status.name, Status.HONEYBEE)
+        self.assertEqual(status.points, 149)

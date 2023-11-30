@@ -38,7 +38,7 @@ class StatusFactory(DjangoModelFactory):
     def name(self):
         for status in reversed(Status.STATUS_POINT_MAPPING.keys()):
             current_points = Status.STATUS_POINT_MAPPING.get(status)
-            if current_points < self.points:
+            if current_points <= self.points:
                 return status
 
         return Status.DRONE

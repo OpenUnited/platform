@@ -120,16 +120,6 @@ def generate_sample_data():
 
         feedbacks.append(FeedbackService.create(**fd))
 
-    # Create Status model instances
-    status_data = read_json_data("utility/sample_data/status.json", "status")
-
-    for index, sd in enumerate(status_data):
-        sd["person"] = people[index]
-
-    statuses = []
-    for sd in status_data:
-        statuses.append(StatusService.create(**sd))
-
     # Create Organisation model instances
     organisation_data = read_json_data(
         "utility/sample_data/organisation.json", "organisation"
