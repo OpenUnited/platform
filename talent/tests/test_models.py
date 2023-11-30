@@ -2,9 +2,12 @@ import os
 from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+import factory
 
-from talent.models import Status
-from .factories import PersonFactory
+from talent import signals
+from talent.models import Status, BountyClaim
+from .factories import PersonFactory, StatusFactory
+from product_management.tests.factories import BountyClaimFactory
 
 
 def create_image(image_name):
@@ -55,6 +58,10 @@ class PersonModelTest(TestCase):
 
 
 class StatusModelTest(TestCase):
+    @factory.django.mute_signals(signals.post_save)
+    def setUp(self):
+        self.status = StatusFactory(points=200)
+
     def test_get_display_points(self):
         self.assertEqual(Status.get_display_points(Status.DRONE), "< 50")
         self.assertEqual(Status.get_display_points(Status.HONEYBEE), "< 500")
@@ -64,4 +71,33 @@ class StatusModelTest(TestCase):
         self.assertEqual(Status.get_display_points(Status.QUEEN_BEE), "< 8000")
         self.assertEqual(
             Status.get_display_points(Status.BEEKEEPER), ">= 8000"
+        )
+
+    def test_get_status_from_points(self):
+        self.assertEqual(self.status.get_status_from_points(), Status.HONEYBEE)
+        self.assertEqual(self.status.get_status_from_points(10), Status.DRONE)
+        self.assertEqual(self.status.get_status_from_points(49), Status.DRONE)
+        self.assertEqual(
+            self.status.get_status_from_points(50), Status.HONEYBEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(499), Status.HONEYBEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(500), Status.TRUSTED_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(1999), Status.TRUSTED_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(2_000), Status.QUEEN_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(7999), Status.QUEEN_BEE
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(8_000), Status.BEEKEEPER
+        )
+        self.assertEqual(
+            self.status.get_status_from_points(100_00), Status.BEEKEEPER
         )

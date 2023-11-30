@@ -142,6 +142,17 @@ class Status(models.Model):
     )
     points = models.PositiveIntegerField(default=0)
 
+    def get_status_from_points(self, provided_points=None):
+        if provided_points is None:
+            provided_points = self.points
+
+        for status in reversed(Status.STATUS_POINT_MAPPING.keys()):
+            current_points = Status.STATUS_POINT_MAPPING.get(status)
+            if current_points <= provided_points:
+                return status
+
+        return Status.DRONE
+
     @classmethod
     def get_privileges(cls, status: str) -> str:
         return cls.STATUS_PRIVILEGES_MAPPING.get(status)
