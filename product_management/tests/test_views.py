@@ -13,6 +13,7 @@ from product_management.models import (
     Idea,
     Bug,
     Attachment,
+    Bounty,
 )
 from security.models import ProductRoleAssignment
 from security.tests.factories import ProductRoleAssignmentFactory
@@ -20,6 +21,8 @@ from .factories import (
     OwnedProductFactory,
     PersonFactory,
     ChallengeFactory,
+    SkillFactory,
+    ExpertiseFactory,
     BountyFactory,
     BountyClaimFactory,
     ProductIdeaFactory,
@@ -28,12 +31,17 @@ from .factories import (
 )
 
 
-class BaseProductTestCase(TestCase):
+class BaseTestCase(TestCase):
     def setUp(self):
         super().setUp()
         self.client = Client()
-        self.product = OwnedProductFactory()
         self.login_url = reverse("sign_in")
+
+
+class BaseProductTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.product = OwnedProductFactory()
 
 
 class ChallengeListViewTest(BaseProductTestCase):
@@ -872,3 +880,217 @@ class DeleteAttachmentViewTest(BaseProductTestCase):
         # add test to make sure the request owner has rights to delete the image(s)
         with self.assertRaises(Attachment.DoesNotExist):
             self.attachment_one.refresh_from_db()
+
+
+class CreateBountyViewTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.challenge = ChallengeFactory()
+        self.url = reverse(
+            "create-bounty",
+            args=(
+                self.challenge.product.slug,
+                self.challenge.pk,
+            ),
+        )
+        self.person = PersonFactory()
+        self.success_url = reverse(
+            "challenge_detail",
+            args=(self.challenge.product.slug, self.challenge.pk),
+        )
+
+    def test_anon(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+
+    def test_get_auth(self):
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/create_bounty.html", response.template_name
+        )
+
+    def test_invalid_post(self):
+        self.client.force_login(self.person.user)
+
+        # challenge, skill and expertise are missing
+        data = {
+            "points": 10,
+            "status": 2,
+            "is_active": True,
+        }
+
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+
+        form = response.context_data.get("form")
+        self.assertFalse(form.is_valid())
+
+    def test_post(self):
+        self.client.force_login(self.person.user)
+
+        skill = SkillFactory()
+        expertise_one = ExpertiseFactory(skill=skill)
+        expertise_two = ExpertiseFactory(skill=skill)
+
+        data = {
+            "challenge": self.challenge.id,
+            "selected_skill_ids": f"[{skill.id}]",
+            "selected_expertise_ids": f"[{expertise_one.id}, {expertise_two.id}]",
+            "points": 10,
+            "status": 2,
+            "is_active": True,
+        }
+
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.success_url)
+
+        self.challenge.refresh_from_db()
+
+        bounties = self.challenge.bounty_set.all()
+        self.assertNotEqual(bounties.count(), 0)
+
+        bounty = bounties.last()
+        self.assertEqual(bounty.points, data.get("points"))
+        self.assertEqual(bounty.status, data.get("status"))
+        self.assertEqual(bounty.is_active, data.get("is_active"))
+        self.assertEqual(bounty.skill, skill)
+        self.assertEqual(bounty.expertise.count(), 2)
+
+        skill.delete()
+        expertise_one.delete()
+        expertise_two.delete()
+
+
+class UpdateBountyViewTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.challenge = ChallengeFactory()
+        self.bounty = BountyFactory(challenge=self.challenge)
+        self.url = reverse(
+            "update-bounty",
+            args=(
+                self.challenge.product.slug,
+                self.challenge.id,
+                self.bounty.id,
+            ),
+        )
+        self.person = PersonFactory()
+        self.success_url = reverse(
+            "challenge_detail",
+            args=(
+                self.challenge.product.slug,
+                self.challenge.id,
+            ),
+        )
+
+    def test_anon(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+
+    def test_get(self):
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/update_bounty.html", response.template_name
+        )
+
+    def test_invalid_post(self):
+        self.client.force_login(self.person.user)
+
+        # challenge, skill and expertise are missing
+        data = {
+            "points": 10,
+            "status": 2,
+            "is_active": True,
+        }
+
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+
+        form = response.context_data.get("form")
+        self.assertFalse(form.is_valid())
+        self.assertListEqual(
+            form.errors.get("challenge"), ["This field is required."]
+        )
+        self.assertListEqual(
+            form.errors.get("selected_skill_ids"), ["This field is required."]
+        )
+        self.assertListEqual(
+            form.errors.get("selected_expertise_ids"),
+            ["This field is required."],
+        )
+
+    def test_post(self):
+        self.client.force_login(self.person.user)
+
+        skill = SkillFactory()
+        expertise_one = ExpertiseFactory(skill=skill)
+        expertise_two = ExpertiseFactory(skill=skill)
+
+        data = {
+            "challenge": self.challenge.id,
+            "selected_skill_ids": f"[{skill.id}]",
+            "selected_expertise_ids": f"[{expertise_one.id}, {expertise_two.id}]",
+            "points": self.bounty.points + 20,
+            "status": 4,
+            "is_active": False,
+        }
+
+        response = self.client.post(self.url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, self.success_url)
+
+        self.bounty.refresh_from_db()
+
+        self.assertEqual(self.bounty.points, data.get("points"))
+        self.assertEqual(self.bounty.status, data.get("status"))
+        self.assertFalse(data.get("is_active"))
+
+        skill.delete()
+        expertise_one.delete()
+        expertise_two.delete()
+
+
+class DeleteBountyViewTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.bounty = BountyFactory()
+        challenge = self.bounty.challenge
+        self.url = reverse(
+            "delete-bounty",
+            args=(
+                challenge.product.slug,
+                challenge.id,
+                self.bounty.id,
+            ),
+        )
+        self.success_url = reverse("challenges")
+        self.person = PersonFactory()
+
+    def test_anon(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f"{self.login_url}?next={self.url}")
+
+    def test_get(self):
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("challenges"))
+
+        with self.assertRaises(Bounty.DoesNotExist):
+            self.bounty.refresh_from_db()
