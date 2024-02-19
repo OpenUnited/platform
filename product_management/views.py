@@ -879,7 +879,13 @@ class ManageBountiesView(DashboardBaseView, TemplateView):
         context = super().get_context_data(**kwargs)
 
         person = self.request.user.person
-        queryset = BountyClaim.objects.filter(person=person)
+        queryset = BountyClaim.objects.filter(
+            person=person,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            ],
+        )
         context.update({"bounty_claims": queryset})
         return context
 
@@ -892,7 +898,13 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         person = self.request.user.person
-        queryset = BountyClaim.objects.filter(person=person)
+        queryset = BountyClaim.objects.filter(
+            person=person,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            ],
+        )
         return queryset
 
 
