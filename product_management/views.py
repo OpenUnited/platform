@@ -1165,12 +1165,15 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
 class DeleteBountyView(LoginRequiredMixin, DeleteView):
     model = Bounty
     login_url = "sign_in"
-    success_url = reverse_lazy("challenges")
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         Bounty.objects.get(pk=self.object.pk).delete()
-        return redirect(self.success_url)
+        success_url = reverse(
+            "challenge_detail",
+            args=(kwargs.get("product_slug"), kwargs.get("challenge_id")),
+        )
+        return redirect(success_url)
 
 
 class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
