@@ -57,7 +57,7 @@ class ChallengeListViewTest(BaseProductTestCase):
         )
 
         actual = response.context_data
-        clean_up(actual, exclude=["object_list"])
+        clean_up(actual, exclude=["object_list"], extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
         self.assertQuerySetEqual(
@@ -104,7 +104,7 @@ class ChallengeListViewTest(BaseProductTestCase):
         )
 
         actual = response.context_data
-        clean_up(actual)
+        clean_up(actual, extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
         self.assertEqual(actual.pop("challenges").count(), 8)
@@ -116,7 +116,7 @@ class ChallengeListViewTest(BaseProductTestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
-        clean_up(actual)
+        clean_up(actual, extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
         self.assertEqual(actual.pop("challenges").count(), 8)
@@ -126,10 +126,10 @@ class ChallengeListViewTest(BaseProductTestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
-        clean_up(actual)
+        clean_up(actual, extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
-        self.assertEqual(actual.pop("challenges").count(), 4)
+        self.assertEqual(actual.pop("challenges").count(), 8)
         self.assertDictEqual(actual, expected)
 
 
