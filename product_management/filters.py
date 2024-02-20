@@ -13,7 +13,6 @@ def display_role(role):
 
 
 class ChallengeFilter(django_filters.FilterSet):
-
     class Meta:
         model = Challenge
         fields = [
