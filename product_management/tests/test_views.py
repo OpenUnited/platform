@@ -57,7 +57,7 @@ class ChallengeListViewTest(BaseProductTestCase):
         )
 
         actual = response.context_data
-        clean_up(actual, exclude=["object_list"])
+        clean_up(actual, exclude=["object_list"], extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
         self.assertQuerySetEqual(
@@ -104,7 +104,7 @@ class ChallengeListViewTest(BaseProductTestCase):
         )
 
         actual = response.context_data
-        clean_up(actual)
+        clean_up(actual, extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
         self.assertEqual(actual.pop("challenges").count(), 8)
@@ -116,7 +116,7 @@ class ChallengeListViewTest(BaseProductTestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
-        clean_up(actual)
+        clean_up(actual, extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
         self.assertEqual(actual.pop("challenges").count(), 8)
@@ -126,10 +126,10 @@ class ChallengeListViewTest(BaseProductTestCase):
         self.assertEqual(response.status_code, 200)
 
         actual = response.context_data
-        clean_up(actual)
+        clean_up(actual, extra=["filter"])
 
         self.assertIsNotNone(actual.pop("request"))
-        self.assertEqual(actual.pop("challenges").count(), 4)
+        self.assertEqual(actual.pop("challenges").count(), 8)
         self.assertDictEqual(actual, expected)
 
 
@@ -1066,12 +1066,12 @@ class DeleteBountyViewTest(BaseTestCase):
     def setUp(self):
         super().setUp()
         self.bounty = BountyFactory()
-        challenge = self.bounty.challenge
+        self.challenge = self.bounty.challenge
         self.url = reverse(
             "delete-bounty",
             args=(
-                challenge.product.slug,
-                challenge.id,
+                self.challenge.product.slug,
+                self.challenge.id,
                 self.bounty.id,
             ),
         )
@@ -1090,7 +1090,13 @@ class DeleteBountyViewTest(BaseTestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("challenges"))
+        self.assertRedirects(
+            response,
+            reverse(
+                "challenge_detail",
+                args=(self.challenge.product.slug, self.challenge.id),
+            ),
+        )
 
         with self.assertRaises(Bounty.DoesNotExist):
             self.bounty.refresh_from_db()

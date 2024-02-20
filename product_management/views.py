@@ -50,16 +50,22 @@ from commerce.models import Organisation
 from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
+from .filters import ChallengeFilter
+
 
 class ChallengeListView(ListView):
     model = Challenge
     context_object_name = "challenges"
     template_name = "product_management/challenges.html"
     paginate_by = 8
+    filterset_class = ChallengeFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["request"] = self.request
+        context["filter"] = self.filterset_class(
+            self.request.GET, queryset=self.get_queryset()
+        )
 
         return context
 
@@ -69,6 +75,8 @@ class ChallengeListView(ListView):
         return response
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+
         custom_order = Case(
             When(status=self.model.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
             When(status=self.model.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
@@ -76,11 +84,14 @@ class ChallengeListView(ListView):
             When(status=self.model.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
             When(status=self.model.CHALLENGE_STATUS_DONE, then=Value(4)),
         )
-        return (
-            self.model.objects.exclude(status=self.model.CHALLENGE_STATUS_DONE)
-            .annotate(custom_order=custom_order)
-            .order_by("custom_order", "-id")
+        queryset = queryset.annotate(custom_order=custom_order).order_by(
+            "custom_order", "-id"
         )
+
+        challenge_filter = self.filterset_class(
+            self.request.GET, queryset=queryset
+        )
+        return challenge_filter.qs
 
 
 class ProductListView(ListView):
@@ -879,7 +890,13 @@ class ManageBountiesView(DashboardBaseView, TemplateView):
         context = super().get_context_data(**kwargs)
 
         person = self.request.user.person
-        queryset = BountyClaim.objects.filter(person=person)
+        queryset = BountyClaim.objects.filter(
+            person=person,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            ],
+        )
         context.update({"bounty_claims": queryset})
         return context
 
@@ -892,7 +909,13 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         person = self.request.user.person
-        queryset = BountyClaim.objects.filter(person=person)
+        queryset = BountyClaim.objects.filter(
+            person=person,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            ],
+        )
         return queryset
 
 
@@ -1142,12 +1165,15 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
 class DeleteBountyView(LoginRequiredMixin, DeleteView):
     model = Bounty
     login_url = "sign_in"
-    success_url = reverse_lazy("challenges")
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         Bounty.objects.get(pk=self.object.pk).delete()
-        return redirect(self.success_url)
+        success_url = reverse(
+            "challenge_detail",
+            args=(kwargs.get("product_slug"), kwargs.get("challenge_id")),
+        )
+        return redirect(success_url)
 
 
 class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
