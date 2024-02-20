@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "storages",
     "canopy",
     "social_django",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
