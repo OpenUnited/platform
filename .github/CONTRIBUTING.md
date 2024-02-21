@@ -65,6 +65,16 @@ export DJANGO_SETTINGS_MODULE=openunited.settings.development
 ./setup.sh
 ```
 
+You now need to create your local .env file and set a value for DJANGO_SECRET_KEY. You can do something like the following:
+
+```bash
+cp .env.example .env
+python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+```
+
+... and then, paste the secret key generated as the value (in between the quote marks) for DJANGO_SECRET_KEY in the first line of your .env file.
+
+
 Run the tests:
 
 `python manage.py test`
