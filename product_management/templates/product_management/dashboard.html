@@ -92,8 +92,7 @@
                     </div>
 
                     <div class="flex flex-shrink-0 items-center px-4">
-                        <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=purple&shade=500"
-                            alt="Your Company">
+                        <img class="h-8 w-auto" src="{{ static('images/logo.svg') }}" alt="OpenUnited Logo">
                     </div>
                     <div class="mt-5 h-0 flex-1 overflow-y-auto">
                         <nav class="mt-6 px-3" _="on click from <button/> in me
@@ -181,58 +180,8 @@
                 </a>
             </div>
             <div class="mt-5 flex h-0 flex-1 flex-col overflow-y-auto pt-1">
-                <!-- User account dropdown -->
-                <div class="relative inline-block px-3 text-left">
-                    <div>
-                        <button type="button" _="on click toggle .hidden on #options-dropdown-menu end" class=" group w-full rounded-md bg-gray-100 px-3.5 py-2 text-left text-sm font-medium
-                            text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500
-                            focus:ring-offset-2 focus:ring-offset-gray-100" id="options-menu-button"
-                            aria-expanded="false" aria-haspopup="true">
-                            <span class="flex w-full items-center justify-between">
-                                <span class="flex min-w-0 items-center justify-between space-x-3">
-                                    <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src="{{ photo_url }}"
-                                        alt="Profile Picture">
-                                    <span class="flex min-w-0 flex-1 flex-col">
-                                        <span
-                                            class="truncate text-sm font-medium text-gray-900">{{ person.get_full_name() }}</span>
-                                        <span class="truncate text-sm text-gray-500">@{{ person.get_username() }}</span>
-                                    </span>
-                                </span>
-                                <svg class="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                                    viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd"
-                                        d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </span>
-                        </button>
-                    </div>
-
-                    <div _="on mouseenter from <a/> in me
-                                remove .text-gray-700 from <a/> in me
-                                tell the target
-                                    add .bg-gray-100 .text-gray-900
-                            end
-                            on mouseleave from <a/> in me
-                                remove .bg-gray-100 .text-gray-900 from <a/> in me
-                                tell the target
-                                    add .text-gray-700
-                            end" id="options-dropdown-menu" class="hidden absolute left-0 right-0 z-10 mx-3 mt-1 origin-top
-                        divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5
-                        focus:outline-none" role="menu" aria-orientation="vertical"
-                        aria-labelledby="options-menu-button" tabindex="-1">
-                        <div class="py-1" role="none">
-                            <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
-                                class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
-                                id="options-menu-item-0">View profile</a>
-                        </div>
-                        <div class="py-1" role="none">
-                            <a href="{{ url('log_out') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
-                                tabindex="-1" id="options-menu-item-5">Logout</a>
-                        </div>
-                    </div>
-                </div>
                 <!-- Sidebar Search -->
+                <!--
                 <div class="mt-5 px-3">
                     <label for="search" class="sr-only">Search</label>
                     <div class="relative mt-1 rounded-md shadow-sm">
@@ -250,6 +199,7 @@
                             placeholder="Search">
                     </div>
                 </div>
+                -->
                 <!-- Navigation -->
                 <nav class="mt-6 px-3" _="on click from <button/> in me
                                     remove .bg-gray-200 .text-gray-900 from <button/> in me
@@ -334,6 +284,7 @@
                     </svg>
                 </button>
                 <div class="flex flex-1 justify-between px-4 sm:px-6 lg:px-8">
+                    <!-- Search input is not necessary right now
                     <div class="flex flex-1">
                         <form class="flex w-full md:ml-0" action="#" method="GET">
                             <label for="search-field" class="sr-only">Search</label>
@@ -351,11 +302,12 @@
                             </div>
                         </form>
                     </div>
+                    -->
                     <div class="flex items-center">
                         <!-- Profile dropdown -->
                         <div class="relative ml-3">
                             <div>
-                                <button type="button"
+                                <button type="button" _="on click toggle .hidden on #mobile-navbar-dropdown-menu end"
                                     class="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                     id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                     <span class="absolute -inset-1.5"></span>
@@ -375,18 +327,20 @@
                 From: "transform opacity-100 scale-100"
                 To: "transform opacity-0 scale-95"
             -->
-                            <div class="absolute hidden right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
-                                tabindex="-1">
+                            <div class="absolute hidden z-10 mt-2 w-48 origin-top-right divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
+                                id="mobile-navbar-dropdown-menu">
                                 <div class="py-1" role="none">
-                                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                                    <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
-                                        tabindex="-1" id="user-menu-item-0">View profile</a>
+                                    <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
+                                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                                        id="options-menu-item-1">Your Profile</a>
+                                    <a href="{{ url('portfolio', args=(request.user.username,) ) }}"
+                                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                                        id="options-menu-item-2">Visit Portfolio</a>
                                 </div>
-
                                 <div class="py-1" role="none">
-                                    <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
-                                        tabindex="-1" id="user-menu-item-5">Logout</a>
+                                    <a href="{{ url('log_out') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                                        role="menuitem" tabindex="-1" id="options-menu-item-5">Logout</a>
                                 </div>
                             </div>
                         </div>
