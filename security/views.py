@@ -205,6 +205,6 @@ class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = "security/logout.html"
     login_url = "sign_in"
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         logout(request)
         return redirect("home")

@@ -1,5 +1,6 @@
 import os
 import datetime
+import random
 import django
 from random import choice, sample, randint, getrandbits
 from django.apps import apps
@@ -165,6 +166,17 @@ def generate_sample_data():
     for ppd in product_role_assignment_data:
         product_people.append(ProductRoleAssignmentService.create(**ppd))
 
+    # Make a single user to have a deterministic product and
+    # the owner of that product.
+    dogukan = people[0]
+    smart_watch_pro = products[0]
+    product_role_assignment = product_people[0]
+
+    product_role_assignment.person = dogukan
+    product_role_assignment.product = smart_watch_pro
+    product_role_assignment.role = 1  # ProductRoleAssignment.PRODUCT_MANAGER
+    product_role_assignment.save()
+
     # Create Idea model instances
     idea_data = read_json_data("utility/sample_data/idea.json", "idea")
 
@@ -261,7 +273,8 @@ def generate_sample_data():
         elem["created_by"] = choice(people)
         elem["updated_by"] = choice(people)
         elem["reviewer"] = choice(people)
-        elem["product"] = choice(products)
+        # assign the challenges only three products
+        elem["product"] = choice(products[:3])
 
     challenges = []
     for cd in challenge_data:
@@ -288,18 +301,53 @@ def generate_sample_data():
         "utility/sample_data/bounty_claim.json", "bounty_claim"
     )
 
-    MAX_PERSON_INDEX = 5
     bounty_claims = []
     # NOTE: len(bounty.json) == len(bounty_claims.json)
     for i, bcd in enumerate(bounty_claim_data):
         # We do not want every bounty to be claimed
         if bool(getrandbits(1)):
-            bcd["person"] = people[i % MAX_PERSON_INDEX]
+            # allow only two person to claim the bounties
+            bcd["person"] = choice(people[1:3])
             bcd["bounty"] = bounties[i]
-            bounty_claims.append(BountyClaimService.create(**bcd))
+
+            today = datetime.date.today()
+            one_month_later = today + datetime.timedelta(days=60)
+            random_date = today + datetime.timedelta(
+                days=random.randint(0, (one_month_later - today).days)
+            )
+
+            bcd["expected_finish_date"] = random_date
+            bounty_claim = BountyClaimService.create(**bcd)
+            bounty_claims.append(bounty_claim)
             bb = Bounty.objects.get(id=bounties[i].id)
             bb.challenge.status = 3
+            bb.status = 3
             bb.save()
+            bounty_claim.kind = 1
+            bounty_claim.save()
+
+    john = people[1]
+    for bounty_claim in bounty_claims:
+        if bounty_claim.person != john:
+            continue
+
+        if bool(getrandbits(1)):
+            kind = choice([0, 1, 2])
+            delivery = BountyDeliveryAttempt.objects.create(
+                person=john,
+                bounty_claim=bounty_claim,
+                kind=kind,
+                delivery_message="Lorem ipsum sit amet",
+            )
+
+            if kind == 0:
+                pass
+            elif kind == 1:
+                delivery.bounty_claim.kind = 0  # CLAIM_TYPE_DONE
+            else:
+                delivery.bounty_claim.kind = 2  # CLAIM_TYPE_FAILED
+
+            delivery.save()
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -374,7 +422,7 @@ if __name__ == "__main__":
     )
     django.setup()
 
-    from talent.models import Skill, Expertise
+    from talent.models import Skill, Expertise, BountyDeliveryAttempt
     from product_management.models import Bounty
     from commerce.services import (
         OrganisationService,
