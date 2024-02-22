@@ -267,13 +267,13 @@ class LogoutViewTest(TestCase):
 
         self.client.login(username=user.username, password=plain_password)
 
-        response = self.client.get(self.url)
+        response = self.client.post(self.url)
 
         self.assertRedirects(response, reverse("home"))
         self.assertFalse("_auth_user_id" in self.client.session)
 
     def test_logout_view_unauthenticated_user(self):
-        response = self.client.get(self.url, follow=True)
+        response = self.client.post(self.url, follow=True)
 
         expected_url = reverse("sign_in") + "?next=" + reverse("log_out")
 

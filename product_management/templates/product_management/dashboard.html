@@ -339,8 +339,11 @@
                                         id="options-menu-item-2">Visit Portfolio</a>
                                 </div>
                                 <div class="py-1" role="none">
-                                    <a href="{{ url('log_out') }}" class="text-gray-700 block px-4 py-2 text-sm"
-                                        role="menuitem" tabindex="-1" id="options-menu-item-5">Logout</a>
+                                    <form id="logout-form" method="post" action="{{ url('log_out') }}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log
+                                            out</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
