@@ -35,20 +35,27 @@ Your contributions, big or small, are vital to OpenUnited's success. Thank you f
 
 ## Setting Up Your Development Environment
 
-### Without Docker
-
 #### Database Set Up
+
+We recommend using PostgreSQL for your database. 
+
+By default, the OpenUnited platform will look for a database named `ou_db` and use `postgres` as both the username and password.
+
+For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: `ou_db`.
+
+To override the database settings, you can copy `.env.example` to `.env` and set the values you want.
+
+### PostgreSQL Without Docker
 
 Before cloning and running the project, make sure to have PostgreSQL install on your machine. You can either download and install PostgreSQL or you can use the Docker image of PostgreSQL.
 
 You can download the latest version of PostgreSQL [here](https://www.postgresql.org/download/). Follow the instructions and install it.
+
+##### Using Docker for PostgreSQL
+
 You can also pull the image of PostgreSQL. It is assumed that you have Docker install on your machine. After that, you can pull it with this command:
 
 `docker pull postgres`
-
-By default, the OpenUnited platform will look for a database named `ou_db` and use `postgres` as both the username and password.
-For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: `ou_db`.
-To override the database settings, you can copy `.env.example` to `.env` and set the values you want.
 
 #### Running the Project
 
