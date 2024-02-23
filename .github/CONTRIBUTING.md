@@ -41,9 +41,9 @@ We recommend using PostgreSQL for your database.
 
 By default, the OpenUnited platform will look for a database named `ou_db` and use `postgres` as both the username and password.
 
-For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: `ou_db`.
+For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: `ou_db`. The setup.sh script you run later on will create this database for you automatically by calling the reset_database.py script you can find in the root directory.
 
-To override the database settings, you can copy `.env.example` to `.env` and set the values you want.
+To override the database settings, after you copy `.env.example` to `.env`, you can set the values you want.
 
 ### PostgreSQL Without Docker
 
