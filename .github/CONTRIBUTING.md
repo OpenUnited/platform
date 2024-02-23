@@ -8,6 +8,8 @@ Before you get started, please take a moment to read through this guide.
 
 ## Setting Up Your Development Environment
 
+Firstly, please fork this repo to your own account. Then, git clone your forked version of the repo locally.
+
 #### Database Set Up
 
 We recommend using PostgreSQL for your database. 
