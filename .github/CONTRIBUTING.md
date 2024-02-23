@@ -1,10 +1,10 @@
 # Contributing to the OpenUnited Platform
 
-We are thrilled that you are considering contributing to the OpenUnited platform. We welcome your ideas, code, and enthusiasm. In addition to reading this guide and getting your local development environment setup, please also join us on [Discord](https://discord.gg/T3xevYvWey).
+We are thrilled that you are considering contributing to the OpenUnited platform. We welcome your ideas, code, and enthusiasm.
+
+In addition to reading this guide and getting your local development environment setup, please also join us on [Discord](https://discord.gg/T3xevYvWey).
 
 This guide is designed to help you understand how you can contribute to OpenUnited effectively, and it outlines the best practices and expectations we have for our contributors.
-
-Before you get started, please take a moment to read through this guide.
 
 ## Setting Up Your Development Environment
 
