@@ -1,37 +1,13 @@
 # Welcome to OpenUnited Contributing Guidelines
 
-We are thrilled that you're considering contributing to our open-source project, OpenUnited.
-Open source projects thrive on the power of collaboration, and your involvement is essential to make our software even better.
+We are thrilled that you are considering contributing to the OpenUnited platform. We welcome your ideas, code, and enthusiasm. In addition to reading this guide and getting your local development environment setup, please also join us on [Discord](https://discord.gg/T3xevYvWey)
 
-This guide is designed to help you understand how you can contribute to our project effectively, and it outlines the best practices and expectations
-we have for our contributors.
-Whether you're a seasoned developer or a newcomer to the world of open source, we welcome your ideas, code, and enthusiasm.
-Together, we can make a meaningful impact on the project and its community.
+This guide is designed to help you understand how you can contribute to OpenUnited effectively, and it outlines the best practices and expectations we have for our contributors.
 
-Before you get started, please take a moment to read through these guidelines to ensure that your contributions align with our project's goals and values.
-This will help maintain a harmonious and productive development environment for everyone involved.
+Before you get started, please take a moment to read through these guidelines.
 
-- [The Ways to Contribute](#the-ways-to-contribute)
 - [Setting Up Your Development Environment](#setting-up-your-development-environment)
 - [How to Make a Contribution](#how-to-make-a-contribution)
-
-## The Ways to Contribute
-
-You can contribute to OpenUnited in various ways:
-
-1. **Report Bugs:** If you find a bug, create an issue on our [GitHub issue tracker](https://github.com/OpenUnited/platform/issues). Include clear details and steps to reproduce the problem.
-
-2. **Request Features:** Share your ideas for new features through our GitHub issue tracker. Explain the feature, its benefits, and provide use cases.
-
-3. **Enhance Documentation:** Improve our documentation by fixing typos, clarifying explanations, or creating new guides. Submit documentation-related pull requests on GitHub.
-
-4. **Write Code:** Developers can fix bugs, add features, enhance performance, or refactor code. Follow the contribution process in the [How to Contribute](#how-can-you-contribute) section.
-
-5. **Test and Quality Assurance:** Contribute to project reliability by writing test cases, running tests, and reporting issues.
-
-6. **Spread the Word:** Help us grow by sharing your experiences, promoting OpenUnited on social media, and writing about your positive interactions with the project.
-
-Your contributions, big or small, are vital to OpenUnited's success. Thank you for being part of our open-source community.
 
 ## Setting Up Your Development Environment
 
