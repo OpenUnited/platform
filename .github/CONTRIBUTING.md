@@ -28,9 +28,9 @@ In case you don't already have PostgreSQL running locally, the end of this guide
 
 #### Running the OpenUnited Platform
 
-You need to create your local .env file and set a value for DJANGO_SECRET_KEY.
+You need to set a value for DJANGO_SECRET_KEY in your .env file, this is used for cryptographic signing.
 
-You can generate a unique `DJANGO_SECRET_KEY` using [this website](https://djecrety.ir/) and set the value on the `.env` file.
+You can generate a unique value for `DJANGO_SECRET_KEY` using [this website](https://djecrety.ir/) and set the value on the `.env` file.
 
 After that, run the following commands:
 
