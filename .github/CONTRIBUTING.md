@@ -8,22 +8,23 @@ Before you get started, please take a moment to read through this guide.
 
 ## Setting Up Your Development Environment
 
-Firstly, please fork this repo to your own account. Then, git clone your forked version of the repo locally and change to the platform directory.
+Firstly, please fork this repo to your own account. Then, git clone your forked version of the repo locally and change to the platform directory and copy `.env.example` to `.env`.
 
 ```bash
 git clone git@github.com:<your-username>/platform.git
 cd platform
+cp .env.example .env
 ```
 
 #### Database Set Up
 
 We recommend using PostgreSQL for your database. 
 
-By default, the OpenUnited platform will look for a database named `ou_db` and use `postgres` as both the username and password.
+By default, the OpenUnited platform will look for a database named `ou_db` and use `postgres` as both the username and password. This is set in your .env file and can be overriden of course. 
 
-For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: `ou_db`. The setup.sh script you run later on will create this database for you automatically by calling the reset_database.py script you can find in the root directory.
+The setup.sh script you run later on will create this database for you automatically by calling the reset_database.py script you can find in the root directory.
 
-To override the database settings, after you copy `.env.example` to `.env`, you can set the values you want. In case you don't already have PostgreSQL running locally, the end of this guide you can see some helpful tips for installing PostgreSQL with and without Docker.
+In case you don't already have PostgreSQL running locally, the end of this guide you can see some helpful tips for installing PostgreSQL with and without Docker.
 
 #### Running the OpenUnited Platform
 
