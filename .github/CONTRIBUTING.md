@@ -8,7 +8,12 @@ Before you get started, please take a moment to read through this guide.
 
 ## Setting Up Your Development Environment
 
-Firstly, please fork this repo to your own account. Then, git clone your forked version of the repo locally.
+Firstly, please fork this repo to your own account. Then, git clone your forked version of the repo locally and change to the platform directory.
+
+```bash
+git clone git@github.com:<your-username>/platform.git
+cd platform
+```
 
 #### Database Set Up
 
@@ -29,8 +34,6 @@ You can generate a unique `DJANGO_SECRET_KEY` using [this website](https://djecr
 After that, run the following commands:
 
 ```bash
-git clone git@github.com:<your-username>/platform.git
-cd platform
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
