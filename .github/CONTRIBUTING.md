@@ -4,10 +4,7 @@ We are thrilled that you are considering contributing to the OpenUnited platform
 
 This guide is designed to help you understand how you can contribute to OpenUnited effectively, and it outlines the best practices and expectations we have for our contributors.
 
-Before you get started, please take a moment to read through these guidelines:
-
-- [Setting Up Your Development Environment](#setting-up-your-development-environment)
-- [How to Make a Contribution](#how-to-make-a-contribution)
+Before you get started, please take a moment to read through this guide.
 
 ## Setting Up Your Development Environment
 
@@ -19,21 +16,9 @@ By default, the OpenUnited platform will look for a database named `ou_db` and u
 
 For development purposes, if you already have a postgres server running locally with this default username/password combination, the easiest thing is to just create a database named: `ou_db`. The setup.sh script you run later on will create this database for you automatically by calling the reset_database.py script you can find in the root directory.
 
-To override the database settings, after you copy `.env.example` to `.env`, you can set the values you want.
+To override the database settings, after you copy `.env.example` to `.env`, you can set the values you want. In case you don't already have PostgreSQL running locally, the end of this guide you can see some helpful tips for installing PostgreSQL with and without Docker.
 
-### PostgreSQL Without Docker
-
-Before cloning and running the project, make sure to have PostgreSQL install on your machine. You can either download and install PostgreSQL or you can use the Docker image of PostgreSQL.
-
-You can download the latest version of PostgreSQL [here](https://www.postgresql.org/download/). Follow the instructions and install it.
-
-##### Using Docker for PostgreSQL
-
-You can also pull the image of PostgreSQL. It is assumed that you have Docker install on your machine. After that, you can pull it with this command:
-
-`docker pull postgres`
-
-#### Running the Project
+#### Running the OpenUnited Platform
 
 You need to create your local .env file and set a value for DJANGO_SECRET_KEY. You can do something like the following:
 
@@ -76,7 +61,21 @@ If you want to extend your local development, create a `local.py` in `openunited
 
 *It is advised to put this line into your bash configuration.*
 
-### With Docker
+
+### PostgreSQL Without Docker
+
+Before cloning and running the project, make sure to have PostgreSQL install on your machine. You can either download and install PostgreSQL or you can use the Docker image of PostgreSQL.
+
+You can download the latest version of PostgreSQL [here](https://www.postgresql.org/download/). Follow the instructions and install it.
+
+##### Using Docker for PostgreSQL
+
+You can also pull the image of PostgreSQL. It is assumed that you have Docker install on your machine. After that, you can pull it with this command:
+
+`docker pull postgres`
+
+
+### Running OpenUnited with Docker
 
 Make sure you have docker install on your machine.
 
