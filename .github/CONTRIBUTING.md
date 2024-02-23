@@ -1,4 +1,4 @@
-# Welcome to OpenUnited Contributing Guidelines
+# Contributing to the OpenUnited Platform
 
 We are thrilled that you are considering contributing to the OpenUnited platform. We welcome your ideas, code, and enthusiasm. In addition to reading this guide and getting your local development environment setup, please also join us on [Discord](https://discord.gg/T3xevYvWey).
 
@@ -22,16 +22,9 @@ To override the database settings, after you copy `.env.example` to `.env`, you 
 
 #### Running the OpenUnited Platform
 
-You need to create your local .env file and set a value for DJANGO_SECRET_KEY. You can do something like the following:
+You need to create your local .env file and set a value for DJANGO_SECRET_KEY.
 
-```bash
-cp .env.example .env
-python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
-```
-
-... and then, paste the secret key generated as the value (in between the quote marks) for DJANGO_SECRET_KEY in the first line of your .env file.
-
-You can alternatively generate `DJANGO_SECRET_KEY` using [this website](https://djecrety.ir/) and set the value on the `.env` file.
+You can generate a unique `DJANGO_SECRET_KEY` using [this website](https://djecrety.ir/) and set the value on the `.env` file.
 
 After that, run the following commands:
 
