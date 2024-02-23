@@ -61,6 +61,35 @@ If you want to extend your local development, create a `local.py` in `openunited
 
 *It is advised to put this line into your bash configuration.*
 
+### How to Make a Contribution
+
+Before moving on, please make sure that the project is run locally on your machine without any problem.
+
+Here's a quick rundown on how you can make a contribution:
+
+1) Find an issue that you are interested in addressing or a feature that you would like to add.
+2) Create a new branch for your fix using `git checkout -b branch-name-here`
+3) Make the appropriate changes for the issue you are trying to address or the feature that you want to add.
+4) Use `git add insert-paths-of-changed-files-here` to add the file contents of the changed files.
+5) Commit your changes. The commit messages should follow [this format](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format).
+6) Push the changes to the remote repository using `git push origin branch-name-here` and submit a pull request.
+7) Wait for the pull request to be reviewed by a maintainer.
+8) Make changes to the pull request if the reviewing maintainer recommends them.
+9) Celebrate your success after your pull request is merged!
+
+#### Making Changes
+
+Every change that is made needs to be formatted according to [Black](https://black.readthedocs.io/en/stable/).
+You can run `black .` before pushing your changes but it is recommended to use an extenstion that runs this command every time you save a file.
+For VS Code, you can install the extension in [here](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter).
+
+- If your changes introduces a new feature, make sure to include the necessary tests such as unit tests, integration tests etc.
+- If your changes modifies the existing implementation, make sure to extend and/or modify the tests.
+- If your changes requires an update on the documentation, please update the documentation accordingly.
+
+**NOTE:** If your work includes changes in the front-end, make sure to run `watch_css_changes.sh` script during the development. Otherwise, the styles might not apply.
+
+
 
 ### PostgreSQL Without Docker
 
@@ -120,31 +149,3 @@ services:
 ```
 
 - After adding ipdb/pdb/breakpoint, you can check container id by `docker ps` and attach it to debug `docker attach <container-id>`
-
-### How to Make a Contribution
-
-Before moving on, please make sure that the project is run locally on your machine without any problem.
-
-Here's a quick rundown on how you can make a contribution:
-
-1) Find an issue that you are interested in addressing or a feature that you would like to add.
-2) Create a new branch for your fix using `git checkout -b branch-name-here`
-3) Make the appropriate changes for the issue you are trying to address or the feature that you want to add.
-4) Use `git add insert-paths-of-changed-files-here` to add the file contents of the changed files.
-5) Commit your changes. The commit messages should follow [this format](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format).
-6) Push the changes to the remote repository using `git push origin branch-name-here` and submit a pull request.
-7) Wait for the pull request to be reviewed by a maintainer.
-8) Make changes to the pull request if the reviewing maintainer recommends them.
-9) Celebrate your success after your pull request is merged!
-
-#### Making Changes
-
-Every change that is made needs to be formatted according to [Black](https://black.readthedocs.io/en/stable/).
-You can run `black .` before pushing your changes but it is recommended to use an extenstion that runs this command every time you save a file.
-For VS Code, you can install the extension in [here](https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter).
-
-- If your changes introduces a new feature, make sure to include the necessary tests such as unit tests, integration tests etc.
-- If your changes modifies the existing implementation, make sure to extend and/or modify the tests.
-- If your changes requires an update on the documentation, please update the documentation accordingly.
-
-**NOTE:** If your work includes changes in the front-end, make sure to run `watch_css_changes.sh` script during the development. Otherwise, the styles might not apply.
