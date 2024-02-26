@@ -210,9 +210,6 @@ def generate_sample_data():
             bounty.expertise.set(sample(expertise, k=randint(1, 4)))
             bounties.append(bounty)
 
-        # todo: for some reason completed bountyclaim objects are duplicated
-        # check the portfolio page
-
         # Create BountyClaim model instances
         bounty_claims = []
         for index in range(0, BOUNTY_CLAIM_COUNT):
@@ -222,13 +219,22 @@ def generate_sample_data():
             kind = 3
             if index < 5:
                 kind = 0  # CLAIM_TYPE_DONE
+                bounty.status = 4  # done
+                bounty.challenge.status = 4  # done
             elif index >= 5 and index < 10:
                 kind = 1  # CLAIM_TYPE_ACTIVE
+                bounty.status = 3  # claimed
+                bounty.challenge.status = 3  # claimed
             elif index >= 10 and index < 15:
                 kind = 2  # CLAIM_TYPE_FAILED
+                bounty.status = 2  # available
+                bounty.challenge.status = 2  # available
             else:
                 kind = 3  # CLAIM_TYPE_IN_REVIEW
+                bounty.status = 5  # in review
+                bounty.challenge.status = 5  # in review
 
+            bounty.save()
             bounty_claim_dict = {
                 "person": person,
                 "bounty": bounty,
@@ -244,8 +250,8 @@ def generate_sample_data():
             "utility/sample_data/bounty_delivery_attempt.json",
             "bounty_delivery_attempt",
         )
+        completed_bounty_claims = [bc for bc in bounty_claims if bc.kind == 1]
 
-        completed_bounty_claims = [bc for bc in bounty_claims if bc.kind == 3]
         for data, bounty_claim in zip(
             bounty_delivery_attempt_data, completed_bounty_claims
         ):
@@ -264,6 +270,10 @@ def generate_sample_data():
                 work.bounty_claim.bounty.status = 4  # DONE
                 work.bounty_claim.bounty.challenge.status = 4  # DONE
                 work.save()
+            elif work.kind == 2:
+                work.bounty_claim.kind = 2  # DONE
+                work.bounty_claim.bounty.status = 2  # available
+                work.bounty_claim.bounty.challenge.status = 2  # available
 
             # Create contributors
             person = work.person
