@@ -420,10 +420,18 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 }
             )
 
-        if bounty_claim and bounty_claim.kind in [
-            BountyClaim.CLAIM_TYPE_DONE,
-            BountyClaim.CLAIM_TYPE_DONE,
-        ]:
+        # todo: fix this ugly if statement
+        if (
+            bounty_claim
+            and bounty_claim.kind
+            in [
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_DONE,
+            ]
+            and bounty_claim.bounty.status == Bounty.BOUNTY_STATUS_DONE
+            and bounty_claim.bounty.challenge.status
+            == Challenge.CHALLENGE_STATUS_DONE
+        ):
             context.update(
                 {"is_claimed": True, "claimed_by": bounty_claim.person}
             )
