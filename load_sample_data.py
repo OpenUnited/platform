@@ -88,6 +88,13 @@ def generate_sample_data():
     # Create Capability model instances
     capabilities = create_capabilities()
 
+    # Create Tag model instances
+    tag_data = read_json_data("utility/sample_data/tag.json", "tag")
+
+    tags = []
+    for tag in tag_data:
+        tags.append(TagService.create(**tag))
+
     # Create User model instances
     user_data = read_json_data("utility/sample_data/user.json", "user")
 
@@ -184,10 +191,11 @@ def generate_sample_data():
             # elem["initiative"] = choice(initiatives)
             # elem["capability"] = choice(capabilities)
             # elem["updated_by"] = choice(people)
-            # elem["reviewer"] = choice(people)
+            elem["reviewer"] = product.content_object
 
         for cd in temp_challenge_data:
             challenge = Challenge.objects.create(**cd)
+            challenge.tag.set(sample(tags, k=randint(1, 3)))
             challenges.append(challenge)
 
         temp_bounty_data = bounty_data[step : step + CHALLENGE_COUNT]
@@ -299,13 +307,6 @@ def generate_sample_data():
             data = initiative_data[i]
             data["product"] = product
             Initiative.objects.create(**data)
-
-    # Create Tag model instances
-    tag_data = read_json_data("utility/sample_data/tag.json", "tag")
-
-    tags = []
-    for tag in tag_data:
-        tags.append(TagService.create(**tag))
 
     # Create PersonSkill model instances
     fancy_out(f"Create PersonSkill records")
