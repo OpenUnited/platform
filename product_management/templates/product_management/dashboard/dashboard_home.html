@@ -79,6 +79,9 @@
                         class="font-medium text-gray-900 hover:text-gray-600">{{ product.name }}</a>
                     <!-- Get the following information from the database -->
                     <p class="text-gray-500">12 People</p>
+
+                    <a hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}" hx-target="#dashboard-tabs"
+                        hx-swap="innerHTML" class="cursor-pointer font-medium text-gray-900 hover:text-gray-600">Manage Product</a>
                 </div>
             </div>
         </li>
