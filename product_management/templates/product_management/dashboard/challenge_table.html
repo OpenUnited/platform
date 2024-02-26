@@ -26,22 +26,17 @@
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                 {{ challenge.get_reward_type_display() }}
             </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ challenge.tag.all() }}
+            {% if challenge.tag.all() %}
+            <td class="px-3 py-4 text-sm text-gray-500">{{ ", ".join(challenge.tag.all().values_list("name", flat=True)) }}
             </td>
+            {% else %}
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">No tag specified for this challenge.
+            </td>
+            {% endif %}
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                 <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
                     src="{{ challenge.created_by.get_photo_url() }}" alt="{{ challenge.created_by.get_short_name() }}">
                 <span class="ml-1.5">{{ challenge.created_by.get_full_name() }}</span>
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {% if challenge.reviewer %}
-                <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
-                    src="{{ challenge.reviewer.get_photo_url() }}" alt="{{ challenge.reviewer.get_short_name() }}">
-                <span class="ml-1.5">{{ challenge.reviewer.get_full_name() }}</span>
-                {% else %}
-                <div>
-                </div>
-                {% endif %}
             </td>
         </tr>
         {% endfor %}
