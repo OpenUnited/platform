@@ -420,7 +420,10 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 }
             )
 
-        if bounty_claim:
+        if bounty_claim and bounty_claim.kind in [
+            BountyClaim.CLAIM_TYPE_DONE,
+            BountyClaim.CLAIM_TYPE_DONE,
+        ]:
             context.update(
                 {"is_claimed": True, "claimed_by": bounty_claim.person}
             )

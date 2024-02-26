@@ -130,11 +130,11 @@
                     class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
                     <div class="flex items-center text-xs font-semibold leading-6">
                         <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
-                            {% set expertise_icon_path = 'images/skills/' ~ exp.name ~ '.svg' %}
+                            {% set expertise_icon_path = 'images/skills/' ~ exp ~ '.svg' %}
                             <img src="{{ static(expertise_icon_path)}}"
                                 class="w-full h-full object-contain object-center" alt="#">
                         </span>
-                        {{ exp.name }}
+                        {{ exp }}
                     </div>
                 </div>
                 {% endfor %}
