@@ -2,6 +2,7 @@ import json
 from typing import Any
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib import messages
@@ -24,7 +25,7 @@ from .models import (
     Feedback,
     BountyDeliveryAttempt,
 )
-from product_management.models import Challenge
+from product_management.models import Challenge, Bounty
 from .forms import (
     PersonProfileForm,
     FeedbackForm,
@@ -239,10 +240,14 @@ class TalentPortfolio(TemplateView):
         person = user.person
 
         person_skill = person.skills.all().first()
+        # todo: check the statuses
         bounty_claims = BountyClaim.objects.filter(
+            Q(kind=BountyClaim.CLAIM_TYPE_DONE)
+            | Q(bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE)
+            | Q(bounty__status=Bounty.BOUNTY_STATUS_CLAIMED),
             person=person,
-            bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE,
         ).select_related("bounty__challenge", "bounty__challenge__product")
+
         received_feedbacks = Feedback.objects.filter(recipient=person)
 
         if (

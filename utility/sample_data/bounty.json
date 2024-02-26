@@ -1,6 +1,5 @@
-[
-    {
-        "points": 25,
+[{
+        "points": 55,
         "status": 2,
         "is_active": true
     },
@@ -10,17 +9,32 @@
         "is_active": true
     },
     {
+        "points": 25,
+        "status": 2,
+        "is_active": true
+    },
+    {
         "points": 40,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 60,
+        "points": 75,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 75,
+        "points": 45,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 70,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 60,
         "status": 2,
         "is_active": true
     },
@@ -35,12 +49,27 @@
         "is_active": true
     },
     {
-        "points": 45,
+        "points": 18,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 55,
+        "points": 25,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 75,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 32,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 40,
         "status": 2,
         "is_active": true
     },
@@ -50,17 +79,22 @@
         "is_active": true
     },
     {
-        "points": 82,
+        "points": 60,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 22,
+        "points": 55,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 28,
+        "points": 45,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 30,
         "status": 2,
         "is_active": true
     },
@@ -70,67 +104,17 @@
         "is_active": true
     },
     {
-        "points": 50,
+        "points": 63,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 65,
+        "points": 41,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 80,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 15,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 29,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 42,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 53,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 68,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 85,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 20,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 35,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 48,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 58,
+        "points": 24,
         "status": 2,
         "is_active": true
     },
@@ -140,12 +124,377 @@
         "is_active": true
     },
     {
-        "points": 90,
+        "points": 57,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 12,
+        "points": 19,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 36,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 68,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 50,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 33,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 51,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 48,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 27,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 22,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 66,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 35,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 59,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 44,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 29,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 47,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 31,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 56,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 42,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 21,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 75,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 39,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 61,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 26,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 69,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 23,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 64,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 49,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 34,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 58,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 43,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 28,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 62,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 25,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 71,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 37,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 65,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 30,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 53,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 46,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 20,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 73,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 54,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 74,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 52,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 67,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 55,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 32,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 18,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 78,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 44,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 37,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 52,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 59,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 63,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 42,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 22,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 51,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 47,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 64,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 58,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 27,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 73,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 35,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 33,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 66,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 45,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 26,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 30,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 39,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 71,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 77,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 68,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 55,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "points": 28,
         "status": 2,
         "is_active": true
     }

@@ -304,7 +304,9 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         Person, on_delete=models.CASCADE, blank=True, null=True
     )
     expected_finish_date = models.DateField(default=date.today)
-    kind = models.IntegerField(choices=CLAIM_TYPE, default=0)
+    kind = models.IntegerField(
+        choices=CLAIM_TYPE, default=CLAIM_TYPE_IN_REVIEW
+    )
 
     def get_challenge_detail_url(self):
         return self.bounty.challenge.get_absolute_url()

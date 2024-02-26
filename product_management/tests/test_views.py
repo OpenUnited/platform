@@ -604,7 +604,7 @@ class ChallengeDetailViewTest(BaseProductTestCase):
             "bounty_claim": bc_one,
             "current_user_created_claim_request": False,
             "actions_available": False,
-            "is_claimed": True,
+            "is_claimed": False,
             "claimed_by": bc_one.person,
         }
         self.assertDictContainsSubset(actual, expected)
@@ -648,8 +648,7 @@ class ChallengeDetailViewTest(BaseProductTestCase):
             "bounty_claim": bc_one,
             "current_user_created_claim_request": True,
             "actions_available": False,
-            "is_claimed": True,
-            "claimed_by": bc_one.person,
+            "is_claimed": False,
         }
         self.assertDictEqual(actual, expected)
 
