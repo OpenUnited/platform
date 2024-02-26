@@ -16,6 +16,16 @@ def clear_rows_by_model_name(model_names_mapping: dict) -> None:
         model.objects.all().delete()
 
 
+def generate_random_future_date():
+    today = datetime.date.today()
+    one_month_later = today + datetime.timedelta(days=60)
+    random_date = today + datetime.timedelta(
+        days=random.randint(0, (one_month_later - today).days)
+    )
+
+    return random_date
+
+
 def create_capabilities() -> list:
     fancy_out("Create Capability records")
     get = lambda node_id: Capability.objects.get(pk=node_id)
@@ -75,12 +85,6 @@ def read_json_data(file_name: str, model_name: str = None) -> dict | list:
 
 # Generate sample data for various models and populate the database
 def generate_sample_data():
-    model_app_mapping = read_json_data(
-        "utility/sample_data/model_app_mapping.json"
-    )
-
-    clear_rows_by_model_name(model_app_mapping)
-
     # Create Capability model instances
     capabilities = create_capabilities()
 
@@ -102,114 +106,6 @@ def generate_sample_data():
     people = []
     for pd in person_data:
         people.append(PersonService.create(**pd))
-
-    # Create Review model instances
-    feedback_data = read_json_data(
-        "utility/sample_data/feedback.json", "feedback"
-    )
-
-    people_subset = people[:5]
-    feedbacks = []
-    for fd in feedback_data:
-        recipient = choice(people_subset)
-        provider = choice(people_subset)
-        while recipient == provider:
-            provider = choice(people_subset)
-
-        fd["recipient"] = recipient
-        fd["provider"] = provider
-
-        feedbacks.append(FeedbackService.create(**fd))
-
-    # Create Organisation model instances
-    organisation_data = read_json_data(
-        "utility/sample_data/organisation.json", "organisation"
-    )
-
-    organisations = []
-    for org_data in organisation_data:
-        organisations.append(OrganisationService.create(**org_data))
-
-    # Create Product model instances
-    product_data = read_json_data(
-        "utility/sample_data/product.json", "product"
-    )
-
-    products = []
-    for pd in product_data:
-        pd["capability_start"] = capabilities.first()
-        if bool(getrandbits(1)):
-            pd["content_object"] = choice(organisations)
-        else:
-            pd["content_object"] = choice(people)
-
-        products.append(ProductService.create(**pd))
-
-    # Create ProductRoleAssignment model instances
-    product_role_assignment_data = read_json_data(
-        "utility/sample_data/product_role_assignment.json",
-        "product_role_assignment",
-    )
-
-    copy_people = people.copy()
-    copy_products = products.copy()
-    for ppd in product_role_assignment_data:
-        p = choice(copy_people)
-        ppd["person"] = p
-        copy_people.remove(p)
-
-        product = choice(copy_products)
-        ppd["product"] = product
-        copy_products.remove(product)
-
-    product_people = []
-    for ppd in product_role_assignment_data:
-        product_people.append(ProductRoleAssignmentService.create(**ppd))
-
-    # Make a single user to have a deterministic product and
-    # the owner of that product.
-    dogukan = people[0]
-    smart_watch_pro = products[0]
-    product_role_assignment = product_people[0]
-
-    product_role_assignment.person = dogukan
-    product_role_assignment.product = smart_watch_pro
-    product_role_assignment.role = 1  # ProductRoleAssignment.PRODUCT_MANAGER
-    product_role_assignment.save()
-
-    # Create Idea model instances
-    idea_data = read_json_data("utility/sample_data/idea.json", "idea")
-
-    for elem in idea_data:
-        elem["product"] = choice(products)
-        elem["person"] = choice(people)
-
-    ideas = []
-    for i_data in idea_data:
-        ideas.append(IdeaService.create(**i_data))
-
-    # Create Bug model instances
-    bug_data = read_json_data("utility/sample_data/bug.json", "bug")
-
-    for elem in bug_data:
-        elem["product"] = choice(products)
-        elem["person"] = choice(people)
-
-    bugs = []
-    for b_data in bug_data:
-        bugs.append(BugService.create(**b_data))
-
-    # Create Initiative model instances
-    initiative_data = read_json_data(
-        "utility/sample_data/initiative.json", "initiative"
-    )
-
-    for elem in initiative_data:
-        elem["product"] = choice(products)
-
-    initiatives = []
-    for i_data in initiative_data:
-        initiatives.append(InitiativeService.create(**i_data))
 
     # Create Skill model instances
     skill_data = read_json_data("utility/sample_data/skill.json", "skill")
@@ -237,23 +133,172 @@ def generate_sample_data():
         id__in=expertise_ids, selectable=True
     ).values_list("name", flat=True)
 
-    # Create PersonSkill model instances
-    fancy_out(f"Create PersonSkill records")
-    person_skill_data = [{"person": p} for p in people]
+    # Create Product model instances
+    product_data = read_json_data(
+        "utility/sample_data/product.json", "product"
+    )
 
-    person_skills = []
-    for psd in person_skill_data:
-        psd["skill"] = sample(
-            list(skill_name_queryset),
-            randint(2, len(skill_name_queryset) // 2),
+    # note: allow organizations to own products
+    # todo: check `capability_start`
+    products = []
+    for index, pd in enumerate(product_data):
+        # only the first `len(product_data)` person can own products
+        # the rest of people are contributors
+        person = people[index]
+        pd["content_object"] = person
+
+        product = ProductService.create(**pd)
+        products.append(product)
+
+    # Create ProductRoleAssignment instances (part 1/2)
+    for index in range(0, len(product_data)):
+        role = 1
+
+        if index > len(product_data) // 2:
+            role = 2
+
+        person = people[index]
+        product = products[index]
+        ProductRoleAssignment.objects.create(
+            person=person, product=product, role=role
         )
-        psd["expertise"] = list(
-            sample(
-                list(expertise_name_queryset),
-                randint(2, len(expertise_name_queryset) // 2),
+
+    # Create Challenge model instances
+    challenge_data = read_json_data(
+        "utility/sample_data/challenge.json", "challenge"
+    )
+    challenges = []
+
+    # Create Bounty model instances
+    bounty_data = read_json_data("utility/sample_data/bounty.json", "bounty")
+    bounties = []
+
+    CHALLENGE_COUNT = 10
+    BOUNTY_CLAIM_COUNT = 20
+    for index, product in enumerate(products):
+        step = index * CHALLENGE_COUNT
+        temp_challenge_data = challenge_data[step : step + CHALLENGE_COUNT]
+        for elem in temp_challenge_data:
+            elem["product"] = product
+            elem["created_by"] = product.content_object
+            # elem["initiative"] = choice(initiatives)
+            # elem["capability"] = choice(capabilities)
+            # elem["updated_by"] = choice(people)
+            # elem["reviewer"] = choice(people)
+
+        for cd in temp_challenge_data:
+            challenge = Challenge.objects.create(**cd)
+            challenges.append(challenge)
+
+        temp_bounty_data = bounty_data[step : step + CHALLENGE_COUNT]
+        for index, bd in enumerate(temp_bounty_data):
+            # For now, each challenge has a single bounty
+            challenge = challenges[step + index]
+            bd["challenge"] = challenge
+            bd["skill"] = choice(skills)
+
+        for bd in temp_bounty_data:
+            bounty = BountyService.create(**bd)
+            bounty.expertise.set(sample(expertise, k=randint(1, 4)))
+            bounties.append(bounty)
+
+        # todo: for some reason completed bountyclaim objects are duplicated
+        # check the portfolio page
+
+        # Create BountyClaim model instances
+        bounty_claims = []
+        for index in range(0, BOUNTY_CLAIM_COUNT):
+            person = people[(index % len(people)) + len(products)]
+            bounty = bounties[(index % 10) + step]
+
+            kind = 3
+            if index < 5:
+                kind = 0  # CLAIM_TYPE_DONE
+            elif index >= 5 and index < 10:
+                kind = 1  # CLAIM_TYPE_ACTIVE
+            elif index >= 10 and index < 15:
+                kind = 2  # CLAIM_TYPE_FAILED
+            else:
+                kind = 3  # CLAIM_TYPE_IN_REVIEW
+
+            bounty_claim_dict = {
+                "person": person,
+                "bounty": bounty,
+                "expected_finish_date": generate_random_future_date(),
+                "kind": kind,
+            }
+
+            bounty_claim = BountyClaimService.create(**bounty_claim_dict)
+            bounty_claims.append(bounty_claim)
+
+        # Create BountyDeliveryAttempt model instances
+        bounty_delivery_attempt_data = read_json_data(
+            "utility/sample_data/bounty_delivery_attempt.json",
+            "bounty_delivery_attempt",
+        )
+
+        completed_bounty_claims = [bc for bc in bounty_claims if bc.kind == 3]
+        for data, bounty_claim in zip(
+            bounty_delivery_attempt_data, completed_bounty_claims
+        ):
+            data["bounty_claim"] = bounty_claim
+            data["person"] = bounty_claim.person
+            work = BountyDeliveryAttempt.objects.create(**data)
+
+            # Work is approved
+            if work.kind == 0:
+                work.bounty_claim.kind = 1  # ACTIVE
+                work.bounty_claim.bounty.status = 3  # CLAIMED
+                work.bounty_claim.bounty.challenge.status = 3  # CLAIMED
+                work.save()
+            elif work.kind == 1:
+                work.bounty_claim.kind = 0  # DONE
+                work.bounty_claim.bounty.status = 4  # DONE
+                work.bounty_claim.bounty.challenge.status = 4  # DONE
+                work.save()
+
+            # Create contributors
+            person = work.person
+            product = work.bounty_claim.bounty.challenge.product
+            ProductRoleAssignment.objects.create(
+                person=person,
+                product=product,
+                role=0,
             )
-        )
-        person_skills.append(PersonSkillService.create(**psd))
+
+    # Create Idea model instances
+    idea_data = read_json_data("utility/sample_data/idea.json", "idea")
+
+    index = 0
+    for product in products:
+        for i in range(index, index + 5):
+            data = idea_data[i]
+            data["product"] = product
+            data["person"] = choice(people)
+            Idea.objects.create(**data)
+
+    # Create Bug model instances
+    bug_data = read_json_data("utility/sample_data/bug.json", "bug")
+
+    index = 0
+    for product in products:
+        for i in range(index, index + 5):
+            data = bug_data[i]
+            data["product"] = product
+            data["person"] = choice(people)
+            Bug.objects.create(**data)
+
+    # Create Initiative model instances
+    initiative_data = read_json_data(
+        "utility/sample_data/initiative.json", "initiative"
+    )
+
+    index = 0
+    for product in products:
+        for i in range(index, index + 5):
+            data = initiative_data[i]
+            data["product"] = product
+            Initiative.objects.create(**data)
 
     # Create Tag model instances
     tag_data = read_json_data("utility/sample_data/tag.json", "tag")
@@ -262,92 +307,63 @@ def generate_sample_data():
     for tag in tag_data:
         tags.append(TagService.create(**tag))
 
-    # Create Challenge model instances
-    challenge_data = read_json_data(
-        "utility/sample_data/challenge.json", "challenge"
-    )
+    # Create PersonSkill model instances
+    fancy_out(f"Create PersonSkill records")
 
-    for elem in challenge_data:
-        elem["initiative"] = choice(initiatives)
-        elem["capability"] = choice(capabilities)
-        elem["created_by"] = choice(people)
-        elem["updated_by"] = choice(people)
-        elem["reviewer"] = choice(people)
-        # assign the challenges only three products
-        elem["product"] = choice(products[:3])
+    people = Person.objects.all()
+    for person in people:
+        bounty_claims = BountyClaim.objects.filter(person=person)
 
-    challenges = []
-    for cd in challenge_data:
-        challenge = ChallengeService.create(**cd)
-        challenges.append(challenge)
-
-    # Create Bounty model instances
-    bounty_data = read_json_data("utility/sample_data/bounty.json", "bounty")
-
-    # NOTE: len(bounty.json) == len(challenge.json)
-    for index, bd in enumerate(bounty_data):
-        challenge = challenges[index]
-        bd["challenge"] = challenge
-        bd["skill"] = choice(skills)
-
-    bounties = []
-    for bd in bounty_data:
-        bounty = BountyService.create(**bd)
-        bounty.expertise.set(sample(expertise, k=randint(1, 4)))
-        bounties.append(bounty)
-
-    # Create BountyClaim model instances
-    bounty_claim_data = read_json_data(
-        "utility/sample_data/bounty_claim.json", "bounty_claim"
-    )
-
-    bounty_claims = []
-    # NOTE: len(bounty.json) == len(bounty_claims.json)
-    for i, bcd in enumerate(bounty_claim_data):
-        # We do not want every bounty to be claimed
-        if bool(getrandbits(1)):
-            # allow only two person to claim the bounties
-            bcd["person"] = choice(people[1:3])
-            bcd["bounty"] = bounties[i]
-
-            today = datetime.date.today()
-            one_month_later = today + datetime.timedelta(days=60)
-            random_date = today + datetime.timedelta(
-                days=random.randint(0, (one_month_later - today).days)
-            )
-
-            bcd["expected_finish_date"] = random_date
-            bounty_claim = BountyClaimService.create(**bcd)
-            bounty_claims.append(bounty_claim)
-            bb = Bounty.objects.get(id=bounties[i].id)
-            bb.challenge.status = 3
-            bb.status = 3
-            bb.save()
-            bounty_claim.kind = 1
-            bounty_claim.save()
-
-    john = people[1]
-    for bounty_claim in bounty_claims:
-        if bounty_claim.person != john:
+        if not bounty_claims:
             continue
 
-        if bool(getrandbits(1)):
-            kind = choice([0, 1, 2])
-            delivery = BountyDeliveryAttempt.objects.create(
-                person=john,
-                bounty_claim=bounty_claim,
-                kind=kind,
-                delivery_message="Lorem ipsum sit amet",
-            )
+        skill_ids = []
+        expertise_ids = []
+        for bc in bounty_claims:
+            skill_ids.append(bc.bounty.skill.id)
+            expertise_ids.extend([exp.id for exp in bc.bounty.expertise.all()])
 
-            if kind == 0:
-                pass
-            elif kind == 1:
-                delivery.bounty_claim.kind = 0  # CLAIM_TYPE_DONE
-            else:
-                delivery.bounty_claim.kind = 2  # CLAIM_TYPE_FAILED
+        skill_name_queryset = Skill.objects.filter(
+            id__in=set(skill_ids), active=True, selectable=True
+        ).values_list("name", flat=True)
 
-            delivery.save()
+        expertise_name_queryset = Expertise.objects.filter(
+            id__in=set(expertise_ids), selectable=True
+        ).values_list("name", flat=True)
+
+        PersonSkill.objects.create(
+            person=person,
+            skill=list(skill_name_queryset),
+            expertise=list(expertise_name_queryset),
+        )
+
+    # Create Review model instances
+    feedback_data = read_json_data(
+        "utility/sample_data/feedback.json", "feedback"
+    )
+
+    index = 0
+    for product in products:
+        bounty_claims = BountyClaim.objects.filter(
+            bounty__challenge__product=product, kind=0
+        )
+
+        for bounty_claim in bounty_claims:
+            data = feedback_data[index]
+            data["provider"] = product.content_object
+            data["recipient"] = bounty_claim.person
+            index += 1
+
+            Feedback.objects.create(**data)
+
+    # Create Organisation model instances
+    organisation_data = read_json_data(
+        "utility/sample_data/organisation.json", "organisation"
+    )
+
+    organisations = []
+    for org_data in organisation_data:
+        organisations.append(OrganisationService.create(**org_data))
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -405,14 +421,19 @@ def generate_sample_data():
 
 
 def run_data_generation():
-    proceed = input(
-        "Running this script will replace all your current data. Ok? (Y/N)"
-    ).lower()
+    # proceed = input(
+    #     "Running this script will replace all your current data. Ok? (Y/N)"
+    # ).lower()
 
-    if not proceed or proceed[0] != "y":
-        fancy_out("Execution Abandoned")
-        exit()
+    # if not proceed or proceed[0] != "y":
+    #     fancy_out("Execution Abandoned")
+    #     exit()
 
+    model_app_mapping = read_json_data(
+        "utility/sample_data/model_app_mapping.json"
+    )
+
+    clear_rows_by_model_name(model_app_mapping)
     generate_sample_data()
 
 
@@ -422,8 +443,23 @@ if __name__ == "__main__":
     )
     django.setup()
 
-    from talent.models import Skill, Expertise, BountyDeliveryAttempt
-    from product_management.models import Bounty
+    from security.models import ProductRoleAssignment
+    from talent.models import (
+        Skill,
+        Expertise,
+        BountyDeliveryAttempt,
+        BountyClaim,
+        Person,
+        PersonSkill,
+        Feedback,
+    )
+    from product_management.models import (
+        Bounty,
+        Challenge,
+        Idea,
+        Bug,
+        Initiative,
+    )
     from commerce.services import (
         OrganisationService,
         OrganisationAccountService,

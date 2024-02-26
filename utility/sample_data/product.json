@@ -1,8 +1,7 @@
-[
-    {
+[{
         "photo": "https://example.com/images/product1.jpg",
         "name": "Smartwatch Pro",
-        "short_description": "Stay connected and fit with Smartwatch Pro.",
+        "short_description": "Stay connected and fit with Smartwatch Pro. Monitor workouts, heart rate, and receive smartphone notifications.",
         "full_description": "The Smartwatch Pro is your ultimate companion for staying connected and achieving your fitness goals. With its sleek design and advanced features, it tracks your workouts, monitors your heart rate, and allows you to receive notifications from your smartphone. Stay on top of your game with Smartwatch Pro!",
         "website": "https://www.smartwatchpro.com",
         "detail_url": "https://www.smartwatchpro.com/products/smartwatch-pro",
@@ -12,7 +11,7 @@
     {
         "photo": "https://example.com/images/product2.jpg",
         "name": "Wireless Earbuds X",
-        "short_description": "Immerse yourself in music with Wireless Earbuds X.",
+        "short_description": "Immerse yourself in music with Wireless Earbuds X. Enjoy high-fidelity sound and long-lasting battery life.",
         "full_description": "Experience the ultimate freedom of wireless music with Wireless Earbuds X. These earbuds deliver high-fidelity sound, seamless Bluetooth connectivity, and long-lasting battery life. Whether you're on a run or working from home, Wireless Earbuds X will keep you in the zone.",
         "website": "https://www.wirelessearbudsx.com",
         "detail_url": "https://www.wirelessearbudsx.com/products/wireless-earbuds-x",
@@ -22,7 +21,7 @@
     {
         "photo": "https://example.com/images/product3.jpg",
         "name": "Gourmet Coffee Blend",
-        "short_description": "Indulge in the rich flavors of Gourmet Coffee Blend.",
+        "short_description": "Indulge in the rich flavors of Gourmet Coffee Blend. Experience a delightful balance of aroma and flavor.",
         "full_description": "Awaken your senses with the exquisite taste of Gourmet Coffee Blend. Sourced from the finest coffee beans around the world, this blend offers a delightful balance of aroma and flavor. Start your day with a perfect cup of Gourmet Coffee Blend.",
         "website": "https://www.gourmetcoffeeblend.com",
         "detail_url": "https://www.gourmetcoffeeblend.com/products/gourmet-coffee-blend",
@@ -32,7 +31,7 @@
     {
         "photo": "https://example.com/images/product4.jpg",
         "name": "Organic Skincare Set",
-        "short_description": "Nourish your skin with our Organic Skincare Set.",
+        "short_description": "Nourish your skin with our Organic Skincare Set. Experience radiant and healthy skin.",
         "full_description": "Treat your skin to the goodness of nature with our Organic Skincare Set. This set includes a cleanser, toner, and moisturizer made from carefully selected organic ingredients. Experience the difference of radiant and healthy skin with our Organic Skincare Set.",
         "website": "https://www.organicskincareset.com",
         "detail_url": "https://www.organicskincareset.com/products/organic-skincare-set",
@@ -42,7 +41,7 @@
     {
         "photo": "https://example.com/images/product5.jpg",
         "name": "Smart Home Hub",
-        "short_description": "Transform your home with the Smart Home Hub.",
+        "short_description": "Transform your home with the Smart Home Hub. Control smart devices for efficiency and security.",
         "full_description": "Experience the future of smart living with the Smart Home Hub. This all-in-one hub connects and controls your smart devices, making your home more efficient and secure. From adjusting the thermostat to managing security cameras, the Smart Home Hub puts control in the palm of your hand.",
         "website": "https://www.smarthomehub.com",
         "detail_url": "https://www.smarthomehub.com/products/smart-home-hub",
@@ -52,7 +51,7 @@
     {
         "photo": "https://example.com/images/product6.jpg",
         "name": "Eco-Friendly Water Bottle",
-        "short_description": "Stay hydrated and eco-friendly with our Water Bottle.",
+        "short_description": "Stay hydrated and eco-friendly with our Water Bottle. Enjoy cold or hot beverages on the go.",
         "full_description": "Our Eco-Friendly Water Bottle is the perfect companion for your active lifestyle. Made from sustainable materials, it's designed to keep your beverages cold or hot for hours. Join us in reducing plastic waste and stay hydrated with our Eco-Friendly Water Bottle.",
         "website": "https://www.ecofriendlywaterbottle.com",
         "detail_url": "https://www.ecofriendlywaterbottle.com/products/eco-friendly-water-bottle",
@@ -62,7 +61,7 @@
     {
         "photo": "https://example.com/images/product7.jpg",
         "name": "Wireless Charging Pad",
-        "short_description": "Say goodbye to cables with our Wireless Charging Pad.",
+        "short_description": "Say goodbye to cables with our Wireless Charging Pad. Fast and convenient charging for Qi-enabled devices.",
         "full_description": "Our Wireless Charging Pad offers fast and convenient charging for your Qi-enabled devices. Simply place your phone on the pad, and it starts charging wirelessly. No more tangled cables or searching for chargers. Simplify your charging experience with our Wireless Charging Pad.",
         "website": "https://www.wirelesschargingpad.com",
         "detail_url": "https://www.wirelesschargingpad.com/products/wireless-charging-pad",
@@ -72,7 +71,7 @@
     {
         "photo": "https://example.com/images/product8.jpg",
         "name": "Portable Bluetooth Speaker",
-        "short_description": "Enjoy music on the go with our Portable Bluetooth Speaker.",
+        "short_description": "Enjoy music on the go with our Portable Bluetooth Speaker. Crystal-clear sound and long battery life.",
         "full_description": "Take your music anywhere with our Portable Bluetooth Speaker. It offers crystal-clear sound and long battery life, making it perfect for outdoor adventures or parties. Get ready to elevate your music experience with our Portable Bluetooth Speaker.",
         "website": "https://www.portablebluetoothspeaker.com",
         "detail_url": "https://www.portablebluetoothspeaker.com/products/portable-bluetooth-speaker",
@@ -82,7 +81,7 @@
     {
         "photo": "https://example.com/images/product9.jpg",
         "name": "Sustainable Fashion Backpack",
-        "short_description": "Embrace sustainable style with our Fashion Backpack.",
+        "short_description": "Embrace sustainable style with our Fashion Backpack. Made from recycled materials.",
         "full_description": "Our Sustainable Fashion Backpack is a perfect blend of style and eco-consciousness. It's made from recycled materials and designed for both fashion and functionality. Carry your essentials in style while making a positive impact on the planet with our Sustainable Fashion Backpack.",
         "website": "https://www.sustainablefashionbackpack.com",
         "detail_url": "https://www.sustainablefashionbackpack.com/products/sustainable-fashion-backpack",
@@ -92,211 +91,11 @@
     {
         "photo": "https://example.com/images/product10.jpg",
         "name": "Home Security Camera",
-        "short_description": "Monitor your home with our Home Security Camera.",
+        "short_description": "Monitor your home with our Home Security Camera. HD video, night vision, and smart motion detection.",
         "full_description": "Keep an eye on your home 24/7 with our Home Security Camera. It offers high-definition video, night vision, and smart motion detection. Whether you're at work or on vacation, stay connected to your home with our Home Security Camera.",
         "website": "https://www.homesecuritycamera.com",
         "detail_url": "https://www.homesecuritycamera.com/products/home-security-camera",
         "video_url": "https://www.youtube.com/watch?v=efef3456",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product11.jpg",
-        "name": "Ultra-Fast SSD",
-        "short_description": "Upgrade your storage with the Ultra-Fast SSD.",
-        "full_description": "Experience lightning-fast data access and performance with the Ultra-Fast SSD. This solid-state drive is perfect for gaming, creative work, and multitasking. Say goodbye to slow loading times and embrace the power of the Ultra-Fast SSD.",
-        "website": "https://www.ultrafastssd.com",
-        "detail_url": "https://www.ultrafastssd.com/products/ultra-fast-ssd",
-        "video_url": "https://www.youtube.com/watch?v=abcd5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product12.jpg",
-        "name": "Gaming Mechanical Keyboard",
-        "short_description": "Level up your gaming with the Gaming Mechanical Keyboard.",
-        "full_description": "Dominate your opponents with precision and speed using the Gaming Mechanical Keyboard. With customizable RGB lighting and responsive mechanical keys, this keyboard is a must-have for serious gamers. Elevate your gaming experience with the Gaming Mechanical Keyboard.",
-        "website": "https://www.gamingmechanicalkeyboard.com",
-        "detail_url": "https://www.gamingmechanicalkeyboard.com/products/gaming-mechanical-keyboard",
-        "video_url": "https://www.youtube.com/watch?v=efgh1234",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product13.jpg",
-        "name": "Smart Home Automation Hub",
-        "short_description": "Transform your home into a smart oasis with the Smart Home Automation Hub.",
-        "full_description": "Control and automate all your smart devices with ease using the Smart Home Automation Hub. This hub integrates with various smart systems and provides seamless management through a user-friendly app. Create a smart, connected home with the Smart Home Automation Hub.",
-        "website": "https://www.smarthomeautomationhub.com",
-        "detail_url": "https://www.smarthomeautomationhub.com/products/smart-home-automation-hub",
-        "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product14.jpg",
-        "name": "Wireless Noise-Canceling Headphones",
-        "short_description": "Immerse yourself in pure sound with Wireless Noise-Canceling Headphones.",
-        "full_description": "Enjoy distraction-free listening with Wireless Noise-Canceling Headphones. These headphones provide crystal-clear audio and block out external noise, making them perfect for travel and work. Elevate your audio experience with Wireless Noise-Canceling Headphones.",
-        "website": "https://www.wirelessnoisecancelingheadphones.com",
-        "detail_url": "https://www.wirelessnoisecancelingheadphones.com/products/wireless-noise-canceling-headphones",
-        "video_url": "https://www.youtube.com/watch?v=mnop5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product15.jpg",
-        "name": "AI-Powered Security Camera",
-        "short_description": "Enhance your security with the AI-Powered Security Camera.",
-        "full_description": "Monitor your property with advanced AI detection and facial recognition using the AI-Powered Security Camera. This camera offers real-time alerts and high-definition video, ensuring the safety of your home or business. Upgrade your security with the AI-Powered Security Camera.",
-        "website": "https://www.aipoweredsecuritycamera.com",
-        "detail_url": "https://www.aipoweredsecuritycamera.com/products/ai-powered-security-camera",
-        "video_url": "https://www.youtube.com/watch?v=qrst1234",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product16.jpg",
-        "name": "Ultra-Thin Laptop",
-        "short_description": "Experience portability and power with the Ultra-Thin Laptop.",
-        "full_description": "Carry the world in your bag with the Ultra-Thin Laptop. This lightweight laptop packs a punch with its powerful processor and long battery life. Whether you're a student, professional, or traveler, the Ultra-Thin Laptop is your ideal companion.",
-        "website": "https://www.ultrathinlaptop.com",
-        "detail_url": "https://www.ultrathinlaptop.com/products/ultra-thin-laptop",
-        "video_url": "https://www.youtube.com/watch?v=uvwxy345",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product17.jpg",
-        "name": "VR Gaming System",
-        "short_description": "Step into virtual worlds with the VR Gaming System.",
-        "full_description": "Experience immersive gaming like never before with the VR Gaming System. This virtual reality system takes you on exciting adventures and offers stunning visuals and realistic interactions. Enter the world of VR gaming with the VR Gaming System.",
-        "website": "https://www.vrgamingsystem.com",
-        "detail_url": "https://www.vrgamingsystem.com/products/vr-gaming-system",
-        "video_url": "https://www.youtube.com/watch?v=abab1234",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product18.jpg",
-        "name": "4K Curved Gaming Monitor",
-        "short_description": "Immerse yourself in the action with the 4K Curved Gaming Monitor.",
-        "full_description": "Get ready for a truly immersive gaming experience with the 4K Curved Gaming Monitor. Its curved display and high resolution bring games to life, offering a wider field of view and sharp visuals. Elevate your gaming setup with the 4K Curved Gaming Monitor.",
-        "website": "https://www.4kcurvedgamingmonitor.com",
-        "detail_url": "https://www.4kcurvedgamingmonitor.com/products/4k-curved-gaming-monitor",
-        "video_url": "https://www.youtube.com/watch?v=efef5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product19.jpg",
-        "name": "Smartphone Camera Lens Kit",
-        "short_description": "Capture stunning photos with the Smartphone Camera Lens Kit.",
-        "full_description": "Turn your smartphone into a professional camera with the Smartphone Camera Lens Kit. This kit includes various lenses for different photography styles, allowing you to capture stunning landscapes, portraits, and macro shots. Unlock your creativity with the Smartphone Camera Lens Kit.",
-        "website": "https://www.smartphonecameralenskit.com",
-        "detail_url": "https://www.smartphonecameralenskit.com/products/smartphone-camera-lens-kit",
-        "video_url": "https://www.youtube.com/watch?v=ghijk901",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product20.jpg",
-        "name": "Wireless Gaming Mouse",
-        "short_description": "Achieve precision and speed with the Wireless Gaming Mouse.",
-        "full_description": "Dominate the gaming battlefield with the Wireless Gaming Mouse. This mouse offers high DPI settings, programmable buttons, and low latency for seamless performance. Gain a competitive edge with the Wireless Gaming Mouse.",
-        "website": "https://www.wirelessgamingmouse.com",
-        "detail_url": "https://www.wirelessgamingmouse.com/products/wireless-gaming-mouse",
-        "video_url": "https://www.youtube.com/watch?v=ijkl5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product21.jpg",
-        "name": "Bluetooth Smart Tracker",
-        "short_description": "Never lose your belongings with the Bluetooth Smart Tracker.",
-        "full_description": "Track your keys, wallet, or any item with the Bluetooth Smart Tracker. This small and compact device connects to your phone and helps you locate lost items through a mobile app. Keep your valuables safe with the Bluetooth Smart Tracker.",
-        "website": "https://www.bluetoothsmarttracker.com",
-        "detail_url": "https://www.bluetoothsmarttracker.com/products/bluetooth-smart-tracker",
-        "video_url": "https://www.youtube.com/watch?v=mnop5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product22.jpg",
-        "name": "High-Performance Graphics Card",
-        "short_description": "Enhance your gaming rig with the High-Performance Graphics Card.",
-        "full_description": "Boost your gaming performance with the High-Performance Graphics Card. This powerful graphics card delivers smooth gameplay, realistic graphics, and supports the latest gaming technologies. Take your gaming rig to the next level with the High-Performance Graphics Card.",
-        "website": "https://www.highperformancegraphicscard.com",
-        "detail_url": "https://www.highperformancegraphicscard.com/products/high-performance-graphics-card",
-        "video_url": "https://www.youtube.com/watch?v=qrst1234",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product23.jpg",
-        "name": "Portable Power Bank",
-        "short_description": "Stay charged on the go with the Portable Power Bank.",
-        "full_description": "Never run out of battery with the Portable Power Bank. This compact and high-capacity power bank keeps your devices charged and ready for use, whether you're traveling or away from a power outlet. Keep your devices powered with the Portable Power Bank.",
-        "website": "https://www.portablepowerbank.com",
-        "detail_url": "https://www.portablepowerbank.com/products/portable-power-bank",
-        "video_url": "https://www.youtube.com/watch?v=efgh1234",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product24.jpg",
-        "name": "Dual-Band Wi-Fi Router",
-        "short_description": "Enjoy seamless internet with the Dual-Band Wi-Fi Router.",
-        "full_description": "Experience fast and reliable internet connectivity with the Dual-Band Wi-Fi Router. This router supports multiple devices and offers high-speed performance for smooth streaming and online gaming. Upgrade your home network with the Dual-Band Wi-Fi Router.",
-        "website": "https://www.dualbandwifirouter.com",
-        "detail_url": "https://www.dualbandwifirouter.com/products/dual-band-wifi-router",
-        "video_url": "https://www.youtube.com/watch?v=ijkl5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product25.jpg",
-        "name": "Wireless Charging Dock",
-        "short_description": "Charge multiple devices wirelessly with the Wireless Charging Dock.",
-        "full_description": "Simplify your charging setup with the Wireless Charging Dock. This dock supports wireless charging for multiple devices, including smartphones, earbuds, and smartwatches. Keep your devices charged and organized with the Wireless Charging Dock.",
-        "website": "https://www.wirelesschargingdock.com",
-        "detail_url": "https://www.wirelesschargingdock.com/products/wireless-charging-dock",
-        "video_url": "https://www.youtube.com/watch?v=mnop5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product26.jpg",
-        "name": "Ultra-Wide Curved Monitor",
-        "short_description": "Immerse yourself in productivity with the Ultra-Wide Curved Monitor.",
-        "full_description": "Boost your productivity and multitasking with the Ultra-Wide Curved Monitor. Its curved display and high resolution provide a wide field of view and crisp visuals, making it perfect for work and creative tasks. Increase your workflow with the Ultra-Wide Curved Monitor.",
-        "website": "https://www.ultrawidecurvedmonitor.com",
-        "detail_url": "https://www.ultrawidecurvedmonitor.com/products/ultra-wide-curved-monitor",
-        "video_url": "https://www.youtube.com/watch?v=qrst1234",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product27.jpg",
-        "name": "Smart Thermostat",
-        "short_description": "Regulate your home temperature with the Smart Thermostat.",
-        "full_description": "Achieve energy efficiency and comfort with the Smart Thermostat. Control your home's temperature remotely and set up personalized schedules for heating and cooling. Make your home smart and eco-friendly with the Smart Thermostat.",
-        "website": "https://www.smartthermostat.com",
-        "detail_url": "https://www.smartthermostat.com/products/smart-thermostat",
-        "video_url": "https://www.youtube.com/watch?v=ijkl9012",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product28.jpg",
-        "name": "Wireless Ergonomic Mouse",
-        "short_description": "Experience comfort and productivity with the Wireless Ergonomic Mouse.",
-        "full_description": "Reduce wrist strain and increase productivity with the Wireless Ergonomic Mouse. This mouse is designed for comfortable use and offers smooth tracking and customizable buttons. Work smarter with the Wireless Ergonomic Mouse.",
-        "website": "https://www.wirelessergonomicmouse.com",
-        "detail_url": "https://www.wirelessergonomicmouse.com/products/wireless-ergonomic-mouse",
-        "video_url": "https://www.youtube.com/watch?v=efgh9012",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product29.jpg",
-        "name": "High-Performance Gaming Headset",
-        "short_description": "Immerse yourself in gaming audio with the High-Performance Gaming Headset.",
-        "full_description": "Experience crisp and immersive sound with the High-Performance Gaming Headset. This headset delivers high-quality audio, noise isolation, and a comfortable fit for long gaming sessions. Level up your gaming experience with the High-Performance Gaming Headset.",
-        "website": "https://www.highperformancegamingheadset.com",
-        "detail_url": "https://www.highperformancegamingheadset.com/products/high-performance-gaming-headset",
-        "video_url": "https://www.youtube.com/watch?v=ijkl5678",
-        "is_private": false
-    },
-    {
-        "photo": "https://example.com/images/product30.jpg",
-        "name": "AI-Powered Virtual Assistant",
-        "short_description": "Make your life easier with the AI-Powered Virtual Assistant.",
-        "full_description": "Manage your tasks, schedule, and reminders with the AI-Powered Virtual Assistant. This virtual assistant uses advanced AI algorithms to understand your needs and provide personalized assistance. Simplify your life with the AI-Powered Virtual Assistant.",
-        "website": "https://www.aipoweredvirtualassistant.com",
-        "detail_url": "https://www.aipoweredvirtualassistant.com/products/ai-powered-virtual-assistant",
-        "video_url": "https://www.youtube.com/watch?v=qrst1234",
         "is_private": false
     }
 ]

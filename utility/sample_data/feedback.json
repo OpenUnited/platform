@@ -1,5 +1,4 @@
-[
-    {
+[{
         "message": "Your work needs significant improvement. Your attention to detail is lacking.",
         "stars": 1
     },
@@ -78,5 +77,245 @@
     {
         "message": "Your dedication to quality work is evident. Your attention to detail sets a great example.",
         "stars": 5
+    },
+    {
+        "message": "Your dedication to quality work is evident. Your attention to detail sets a great example.",
+        "stars": 5
+    },
+    {
+        "message": "You consistently deliver excellent results. Your contributions are highly valued.",
+        "stars": 5
+    },
+    {
+        "message": "Your positive attitude and willingness to collaborate make you a valuable team member.",
+        "stars": 5
+    },
+    {
+        "message": "Your creativity and innovation have greatly contributed to the success of our projects.",
+        "stars": 5
+    },
+    {
+        "message": "Your work ethic and commitment to excellence are commendable. Keep up the great work!",
+        "stars": 5
+    },
+    {
+        "message": "Your ability to adapt to new challenges and find effective solutions is impressive.",
+        "stars": 5
+    },
+    {
+        "message": "You consistently go above and beyond expectations. Your dedication is truly appreciated.",
+        "stars": 5
+    },
+    {
+        "message": "Your positive attitude and enthusiasm are infectious. You bring energy to the team.",
+        "stars": 5
+    },
+    {
+        "message": "Your attention to detail and thoroughness in your work are exemplary. Well done!",
+        "stars": 5
+    },
+    {
+        "message": "Your professionalism and reliability make you a trusted member of the team.",
+        "stars": 5
+    },
+    {
+        "message": "While there are areas for improvement, your dedication and effort are evident.",
+        "stars": 4
+    },
+    {
+        "message": "You're making progress, but there's room for improvement in certain areas.",
+        "stars": 4
+    },
+    {
+        "message": "Your recent work has shown improvement, but consistency is key to success.",
+        "stars": 4
+    },
+    {
+        "message": "There are areas where you could improve, but overall, you're headed in the right direction.",
+        "stars": 4
+    },
+    {
+        "message": "While there have been some setbacks, your willingness to learn and grow is commendable.",
+        "stars": 4
+    },
+    {
+        "message": "You have the potential to excel, but it's important to remain focused and motivated.",
+        "stars": 4
+    },
+    {
+        "message": "Your work is generally satisfactory, but there's room for refinement.",
+        "stars": 4
+    },
+    {
+        "message": "You're on the right track, but there's still work to be done to reach your full potential.",
+        "stars": 4
+    },
+    {
+        "message": "Your recent efforts have been adequate, but there's an opportunity for improvement.",
+        "stars": 4
+    },
+    {
+        "message": "While your work has its strengths, there are areas where you could enhance your performance.",
+        "stars": 4
+    },
+    {
+        "message": "Your dedication to quality work is commendable. Keep up the great work!",
+        "stars": 5
+    },
+    {
+        "message": "You consistently deliver excellent results. Your contributions are highly valued.",
+        "stars": 5
+    },
+    {
+        "message": "Your positive attitude and willingness to help make you a valuable team member.",
+        "stars": 5
+    },
+    {
+        "message": "Your creativity and innovative thinking have greatly contributed to our success.",
+        "stars": 5
+    },
+    {
+        "message": "Your work ethic and commitment to excellence are truly appreciated. Well done!",
+        "stars": 5
+    },
+    {
+        "message": "Your ability to adapt to new challenges and find solutions is impressive.",
+        "stars": 5
+    },
+    {
+        "message": "You consistently go above and beyond expectations. Thank you for your dedication.",
+        "stars": 5
+    },
+    {
+        "message": "Your positive attitude and enthusiasm are contagious. You bring energy to the team.",
+        "stars": 5
+    },
+    {
+        "message": "Your attention to detail and thoroughness in your work are exemplary. Great job!",
+        "stars": 5
+    },
+    {
+        "message": "Your professionalism and reliability make you a trusted member of the team.",
+        "stars": 5
+    },
+    {
+        "message": "Your recent work has shown improvement and is much appreciated. Keep it up!",
+        "stars": 4
+    },
+    {
+        "message": "While there are areas for growth, your dedication and effort are evident.",
+        "stars": 4
+    },
+    {
+        "message": "You're making progress, but there's room for improvement in certain areas.",
+        "stars": 4
+    },
+    {
+        "message": "Your recent contributions have been positive, but consistency is key.",
+        "stars": 4
+    },
+    {
+        "message": "There are areas where you could improve, but overall, you're on the right track.",
+        "stars": 4
+    },
+    {
+        "message": "While there have been some challenges, your willingness to learn is commendable.",
+        "stars": 4
+    },
+    {
+        "message": "You have the potential to excel, but it's important to stay focused.",
+        "stars": 4
+    },
+    {
+        "message": "Your work is generally satisfactory, but there's room for refinement.",
+        "stars": 4
+    },
+    {
+        "message": "You're headed in the right direction, but there's still work to be done.",
+        "stars": 4
+    },
+    {
+        "message": "Your recent efforts have been adequate, but there's an opportunity for improvement.",
+        "stars": 4
+    },
+    {
+        "message": "While your work has its strengths, there are areas where you could enhance your performance.",
+        "stars": 4
+    },
+    {
+        "message": "Your positive attitude and willingness to help make you a valuable team member.",
+        "stars": 5
+    },
+    {
+        "message": "Your creativity and innovative thinking have greatly contributed to our success.",
+        "stars": 5
+    },
+    {
+        "message": "Your work ethic and commitment to excellence are truly appreciated. Well done!",
+        "stars": 5
+    },
+    {
+        "message": "Your ability to adapt to new challenges and find solutions is impressive.",
+        "stars": 5
+    },
+    {
+        "message": "You consistently go above and beyond expectations. Thank you for your dedication.",
+        "stars": 5
+    },
+    {
+        "message": "Your positive attitude and enthusiasm are contagious. You bring energy to the team.",
+        "stars": 5
+    },
+    {
+        "message": "Your attention to detail and thoroughness in your work are exemplary. Great job!",
+        "stars": 5
+    },
+    {
+        "message": "Your professionalism and reliability make you a trusted member of the team.",
+        "stars": 5
+    },
+    {
+        "message": "Your recent work has shown improvement and is much appreciated. Keep it up!",
+        "stars": 4
+    },
+    {
+        "message": "While there are areas for growth, your dedication and effort are evident.",
+        "stars": 4
+    },
+    {
+        "message": "You're making progress, but there's room for improvement in certain areas.",
+        "stars": 4
+    },
+    {
+        "message": "Your recent contributions have been positive, but consistency is key.",
+        "stars": 4
+    },
+    {
+        "message": "There are areas where you could improve, but overall, you're on the right track.",
+        "stars": 4
+    },
+    {
+        "message": "While there have been some challenges, your willingness to learn is commendable.",
+        "stars": 4
+    },
+    {
+        "message": "You have the potential to excel, but it's important to stay focused.",
+        "stars": 4
+    },
+    {
+        "message": "Your work is generally satisfactory, but there's room for refinement.",
+        "stars": 4
+    },
+    {
+        "message": "You're headed in the right direction, but there's still work to be done.",
+        "stars": 4
+    },
+    {
+        "message": "Your recent efforts have been adequate, but there's an opportunity for improvement.",
+        "stars": 4
+    },
+    {
+        "message": "While your work has its strengths, there are areas where you could enhance your performance.",
+        "stars": 4
     }
 ]

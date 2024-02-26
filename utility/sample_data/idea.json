@@ -1,32 +1,246 @@
 [
     {
-        "title": "Task Roulette",
-        "description": "Visit the homepage, click on \"Task Roulette\" and get presented with the summary of a random task from a random product in a modal. You can then click into the task for more info or press \"Spin Again\" and get another random task. ",
-        "vote_count": 0
+        "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
+        "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
+        "vote_count": 15
     },
     {
-        "title": "Ability to download Product Data Sheet (PDF)",
-        "description": "The ability to enable a link \"download Data Sheet (PDF)\" on the product page that creates an attractive PDF summary of the products and its capabilities at that point in time. This will help to ensure the information on products / capabilities is complete and enable people, including less technical users of openunited, to get an overview of a product that they can read in a familiar format.\nSome examples to illustrate what can be produced:\n\nhttps://www.slideshare.net/TDSmaker/software-datasheet-template\n\nhttps://www.prosoft-technology.com/content/download/4307/30796/version/1/file/EZ_ASCE_Datasheet.pdf",
-        "vote_count": 1
+        "title": "Smartwatch Pro: Develop Personalized Workout Plans",
+        "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
+        "vote_count": 12
     },
     {
-        "title": "Cloned synced capabilities in the Product Tree",
-        "description": "In some products, certain capabilities might need to appear in different part of the product tree. For instance, email capability which is needed under login and registration capabilities as well as marketing, payment confirmation and other areas of the tree. In such cases, it should be possible to create a synced capability by cloning an existing capability and assigned the cloned one to another part of the tree. Changes to a synced capability is synchronized across all synced capabilities.",
-        "vote_count": 5
-    },
-    {
-        "title": "Initiative Leadership",
-        "description": "The convention should be that the Initiative Manager has to make sure one task flows to the next within that Initiative frame of reference and we should have a principle that one task connects with another and the inputs and outputs are actionable.\nI think we need to have vacancies for like Initiative Manager and Initiative UX Lead for now and then manually invite / promote people from Initiative leadership product leadership. Once you are proven in product leadership, you can get equity invited. \nAlso, we should indeed learn and not over structure but we also need to think/recommend and be opinionated in terms of how we are going to manage/scale even just with the three products we have and it also is necessary to drive our valuation that we have a way of doing things, a scalable model etc",
-        "vote_count": 9
-    },
-    {
-        "title": "Add Initiatives tab to homepage",
-        "description": "Currently we have Tasks, Products as tabs on the homepage. Adding Initiatives as a tab to the homepage may help to improve discoverability of meaningful tasks?",
+        "title": "Smartwatch Pro: Enhance Water Resistance",
+        "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
         "vote_count": 10
     },
     {
-        "title": "Show contribution checklist upon contribution submission",
-        "description": "For each task category, there can be a checklist submitted by the product team and when a contributor is trying to submit a contribution for review, they will be prompt to go through the checklist and confirm that they have done what was expected before submitting their contribution. As an example, for a development task, the contribution checklist could look like:\nI confirm that:\n\nI wrote unit test for my contribution (if applicable)\nI followed the project's style-guide in my code\nI made a PR against staging\nThe developer would have to check these off before submitting their contribution. The checklist could appear in a modal upon clicking on submit for review CTA.",
-        "vote_count": 99
+        "title": "Smartwatch Pro: Integrate Voice Assistant",
+        "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
+        "vote_count": 8
+    },
+    {
+        "title": "Smartwatch Pro: Implement Stress Tracking",
+        "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
+        "vote_count": 7
+    },
+    {
+        "title": "Wireless Earbuds X: Improve Battery Life",
+        "description": "Enhance the battery life of Wireless Earbuds X to provide extended listening sessions without the need for frequent recharging. This improvement ensures uninterrupted enjoyment of music, podcasts, and calls throughout the day, enhancing user satisfaction and convenience.",
+        "vote_count": 15
+    },
+    {
+        "title": "Wireless Earbuds X: Implement Ambient Sound Mode",
+        "description": "Introduce an ambient sound mode feature in Wireless Earbuds X, allowing users to hear their surroundings while wearing the earbuds. This feature enhances situational awareness and safety, making it ideal for outdoor activities and urban environments.",
+        "vote_count": 12
+    },
+    {
+        "title": "Wireless Earbuds X: Enhance Bluetooth Connectivity",
+        "description": "Optimize Bluetooth connectivity in Wireless Earbuds X for seamless pairing and stable connections with devices. This enhancement ensures reliable audio streaming and minimizes interruptions, providing users with a hassle-free listening experience.",
+        "vote_count": 10
+    },
+    {
+        "title": "Wireless Earbuds X: Integrate Fitness Tracking Features",
+        "description": "Integrate fitness tracking features into Wireless Earbuds X, allowing users to monitor their workouts, steps, and calorie burn directly from the earbuds. This functionality provides added value for fitness enthusiasts who want to track their progress without wearing additional devices.",
+        "vote_count": 8
+    },
+    {
+        "title": "Wireless Earbuds X: Implement Touch Controls",
+        "description": "Implement touch control functionality in Wireless Earbuds X for intuitive playback control, volume adjustment, and call management. This feature enhances user convenience and accessibility, allowing for seamless interaction with the earbuds without reaching for connected devices.",
+        "vote_count": 7
+    },
+    {
+        "title": "Gourmet Coffee Blend: Introduce Decaf Varieties",
+        "vote_count": 15
+    },
+    {
+        "title": "Gourmet Coffee Blend: Launch Limited Edition Flavors",
+        "description": "Introduce limited edition flavors of Gourmet Coffee Blend featuring unique and exotic flavor profiles sourced from premium coffee beans around the world. These special releases create excitement among coffee enthusiasts and provide an opportunity to experiment with new taste experiences.",
+        "vote_count": 12
+    },
+    {
+        "title": "Gourmet Coffee Blend: Offer Subscription Service",
+        "description": "Launch a subscription service for Gourmet Coffee Blend, allowing customers to receive regular shipments of their favorite coffee blends conveniently. This service ensures a steady revenue stream and fosters customer loyalty by providing a hassle-free coffee buying experience.",
+        "vote_count": 10
+    },
+    {
+        "title": "Gourmet Coffee Blend: Source Organic Coffee Beans",
+        "description": "Source organic coffee beans for Gourmet Coffee Blend to cater to health-conscious consumers seeking premium quality coffee free from pesticides and synthetic fertilizers. Using organic ingredients aligns with sustainability principles and appeals to environmentally conscious coffee enthusiasts.",
+        "vote_count": 8
+    },
+    {
+        "title": "Gourmet Coffee Blend: Introduce Cold Brew Varieties",
+        "vote_count": 7
+    },
+    {
+        "title": "Organic Skincare Set: Launch Travel-Sized Kits",
+        "description": "Introduce travel-sized kits of the Organic Skincare Set featuring mini versions of the cleanser, toner, and moisturizer. These compact kits are ideal for travelers who want to maintain their skincare routine on the go, providing convenience and portability without compromising on quality.",
+        "vote_count": 15
+    },
+    {
+        "vote_count": 12
+    },
+    {
+        "title": "Organic Skincare Set: Offer Refillable Packaging",
+        "vote_count": 10
+    },
+    {
+        "title": "Organic Skincare Set: Develop Night Repair Cream",
+        "description": "Develop a night repair cream as part of the Organic Skincare Set, enriched with nourishing ingredients to repair and rejuvenate the skin overnight. This specialized formulation targets skin repair and regeneration, providing comprehensive care for a revitalized complexion.",
+        "vote_count": 8
+    },
+    {
+        "title": "Organic Skincare Set: Introduce Sunscreen with SPF",
+        "description": "Expand the Organic Skincare Set to include a sunscreen with SPF protection to shield the skin from harmful UV rays and prevent sun damage. Offering sun protection promotes skin health and complements the skincare routine for comprehensive protection against environmental aggressors.",
+        "vote_count": 7
+    },
+    {
+        "title": "Smart Home Hub: Expand Compatibility with Smart Devices",
+        "description": "Enhance the compatibility of Smart Home Hub with a wider range of smart devices and platforms, including IoT devices, smart appliances, and home automation systems. This expansion ensures seamless integration and interoperability, allowing users to control their entire smart home ecosystem from a single hub.",
+        "vote_count": 15
+    },
+    {
+        "title": "Smart Home Hub: Implement Energy Management Features",
+        "description": "Implement energy management features in Smart Home Hub to monitor and optimize energy consumption throughout the home. These features provide insights into energy usage patterns, recommend energy-saving actions, and contribute to eco-friendly and cost-effective living.",
+        "vote_count": 12
+    },
+    {
+        "title": "Smart Home Hub: Integrate Voice Recognition Technology",
+        "description": "Integrate advanced voice recognition technology into Smart Home Hub for seamless and intuitive voice control of smart devices and home automation functions. This enhancement enhances user convenience and accessibility, enabling hands-free operation and natural interaction with the smart home ecosystem.",
+        "vote_count": 10
+    },
+    {
+        "title": "Smart Home Hub: Develop Customizable Automation Rules",
+        "description": "Develop customizable automation rules within Smart Home Hub, allowing users to create personalized routines and scenarios for their smart home devices. These automation features enable users to tailor their smart home experience to their lifestyle and preferences, enhancing convenience and efficiency.",
+        "vote_count": 8
+    },
+    {
+        "title": "Smart Home Hub: Enhance Security Integration",
+        "description": "Enhance the security integration of Smart Home Hub with features such as real-time alerts, video monitoring, and smart lock compatibility. These security enhancements provide comprehensive protection for the home, offering peace of mind for users whether they are at home or away.",
+        "vote_count": 7
+    },
+    {
+        "title": "Eco-Friendly Water Bottle: Introduce Insulated Design",
+        "description": "Introduce an insulated design for the Eco-Friendly Water Bottle to keep beverages hot or cold for extended periods. This enhancement enhances the versatility and usability of the water bottle, making it suitable for various activities and environments.",
+        "vote_count": 15
+    },
+    {
+        "title": "Eco-Friendly Water Bottle: Launch Variety of Colors",
+        "description": "Launch a variety of vibrant colors and designs for the Eco-Friendly Water Bottle to cater to different preferences and styles. Offering a diverse range of options allows users to express their personality while staying hydrated in an eco-conscious manner.",
+        "vote_count": 12
+    },
+    {
+        "title": "Eco-Friendly Water Bottle: Partner with Environmental Organizations",
+        "description": "Partner with environmental organizations to support conservation efforts and raise awareness about plastic pollution and the importance of reusable alternatives. Collaborating with NGOs and environmental groups strengthens the brand's commitment to sustainability and promotes positive social impact.",
+        "vote_count": 10
+    },
+    {
+        "title": "Eco-Friendly Water Bottle: Offer Personalization Options",
+        "description": "Offer personalization options for the Eco-Friendly Water Bottle, allowing customers to customize their bottles with names, logos, or motivational quotes. Personalized bottles make thoughtful gifts and create a sense of ownership and attachment for users.",
+        "vote_count": 8
+    },
+    {
+        "title": "Eco-Friendly Water Bottle: Launch Educational Campaign",
+        "description": "Launch an educational campaign to raise awareness about the environmental benefits of using eco-friendly water bottles and reducing single-use plastic waste. Educating consumers about sustainable choices empowers them to make informed decisions and contribute to a healthier planet.",
+        "vote_count": 7
+    },
+    {
+        "title": "Wireless Charging Pad: Optimize Charging Efficiency",
+        "description": "Optimize the charging efficiency of the Wireless Charging Pad to deliver faster and more efficient charging for compatible devices. This improvement reduces charging times and enhances user convenience, ensuring devices are ready when needed.",
+        "vote_count": 15
+    },
+    {
+        "title": "Wireless Charging Pad: Enhance Heat Dissipation",
+        "description": "Enhance heat dissipation capabilities in the Wireless Charging Pad to prevent overheating during prolonged charging sessions. This enhancement ensures safe and reliable charging for devices, minimizing the risk of damage and prolonging the lifespan of the charging pad.",
+        "vote_count": 12
+    },
+    {
+        "title": "Wireless Charging Pad: Introduce Multi-Device Charging",
+        "description": "Introduce multi-device charging capabilities in the Wireless Charging Pad, allowing users to charge multiple devices simultaneously. This feature enhances charging flexibility and convenience, accommodating the needs of users with multiple devices.",
+        "vote_count": 10
+    },
+    {
+        "title": "Wireless Charging Pad: Implement Smart Charging Profiles",
+        "description": "Implement smart charging profiles in the Wireless Charging Pad to optimize charging parameters based on the connected device's battery type and capacity. Smart charging ensures efficient and safe charging, prolonging battery life and enhancing overall charging performance.",
+        "vote_count": 8
+    },
+    {
+        "title": "Wireless Charging Pad: Design Sleek and Minimalist Form Factor",
+        "description": "Design the Wireless Charging Pad with a sleek and minimalist form factor that complements modern interiors and enhances user experience. The compact and stylish design seamlessly integrates into any environment while providing efficient wireless charging functionality.",
+        "vote_count": 7
+    },
+    {
+        "title": "Portable Bluetooth Speaker: Enhance Bass Response",
+        "description": "Enhance the bass response of the Portable Bluetooth Speaker to deliver deeper, richer, and more immersive sound quality. This improvement elevates the listening experience, allowing users to enjoy music with enhanced clarity and depth.",
+        "vote_count": 15
+    },
+    {
+        "title": "Portable Bluetooth Speaker: Extend Battery Life",
+        "description": "Extend the battery life of the Portable Bluetooth Speaker to provide longer playback sessions on a single charge. This enhancement ensures uninterrupted enjoyment of music, podcasts, and other audio content, enhancing user satisfaction and convenience.",
+        "vote_count": 12
+    },
+    {
+        "title": "Portable Bluetooth Speaker: Introduce Stereo Pairing",
+        "description": "Introduce stereo pairing functionality in the Portable Bluetooth Speaker, allowing users to connect two speakers wirelessly for immersive stereo sound. This feature enhances audio performance and creates a more dynamic listening experience for users.",
+        "vote_count": 10
+    },
+    {
+        "title": "Portable Bluetooth Speaker: Implement Voice Assistant Integration",
+        "description": "Implement voice assistant integration in the Portable Bluetooth Speaker, enabling users to control the speaker and access voice commands hands-free. This integration enhances user convenience and accessibility, allowing for seamless interaction with the speaker through voice commands.",
+        "vote_count": 8
+    },
+    {
+        "title": "Portable Bluetooth Speaker: Design Lightweight and Portable Form Factor",
+        "description": "Design the Portable Bluetooth Speaker with a lightweight and portable form factor for easy transportation and on-the-go use. The compact design makes it convenient to carry the speaker anywhere, whether traveling, hiking, or enjoying outdoor activities.",
+        "vote_count": 7
+    },
+    {
+        "title": "Sustainable Fashion Backpack: Use Recycled Materials",
+        "description": "Use recycled materials in the manufacturing of Sustainable Fashion Backpack to reduce environmental impact and promote sustainable practices. Utilizing recycled materials conserves natural resources and minimizes waste, aligning with eco-conscious consumer preferences.",
+        "vote_count": 15
+    },
+    {
+        "title": "Sustainable Fashion Backpack: Introduce Modular Design",
+        "description": "Introduce a modular design for the Sustainable Fashion Backpack, allowing users to customize and adapt the backpack to their changing needs and preferences. The modular approach enhances versatility and longevity, providing a backpack that evolves with the user.",
+        "vote_count": 12
+    },
+    {
+        "title": "Sustainable Fashion Backpack: Partner with Ethical Manufacturers",
+        "vote_count": 10
+    },
+    {
+        "title": "Sustainable Fashion Backpack: Offer Repair and Recycling Programs",
+        "description": "Offer repair and recycling programs for Sustainable Fashion Backpack, allowing customers to extend the lifespan of their backpacks and minimize environmental impact through responsible disposal. These programs promote circularity and sustainability, fostering a culture of conscious consumption.",
+        "vote_count": 8
+    },
+    {
+        "title": "Sustainable Fashion Backpack: Design Ergonomic and Comfortable Fit",
+        "description": "Design the Sustainable Fashion Backpack with an ergonomic and comfortable fit, featuring padded straps, breathable materials, and adjustable features for enhanced wearing comfort. The ergonomic design ensures optimal weight distribution and support, reducing strain on the wearer's shoulders and back.",
+        "vote_count": 7
+    },
+    {
+        "title": "Home Security Camera: Enhance Night Vision Capabilities",
+        "description": "Enhance the night vision capabilities of the Home Security Camera to provide clearer and more detailed images in low-light conditions or complete darkness. Improved night vision ensures reliable surveillance and enhances home security during nighttime hours.",
+        "vote_count": 15
+    },
+    {
+        "title": "Home Security Camera: Integrate AI-Powered Motion Detection",
+        "description": "Integrate AI-powered motion detection technology into the Home Security Camera for more accurate and intelligent detection of intrusions, suspicious activities, and relevant events. AI-based detection reduces false alarms and provides timely alerts for enhanced security monitoring.",
+        "vote_count": 12
+    },
+    {
+        "title": "Home Security Camera: Expand Cloud Storage Options",
+        "description": "Expand cloud storage options for the Home Security Camera, offering flexible subscription plans and storage capacities to accommodate varying user needs and preferences. Enhanced cloud storage ensures convenient access to recorded footage and reliable backup for important events.",
+        "vote_count": 10
+    },
+    {
+        "title": "Home Security Camera: Introduce Two-Way Audio Communication",
+        "description": "Introduce two-way audio communication capabilities in the Home Security Camera, allowing users to listen and speak through the camera remotely. Two-way audio enhances home monitoring and enables interactive communication with family members, visitors, or pets while away from home.",
+        "vote_count": 8
+    },
+    {
+        "title": "Home Security Camera: Enhance Weather Resistance",
+        "description": "Enhance the weather resistance of the Home Security Camera to withstand exposure to outdoor elements such as rain, snow, and extreme temperatures. Improved weather resistance ensures reliable performance and longevity, extending the camera's lifespan for outdoor use.",
+        "vote_count": 7
     }
 ]
