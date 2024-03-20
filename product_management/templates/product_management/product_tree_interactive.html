@@ -4,15 +4,16 @@
 {% block product_content %}
 
 <input type="hidden" id="csrf_token_id" value="{{ csrf_token }}">
+<input type="hidden" id="data_url_post" value="{{ url('product_area', args=(product_slug,)) }} ">
 
 {% macro generate_summary_structure(tree_data, depth = 0, id=0) %}
-
 {% for item in tree_data %}
 <li data-jstree='{ "opened" : false }' 
-  id="{{item['name']}}" data-id="{{ item["id"] }}"
-  data-parent-li-id = {{id}}
-  data-url-update="{{ url('product_area_with_pk', args=(item['id'],)) }}"
-  data-url-post="{{ url('product_area') }}"
+  id="{{item['name']}}" 
+  data-id="{{ item["id"] }}"
+  data-parent-li-id={{id}}
+  data-url-with-id="{{ url('product_area_with_pk', args=(product_slug, item['id'],)) }}"
+  data-url-post="{{ url('product_area', args=(product_slug,)) }} "
   class="nested-item py-3 flex flex-col {% if depth > 1 %}pl-4 lg:pl-8{% endif %}"
   >
   <div
@@ -28,10 +29,11 @@
               class="tree-text mr-2 text-base text-dark group-hover/item:text-blue-400 transition-all ease-linear duration-200">{{item['name']}}</a>
             <input type="text" class="hidden mr-2 text-base text-dark rename_input border border-light-gray rounded" />
             <button
+              style="border:2px solid red; "
               class="btn-video__open appearance-none rounded border border-light-gray flex items-center whitespace-nowrap px-4 py-1"
               data-video="{{item['video_link']}}">
-              <img src="{{ static('/images/play.svg') }}" class="w-[14px] h-[15px]" alt="#">
-              <span class="text-dark text-sm ml-[9px] font-normal font-medium">
+              <img src="{{ static('/images/play.svg') }}" class="btn-video__open w-[14px] h-[15px]" alt="#">
+              <span class="btn-video__open text-dark text-sm ml-[9px] font-normal font-medium">
                 {{item['nameToutubeVideo']}} <span class="text-gray-dark">{{item['durationYoutubeVideo']}}</span>
               </span>
             </button>
@@ -65,6 +67,7 @@
     {{ generate_summary_structure(item["children"], depth + 1, item["id"]) }}
   </ul>
   {% endif %}
+  
 </li>
 {% endfor %}
 {% endmacro %}
