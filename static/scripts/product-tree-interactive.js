@@ -37,7 +37,8 @@ $(function () {
         show_only_matches_children: true,
       },
     })
-    .on("show_contextmenu.jstree", function (e, data) {})
+    .on("show_contextmenu.jstree", function (e, data) {
+    })
     .on("search.jstree", function (nodes, str, res) {
       if (str.nodes.length === 0) {
         $("#jstree_demo").jstree(true).hide_all();
@@ -47,6 +48,8 @@ $(function () {
       }
     });
 });
+
+
 
 $("#AddFirst").on("click", create_node);
 const newNode = (text, id) => {
@@ -100,13 +103,42 @@ function create_node() {
   sel = sel[0];
 
   sel = ref.create_node(sel, { text: newNode(null, Math.random()) }, "first");
+
+  $("#"+sel).attr("data-new-node", true)
+  $("#"+sel).attr("data-url-post", $("#data_url_post").val())
 }
 
+const deleteProduct = (data)=>{
+  $.ajax({
+    url: data.url,
+    method: "DELETE",
+    headers: { "X-CSRFToken": $("#csrf_token_id").val() },
+    success: function(res) {
+      window.location.reload()
+      // $("#jstree_demo").jstree("delete_node", data.closestLi.id);
+    },
+    error: function(xhr, status, error){
+      $("#jstree_demo").jstree("delete_node", data.closestLi.id);
+      if (xhr.responseJSON){
+        showNotification({
+          "message": xhr.responseJSON.error
+        })
+      }
+    }
+  });
+}
 const setupDeleteNode = () => {
   $("#jstree_demo").on("click", ".delete_node", function (e) {
     e.stopPropagation();
     const closestLi = $(this).closest("li")[0];
-    $("#jstree_demo").jstree("delete_node", closestLi.id);
+
+    showConfirm({
+      callback: deleteProduct,
+      callback_data: {
+        url: $(closestLi).attr("data-url-with-id"),
+        closestLi: closestLi,
+      },
+    })
   });
 };
 
@@ -117,6 +149,8 @@ const setupEditNode = () => {
     $(this).siblings(".check_node").removeClass("hidden");
     const label = $(this).closest(".nested-item__label");
     const a = $(this).closest(".jstree-anchor");
+
+    
     a.removeClass();
     a.addClass("flex ml-5 mt-[-30px] relative focus-visible:outline-0");
     const treeText = label.find(".tree-text");
@@ -139,6 +173,7 @@ const inputChangeSave = (treeText, input) => {
   treeText.removeClass("hidden");
   input.addClass("hidden");
   treeText.text(input.val());
+
 };
 const saveEditNode = () => {
   $("#jstree_demo").on("click", ".check_node", function (e) {
@@ -153,6 +188,7 @@ const saveEditNode = () => {
     const treeDescText = label.find(".text_desc");
     const parentElement = e.target.closest(".nested-item__label");
     const a = $(this).closest(".jstree-anchor");
+    
     inputChangeSave(treeText, input);
     inputChangeSave(treeDescText, descInput);
     a.removeClass();
@@ -160,8 +196,7 @@ const saveEditNode = () => {
     $("#jstree_demo").jstree("rename_node", li.id, parentElement.outerHTML);
     saveEditNode();
 
-
-    var data = {
+    var post_data = {
       "id":li.id,
       "name":input.val(),
       "description":descInput.val(),
@@ -170,23 +205,31 @@ const saveEditNode = () => {
       "new_node":  $(li).attr("data-new-node")=="true"? true: false,
     }
 
-    if (data["new_node"] == true){
+
+    if (post_data["new_node"] == true){
+      const post_url = $(li).attr("data-url-post")? $(li).attr("data-url-post"): $("#data_url_post").val()
       $.ajax({
-        url: $(li).attr("data-url-post") ,
+        url: post_url,
         method: "POST",
-        data: data,
+        data: post_data,
         success: function(data) {
             console.log(data);
+            window.location.reload()
         }
       });
     }
     else{
+
+      // $("#"+id).attr("data-parent-li-id", $(parentNode).attr("data-id"))
+
+      const post_url = $(li).attr("data-url-with-id")? $(li).attr("data-url-with-id"): $("#data_url_post").val()
       $.ajax({
-        url: $(li).attr("data-url-update") ,
+        url: post_url ,
         method: "POST",
-        data: data,
+        data: post_data,
         success: function(data) {
             console.log(data);
+            window.location.reload()
         }
       });
     }
@@ -208,18 +251,17 @@ const setupCreateNode = () => {
       },
       "first"
     );
+    $("#jstree_demo").jstree(true).open_node(parentNode.id);
 
     $("#"+id).attr("data-parent-li-id", $(parentNode).attr("data-id"))
     $("#"+id).attr("data-new-node", true)
-    $("#"+id).attr("data-url-post", $(parentNode).attr("data-url-post"))
-
-
-    $("#jstree_demo").jstree(true).open_node(parentNode.id);
+    $("#"+id).attr("data-url-post", $("#data_url_post").val())
 
   });
 };
 const viewVideo = () => {
-  const videoBtnsOpen = document.querySelectorAll(".btn-video__open");
+  const videoBtnsOpen = document.querySelectorAll("button.btn-video__open");
+
   const modalWrap = document.querySelector(".modal-wrap");
   const modalWrapCloseBtn = document.querySelector(".btn-video__close");
 
@@ -227,7 +269,7 @@ const viewVideo = () => {
     modalWrap.querySelector("iframe").src = "";
   }
   videoBtnsOpen.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
       modalWrap.classList.remove("hidden");
       modalWrap.querySelector("iframe").src = btn.dataset.video;
     });
@@ -267,10 +309,12 @@ $("#jstree_demo").on("before_open.jstree", function (e, data) {
 });
 
 $(document).on("click", ".jstree-anchor", function (e) {
-  var dataId = $(this).attr("id");
+  var is_button_clicked = $(e.target).is('button.btn-video__open') || $(e.target).is('span.btn-video__open')
 
-
-  // window.location.href = window.origin + "/product/product-area-detail";
+  if (!is_button_clicked) {
+    var url =$($(this).closest("li")[0]).attr("data-url-with-id");  
+    window.location.href = window.origin + url;
+  }
 });
 
 const quill = new Quill("#editor", {
