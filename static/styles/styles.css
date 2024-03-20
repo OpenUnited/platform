@@ -355,3 +355,35 @@ input[autocomplete=one-time-code] {
   font-weight: 500;
   margin-block-end: 1ch;
 }
+
+
+.jstree-default .jstree-wholerow {
+  background: transparent !important;
+}
+
+.jstree-anchor {
+  display: flex !important;
+  height: max-content !important;
+}
+
+.jstree-default .jstree-anchor {
+  margin-top: -30px !important;
+  height: max-content !important;
+  margin-left: 20px;
+}
+
+.jstree .jstree-open>.jstree-children,
+.jstree-children {
+  gap: 10px;
+  display: flex !important;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.jstree-default .jstree-search .tree-text {
+  color: rgb(79 70 229) !important;
+}
+
+.scolled-content::-webkit-scrollbar {
+  display: none;
+}
