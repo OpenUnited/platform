@@ -234,7 +234,7 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 
 class ProductAreaDetailCreateUpdateView(
-    BaseProductDetailView, DetailView, CreateView, UpdateView
+    BaseProductDetailView, DetailView, CreateView, UpdateView, DeleteView
 ):
     template_name = "product_management/product_area_detail.html"
     model = Capability
@@ -242,7 +242,6 @@ class ProductAreaDetailCreateUpdateView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({"pk": self.object.pk})
         return context
 
     def post(self, request, *args, **kwargs):
@@ -255,13 +254,10 @@ class ProductAreaDetailCreateUpdateView(
                 product_area.save()
         else:
             form = ProductAreaCreateForm(request.POST)
-
             if form.is_valid():
-                parent = Capability.objects.filter(
-                    pk=form.cleaned_data["data_parent_id"]
-                )
-                if _parent := parent.first():
-                    _parent.add_child(
+                if data_parent_id := form.cleaned_data.get("data_parent_id"):
+                    parent = Capability.objects.get(pk=data_parent_id)
+                    parent.add_child(
                         name=form.cleaned_data["name"],
                         description=form.cleaned_data["description"],
                     )
@@ -270,23 +266,43 @@ class ProductAreaDetailCreateUpdateView(
                         name=form.cleaned_data["name"],
                         description=form.cleaned_data["description"],
                     )
+            print(form.errors)
 
-        return JsonResponse({"success": True})
+        return JsonResponse({"success": True}, status=201)
+
+    def delete(self, request, *args, **kwargs):
+        obj = Capability.objects.get(pk=kwargs.get("pk"))
+
+        if obj.numchild > 0:
+            return JsonResponse(
+                {"error": "Unable to delete a node with a child."}, status=400
+            )
+
+        Capability.objects.get(pk=kwargs.get("pk")).delete()
+        return JsonResponse({"success": True}, status=204)
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree_interactive.html"
 
     def get_context_data(self, **kwargs):
+        import random
+
         context = super().get_context_data(**kwargs)
         capability_root_trees = Capability.get_root_nodes()
+
+        list_videos = [
+            "https://www.youtube.com/embed/UwOzBq8snm8",
+            "https://www.youtube.com/embed/uP40W8OhudY",
+            "https://www.youtube.com/embed/1vT7eqlt2mc",
+        ]
 
         def serialize_tree(node):
             serialized_node = {
                 "id": node.pk,
                 "name": node.name,
                 "description": node.description,
-                "video_link": "https://youtu.be/h9MujYgW1mw",
+                "video_link": random.choice(list_videos),
                 "nameToutubeVideo": "Video",
                 "durationYoutubeVideo": "(08:18)",
                 "children": [

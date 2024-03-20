@@ -202,12 +202,12 @@ urlpatterns += [
         name="product_tree_interactive",
     ),
     path(
-        "product-areas",
+        "<str:product_slug>/product-areas",
         ProductAreaDetailCreateUpdateView.as_view(),
         name="product_area",
     ),
     path(
-        "product-areas/<int:pk>",
+        "<str:product_slug>/product-areas/<int:pk>",
         ProductAreaDetailCreateUpdateView.as_view(),
         name="product_area_with_pk",
     ),
