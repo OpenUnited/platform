@@ -7,6 +7,8 @@ from .views import (
     ProductSummaryView,
     ProductInitiativesView,
     ProductTreeView,
+    ProductTreeInteractiveView,
+    ProductAreaDetailCreateUpdateView,
     ProductIdeasAndBugsView,
     CreateProductIdea,
     UpdateProductIdea,
@@ -193,6 +195,21 @@ urlpatterns += [
         "<str:product_slug>/tree",
         ProductTreeView.as_view(),
         name="product_tree",
+    ),
+    path(
+        "<str:product_slug>/tree-interactive",
+        ProductTreeInteractiveView.as_view(),
+        name="product_tree_interactive",
+    ),
+    path(
+        "product-areas",
+        ProductAreaDetailCreateUpdateView.as_view(),
+        name="product_area",
+    ),
+    path(
+        "product-areas/<int:pk>",
+        ProductAreaDetailCreateUpdateView.as_view(),
+        name="product_area_with_pk",
     ),
     path(
         "<str:product_slug>/idea-list",

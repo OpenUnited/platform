@@ -508,6 +508,21 @@ class InitiativeForm(forms.ModelForm):
         }
 
 
+class ProductAreaUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Capability
+        fields = ["name", "description"]
+
+
+class ProductAreaCreateForm(forms.ModelForm):
+    description = forms.CharField(required=False)
+    data_parent_id = forms.CharField()
+
+    class Meta:
+        model = Capability
+        fields = ["name", "description", "data_parent_id"]
+
+
 class CapabilityForm(forms.ModelForm):
     root = forms.ModelChoiceField(
         required=False,

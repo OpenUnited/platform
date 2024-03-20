@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db import models
@@ -32,6 +32,8 @@ from .forms import (
     BountyForm,
     InitiativeForm,
     CapabilityForm,
+    ProductAreaUpdateForm,
+    ProductAreaCreateForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -226,11 +228,76 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update(
-            {
-                "capabilities": Capability.get_root_nodes(),
+        context.update({"capabilities": Capability.get_root_nodes()})
+
+        return context
+
+
+class ProductAreaDetailCreateUpdateView(
+    BaseProductDetailView, DetailView, CreateView, UpdateView
+):
+    template_name = "product_management/product_area_detail.html"
+    model = Capability
+    form_class = ProductAreaUpdateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({"pk": self.object.pk})
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if "pk" in kwargs:
+            form = ProductAreaCreateForm(request.POST)
+            if form.is_valid():
+                product_area = Capability.objects.get(pk=kwargs.get("pk"))
+                product_area.name = form.cleaned_data["name"]
+                product_area.description = form.cleaned_data["description"]
+                product_area.save()
+        else:
+            form = ProductAreaCreateForm(request.POST)
+
+            if form.is_valid():
+                parent = Capability.objects.filter(
+                    pk=form.cleaned_data["data_parent_id"]
+                )
+                if _parent := parent.first():
+                    _parent.add_child(
+                        name=form.cleaned_data["name"],
+                        description=form.cleaned_data["description"],
+                    )
+                else:
+                    Capability.add_root(
+                        name=form.cleaned_data["name"],
+                        description=form.cleaned_data["description"],
+                    )
+
+        return JsonResponse({"success": True})
+
+
+class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
+    template_name = "product_management/product_tree_interactive.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        capability_root_trees = Capability.get_root_nodes()
+
+        def serialize_tree(node):
+            serialized_node = {
+                "id": node.pk,
+                "name": node.name,
+                "description": node.description,
+                "video_link": "https://youtu.be/h9MujYgW1mw",
+                "nameToutubeVideo": "Video",
+                "durationYoutubeVideo": "(08:18)",
+                "children": [
+                    serialize_tree(child) for child in node.get_children()
+                ],
             }
-        )
+            return serialized_node
+
+        context["tree_data"] = [
+            serialize_tree(node) for node in capability_root_trees
+        ]
 
         return context
 
