@@ -516,7 +516,7 @@ class ProductAreaUpdateForm(forms.ModelForm):
 
 class ProductAreaCreateForm(forms.ModelForm):
     description = forms.CharField(required=False)
-    data_parent_id = forms.CharField()
+    data_parent_id = forms.CharField(required=False)
 
     class Meta:
         model = Capability
