@@ -10,5 +10,5 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(product.Capability)
 class CapabilityAdmin(admin.ModelAdmin):
-    list_display = ["name", "video_link", "path"]
+    list_display = ["pk", "name", "video_link", "path"]
     search_fields = ["name", "video_link"]

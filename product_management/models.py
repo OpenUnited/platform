@@ -25,8 +25,12 @@ class Tag(TimeStampMixin):
 # ProductTree is made up from Capabilities
 class Capability(MP_Node):
     name = models.CharField(max_length=255)
-    description = models.TextField(max_length=1000, default="")
-    video_link = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(
+        max_length=1000, blank=True, null=True, default=""
+    )
+    video_link = models.URLField(max_length=255, blank=True, null=True)
+    video_name = models.CharField(max_length=255, blank=True, null=True)
+    video_duration = models.CharField(max_length=255, blank=True, null=True)
     comments_start = models.ForeignKey(
         to="talent.capabilitycomment",
         on_delete=models.SET_NULL,

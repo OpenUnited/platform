@@ -509,18 +509,53 @@ class InitiativeForm(forms.ModelForm):
 
 
 class ProductAreaUpdateForm(forms.ModelForm):
+
     class Meta:
         model = Capability
-        fields = ["name", "description"]
+        fields = [
+            "id",
+            "name",
+            "video_link",
+            "video_name",
+            "video_duration",
+            "description",
+        ]
+
+        widgets = {
+            "name": forms.TextInput(attrs={"placeholder": "Enter name here"}),
+            "video_link": forms.TextInput(
+                attrs={"placeholder": "Enter video link here"}
+            ),
+            "video_name": forms.TextInput(
+                attrs={"placeholder": "Enter video video_name here"}
+            ),
+            "video_duration": forms.TextInput(
+                attrs={"placeholder": "Enter video video_name here, E.x 7:20"}
+            ),
+            "description": forms.Textarea(
+                attrs={"placeholder": "Enter description here", "columns": 2}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ProductAreaUpdateForm, self).__init__(*args, **kwargs)
+        for _, field in self.fields.items():
+            field.widget.attrs.update(
+                {
+                    "class": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                }
+            )
 
 
 class ProductAreaCreateForm(forms.ModelForm):
     description = forms.CharField(required=False)
     data_parent_id = forms.CharField(required=False)
+    name = forms.CharField(required=False)
+    is_drag = forms.BooleanField(required=False)
 
     class Meta:
         model = Capability
-        fields = ["name", "description", "data_parent_id"]
+        fields = ["name", "description", "data_parent_id", "is_drag"]
 
 
 class CapabilityForm(forms.ModelForm):

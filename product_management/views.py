@@ -234,77 +234,67 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 
 class ProductAreaDetailCreateUpdateView(
-    BaseProductDetailView, DetailView, CreateView, UpdateView, DeleteView
+    BaseProductDetailView, CreateView, UpdateView, DeleteView
 ):
     template_name = "product_management/product_area_detail.html"
     model = Capability
     form_class = ProductAreaUpdateForm
 
+    def is_ajax(self):
+        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return True
+        return False
+
+    def get_success_url(self):
+        conttext = self.get_context_data()
+        return reverse(
+            "product_tree_interactive", args=(conttext.get("product").slug,)
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["form"] = ProductAreaUpdateForm(instance=self.get_object())
         return context
 
-    def post(self, request, *args, **kwargs):
-        if "pk" in kwargs:
-            form = ProductAreaCreateForm(request.POST)
-            if form.is_valid():
-                product_area = Capability.objects.get(pk=kwargs.get("pk"))
-                product_area.name = form.cleaned_data["name"]
-                product_area.description = form.cleaned_data["description"]
-                product_area.save()
-        else:
-            form = ProductAreaCreateForm(request.POST)
-            if form.is_valid():
-                if data_parent_id := form.cleaned_data.get("data_parent_id"):
-                    parent = Capability.objects.get(pk=data_parent_id)
-                    parent.add_child(
-                        name=form.cleaned_data["name"],
-                        description=form.cleaned_data["description"],
-                    )
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.is_ajax():
+            if form.cleaned_data.get("is_drag"):
+                parent_id = form.cleaned_data.get("data_parent_id")
+                if parent_id:
+                    parent = Capability.objects.get(pk=parent_id)
+                    self.object.move(parent, "first-child")
                 else:
-                    Capability.add_root(
-                        name=form.cleaned_data["name"],
-                        description=form.cleaned_data["description"],
-                    )
-            print(form.errors)
+                    self.object.move(None, "first-sibling")
+            else:
+                self.object.save()
+            return JsonResponse({"success": True})
 
-        return JsonResponse({"success": True}, status=201)
+        else:
+            self.object.save()
+            return redirect(self.get_success_url())
 
-    def delete(self, request, *args, **kwargs):
-        obj = Capability.objects.get(pk=kwargs.get("pk"))
-
-        if obj.numchild > 0:
-            return JsonResponse(
-                {"error": "Unable to delete a node with a child."}, status=400
-            )
-
-        Capability.objects.get(pk=kwargs.get("pk")).delete()
-        return JsonResponse({"success": True}, status=204)
+    def form_invalid(self, form):
+        if self.is_ajax():
+            return JsonResponse({"errors": form.errors}, status=400)
+        return redirect(self.get_success_url())
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree_interactive.html"
 
     def get_context_data(self, **kwargs):
-        import random
-
         context = super().get_context_data(**kwargs)
         capability_root_trees = Capability.get_root_nodes()
-
-        list_videos = [
-            "https://www.youtube.com/embed/UwOzBq8snm8",
-            "https://www.youtube.com/embed/uP40W8OhudY",
-            "https://www.youtube.com/embed/1vT7eqlt2mc",
-        ]
 
         def serialize_tree(node):
             serialized_node = {
                 "id": node.pk,
                 "name": node.name,
                 "description": node.description,
-                "video_link": random.choice(list_videos),
-                "nameToutubeVideo": "Video",
-                "durationYoutubeVideo": "(08:18)",
+                "video_link": node.video_link,
+                "video_name": node.video_name,
+                "video_duration": node.video_duration,
                 "children": [
                     serialize_tree(child) for child in node.get_children()
                 ],
