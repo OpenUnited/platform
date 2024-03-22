@@ -1,57 +1,73 @@
-$(function () {
-  $("#jstree_demo")
-    .jstree({
-      core: {
-        multiple: false,
-        animation: 100,
-        check_callback: true,
-        themes: {
-          variant: "medium",
-          dots: false,
-        },
-      },
-      types: {
-        default: {
-          icon: "glyphicon glyphicon-flash",
-        },
-        demo: {
-          icon: "glyphicon glyphicon-th-large",
-        },
-      },
-      conditionalselect: function (node, event) {
-        return false;
-      },
-      plugins: [
-        "dnd",
-        "massload",
-        "search",
-        "state",
-        "types",
-        "unique",
-        "wholerow",
-        "changed",
-        "conditionalselect",
-      ],
-      search: {
-        show_only_matches: true,
-        show_only_matches_children: true,
-      },
-    })
-    .on("show_contextmenu.jstree", function (e, data) {
-    })
-    .on("search.jstree", function (nodes, str, res) {
-      if (str.nodes.length === 0) {
-        $("#jstree_demo").jstree(true).hide_all();
-        $(".search_empty").removeClass("hidden");
-      } else {
-        $(".search_empty").addClass("hidden");
-      }
-    });
+$("#product_tree").jstree({
+  core: {
+    multiple: false,
+    animation: 100,
+    check_callback: true,
+    themes: {
+      variant: "medium",
+      dots: false,
+    },
+  },
+  types: {
+    default: {
+      icon: "glyphicon glyphicon-flash",
+    },
+    demo: {
+      icon: "glyphicon glyphicon-th-large",
+    },
+  },
+  conditionalselect: function (node, event) {
+    return false;
+  },
+  plugins: [
+    "dnd",
+    "massload",
+    "search",
+    "state",
+    "types",
+    "unique",
+    "wholerow",
+    "changed",
+    "conditionalselect",
+  ],
+  search: {
+    show_only_matches: true,
+    show_only_matches_children: true,
+  },
+}).on("show_contextmenu.jstree", function (e, data) {
+  // Add your context menu logic here if needed
+}).on("search.jstree", function (nodes, str, res) {
+  if (str.nodes.length === 0) {
+    $("#product_tree").jstree(true).hide_all();
+    $(".search_empty").removeClass("hidden");
+  } else {
+    $(".search_empty").addClass("hidden");
+  }
+}).on("move_node.jstree", function (e, data) {
+  var parentElement = document.getElementById(data.parent);
+  var parent_id = parentElement.getAttribute("data-id");
+
+  var node = document.getElementById(data.node.id);
+  var url = node.getAttribute("data-url-with-id");
+
+  $.ajax({
+    url: url,
+    method: "POST",
+    data: {
+      "data_parent_id": parent_id,
+      "csrfmiddlewaretoken": $("#csrf_token_id").val(),
+      "is_drag": true
+    },
+    success: function (data) {
+      window.location.reload();
+    }
+  });
 });
 
 
 
 $("#AddFirst").on("click", create_node);
+
 const newNode = (text, id) => {
   let newNodeText = ` <div
   class="nested-item__label shadow-inner h-max flex items-start w-full gap-2 group/item py-3 hover:bg-light-blue px-2 transition-all ease-linear duration-200 rounded">
@@ -95,7 +111,7 @@ const newNode = (text, id) => {
 function create_node() {
   clearSearchNode();
   $(".search_empty").addClass("hidden");
-  let ref = $("#jstree_demo").jstree(true),
+  let ref = $("#product_tree").jstree(true),
     sel = ref.get_selected();
   if (!sel.length) {
     sel[0] = "#";
@@ -115,10 +131,10 @@ const deleteProduct = (data)=>{
     headers: { "X-CSRFToken": $("#csrf_token_id").val() },
     success: function(res) {
       window.location.reload()
-      // $("#jstree_demo").jstree("delete_node", data.closestLi.id);
+      // $("#product_tree").jstree("delete_node", data.closestLi.id);
     },
     error: function(xhr, status, error){
-      $("#jstree_demo").jstree("delete_node", data.closestLi.id);
+      $("#product_tree").jstree("delete_node", data.closestLi.id);
       if (xhr.responseJSON){
         showNotification({
           "message": xhr.responseJSON.error
@@ -128,7 +144,7 @@ const deleteProduct = (data)=>{
   });
 }
 const setupDeleteNode = () => {
-  $("#jstree_demo").on("click", ".delete_node", function (e) {
+  $("#product_tree").on("click", ".delete_node", function (e) {
     e.stopPropagation();
     const closestLi = $(this).closest("li")[0];
 
@@ -143,7 +159,7 @@ const setupDeleteNode = () => {
 };
 
 const setupEditNode = () => {
-  $("#jstree_demo").on("click", ".edit_node", function (event) {
+  $("#product_tree").on("click", ".edit_node", function (event) {
     event.stopPropagation();
     $(this).addClass("hidden");
     $(this).siblings(".check_node").removeClass("hidden");
@@ -156,6 +172,7 @@ const setupEditNode = () => {
     const treeText = label.find(".tree-text");
     const treeDescText = label.find(".text_desc");
     const input = label.find(".rename_input");
+    const update_youtube_link = label.find(".update_youtube_link");
     const descInput = label.find(".renameDesc_input");
     inputChange(treeText, input, true);
     inputChange(treeDescText, descInput);
@@ -176,7 +193,7 @@ const inputChangeSave = (treeText, input) => {
 
 };
 const saveEditNode = () => {
-  $("#jstree_demo").on("click", ".check_node", function (e) {
+  $("#product_tree").on("click", ".check_node", function (e) {
     e.stopPropagation();
     $(this).addClass("hidden");
     $(this).siblings(".edit_node").removeClass("hidden");
@@ -193,7 +210,7 @@ const saveEditNode = () => {
     inputChangeSave(treeDescText, descInput);
     a.removeClass();
     a.addClass("jstree-anchor");
-    $("#jstree_demo").jstree("rename_node", li.id, parentElement.outerHTML);
+    $("#product_tree").jstree("rename_node", li.id, parentElement.outerHTML);
     saveEditNode();
 
     var post_data = {
@@ -219,9 +236,6 @@ const saveEditNode = () => {
       });
     }
     else{
-
-      // $("#"+id).attr("data-parent-li-id", $(parentNode).attr("data-id"))
-
       const post_url = $(li).attr("data-url-with-id")? $(li).attr("data-url-with-id"): $("#data_url_post").val()
       $.ajax({
         url: post_url ,
@@ -238,12 +252,12 @@ const saveEditNode = () => {
 };
 
 const setupCreateNode = () => {
-  $("#jstree_demo").on("click", ".add_node", function (e) {
+  $("#product_tree").on("click", ".add_node", function (e) {    
     e.stopPropagation();
     const parentNode = $(this).closest("li")[0];
 
 
-    const id = $("#jstree_demo").jstree(
+    const id = $("#product_tree").jstree(
       "create_node",
       parentNode.id,
       {
@@ -251,7 +265,7 @@ const setupCreateNode = () => {
       },
       "first"
     );
-    $("#jstree_demo").jstree(true).open_node(parentNode.id);
+    $("#product_tree").jstree(true).open_node(parentNode.id);
 
     $("#"+id).attr("data-parent-li-id", $(parentNode).attr("data-id"))
     $("#"+id).attr("data-new-node", true)
@@ -286,9 +300,9 @@ const searchNode = () => {
     if ($(this).val().trim() === "") {
       $(".search_empty").addClass("hidden");
     }
-    $("#jstree_demo").jstree(true).show_all();
+    $("#product_tree").jstree(true).show_all();
     $(".jstree-node").show();
-    $("#jstree_demo").jstree("search", $(this).val());
+    $("#product_tree").jstree("search", $(this).val());
     $(".jstree-hidden").hide();
     $("a.jstree-search").parent("li").find(".jstree-hidden").show();
   });
@@ -304,7 +318,7 @@ $(document).ready(function () {
   saveEditNode();
 });
 
-$("#jstree_demo").on("before_open.jstree", function (e, data) {
+$("#product_tree").on("before_open.jstree", function (e, data) {
   viewVideo();
 });
 
