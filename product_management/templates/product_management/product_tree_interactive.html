@@ -7,110 +7,17 @@
 <input type="hidden" id="data_url_post" value="{{ url('product_area', args=(product_slug,)) }} ">
 
 {% macro generate_summary_structure(tree_data, depth = 0, id=0) %}
-{% for item in tree_data %}
-<li data-jstree='{ "opened" : false }' 
-  id="{{item['name']}}" 
-  data-id="{{ item["id"] }}"
-  data-parent-li-id={{id}}
-  data-url-with-id="{{ url('product_area_with_pk', args=(product_slug, item['id'],)) }}"
-  data-url-post="{{ url('product_area', args=(product_slug,)) }} "
-  class="nested-item py-3 flex flex-col {% if depth > 1 %}pl-4 lg:pl-8{% endif %}"
-  >
-  <div
-    class="nested-item__label shadow-inner h-max flex items-start w-max sm:w-full gap-2 group/item py-3 hover:bg-light-blue px-2 transition-all ease-linear duration-200 rounded">
-    <div class="flex flex-col w-full">
-      <div class="flex w-full justify-between items-center">
-        <div class="flex items-center gap-1">
-          <button class="w-3 h-3">
-            <img src="{{ static('/images/drag.svg') }}" class="w-full h-full object-contain object-center" alt="#">
-          </button>
-          <span class="flex flex-wrap items-center font-semibold">
-            <a href="{{item['link']}}"
-              class="tree-text mr-2 text-base text-dark group-hover/item:text-blue-400 transition-all ease-linear duration-200">{{item['name']}}</a>
-            <input type="text" class="hidden mr-2 text-base text-dark rename_input border border-light-gray rounded" />
-            <button
-              style="border:2px solid red; "
-              class="btn-video__open appearance-none rounded border border-light-gray flex items-center whitespace-nowrap px-4 py-1"
-              data-video="{{item['video_link']}}">
-              <img src="{{ static('/images/play.svg') }}" class="btn-video__open w-[14px] h-[15px]" alt="#">
-              <span class="btn-video__open text-dark text-sm ml-[9px] font-normal font-medium">
-                {{item['nameToutubeVideo']}} <span class="text-gray-dark">{{item['durationYoutubeVideo']}}</span>
-              </span>
-            </button>
-          </span>
-        </div>
-        <div class="flex gap-3 items-center">
-          <button class="add_node w-5 h-5">
-            <img src="{{ static('/images/add.svg') }}" class="" alt="#">
-          </button>
-          <button class="edit_node w-5 h-5">
-            <img src="{{ static('/images/edit_icon.svg')}}" class="edit" alt="#">
-          </button>
-          <button class="check_node w-5 h-5 hidden">
-            <img src="{{ static('/images/check-green.svg')}}" class="check" alt="#">
-          </button>
-          <button class="delete_node w-5 h-5 ">
-            <img src="{{ static('/images/delete.svg')}}" class="" alt="#">
-          </button>
-        </div>
-      </div>
-      <span class="text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">{{item['description']}}</span>
-      <input type="text"
-        class="hidden ml-4 mr-2 text-base text-dark renameDesc_input border border-light-gray rounded mt-2"
-        placeholder="Add description" />
-    </div>
-  </div>
 
-
-  {% if item["children"] %}
-  <ul class="nested-item__child ml-10 h-0 opacity-0 transition-all duration-300 ease-linear">
-    {{ generate_summary_structure(item["children"], depth + 1, item["id"]) }}
-  </ul>
-  {% endif %}
-  
-</li>
-{% endfor %}
+  {% for item in tree_data %}
+    {% with item=item %}
+        {% include "product_management/tree_helper/macro_contents.html" %}
+      {% endwith %}
+  {% endfor %}
 {% endmacro %}
 
 
-<div class="">
-  <h3 class="text-xl text-gray-900 font-bold mb-2">Product Tree-Interactive</h3>
-  <div class="flex flex-col sm:flex-row gap-4 mb-6">
-    <div class="flex items-center">
-      <input type="text" name="search-field" id="search-field"
-        class="block w-full sm:max-w-[320px] rounded-l-md border-0 py-1.5 px-3 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus-visible:outline-none sm:text-sm sm:leading-6 h-9"
-        placeholder="Search text">
-      <button type="submit"
-        class="bg-indigo-600 search_btn appearance-none inline-flex items-center justify-center rounded-r-md bg-blue-400 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/[0.85] sm:mt-0 w-auto h-9 transition-all delay-600">
-        <svg viewBox="64 64 896 896" focusable="false" data-icon="search" width="1em" height="1em" fill="currentColor"
-          aria-hidden="true">
-          <path
-            d="M909.6 854.5L649.9 594.8C690.2 542.7 712 479 712 412c0-80.2-31.3-155.4-87.9-212.1-56.6-56.7-132-87.9-212.1-87.9s-155.5 31.3-212.1 87.9C143.2 256.5 112 331.8 112 412c0 80.1 31.3 155.5 87.9 212.1C256.5 680.8 331.8 712 412 712c67 0 130.6-21.8 182.7-62l259.7 259.6a8.2 8.2 0 0011.6 0l43.6-43.5a8.2 8.2 0 000-11.6zM570.4 570.4C528 612.7 471.8 636 412 636s-116-23.3-158.4-65.6C211.3 528 188 471.8 188 412s23.3-116.1 65.6-158.4C296 211.3 352.2 188 412 188s116.1 23.2 158.4 65.6S636 352.2 636 412s-23.3 116.1-65.6 158.4z">
-          </path>
-        </svg>
-      </button>
-    </div>
-    <button id="AddFirst"
-      class="py-1 sm:py-0 transition-all duration-300 ease-linear text-indigo-600 rounded bg-white border border-indigo-600 px-4 transition-all ease-linear duration-100 hover:bg-indigo-600 hover:text-white">Add
-      Product
-      Area</button>
-  </div>
-  <div class="flex flex-col flex-grow nested">
-    <div class="hidden search_empty flex justify-center items-center flex-col gap-5 ">
-      <img src="{{ static('/images/no-data.svg') }}" alt="no data">
-      <span class="text-base text-gray-900 font-medium mb-2">There is no product area</span>
-    </div>
-    <div class="mt-4 lg:mt-6">
-      <div id="jstree_demo"
-        class="tree-demo flex flex-col gap-4 tree_container overflow-x-auto sm:overflow-x-hidden overflow-y-hidden">
-        <ul>
-          {{ generate_summary_structure(tree_data) }}
-        </ul>
-      </div>
-    </div>
-  </div>
+{% include "product_management/tree_helper/main_content.html" %}
 
-</div>
 </div>
 
 {% endblock product_content %}

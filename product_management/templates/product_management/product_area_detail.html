@@ -3,60 +3,19 @@
 {% block title %}Product - Summary{% endblock %}
 {% block product_content %}
 
+    <form  method="post" class="w-5/6 shadow-lg px-6 py-5">
+        {% csrf_token %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                {{ error }}
+            {% endfor %}
 
-<div class="">
-    <h3 class="text-xl text-gray-900 font-bold mb-4">Product Area Detail</h3>
-    <span class="my-2 block text-sm">
-        Add description
-    </span>
-    <div id="toolbar-container">
-        <span class="ql-formats">
-            <select class="ql-size"></select>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-bold"></button>
-            <button class="ql-italic"></button>
-            <button class="ql-underline"></button>
-            <button class="ql-strike"></button>
-        </span>
-        <span class="ql-formats">
-            <select class="ql-color"></select>
-            <select class="ql-background"></select>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-script" value="sub"></button>
-            <button class="ql-script" value="super"></button>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-header" value="1"></button>
-            <button class="ql-header" value="2"></button>
-            <button class="ql-blockquote"></button>
-            <button class="ql-code-block"></button>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-list" value="ordered"></button>
-            <button class="ql-list" value="bullet"></button>
-            <button class="ql-indent" value="-1"></button>
-            <button class="ql-indent" value="+1"></button>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-direction" value="rtl"></button>
-            <select class="ql-align"></select>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-link"></button>
-            <button class="ql-image"></button>
-            <button class="ql-video"></button>
-            <button class="ql-formula"></button>
-        </span>
-        <span class="ql-formats">
-            <button class="ql-clean"></button>
-        </span>
-    </div>
-    <div id="editor" class="h-[300px]">
-    </div>
-        <!--Other details goes here-->
-</div>
-</div>
+            <label class="font-bold">{{ field.label }}</label>
+            <div class="mb-5 mt-1.5">
+                {{field}}
+            </div>
 
+        {% endfor %}
+        <button class="w-full h-12 h-10 px-5 text-indigo-700 transition-colors duration-150 border border-indigo-500 rounded-lg focus:shadow-outline hover:bg-indigo-500 hover:text-indigo-100">Save </button>
+    </form>
 {% endblock %}
