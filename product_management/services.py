@@ -1,7 +1,7 @@
 from .models import (
     Challenge,
     Initiative,
-    Capability,
+    ProductArea,
     Tag,
     Product,
     Bounty,
@@ -31,7 +31,7 @@ class InitiativeService:
 class CapabilityService:
     @staticmethod
     def create(**kwargs):
-        capability = Capability(**kwargs)
+        capability = ProductArea(**kwargs)
         capability.save()
 
         return capability

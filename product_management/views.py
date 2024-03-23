@@ -40,7 +40,7 @@ from .models import (
     Product,
     Initiative,
     Bounty,
-    Capability,
+    ProductArea,
     Idea,
     Bug,
     Skill,
@@ -161,7 +161,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             {
                 "product": product,
                 "challenges": challenges,
-                "capabilities": Capability.objects.filter(product=product),
+                "capabilities": ProductArea.objects.filter(),
             }
         )
         return context
@@ -236,7 +236,7 @@ class ProductAreaDetailUpdateView(
     BaseProductDetailView, UpdateView, DeleteView
 ):
     template_name = "product_management/product_area_detail.html"
-    model = Capability
+    model = ProductArea
     form_class = ProductAreaForm
 
     def is_ajax(self):
@@ -263,7 +263,7 @@ class ProductAreaDetailUpdateView(
         if self.is_ajax():
             if form.cleaned_data.get("is_drag"):
                 if parent_id := self.request.POST.get("parent_id"):
-                    parent = Capability.objects.get(pk=parent_id)
+                    parent = ProductArea.objects.get(pk=parent_id)
                     self.object.move(parent, "first-child")
                 else:
                     self.object.move(None, "first-sibling")
@@ -280,20 +280,20 @@ class ProductAreaDetailUpdateView(
         return redirect(self.get_success_url())
 
     def delete(self, request, *args, **kwargs):
-        obj = Capability.objects.get(pk=kwargs.get("pk"))
+        obj = ProductArea.objects.get(pk=kwargs.get("pk"))
 
         if obj.numchild > 0:
             return JsonResponse(
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        Capability.objects.get(pk=kwargs.get("pk")).delete()
+        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
         return JsonResponse({"success": True}, status=204)
 
 
 class ProductAreaCreateView(BaseProductDetailView, CreateView):
     template_name = "product_management/product_area_detail.html"
-    model = Capability
+    model = ProductArea
     form_class = ProductAreaForm
 
     def get_success_url(self):
@@ -323,7 +323,7 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        capability_root_trees = Capability.get_root_nodes()
+        capability_root_trees = ProductArea.get_root_nodes()
 
         def serialize_tree(node):
             serialized_node = {
@@ -609,10 +609,10 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
             creation_method = form.cleaned_data.get("creation_method")
             product = Product.objects.get(slug=kwargs.get("product_slug"))
             if capability is None or creation_method == "1":
-                root = Capability.add_root(name=name, description=description)
+                root = ProductArea.add_root(name=name, description=description)
                 root.product.add(product)
             elif creation_method == "2":
-                sibling = capability.add_sibling(
+                sibling = ProductArea.add_sibling(
                     name=name, description=description
                 )
                 sibling.product.add(product)
@@ -637,7 +637,7 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
 
 
 class CapabilityDetailView(BaseProductDetailView, DetailView):
-    model = Capability
+    model = ProductArea
     context_object_name = "capability"
     template_name = "product_management/capability_detail.html"
 

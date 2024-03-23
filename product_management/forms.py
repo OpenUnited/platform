@@ -17,7 +17,7 @@ from .models import (
     Challenge,
     Bounty,
     Initiative,
-    Capability,
+    ProductArea,
 )
 from security.models import ProductRoleAssignment
 
@@ -510,7 +510,7 @@ class InitiativeForm(forms.ModelForm):
 
 class ProductAreaForm(forms.ModelForm):
     class Meta:
-        model = Capability
+        model = ProductArea
         fields = [
             "id",
             "name",
@@ -553,21 +553,21 @@ class ProductAreaCreateForm(forms.ModelForm):
     is_drag = forms.BooleanField(required=False)
 
     class Meta:
-        model = Capability
+        model = ProductArea
         fields = ["name", "description", "data_parent_id", "is_drag"]
 
 
 class CapabilityForm(forms.ModelForm):
     root = forms.ModelChoiceField(
         required=False,
-        empty_label="Select a capability",
-        queryset=Capability.objects.all(),
+        empty_label="Select a product area",
+        queryset=ProductArea.objects.all(),
         widget=forms.Select(
             attrs={
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
             }
         ),
-        help_text="If you want to create a root capability, you can left this field empty.",
+        help_text="If you want to create a root product area, you can left this field empty.",
     )
 
     CHOICES = [
@@ -590,7 +590,7 @@ class CapabilityForm(forms.ModelForm):
     #         self.fields["root"].queryset = Capability.objects.filter(product=product)
 
     class Meta:
-        model = Capability
+        model = ProductArea
         fields = ["name", "description"]
 
         widgets = {
