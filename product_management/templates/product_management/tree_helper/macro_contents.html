@@ -4,18 +4,16 @@
   data-parent-li-id={{id}}
   data-url-with-id="{{ url('product_area_with_pk', args=(product_slug, item['id'],)) }}"
   data-url-post="{{ url('product_area', args=(product_slug,)) }} "
-  class="nested-item py-3 flex flex-col {% if depth > 1 %}pl-4 lg:pl-8{% endif %}"
+  class="nested-item my-4 flex flex-col  {% if depth > 1 %}pl-4 lg:pl-8{% endif %}"
+  draggable="true"
   >
   <div
-    class="nested-item__label shadow-inner h-max flex items-start w-max sm:w-full gap-2 group/item py-3 hover:bg-light-blue px-2 transition-all ease-linear duration-200 rounded">
+    class="nested-item__label  h-max flex items-start w-max sm:w-full gap-2 group/item py-3 hover:bg-light-blue px-2 transition-all ease-linear duration-200 rounded">
     <div class="flex flex-col w-full">
       <div class="flex w-full justify-between items-center">
         <div class="flex items-center gap-1">
-
           {% include "product_management/tree_helper/drag.html" %}
-
           {% include "product_management/tree_helper/video.html" %}
-          
         </div>
             {% include "product_management/tree_helper/action_buttons.html" %}
       </div>
@@ -27,7 +25,6 @@
     </div>
   </div>
 
-
   {% if item["children"] %}
   <ul class="nested-item__child ml-10 h-0 opacity-0 transition-all duration-300 ease-linear">
     {{ generate_summary_structure(item["children"], depth + 1, item["id"]) }}
@@ -35,3 +32,6 @@
   {% endif %}
   
 </li>
+
+
+

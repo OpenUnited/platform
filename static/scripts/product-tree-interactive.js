@@ -65,6 +65,13 @@ $("#product_tree").jstree({
 });
 
 
+const anchorTags = document.querySelectorAll('a.jstree-anchor');
+
+// Iterate over each anchor tag and add a new class
+anchorTags.forEach(anchor => {
+    $(anchor).addClass("rounded-xl border border-light-indigo shadow-md");
+});
+
 
 $("#AddFirst").on("click", create_node);
 
@@ -130,11 +137,14 @@ const deleteProduct = (data)=>{
     method: "DELETE",
     headers: { "X-CSRFToken": $("#csrf_token_id").val() },
     success: function(res) {
-      window.location.reload()
-      // $("#product_tree").jstree("delete_node", data.closestLi.id);
+        showNotification({
+          type:"green", 
+          title: "Success", 
+          "message": "The node has successfully deleted."
+        })
+      $("#product_tree").jstree("delete_node", data.closestLi.id);
     },
     error: function(xhr, status, error){
-      $("#product_tree").jstree("delete_node", data.closestLi.id);
       if (xhr.responseJSON){
         showNotification({
           "message": xhr.responseJSON.error
@@ -166,9 +176,10 @@ const setupEditNode = () => {
     const label = $(this).closest(".nested-item__label");
     const a = $(this).closest(".jstree-anchor");
 
+
     
     a.removeClass();
-    a.addClass("flex ml-5 mt-[-30px] relative focus-visible:outline-0");
+    a.addClass("flex ml-5 mt-[-30px] relative focus-visible:outline-0 ");
     const treeText = label.find(".tree-text");
     const treeDescText = label.find(".text_desc");
     const input = label.find(".rename_input");
@@ -217,20 +228,18 @@ const saveEditNode = () => {
       "id":li.id,
       "name":input.val(),
       "description":descInput.val(),
-      "data_parent_id": $(li).attr("data-parent-li-id"),
+      "parent_id": $(li).attr("data-parent-li-id"),
       "csrfmiddlewaretoken": $("#csrf_token_id").val(),
       "new_node":  $(li).attr("data-new-node")=="true"? true: false,
     }
 
-
-    if (post_data["new_node"] == true){
+    if (post_data["new_node"] === true){
       const post_url = $(li).attr("data-url-post")? $(li).attr("data-url-post"): $("#data_url_post").val()
       $.ajax({
         url: post_url,
         method: "POST",
         data: post_data,
         success: function(data) {
-            console.log(data);
             window.location.reload()
         }
       });
@@ -338,4 +347,21 @@ const quill = new Quill("#editor", {
   },
   placeholder: "Compose an epic...",
   theme: "snow",
+});
+
+
+
+
+
+$(document).keyup(function(e) {
+  if(e.which == 13) {
+    e.preventDefault(); 
+    var li = e.target.closest("li");
+    $(li).find(".check_node").click()
+  }
+  if(e.which == 9) {
+    var li = e.target.closest("li");
+    $(li).find(".renameDesc_input").focus()
+  }
+
 });
