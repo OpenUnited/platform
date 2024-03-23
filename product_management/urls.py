@@ -159,12 +159,12 @@ urlpatterns += [
     ),
     path(
         "<str:product_slug>/product-areas",
-        views.ProductAreaDetailCreateUpdateView.as_view(),
+        views.ProductAreaCreateView.as_view(),
         name="product_area",
     ),
     path(
         "<str:product_slug>/product-areas/<int:pk>",
-        views.ProductAreaDetailCreateUpdateView.as_view(),
+        views.ProductAreaDetailUpdateView.as_view(),
         name="product_area_with_pk",
     ),
     path(

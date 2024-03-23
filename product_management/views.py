@@ -32,8 +32,7 @@ from .forms import (
     BountyForm,
     InitiativeForm,
     CapabilityForm,
-    ProductAreaUpdateForm,
-    ProductAreaCreateForm,
+    ProductAreaForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -233,12 +232,12 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductAreaDetailCreateUpdateView(
-    BaseProductDetailView, CreateView, UpdateView, DeleteView
+class ProductAreaDetailUpdateView(
+    BaseProductDetailView, UpdateView, DeleteView
 ):
     template_name = "product_management/product_area_detail.html"
     model = Capability
-    form_class = ProductAreaUpdateForm
+    form_class = ProductAreaForm
 
     def is_ajax(self):
         if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
@@ -253,26 +252,64 @@ class ProductAreaDetailCreateUpdateView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = ProductAreaUpdateForm(instance=self.get_object())
+        context["form"] = ProductAreaForm(instance=self.get_object())
+        context["challenges"] = Challenge.objects.filter(
+            capability=self.get_object()
+        )
         return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if self.is_ajax():
             if form.cleaned_data.get("is_drag"):
-                parent_id = form.cleaned_data.get("data_parent_id")
-                if parent_id:
+                if parent_id := self.request.POST.get("parent_id"):
                     parent = Capability.objects.get(pk=parent_id)
                     self.object.move(parent, "first-child")
                 else:
                     self.object.move(None, "first-sibling")
-            else:
-                self.object.save()
+
+            self.object.save()
             return JsonResponse({"success": True})
 
+        self.object.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        if self.is_ajax():
+            return JsonResponse({"errors": form.errors}, status=400)
+        return redirect(self.get_success_url())
+
+    def delete(self, request, *args, **kwargs):
+        obj = Capability.objects.get(pk=kwargs.get("pk"))
+
+        if obj.numchild > 0:
+            return JsonResponse(
+                {"error": "Unable to delete a node with a child."}, status=400
+            )
+
+        # Capability.objects.get(pk=kwargs.get("pk")).delete()
+        return JsonResponse({"success": True}, status=204)
+
+
+class ProductAreaCreateView(BaseProductDetailView, CreateView):
+    template_name = "product_management/product_area_detail.html"
+    model = Capability
+    form_class = ProductAreaForm
+
+    def get_success_url(self):
+        conttext = self.get_context_data()
+        return reverse(
+            "product_tree_interactive", args=(conttext.get("product").slug,)
+        )
+
+    def form_valid(self, form):
+        if parent_id := self.request.POST.get("parent_id", None):
+            parent = self.model.objects.get(pk=parent_id)
+            parent.add_child(**form.cleaned_data)
         else:
-            self.object.save()
-            return redirect(self.get_success_url())
+            self.model.add_root(**form.cleaned_data)
+
+        return JsonResponse({"success": True})
 
     def form_invalid(self, form):
         if self.is_ajax():
@@ -285,6 +322,7 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         capability_root_trees = Capability.get_root_nodes()
 
         def serialize_tree(node):

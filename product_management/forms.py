@@ -508,8 +508,7 @@ class InitiativeForm(forms.ModelForm):
         }
 
 
-class ProductAreaUpdateForm(forms.ModelForm):
-
+class ProductAreaForm(forms.ModelForm):
     class Meta:
         model = Capability
         fields = [
@@ -538,7 +537,7 @@ class ProductAreaUpdateForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(ProductAreaUpdateForm, self).__init__(*args, **kwargs)
+        super(ProductAreaForm, self).__init__(*args, **kwargs)
         for _, field in self.fields.items():
             field.widget.attrs.update(
                 {
