@@ -287,7 +287,7 @@ class ProductAreaDetailUpdateView(
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        # Capability.objects.get(pk=kwargs.get("pk")).delete()
+        Capability.objects.get(pk=kwargs.get("pk")).delete()
         return JsonResponse({"success": True}, status=204)
 
 
