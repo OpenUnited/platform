@@ -227,7 +227,7 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update({"capabilities": Capability.get_root_nodes()})
+        context.update({"capabilities": ProductArea.get_root_nodes()})
 
         return context
 
@@ -281,13 +281,12 @@ class ProductAreaDetailUpdateView(
 
     def delete(self, request, *args, **kwargs):
         obj = ProductArea.objects.get(pk=kwargs.get("pk"))
-
         if obj.numchild > 0:
             return JsonResponse(
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
+        # ProductArea.objects.get(pk=kwargs.get("pk")).delete()
         return JsonResponse({"success": True}, status=204)
 
 
