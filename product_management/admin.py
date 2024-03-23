@@ -8,7 +8,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ["slug", "name"]
 
 
-@admin.register(product.Capability)
+@admin.register(product.ProductArea)
 class CapabilityAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "video_link", "path"]
     search_fields = ["name", "video_link"]
