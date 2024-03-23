@@ -6,6 +6,7 @@ from random import choice, sample, randint, getrandbits
 from django.apps import apps
 import json
 from utility.utils import *
+from product_management.models import ProductArea
 
 
 # Utility function to clear rows by model name
@@ -27,52 +28,52 @@ def generate_random_future_date():
 
 
 def create_capabilities() -> list:
-    fancy_out("Create Capability records")
-    get = lambda node_id: Capability.objects.get(pk=node_id)
-    root_1 = Capability.add_root(
-        name="Root Capability 1",
+    fancy_out("Create product area records")
+    get = lambda node_id: ProductArea.objects.get(pk=node_id)
+    root_1 = ProductArea.add_root(
+        name="Root product area  1",
         description="Root Description of Capability 1",
     )
-    root_2 = Capability.add_root(
-        name="Root Capability 2",
-        description="Root Description of Capability 2",
+    root_2 = ProductArea.add_root(
+        name="Root product area  2",
+        description="Root Description of product area  2",
     )
     node_root_2 = get(root_2.pk).add_child(
-        name="Child of a Root Capability 2",
-        description="Child Description of Capability 2",
+        name="Child of a Root product area  2",
+        description="Child Description of product area  2",
     )
     get(node_root_2.pk).add_sibling(
-        name="Sibling of Child of Root Capability 1",
-        description="Sibling Description of Child of Root Capability 1",
+        name="Sibling of Child of Root product area  1",
+        description="Sibling Description of Child of Root product area  1",
     )
     get(node_root_2.pk).add_sibling(
-        name="Sibling of Child of Root Capability 2",
-        description="Sibling Description of Child of Root Capability 2",
+        name="Sibling of Child of Root product area  2",
+        description="Sibling Description of Child of Root product area  2",
     )
     get(node_root_2.pk).add_child(
-        name="Sibling of Child of Root Capability 3",
-        description="Sibling Description of Child of Root Capability 3",
+        name="Sibling of Child of Root product area  3",
+        description="Sibling Description of Child of Root product area  3",
     )
     node = get(root_1.pk).add_child(
-        name="Capability 2", description="Description of Capability 2"
+        name="product area 2", description="Description of product area  2"
     )
     get(node.pk).add_sibling(
-        name="Capability 3", description="Description of Capability 3"
+        name="product area 3", description="Description of product area  3"
     )
     get(node.pk).add_sibling(
-        name="Capability 4", description="Description of Capability 4"
+        name="product area 4", description="Description of product area  4"
     )
     get(node.pk).add_child(
-        name="Capability 5", description="Description of Capability 5"
+        name="product area 5", description="Description of product area 5"
     )
     get(node.pk).add_child(
-        name="Capability 6", description="Description of Capability 6"
+        name="product area 6", description="Description of product area 6"
     )
     get(node.pk).add_child(
-        name="Capability 7", description="Description of Capability 7"
+        name="product area 7", description="Description of product area 7"
     )
 
-    return Capability.objects.all()
+    return ProductArea.objects.all()
 
 
 # Function to read data from a JSON file
