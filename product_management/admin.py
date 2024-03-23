@@ -9,7 +9,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(product.ProductArea)
-class CapabilityAdmin(admin.ModelAdmin):
+class ProductAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "video_link", "path"]
     search_fields = ["name", "video_link"]
 

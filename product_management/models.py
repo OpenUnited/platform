@@ -57,9 +57,6 @@ class ProductArea(MP_Node):
         editable=False,
     )
 
-    class Meta:
-        verbose_name_plural = "capabilities"
-
     def __str__(self):
         return self.name
 
