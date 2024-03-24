@@ -1,6 +1,7 @@
+
 $("#product_tree").jstree({
   core: {
-    multiple: false,
+    multiple: true,
     animation: 100,
     check_callback: true,
     themes: {
@@ -19,6 +20,7 @@ $("#product_tree").jstree({
   conditionalselect: function (node, event) {
     return false;
   },
+
   plugins: [
     "dnd",
     "massload",
@@ -30,12 +32,13 @@ $("#product_tree").jstree({
     "changed",
     "conditionalselect",
   ],
+  dnd: {
+    is_draggable: $("#can_modify_product").val() == "True" ? true : false 
+  },
   search: {
     show_only_matches: true,
     show_only_matches_children: true,
   },
-}).on("show_contextmenu.jstree", function (e, data) {
-  // Add your context menu logic here if needed
 }).on("search.jstree", function (nodes, str, res) {
   if (str.nodes.length === 0) {
     $("#product_tree").jstree(true).hide_all();
@@ -43,35 +46,39 @@ $("#product_tree").jstree({
   } else {
     $(".search_empty").addClass("hidden");
   }
-}).on("move_node.jstree", function (e, data) {
-  var parentElement = document.getElementById(data.parent);
-  var parent_id = parentElement.getAttribute("data-id");
+  
+})
 
-  var node = document.getElementById(data.node.id);
-  var url = node.getAttribute("data-url-with-id");
-
-  $.ajax({
-    url: url,
-    method: "POST",
-    data: {
-      "data_parent_id": parent_id,
-      "csrfmiddlewaretoken": $("#csrf_token_id").val(),
-      "is_drag": true
-    },
-    success: function (data) {
-      window.location.reload();
-    }
-  });
-});
-
-
-const anchorTags = document.querySelectorAll('a.jstree-anchor');
-
-// Iterate over each anchor tag and add a new class
-anchorTags.forEach(anchor => {
-    $(anchor).addClass("rounded-xl border border-light-indigo shadow-md");
-});
-
+  $(document).on('dnd_stop.vakata', function(e, data){
+    var node = data.data.nodes[0]; // Get the node being moved
+    var newParentId = data.event.target.closest('.jstree-node')
+    var url =  document.getElementById(node).getAttribute("data-url-with-id")
+    $.ajax({
+        url: url,
+        method: "POST",
+        data: {
+          "parent_id": $(newParentId).attr("id"),
+          "name": node,
+          "csrfmiddlewaretoken": $("#csrf_token_id").val(),
+          "is_drag": true
+        },
+        success: function (res) {
+          showNotification({
+              type:"green", 
+              title: "Success", 
+              message: "The node has been moved."
+            })
+        },
+        error: function(error){
+          showNotification({
+            "type":"red", 
+            "title": "Error", 
+            "message": "Something went wrong"
+          })
+          return false
+        } 
+    });
+})
 
 $("#AddFirst").on("click", create_node);
 
@@ -241,6 +248,22 @@ const saveEditNode = () => {
         data: post_data,
         success: function(data) {
             window.location.reload()
+        },
+        error: function(xhr, status, error){
+          if (xhr.responseJSON){
+            showNotification({
+              message: xhr.responseJSON.error
+            })
+          }
+          else{
+            showNotification({
+              "type":"red", 
+              "title": "Error", 
+              "message": "Something went wrong"
+            })
+          }
+          window.location.reload()
+
         }
       });
     }
@@ -253,7 +276,23 @@ const saveEditNode = () => {
         success: function(data) {
             console.log(data);
             window.location.reload()
+        },
+        error: function(xhr, status, error){
+          if (xhr.responseJSON){
+            showNotification({
+              message: xhr.responseJSON.error
+            })
+          }
+          else{
+            showNotification({
+              "type":"red", 
+              "title": "Error", 
+              "message": "Something went wrong"
+            })
+          }
+          window.location.reload()
         }
+        
       });
     }
 
