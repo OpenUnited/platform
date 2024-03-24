@@ -6,6 +6,21 @@
 <input type="hidden" id="csrf_token_id" value="{{ csrf_token }}">
 <input type="hidden" id="data_url_post" value="{{ url('product_area', args=(product_slug,)) }} ">
 
+<input type="hidden" id="can_modify_product" value="{{ can_modify_product }}">
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+      {% with message=message %}
+        {% include "product_management/tree_helper/alert.html" %}
+      {% endwith %}
+
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
 {% macro generate_summary_structure(tree_data, depth = 0, id=0) %}
 
   {% for item in tree_data %}
