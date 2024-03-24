@@ -24,9 +24,7 @@ class Tag(TimeStampMixin):
 
 
 class ProductTree(models.Model):
-    id = models.UUIDField(
-        primary_key=True, max_length=255, default=uuid.uuid4()
-    )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     product = models.ForeignKey(
         "product_management.Product",
