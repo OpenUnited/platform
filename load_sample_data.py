@@ -6,7 +6,6 @@ from random import choice, sample, randint, getrandbits
 from django.apps import apps
 import json
 from utility.utils import *
-from product_management.models import ProductArea
 
 
 # Utility function to clear rows by model name
@@ -471,6 +470,7 @@ if __name__ == "__main__":
         Idea,
         Bug,
         Initiative,
+        ProductArea,
     )
     from commerce.services import (
         OrganisationService,
@@ -480,7 +480,6 @@ if __name__ == "__main__":
         PointPriceConfigurationService,
     )
     from security.services import ProductRoleAssignmentService, UserService
-    from product_management.models import Capability
     from talent.services import (
         PersonService,
         SkillService,
