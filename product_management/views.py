@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -52,6 +53,10 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 from .filters import ChallengeFilter
+from product_management.utils import (
+    has_product_modify_permission,
+    modify_permission_required,
+)
 
 
 class ChallengeListView(ListView):
@@ -232,9 +237,7 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductAreaDetailUpdateView(
-    BaseProductDetailView, UpdateView, DeleteView
-):
+class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = ProductAreaForm
@@ -252,21 +255,31 @@ class ProductAreaDetailUpdateView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = ProductAreaForm(instance=self.get_object())
+        can_modify_product = has_product_modify_permission(
+            self.request.user, context["product"]
+        )
+        context["form"] = ProductAreaForm(
+            instance=self.get_object(),
+            can_modify_product=can_modify_product,
+        )
         context["challenges"] = Challenge.objects.filter(
             capability=self.get_object()
         )
+        context["can_modify_product"] = can_modify_product
         return context
 
+    @modify_permission_required
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if self.is_ajax():
-            if form.cleaned_data.get("is_drag"):
+            if bool(self.request.POST.get("is_drag")):
                 if parent_id := self.request.POST.get("parent_id"):
                     parent = ProductArea.objects.get(pk=parent_id)
                     self.object.move(parent, "first-child")
+                    return JsonResponse({"success": True})
                 else:
                     self.object.move(None, "first-sibling")
+                    return JsonResponse({"success": True})
 
             self.object.save()
             return JsonResponse({"success": True})
@@ -286,7 +299,7 @@ class ProductAreaDetailUpdateView(
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        # ProductArea.objects.get(pk=kwargs.get("pk")).delete()
+        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
         return JsonResponse({"success": True}, status=204)
 
 
@@ -295,12 +308,25 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
     model = ProductArea
     form_class = ProductAreaForm
 
+    def is_ajax(self):
+        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return True
+        return False
+
     def get_success_url(self):
         conttext = self.get_context_data()
         return reverse(
             "product_tree_interactive", args=(conttext.get("product").slug,)
         )
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["can_modify_product"] = has_product_modify_permission(
+            self.request.user, context["product"]
+        )
+        return context
+
+    @modify_permission_required
     def form_valid(self, form):
         if parent_id := self.request.POST.get("parent_id", None):
             parent = self.model.objects.get(pk=parent_id)
@@ -321,7 +347,9 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context["can_modify_product"] = has_product_modify_permission(
+            self.request.user, context["product"]
+        )
         capability_root_trees = ProductArea.get_root_nodes()
 
         def serialize_tree(node):

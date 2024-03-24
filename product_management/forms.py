@@ -537,24 +537,13 @@ class ProductAreaForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        can_modify_product = kwargs.pop("can_modify_product", False)
         super(ProductAreaForm, self).__init__(*args, **kwargs)
+
+        class_names = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         for _, field in self.fields.items():
-            field.widget.attrs.update(
-                {
-                    "class": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                }
-            )
-
-
-class ProductAreaCreateForm(forms.ModelForm):
-    description = forms.CharField(required=False)
-    data_parent_id = forms.CharField(required=False)
-    name = forms.CharField(required=False)
-    is_drag = forms.BooleanField(required=False)
-
-    class Meta:
-        model = ProductArea
-        fields = ["name", "description", "data_parent_id", "is_drag"]
+            field.widget.attrs.update({"class": class_names})
+            field.widget.attrs["readonly"] = not can_modify_product
 
 
 class CapabilityForm(forms.ModelForm):
