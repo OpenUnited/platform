@@ -83,13 +83,23 @@ $("#product_tree").jstree({
 $("#AddFirst").on("click", create_node);
 
 const newNode = (text, id) => {
+  const hostnameToImageUrlMap = {
+    "localhost": "/static/images",
+    "staging.openunited.com": "https://openunited-staging.ams3.digitaloceanspaces.com",
+    "demo.openunited.com": "https://openunited-demo.ams3.digitaloceanspaces.com",
+    "openunited.com": "https://openunited.ams3.digitaloceanspaces.com"
+  };
+
+  const hostname = window.location.hostname;
+  const imageUrl = hostnameToImageUrlMap[hostname];
+
   let newNodeText = ` <div
   class="nested-item__label shadow-inner h-max flex items-start w-full gap-2 group/item py-3 hover:bg-light-blue px-2 transition-all ease-linear duration-200 rounded">
   <div class="flex flex-col w-full">
     <div class="flex w-full justify-between items-center">
       <div class="flex items-center gap-1">
         <button class="w-3 h-3">
-          <img src="/static/images/drag.svg" class="w-full h-full object-contain object-center" alt="#">
+          <img src="${imageUrl}/drag.svg" class="w-full h-full object-contain object-center" alt="#">
         </button>
         <span class="flex flex-wrap items-center font-semibold">
           <a href="{{item['link']}}"
@@ -101,16 +111,16 @@ const newNode = (text, id) => {
       </div>
       <div class="flex gap-3 items-center">
         <button class="add_node w-5 h-5">
-           <img src="/static/images/add.svg" class="" alt="#">
+           <img src="${imageUrl}/add.svg" class="" alt="#">
         </button>
         <button class="edit_node w-5 h-5">
-          <img src="/static/images/edit_icon.svg" class="" alt="#">
+          <img src="${imageUrl}/edit_icon.svg" class="" alt="#">
         </button>
         <button class="check_node w-5 h-5 hidden">
-            <img src="/static/images/check-green.svg" class="check" alt="#">
+            <img src="${imageUrl}/check-green.svg" class="check" alt="#">
           </button>
         <button class="delete_node w-5 h-5 ">
-          <img src="/static/images/delete.svg" class="" alt="#">
+          <img src="${imageUrl}/delete.svg" class="" alt="#">
         </button>
       </div>
     </div>
