@@ -355,3 +355,56 @@ input[autocomplete=one-time-code] {
   font-weight: 500;
   margin-block-end: 1ch;
 }
+
+
+.jstree-default .jstree-wholerow {
+  background: transparent !important;
+}
+
+.jstree-anchor {
+  display: flex !important;
+  height: max-content !important;
+}
+
+.jstree-default .jstree-anchor {
+  margin-top: -30px !important;
+  height: max-content !important;
+  margin-left: 20px;
+}
+
+.jstree .jstree-open>.jstree-children,
+.jstree-children {
+  gap: 10px;
+  display: flex !important;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.jstree-default .jstree-search .tree-text {
+  color: rgb(79 70 229) !important;
+}
+
+.scolled-content::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+.jstree-anchor {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 3px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0; /* Add border */
+  transition: box-shadow 0.3s ease, border-color 0.3s ease; /* Add transition for border color */
+}
+.jstree-anchor:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-color: #ccc; /* Change border color on hover */
+}
+
+.text_desc{
+  overflow: hidden;
+  padding-left: 5px;
+}

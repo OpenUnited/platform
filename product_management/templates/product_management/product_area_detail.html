@@ -1,0 +1,25 @@
+{% extends 'product_management/product_detail_base_with_macro.html' %}
+
+{% block title %}Product - Summary{% endblock %}
+{% block product_content %}
+
+    <form  method="post" class="w-5/6 shadow-lg px-6 py-5">
+        {% csrf_token %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                {{ error }}
+            {% endfor %}
+
+            <label class="font-bold">{{ field.label }}</label>
+            <div class="mb-5 mt-1.5">
+                {{field}}
+            </div>
+
+        {% endfor %}
+        <button class="w-full h-12 h-10 px-5 text-indigo-700 transition-colors duration-150 border border-indigo-500 rounded-lg focus:shadow-outline hover:bg-indigo-500 hover:text-indigo-100">Save </button>
+    </form>
+
+    {% include "product_management/challenge_helper/challenge_main.html" %}
+    
+{% endblock %}
+

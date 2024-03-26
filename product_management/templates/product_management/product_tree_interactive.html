@@ -1,0 +1,38 @@
+{% extends 'product_management/product_detail_base_with_macro.html' %}
+
+{% block title %}Product - Summary{% endblock %}
+{% block product_content %}
+
+<input type="hidden" id="csrf_token_id" value="{{ csrf_token }}">
+<input type="hidden" id="data_url_post" value="{{ url('product_area', args=(product_slug,)) }} ">
+
+<input type="hidden" id="can_modify_product" value="{{ can_modify_product }}">
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+      {% with message=message %}
+        {% include "product_management/tree_helper/alert.html" %}
+      {% endwith %}
+
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
+{% macro generate_summary_structure(tree_data, depth = 0, id=0) %}
+
+  {% for item in tree_data %}
+    {% with item=item %}
+        {% include "product_management/tree_helper/macro_contents.html" %}
+      {% endwith %}
+  {% endfor %}
+{% endmacro %}
+
+
+{% include "product_management/tree_helper/main_content.html" %}
+
+</div>
+
+{% endblock product_content %}

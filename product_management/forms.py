@@ -17,7 +17,7 @@ from .models import (
     Challenge,
     Bounty,
     Initiative,
-    Capability,
+    ProductArea,
 )
 from security.models import ProductRoleAssignment
 
@@ -508,17 +508,55 @@ class InitiativeForm(forms.ModelForm):
         }
 
 
+class ProductAreaForm(forms.ModelForm):
+    class Meta:
+        model = ProductArea
+        fields = [
+            "id",
+            "name",
+            "video_link",
+            "video_name",
+            "video_duration",
+            "description",
+        ]
+
+        widgets = {
+            "name": forms.TextInput(attrs={"placeholder": "Enter name here"}),
+            "video_link": forms.TextInput(
+                attrs={"placeholder": "Enter video link here"}
+            ),
+            "video_name": forms.TextInput(
+                attrs={"placeholder": "Enter video video_name here"}
+            ),
+            "video_duration": forms.TextInput(
+                attrs={"placeholder": "Enter video video_name here, E.x 7:20"}
+            ),
+            "description": forms.Textarea(
+                attrs={"placeholder": "Enter description here", "columns": 2}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        can_modify_product = kwargs.pop("can_modify_product", False)
+        super(ProductAreaForm, self).__init__(*args, **kwargs)
+
+        class_names = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        for _, field in self.fields.items():
+            field.widget.attrs.update({"class": class_names})
+            field.widget.attrs["readonly"] = not can_modify_product
+
+
 class CapabilityForm(forms.ModelForm):
     root = forms.ModelChoiceField(
         required=False,
-        empty_label="Select a capability",
-        queryset=Capability.objects.all(),
+        empty_label="Select a product area",
+        queryset=ProductArea.objects.all(),
         widget=forms.Select(
             attrs={
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
             }
         ),
-        help_text="If you want to create a root capability, you can left this field empty.",
+        help_text="If you want to create a root product area, you can left this field empty.",
     )
 
     CHOICES = [
@@ -541,7 +579,7 @@ class CapabilityForm(forms.ModelForm):
     #         self.fields["root"].queryset = Capability.objects.filter(product=product)
 
     class Meta:
-        model = Capability
+        model = ProductArea
         fields = ["name", "description"]
 
         widgets = {

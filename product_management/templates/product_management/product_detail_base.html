@@ -160,6 +160,18 @@
                                 </a>
                         </li>
                         <li>
+                            {% if last_segment == "tree-interactive" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url('product_tree_interactive', args=(product_slug,)) }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif %}
+                                    Product Tree Interactive
+                                </a>
+                        </li>
+
+                        <li>
                             {% if last_segment == "ideas" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">

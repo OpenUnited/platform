@@ -9,7 +9,7 @@ from talent.models import BountyClaim
 from product_management.models import (
     Product,
     Challenge,
-    Capability,
+    ProductArea,
     Idea,
     Bug,
     Attachment,
@@ -225,10 +225,10 @@ class ProductSummaryViewTest(BaseProductTestCase):
                 status=Challenge.CHALLENGE_STATUS_AVAILABLE,
             )
 
-        root_capability = Capability.add_root(
+        root_capability = ProductArea.add_root(
             name="dummy name", description="dummy description"
         )
-        root_capability.product.add(self.product)
+        # root_capability.product.add(self.product)
 
         # TODO: write one more case for this case
         self.client.force_login(self.product.content_object.user)
@@ -251,7 +251,9 @@ class ProductSummaryViewTest(BaseProductTestCase):
             actual.pop("challenges"), Challenge.objects.all(), ordered=False
         )
         self.assertQuerySetEqual(
-            actual.pop("capabilities"), Capability.objects.all(), ordered=False
+            actual.pop("capabilities"),
+            ProductArea.objects.all(),
+            ordered=False,
         )
         self.assertDictEqual(actual, expected)
 
@@ -478,7 +480,7 @@ class DeleteChallengeViewTest(BaseProductTestCase):
 class CapabilityDetailViewTest(BaseProductTestCase):
     def setUp(self):
         super().setUp()
-        self.root_capability = Capability.add_root(
+        self.root_capability = ProductArea.add_root(
             name="capability name", description="capability description"
         )
         self.url = reverse(

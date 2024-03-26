@@ -1,5 +1,6 @@
 from typing import Any, Dict
-from django.http import HttpRequest, HttpResponse
+from django.forms.models import BaseModelForm
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.db import models
@@ -32,6 +33,7 @@ from .forms import (
     BountyForm,
     InitiativeForm,
     CapabilityForm,
+    ProductAreaForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -39,7 +41,7 @@ from .models import (
     Product,
     Initiative,
     Bounty,
-    Capability,
+    ProductArea,
     Idea,
     Bug,
     Skill,
@@ -51,6 +53,10 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 from .filters import ChallengeFilter
+from product_management.utils import (
+    has_product_modify_permission,
+    modify_permission_required,
+)
 
 
 class ChallengeListView(ListView):
@@ -160,7 +166,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             {
                 "product": product,
                 "challenges": challenges,
-                "capabilities": Capability.objects.filter(product=product),
+                "capabilities": ProductArea.objects.filter(),
             }
         )
         return context
@@ -226,11 +232,143 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update(
-            {
-                "capabilities": Capability.get_root_nodes(),
-            }
+        context.update({"capabilities": ProductArea.get_root_nodes()})
+
+        return context
+
+
+class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
+    template_name = "product_management/product_area_detail.html"
+    model = ProductArea
+    form_class = ProductAreaForm
+
+    def is_ajax(self):
+        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return True
+        return False
+
+    def get_success_url(self):
+        conttext = self.get_context_data()
+        return reverse(
+            "product_tree_interactive", args=(conttext.get("product").slug,)
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        can_modify_product = has_product_modify_permission(
+            self.request.user, context["product"]
+        )
+        context["form"] = ProductAreaForm(
+            instance=self.get_object(),
+            can_modify_product=can_modify_product,
+        )
+        context["challenges"] = Challenge.objects.filter(
+            capability=self.get_object()
+        )
+        context["can_modify_product"] = can_modify_product
+        return context
+
+    @modify_permission_required
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if self.is_ajax():
+            if bool(self.request.POST.get("is_drag")):
+                if parent_id := self.request.POST.get("parent_id"):
+                    parent = ProductArea.objects.get(pk=parent_id)
+                    self.object.move(parent, "first-child")
+                    return JsonResponse({"success": True})
+                else:
+                    self.object.move(None, "first-sibling")
+                    return JsonResponse({"success": True})
+
+            self.object.save()
+            return JsonResponse({"success": True})
+
+        self.object.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        if self.is_ajax():
+            return JsonResponse({"errors": form.errors}, status=400)
+        return redirect(self.get_success_url())
+
+    def delete(self, request, *args, **kwargs):
+        obj = ProductArea.objects.get(pk=kwargs.get("pk"))
+        if obj.numchild > 0:
+            return JsonResponse(
+                {"error": "Unable to delete a node with a child."}, status=400
+            )
+
+        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
+        return JsonResponse({"success": True}, status=204)
+
+
+class ProductAreaCreateView(BaseProductDetailView, CreateView):
+    template_name = "product_management/product_area_detail.html"
+    model = ProductArea
+    form_class = ProductAreaForm
+
+    def is_ajax(self):
+        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return True
+        return False
+
+    def get_success_url(self):
+        conttext = self.get_context_data()
+        return reverse(
+            "product_tree_interactive", args=(conttext.get("product").slug,)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["can_modify_product"] = has_product_modify_permission(
+            self.request.user, context["product"]
+        )
+        return context
+
+    @modify_permission_required
+    def form_valid(self, form):
+        if parent_id := self.request.POST.get("parent_id", None):
+            parent = self.model.objects.get(pk=parent_id)
+            parent.add_child(**form.cleaned_data)
+        else:
+            self.model.add_root(**form.cleaned_data)
+
+        return JsonResponse({"success": True})
+
+    def form_invalid(self, form):
+        if self.is_ajax():
+            return JsonResponse({"errors": form.errors}, status=400)
+        return redirect(self.get_success_url())
+
+
+class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
+    template_name = "product_management/product_tree_interactive.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["can_modify_product"] = has_product_modify_permission(
+            self.request.user, context["product"]
+        )
+        capability_root_trees = ProductArea.get_root_nodes()
+
+        def serialize_tree(node):
+            serialized_node = {
+                "id": node.pk,
+                "name": node.name,
+                "description": node.description,
+                "video_link": node.video_link,
+                "video_name": node.video_name,
+                "video_duration": node.video_duration,
+                "children": [
+                    serialize_tree(child) for child in node.get_children()
+                ],
+            }
+            return serialized_node
+
+        context["tree_data"] = [
+            serialize_tree(node) for node in capability_root_trees
+        ]
 
         return context
 
@@ -498,10 +636,10 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
             creation_method = form.cleaned_data.get("creation_method")
             product = Product.objects.get(slug=kwargs.get("product_slug"))
             if capability is None or creation_method == "1":
-                root = Capability.add_root(name=name, description=description)
+                root = ProductArea.add_root(name=name, description=description)
                 root.product.add(product)
             elif creation_method == "2":
-                sibling = capability.add_sibling(
+                sibling = ProductArea.add_sibling(
                     name=name, description=description
                 )
                 sibling.product.add(product)
@@ -526,7 +664,7 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
 
 
 class CapabilityDetailView(BaseProductDetailView, DetailView):
-    model = Capability
+    model = ProductArea
     context_object_name = "capability"
     template_name = "product_management/capability_detail.html"
 

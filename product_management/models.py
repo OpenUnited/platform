@@ -1,3 +1,4 @@
+import uuid
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -22,21 +23,37 @@ class Tag(TimeStampMixin):
         return self.name
 
 
-# ProductTree is made up from Capabilities
-class Capability(MP_Node):
+class ProductTree(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField(max_length=1000, default="")
-    video_link = models.CharField(max_length=255, blank=True, null=True)
+    product = models.ForeignKey(
+        "product_management.Product",
+        related_name="product_trees",
+        on_delete=models.CASCADE,
+    )
+
+
+class ProductArea(MP_Node):
+    name = models.CharField(max_length=255)
+    description = models.TextField(
+        max_length=1000, blank=True, null=True, default=""
+    )
+    video_link = models.URLField(max_length=255, blank=True, null=True)
+    video_name = models.CharField(max_length=255, blank=True, null=True)
+    video_duration = models.CharField(max_length=255, blank=True, null=True)
+    product_tree = models.ForeignKey(
+        "product_management.ProductTree",
+        blank=True,
+        null=True,
+        related_name="product_areas",
+        on_delete=models.SET_NULL,
+    )
     comments_start = models.ForeignKey(
         to="talent.capabilitycomment",
         on_delete=models.SET_NULL,
         null=True,
         editable=False,
     )
-
-    class Meta:
-        db_table = "capability"
-        verbose_name_plural = "capabilities"
 
     def __str__(self):
         return self.name
@@ -50,7 +67,7 @@ class Attachment(models.Model):
 
 
 class CapabilityAttachment(models.Model):
-    capability = models.ForeignKey(Capability, on_delete=models.CASCADE)
+    capability = models.ForeignKey(ProductArea, on_delete=models.CASCADE)
     attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
 
     class Meta:
@@ -60,13 +77,6 @@ class CapabilityAttachment(models.Model):
 class Product(ProductMixin):
     attachment = models.ManyToManyField(
         Attachment, related_name="product_attachments", blank=True
-    )
-    capability_start = models.ForeignKey(
-        Capability,
-        on_delete=models.CASCADE,
-        null=True,
-        editable=False,
-        related_name="product",
     )
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -79,6 +89,9 @@ class Product(ProductMixin):
     def make_public(self):
         self.is_private = False
         self.save()
+
+    def capability_start(self):
+        return self.product_trees.first()
 
     def get_photo_url(self):
         image_url = MEDIA_URL + "products/product-empty.png"
@@ -211,7 +224,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
         Initiative, on_delete=models.SET_NULL, blank=True, null=True
     )
     capability = models.ForeignKey(
-        Capability, on_delete=models.SET_NULL, blank=True, null=True
+        ProductArea, on_delete=models.SET_NULL, blank=True, null=True
     )
     title = models.TextField()
     description = models.TextField()
