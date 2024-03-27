@@ -139,32 +139,39 @@ function create_node() {
 }
 
 const deleteProduct = (data)=>{
-  $.ajax({
-    url: data.url,
-    method: "DELETE",
-    headers: { "X-CSRFToken": $("#csrf_token_id").val() },
-    success: function(res) {
-        showNotification({
-          type:"green", 
-          title: "Success", 
-          "message": "The node has successfully deleted."
-        })
-      $("#product_tree").jstree("delete_node", data.closestLi.id);
-    },
-    error: function(xhr, status, error){
-      if (xhr.responseJSON){
-        showNotification({
-          "message": xhr.responseJSON.error
-        })
+  const closestLi = data.closestLi
+
+  if ($(closestLi).attr("has_saved")){
+    $.ajax({
+      url: data.url,
+      method: "DELETE",
+      headers: { "X-CSRFToken": $("#csrf_token_id").val() },
+      success: function(res) {
+          showNotification({
+            type:"green", 
+            title: "Success", 
+            "message": "The node has successfully deleted."
+          })
+        $("#product_tree").jstree("delete_node", data.closestLi.id);
+      },
+      error: function(xhr, status, error){
+        if (xhr.responseJSON){
+          showNotification({
+            "message": xhr.responseJSON.error
+          })
+        }
       }
-    }
-  });
+    });
+  }
+  else{
+    $("#product_tree").jstree("delete_node", data.closestLi.id);
+  }
 }
 const setupDeleteNode = () => {
   $("#product_tree").on("click", ".delete_node", function (e) {
     e.stopPropagation();
     const closestLi = $(this).closest("li")[0];
-
+    
     showConfirm({
       callback: deleteProduct,
       callback_data: {
@@ -372,24 +379,13 @@ $("#product_tree").on("before_open.jstree", function (e, data) {
 
 $(document).on("click", ".jstree-anchor", function (e) {
   var is_button_clicked = $(e.target).is('button.btn-video__open') || $(e.target).is('span.btn-video__open')
+  const closestLi = $(this).closest("li")[0]
 
-  if (!is_button_clicked) {
-    var url =$($(this).closest("li")[0]).attr("data-url-with-id");  
+  if (!is_button_clicked && $(closestLi).attr("has_saved")) {
+    var url =$(closestLi).attr("data-url-with-id");  
     window.location.href = window.origin + url;
   }
 });
-
-const quill = new Quill("#editor", {
-  modules: {
-    syntax: true,
-    toolbar: "#toolbar-container",
-  },
-  placeholder: "Compose an epic...",
-  theme: "snow",
-});
-
-
-
 
 
 $(document).keyup(function(e) {
@@ -402,5 +398,4 @@ $(document).keyup(function(e) {
     var li = e.target.closest("li");
     $(li).find(".renameDesc_input").focus()
   }
-
 });

@@ -360,6 +360,7 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
                 "video_link": node.video_link,
                 "video_name": node.video_name,
                 "video_duration": node.video_duration,
+                "has_saved": True,
                 "children": [
                     serialize_tree(child) for child in node.get_children()
                 ],
