@@ -85,9 +85,9 @@ $("#AddFirst").on("click", create_node);
 const newNode = (text, id) => {
   const hostnameToImageUrlMap = {
     "localhost": "/static/images",
-    "staging.openunited.com": "https://openunited-staging.ams3.digitaloceanspaces.com",
-    "demo.openunited.com": "https://openunited-demo.ams3.digitaloceanspaces.com",
-    "openunited.com": "https://openunited.ams3.digitaloceanspaces.com"
+    "staging.openunited.com": "https://ams3.digitaloceanspaces.com/openunited-staging/openunited-static/images",
+    "demo.openunited.com": "https://ams3.digitaloceanspaces.com/openunited-demo/openunited-static/images",
+    "openunited.com": "https://ams3.digitaloceanspaces.com/openunited/openunited-static/images",
   };
 
   const hostname = window.location.hostname;
