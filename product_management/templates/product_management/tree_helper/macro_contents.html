@@ -5,6 +5,7 @@
   data-url-with-id="{{ url('product_area_with_pk', args=(product_slug, item['id'],)) }}"
   data-url-post="{{ url('product_area', args=(product_slug,)) }} "
   class="nested-item my-2 {% if depth > 1 %}pl-4 lg:pl-8{% endif %}"
+  has_saved="{{ item['has_saved'] }}" 
   >
   <div
     class="nested-item__label  h-max flex items-start w-max sm:w-full gap-2 group/item py-3 hover:bg-light-blue px-2 transition-all ease-linear duration-200 rounded">
