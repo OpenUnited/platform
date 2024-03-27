@@ -1,0 +1,16 @@
+name: Preproduction branch deleted
+on: delete
+jobs:
+  delete:
+    if: github.event.ref_type == 'branch' && github.event.ref == 'preproduction'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - name: Delete preproduction app
+      run: |
+        wget -O jq https://github.com/jqlang/jq/releases/download/jq-1.7/jq-linux-amd64 && chmod +x jq
+        export APP_ID="$(doctl --output json apps list | ./jq -r 'map(select(.spec.name == "openunited-platform-preprod")) | .[0].id')"
+        doctl apps delete --force "$APP_ID"

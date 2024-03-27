@@ -1,0 +1,36 @@
+name: Deploy to Production and Demo
+
+on:
+  - workflow_dispatch
+
+env:
+  PRODUCTION_ID: c3364f4f-1d34-4b31-ac49-da9782159a7e
+  DEMO_ID: c87ff841-b900-4cc7-b3ea-19d29948be6e
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - uses: actions/setup-python@v4
+    - run: pip install yq
+    - name: Fetch spec files
+      run: |
+        wget -O jq https://github.com/jqlang/jq/releases/download/jq-1.7/jq-linux-amd64 && chmod +x jq
+        export PREPRODUCTION_ID="$(doctl --output json apps list | ./jq -r 'map(select(.spec.name == "openunited-platform-preprod")) | .[0].id')"
+        doctl apps spec get $PREPRODUCTION_ID > preproduction.yaml
+        doctl apps spec get $PRODUCTION_ID > production.yaml
+        doctl apps spec get $DEMO_ID > demo.yaml
+    - name: Update image tag
+      run: |
+        export TAG="$(python -m yq -r .services[0].image.tag preproduction.yaml)"
+        echo "Updating production image tag to $TAG"
+        python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[0].image.tag = $TAG' production.yaml
+        python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[0].image.tag = $TAG' demo.yaml
+    - name: Update the environments
+      run: |
+        doctl apps update $PRODUCTION_ID --spec production.yaml
+        doctl apps update $DEMO_ID --spec demo.yaml
