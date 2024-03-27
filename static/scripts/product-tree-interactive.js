@@ -92,7 +92,7 @@ const newNode = (text, id) => {
           <img src="/static/images/drag.svg" class="w-full h-full object-contain object-center" alt="#">
         </button>
         <span class="flex flex-wrap items-center font-semibold">
-          <a href="{{item['link']}}"
+          <a href="#"
             class="tree-text mr-2 text-base text-dark group-hover/item:text-blue-400 transition-all ease-linear duration-200">${
               text || "New item"
             }</a>
