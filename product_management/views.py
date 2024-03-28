@@ -226,17 +226,6 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductTreeView(BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_tree.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context.update({"capabilities": ProductArea.get_root_nodes()})
-
-        return context
-
-
 class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
