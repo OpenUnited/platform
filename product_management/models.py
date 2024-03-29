@@ -66,12 +66,18 @@ class Attachment(models.Model):
         return self.file.name
 
 
-class CapabilityAttachment(models.Model):
-    capability = models.ForeignKey(ProductArea, on_delete=models.CASCADE)
+class ProductAreaAttachment(models.Model):
+    product_area = models.ForeignKey(
+        ProductArea, related_name="attachments", on_delete=models.CASCADE
+    )
     attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
 
-    class Meta:
-        db_table = "capability_attachment"
+    @property
+    def delete_url(self):
+        return reverse("delete_product_area_attachment", args=[self.pk])
+
+    def __str__(self):
+        return self.product_area.name
 
 
 class Product(ProductMixin):
