@@ -39,11 +39,13 @@ def has_product_modify_permission(user, product):
     return False
 
 
+def permission_error_message():
+    return "You don't have enough permission to perform this action."
+
+
 def modify_permission_required(view_func):
     def _wrapped_view(self, request, *args, **kwargs):
-        error_message = (
-            "You don't have enough permission to perform this action."
-        )
+        error_message = permission_error_message()
         if self.get_context_data().get("can_modify_product", False):
             return view_func(self, request, *args, **kwargs)
         else:

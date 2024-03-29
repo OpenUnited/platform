@@ -168,6 +168,16 @@ urlpatterns += [
         name="product_area_with_pk",
     ),
     path(
+        "<str:product_slug>/product-area-attachments/<int:product_area_pk>",
+        views.create_product_area_attachments,
+        name="product_area_attachment",
+    ),
+    path(
+        "<str:product_slug>/delete-product-area-attachments/<int:attachment_pk>",
+        views.delete_product_area_attachment,
+        name="delete_product_area_attachment",
+    ),
+    path(
         "<str:product_slug>/idea-list",
         views.ProductIdeaListView.as_view(),
         name="product_idea_list",

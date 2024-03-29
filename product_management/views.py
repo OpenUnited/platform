@@ -47,16 +47,15 @@ from .models import (
     Skill,
     Expertise,
     Attachment,
+    ProductAreaAttachment,
+    Attachment,
 )
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 from .filters import ChallengeFilter
-from product_management.utils import (
-    has_product_modify_permission,
-    modify_permission_required,
-)
+from product_management import utils
 
 
 class ChallengeListView(ListView):
@@ -255,20 +254,23 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        can_modify_product = has_product_modify_permission(
+        product_area = self.get_object()
+
+        can_modify_product = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
         context["form"] = ProductAreaForm(
-            instance=self.get_object(),
+            instance=product_area,
             can_modify_product=can_modify_product,
         )
         context["challenges"] = Challenge.objects.filter(
-            capability=self.get_object()
+            capability=product_area
         )
         context["can_modify_product"] = can_modify_product
+        context["product_area_attachment"] = product_area.attachments.all()
         return context
 
-    @modify_permission_required
+    @utils.modify_permission_required
     def form_valid(self, form):
         self.object = form.save(commit=False)
         if self.is_ajax():
@@ -321,12 +323,12 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = has_product_modify_permission(
+        context["can_modify_product"] = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
         return context
 
-    @modify_permission_required
+    @utils.modify_permission_required
     def form_valid(self, form):
         if parent_id := self.request.POST.get("parent_id", None):
             parent = self.model.objects.get(pk=parent_id)
@@ -342,12 +344,43 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         return redirect(self.get_success_url())
 
 
+def create_product_area_attachments(request, product_slug, product_area_pk):
+    product = Product.objects.get(slug=product_slug)
+    has_permission = utils.has_product_modify_permission(request.user, product)
+
+    if request.method == "POST" and has_permission:
+        product_area = ProductArea.objects.get(pk=product_area_pk)
+        attachment = Attachment.objects.create(file=request.FILES["file"])
+        ProductAreaAttachment.objects.create(
+            product_area=product_area,
+            attachment=attachment,
+        )
+        return JsonResponse({"message": "File uploaded successfully"})
+    else:
+        error_message = utils.permission_error_message()
+
+        return JsonResponse({"message": error_message}, status=403)
+
+
+def delete_product_area_attachment(request, product_slug, attachment_pk):
+    product = Product.objects.get(slug=product_slug)
+    has_permission = utils.has_product_modify_permission(request.user, product)
+    if request.method == "DELETE" and has_permission:
+        ProductAreaAttachment.objects.filter(pk=attachment_pk).delete()
+        return JsonResponse(
+            {"message": "File has been deleted successfully"}, status=204
+        )
+    else:
+        error_message = utils.permission_error_message()
+        return JsonResponse({"message": error_message}, status=403)
+
+
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree_interactive.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = has_product_modify_permission(
+        context["can_modify_product"] = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
         capability_root_trees = ProductArea.get_root_nodes()
