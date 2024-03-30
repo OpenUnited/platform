@@ -3,28 +3,110 @@
 {% block title %}Product - Summary{% endblock %}
 {% block product_content %}
 
-    <form  method="post" class="w-5/6 shadow-lg px-6 py-5">
-        {% csrf_token %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+      {% with message=message %}
+        {% include "product_management/tree_helper/alert.html" %}
+      {% endwith %}
+
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<form enctype="multipart/form-data" class="container" method="post" id="product_form">
+    {% csrf_token %}
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         {% for field in form %}
-            {% for error in field.errors %}
-                {{ error }}
-            {% endfor %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">{{field.label}} 
+                    {% if field.field.required %}
+                        <span style="color: red;" class="required">*</span>
+                    {% endif %}
+                </label>
 
-            <label class="font-bold">{{ field.label }}</label>
-            <div class="mb-5 mt-1.5">
+            
                 {{field}}
+                {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
             </div>
-
         {% endfor %}
+    </div>
 
-        {% include "product_management/product_area_detail_helper/file_uploader.html" %}
+    {{ attachment_formset.management_form }}
+    <div class="bg-white shadow-md rounded overflow-x-auto">
+        <table class="min-w-full bg-white">
+            <thead class="bg-gray-200 text-gray-700 uppercase text-xs leading-normal">
+                <tr>
+                    <th class="py-3 px-6 text-left">File <span style="color: red;" class="required">*</span></th>
+                    <th class="py-3 px-6 text-left">Delete?</th>
+                </tr>
+            </thead>
+
+            <tbody id="tbody-container" class="text-gray-600 text-sm font-light">
+                {% for attachment_form in attachment_formset %}
+                    <tr id="attachment-{{ attachment_form.instance.pk }}" class="border-b border-gray-200 hover:bg-gray-100">
+                        {% for attachment_field in  attachment_form %}
+                                {% if  attachment_field.is_hidden %}
+                                    {{ attachment_field }}
+                                {% else %}
+                                <td class="py-3 px-6 text-left">
+                                        {{ attachment_field }}
+                                </td>
+                                {% endif %}
+
+                        {% endfor %}
+                            
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <div class="w-full py-3 px-6 text-right">
+            <button hx-get="{{ url('product_area_with_pk', args=(product_slug, form.instance.pk,)) }}" 
+                    hx-target="#tbody-container"
+                    class="bg-gray-700 text-white py-2 px-4 rounded focus:outline-none"
+                    hx-swap="beforeend"
+                    >
+                Add more
+            </button>
+        </div>
+    </div>
+    <button type="submit" class="w-full bg-gray-700 text-white py-2 mt-3 px-4 rounded focus:outline-none focus:bg-gray-600">Submit</button>
+</form>
 
 
-        <button class="w-full h-12 h-10 px-5 text-indigo-700 transition-colors duration-150 border border-indigo-500 rounded-lg focus:shadow-outline hover:bg-indigo-500 hover:text-indigo-100">Save </button>
-    </form>
+<script>
 
+    document.addEventListener("click", function(event){
+        const tbodyContainer = document.getElementById("tbody-container")
+        const anchorTags = tbodyContainer.querySelectorAll("a");
+        anchorTags.forEach(function(anchorTag) {
+            anchorTag.setAttribute("target", "_blank");
+        });
+    })
 
-    {% include "product_management/product_area_detail_helper/challenge_main.html" %}
+    document.addEventListener('htmx:afterSwap', function(event) {
+        const tbodyContainer = document.getElementById("tbody-container")
+        if (tbodyContainer) {
+            // Get the index of the last form
+            var index = tbodyContainer.querySelectorAll('tr').length - 1;
     
-{% endblock %}
+            var placeholderElements = event.target.querySelectorAll('[id^="id_attachments"]');
+            placeholderElements.forEach(function(element) {
+                element.name = element.name.replace('{{ index }}', index);
+                element.id = element.id.replace('{{ index }}', index);
+            });
+            var total_form_count = document.getElementById("id_attachments-TOTAL_FORMS")
+            total_form_count.value = parseInt(total_form_count.value) + 1
+        }
+    });
+</script>
 
+{% endblock product_content %}
