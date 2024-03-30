@@ -34,8 +34,13 @@
 integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous">
 </script>
 
-
 <script src="{{ static('scripts/notification.js') }}"></script>
 <script type="module" src="{{ static('scripts/main.js') }}"></script>
+
+<script>
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  })
+</script>
 
 {% endblock %}
