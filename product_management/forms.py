@@ -18,8 +18,10 @@ from .models import (
     Bounty,
     Initiative,
     ProductArea,
+    ProductAreaAttachment,
 )
-from security.models import ProductRoleAssignment
+from django import forms
+from django.forms import inlineformset_factory
 
 
 class DateInput(forms.DateInput):
@@ -544,6 +546,30 @@ class ProductAreaForm(forms.ModelForm):
         for _, field in self.fields.items():
             field.widget.attrs.update({"class": class_names})
             field.widget.attrs["readonly"] = not can_modify_product
+
+
+class ProductAreaAttachmentForm(forms.ModelForm):
+    id = forms.IntegerField(required=False)
+
+    class Meta:
+        model = ProductAreaAttachment
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(ProductAreaAttachmentForm, self).__init__(*args, **kwargs)
+        class_names = "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        for _, field in self.fields.items():
+            field.widget.attrs.update({"class": class_names})
+
+
+ProductAreaAttachmentSet = inlineformset_factory(
+    ProductArea,
+    ProductAreaAttachment,
+    form=ProductAreaAttachmentForm,
+    extra=0,
+    can_delete=True,
+    can_delete_extra=True,
+)
 
 
 class CapabilityForm(forms.ModelForm):

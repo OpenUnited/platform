@@ -70,7 +70,7 @@ class ProductAreaAttachment(models.Model):
     product_area = models.ForeignKey(
         ProductArea, related_name="attachments", on_delete=models.CASCADE
     )
-    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="attachments")
 
     @property
     def delete_url(self):
