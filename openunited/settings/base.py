@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "canopy",
     "social_django",
     "django_filters",
+    "corsheaders",
 ]
 
 
@@ -42,6 +43,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "openunited.urls"
@@ -259,3 +261,8 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.load_extra_data",
     "social_core.pipeline.user.user_details",
 )
+
+CORS_ALLOWED_ORIGINS = [
+    "https://staging.openunited.com",
+    "https://openunited.com",
+]
