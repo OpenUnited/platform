@@ -554,10 +554,20 @@ class ProductAreaAttachmentForm(forms.ModelForm):
     class Meta:
         model = ProductAreaAttachment
         fields = "__all__"
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": "Title..."}),
+            "description": forms.Textarea(
+                attrs={
+                    "placeholder": "Description...",
+                    "rows": 2,
+                }
+            ),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ProductAreaAttachmentForm, self).__init__(*args, **kwargs)
         class_names = "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+
         for _, field in self.fields.items():
             field.widget.attrs.update({"class": class_names})
 
