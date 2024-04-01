@@ -22,7 +22,6 @@ As a result, we have about 50% less code and move way faster.
 
 Please follow the instructions [here](.github/CONTRIBUTING.md).
 
-
 ## Getting Help
 
 If you have any questions about OpenUnited:
