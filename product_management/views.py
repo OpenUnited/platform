@@ -1,5 +1,4 @@
 from typing import Any, Dict
-from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -35,7 +34,6 @@ from .forms import (
     CapabilityForm,
     ProductAreaForm,
     ProductAreaAttachmentSet,
-    ProductAreaAttachmentForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -48,8 +46,6 @@ from .models import (
     Bug,
     Skill,
     Expertise,
-    Attachment,
-    ProductAreaAttachment,
     Attachment,
 )
 from commerce.models import Organisation
