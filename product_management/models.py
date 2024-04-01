@@ -66,15 +66,19 @@ class Attachment(models.Model):
         return self.file.name
 
 
-class ProductAreaAttachment(models.Model):
+class AttachmentAbstract(models.Model):
+    file = models.FileField(upload_to="attachments")
+    title = models.CharField(max_length=300, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class ProductAreaAttachment(AttachmentAbstract):
     product_area = models.ForeignKey(
         ProductArea, related_name="attachments", on_delete=models.CASCADE
     )
-    file = models.FileField(upload_to="attachments")
-
-    @property
-    def delete_url(self):
-        return reverse("delete_product_area_attachment", args=[self.pk])
 
     def __str__(self):
         return self.product_area.name
