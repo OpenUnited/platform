@@ -11,7 +11,7 @@ services:
       - PORT=80
       - POSTGRES_HOST=pgdb
     ports:
-      - 8080:80
+      - 80:80
     env_file:
       - .env
     depends_on:
