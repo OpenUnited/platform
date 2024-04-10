@@ -148,9 +148,9 @@ urlpatterns += [
         name="product_challenges",
     ),
     path(
-        "<str:product_slug>/tree-interactive",
+        "<str:product_slug>/tree",
         views.ProductTreeInteractiveView.as_view(),
-        name="product_tree_interactive",
+        name="product_tree",
     ),
     path(
         "<str:product_slug>/product-areas",

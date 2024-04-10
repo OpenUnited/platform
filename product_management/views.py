@@ -246,9 +246,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 
     def get_success_url(self):
         conttext = self.get_context_data()
-        return reverse(
-            "product_tree_interactive", args=(conttext.get("product").slug,)
-        )
+        return reverse("product_tree", args=(conttext.get("product").slug,))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -358,7 +356,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_tree_interactive.html"
+    template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
