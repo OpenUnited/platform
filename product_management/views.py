@@ -240,9 +240,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
     form_class = ProductAreaForm
 
     def is_ajax(self):
-        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
-            return True
-        return False
+        return self.request.headers.get("x-requested-with") == "XMLHttpRequest"
 
     def get_success_url(self):
         conttext = self.get_context_data()
@@ -257,7 +255,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         )
         return context
 
-    @utils.modify_permission_required
+    # @utils.modify_permission_required
     def form_valid(self, form):
         if parent_id := self.request.POST.get("parent_id", None):
             parent = self.model.objects.get(pk=parent_id)
@@ -265,7 +263,9 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         else:
             self.model.add_root(**form.cleaned_data)
 
-        return JsonResponse({"success": True})
+        if self.is_ajax():
+            return JsonResponse({"success": True})
+        return redirect(self.get_success_url())
 
     def form_invalid(self, form):
         if self.is_ajax():
@@ -316,22 +316,19 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
         product_area = self.get_object()
-
         return reverse(
             "product_area_with_pk", args=(product_slug, product_area.pk)
         )
 
-    @utils.modify_permission_required
+    # @utils.modify_permission_required
     def form_valid(self, form):
-        if self.is_ajax():
-            if bool(self.request.POST.get("is_drag")):
-                if parent_id := self.request.POST.get("parent_id"):
-                    parent = ProductArea.objects.get(pk=parent_id)
-                    self.object.move(parent, "first-child")
-                    return JsonResponse({"success": True})
-                else:
-                    self.object.move(None, "first-sibling")
-                    return JsonResponse({"success": True})
+        if self.request.htmx and bool(self.request.POST.get("is_drag")):
+            if parent_id := self.request.POST.get("parent_id"):
+                parent = ProductArea.objects.get(pk=parent_id)
+                self.object.move(parent, "first-child")
+            else:
+                self.object.move(None, "first-sibling")
+            return JsonResponse({"success": True})
 
         context = self.get_context_data()
         attachment_formset = context["attachment_formset"]
@@ -353,7 +350,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
+        # ProductArea.objects.get(pk=kwargs.get("pk")).delete()
         return JsonResponse({"success": True}, status=204)
 
 
@@ -387,6 +384,38 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
         ]
 
         return context
+
+
+def load_tree(request):
+    capability_root_trees = ProductArea.get_root_nodes()
+
+    def serialize_tree(node):
+        serialized_node = {
+            "id": node.pk,
+            "name": node.name,
+            "description": node.description,
+            "video_link": node.video_link,
+            "video_name": node.video_name,
+            "video_duration": node.video_duration,
+            "has_saved": True,
+            "children": [
+                serialize_tree(child) for child in node.get_children()
+            ],
+        }
+        return serialized_node
+
+    tree_data = [serialize_tree(node) for node in capability_root_trees]
+    return JsonResponse(tree_data, safe=False)
+
+
+def add_new_node(request, pk):
+    template_name = "product_management/tree_helper/partial_update_node.html"
+    product_area = ProductArea.objects.get(pk=pk)
+
+    context = {
+        "product_area": product_area,
+    }
+    return render(request, template_name, context)
 
 
 class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):

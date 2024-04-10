@@ -1,0 +1,67 @@
+{% extends 'product_management/product_detail_base_with_macro.html' %}
+
+{% block title %}Product - Summary{% endblock %}
+{% block product_content %}
+
+<div id="product_area_tree" hx-get="{{ url('load_tree') }}" hx-trigger="load">
+</div>
+
+<script>
+  document.addEventListener('htmx:load', function(event) {
+    var treeData = event.detail.value;
+    console.log("Response Data:", treeData);
+    renderTree(treeData);
+});
+
+  function renderTree(data, parentElement = document.getElementById('product_area_tree'), level = 0) {
+    parentElement.innerHTML = ''; // Clear existing content
+
+    var ul = document.createElement('ul');
+    ul.classList.add('bg-white'); // Tailwind CSS classes for the ul element
+
+    data.forEach(function(node) {
+        var deleteButton = createIconButton('fa fa-trash');
+        var editButton = createIconButton('fa fa-pencil');
+        var addButton = createIconButton('fa fa-plus');
+
+        var buttonContainner = document.createElement("span")
+        buttonContainner.appendChild(deleteButton);
+        buttonContainner.appendChild(editButton);
+        buttonContainner.appendChild(addButton);
+        buttonContainner.classList.add("flex", "justify-end", "bg-gray-900");
+
+
+        var a = document.createElement('a');
+        a.href = '#'; 
+        a.textContent = node.text;
+        a.appendChild(buttonContainner)
+        a.classList.add('block', 'border', 'border-gray-300', 'p-2', 'mb-2', 'rounded-md', 'text-blue-500', 'hover:underline',"flex", "justify-between", "items-center"); 
+
+        var listItemContainer = document.createElement('div');
+        listItemContainer.appendChild(a);
+
+        listItemContainer.style.marginLeft = (level * 20) + 'px';
+        
+        ul.appendChild(listItemContainer);
+
+        if (node.children) {
+            renderTree(node.children, listItemContainer, level + 1);
+        }
+    });
+
+    parentElement.appendChild(ul);
+}
+
+function createIconButton(iconClass) {
+  var button = document.createElement('button');
+  button.classList.add('text-gray-500', 'hover:text-gray-700', 'ml-2');
+  var icon = document.createElement('i');
+  icon.classList.add("fa", "fa-trash");
+  button.appendChild(icon);
+  return button;
+}
+
+
+</script>
+
+{% endblock product_content %}

@@ -1,17 +1,57 @@
-<div class="flex gap-3 items-center">
-    {% if can_modify_product %}
-        <button class="add_node w-5 h-5">
+<div class="flex gap-3 items-center view-node-group">
+ 
+    <button class="add_node w-5 h-5" onclick="addNode(event, {{child.id}})">
       <img src="{{ static('images/add.svg') }}" class="" alt="#">
     </button>
-    <button class="edit_node w-5 h-5">
+    <button class="edit_node w-5 h-5" hx-target="#anchor_node_{{child.id}}" hx-get="{{ url('add_new_node', args=(child.id,) ) }}" onclick="event.preventDefault();">
       <img src="{{ static('images/edit_icon.svg')}}" class="edit" alt="#">
     </button>
-    <button class="check_node w-5 h-5 hidden">
-      <img src="{{ static('images/check-green.svg')}}" class="check" alt="#">
-    </button>
-    <button class="delete_node w-5 h-5 ">
+
+    <button onclick="event.preventDefault();" class="delete_node w-5 h-5" hx-delete="{{ url('product_area_with_pk', args=(product_slug, child.id)) }}" data-id="{{child.id}}">
       <img src="{{ static('images/delete.svg')}}" class="" alt="#">
     </button>
-    {% endif %}
-
 </div>
+
+
+<script>
+  document.addEventListener('htmx:responseError', function(event) {
+    var deleteEndpoint = "{{ url('product_area_with_pk', args=(product_slug, child.id,)) }}"
+    if (event.detail.xhr.responseURL.includes(deleteEndpoint)) {
+      showNotification({message: JSON.parse(event.detail.xhr.response).error})
+    }
+  });
+
+  document.addEventListener("htmx:afterRequest", function(event) {
+      event.preventDefault();
+      var deleteEndpoint = "{{ url('product_area_with_pk', args=(product_slug, child.id,)) }}"
+      if (event.detail.xhr.responseURL.includes(deleteEndpoint)) {
+          if (event.detail.xhr.status === 204) {
+              const itemId =  event.detail.target.dataset.id; 
+              const itemToRemove = document.getElementById(`li_node_${itemId}`);
+              if (itemToRemove) {
+                  itemToRemove.remove();
+                  showNotification({
+                    type: typeSuccess,
+                    message: "Success, The data has deleted successfuly."
+                  })
+              }
+          }
+      }
+  });
+
+  document.addEventListener("htmx:confirm", function(event) {
+    event.preventDefault();
+    var deleteEndpoint = "{{ url('product_area_with_pk', args=(product_slug, child.id,)) }}"
+    var add_update_node = "{{ url('add_new_node', args=(child.id,) ) }}"
+
+    if (event.detail.path == deleteEndpoint) {
+      showConfirm({}).then(function(){
+        event.detail.issueRequest()
+      })
+    }
+    if (event.detail.path == add_update_node){
+      event.detail.issueRequest()
+    }
+  })
+  
+</script>

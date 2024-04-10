@@ -1,0 +1,24 @@
+    <form method="post" action="{{ url('product_area', args=(product_slug,)) }}">
+        {% csrf_token %}
+        <div class="flex justify-start">
+            <button onclick="toggleVisibility(event)" class="invisible">
+                <i class="fa fa-chevron-circle-right text-gray-400" aria-hidden="true"></i>
+            </button>
+
+        <a class="w-full flex flex-col items-start gap-2 group/item block border border-gray-300 p-3 mb-2 rounded-md text-blue-500">
+            <div class="w-full">
+                <div class="flex justify-between w-full">
+                    <input type="text" value="{{product_area.name}}" name="name" id="rename_input"value="___rename_input__prefix__"
+                    placeholder="Name..."
+                    class="mr-2 text-base text-dark rename_input border border-light-gray rounded w-full edit-node-group" 
+                    required
+                />
+                {% include "product_management/tree_helper/edit_button.html" %}
+
+                </div>
+                <div class="description text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+                    <input type="text" value="{{product_area.description}}" name="description" class="mr-2 w-full text-base text-dark renameDesc_input border border-light-gray rounded mt-2 edit-node-group" placeholder="Add description" required/>
+                </div>
+            </div>
+        </a>
+    </form>

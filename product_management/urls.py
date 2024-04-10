@@ -152,6 +152,8 @@ urlpatterns += [
         views.ProductTreeInteractiveView.as_view(),
         name="product_tree_interactive",
     ),
+    path("load-tree", views.load_tree, name="load_tree"),
+    path("add-new-node/<int:pk>", views.add_new_node, name="add_new_node"),
     path(
         "<str:product_slug>/product-areas",
         views.ProductAreaCreateView.as_view(),
