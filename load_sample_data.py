@@ -218,19 +218,19 @@ def generate_sample_data():
 
             kind = 3
             if index < 5:
-                kind = 0  # CLAIM_TYPE_DONE
+                kind = BountyClaim.ClaimStatus.Completed  # CLAIM_TYPE_DONE
                 bounty.status = 4  # done
                 bounty.challenge.status = 4  # done
             elif index >= 5 and index < 10:
-                kind = 1  # CLAIM_TYPE_ACTIVE
+                kind = BountyClaim.ClaimStatus.Granted  # CLAIM_TYPE_ACTIVE
                 bounty.status = 3  # claimed
                 bounty.challenge.status = 3  # claimed
             elif index >= 10 and index < 15:
-                kind = 2  # CLAIM_TYPE_FAILED
+                kind = BountyClaim.ClaimStatus.Failed  # CLAIM_TYPE_FAILED
                 bounty.status = 2  # available
                 bounty.challenge.status = 2  # available
             else:
-                kind = 3  # CLAIM_TYPE_IN_REVIEW
+                kind = BountyClaim.ClaimStatus.Contributed
                 bounty.status = 5  # in review
                 bounty.challenge.status = 5  # in review
 
@@ -239,7 +239,7 @@ def generate_sample_data():
                 "person": person,
                 "bounty": bounty,
                 "expected_finish_date": generate_random_future_date(),
-                "kind": kind,
+                "status": kind,
             }
 
             bounty_claim = BountyClaimService.create(**bounty_claim_dict)
@@ -261,17 +261,17 @@ def generate_sample_data():
 
             # Work is approved
             if work.kind == 0:
-                work.bounty_claim.kind = 1  # ACTIVE
+                work.bounty_claim.status = BountyClaim.ClaimStatus.Granted
                 work.bounty_claim.bounty.status = 3  # CLAIMED
                 work.bounty_claim.bounty.challenge.status = 3  # CLAIMED
                 work.save()
             elif work.kind == 1:
-                work.bounty_claim.kind = 0  # DONE
+                work.bounty_claim.status = BountyClaim.ClaimStatus.Completed
                 work.bounty_claim.bounty.status = 4  # DONE
                 work.bounty_claim.bounty.challenge.status = 4  # DONE
                 work.save()
             elif work.kind == 2:
-                work.bounty_claim.kind = 2  # DONE
+                work.bounty_claim.status = BountyClaim.ClaimStatus.Completed
                 work.bounty_claim.bounty.status = 2  # available
                 work.bounty_claim.bounty.challenge.status = 2  # available
 
@@ -356,7 +356,8 @@ def generate_sample_data():
     index = 0
     for product in products:
         bounty_claims = BountyClaim.objects.filter(
-            bounty__challenge__product=product, kind=0
+            bounty__challenge__product=product,
+            status=BountyClaim.ClaimStatus.Granted,
         )
 
         for bounty_claim in bounty_claims:
