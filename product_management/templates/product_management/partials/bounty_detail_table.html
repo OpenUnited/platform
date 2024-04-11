@@ -1,3 +1,5 @@
+{% set TASK_TYPES = ["Draft", "Blocked", "Available", "Claimed", "Done", "In Review"] %}
+
 {% if challenge.bounty_set.all() %}
 <div class="mb-2.5 font-medium text-sm text-black/[0.85]">Bounty</div>
 
@@ -13,6 +15,9 @@
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Points
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Status
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Claimed
@@ -35,6 +40,9 @@
                     {{ bounty.points }}
                 </td>
                 <td class="px-6 py-4">
+                    {{TASK_TYPES[bounty.status ] }}
+                </td>
+                <td class="px-6 py-4">
                     {% if is_claimed %}
                     Assigned to <a href={{ claimed_by.get_absolute_url() }}
                         class="font-medium text-blue-600 hover:underline">{{ claimed_by }}</a>
@@ -51,17 +59,34 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex">
-                        {% if actions_available %}
+
+
+                    {% if current_user_created_claim_request  %}
                         <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                            class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Edit</a>
+                            class="cursor-pointer font-medium text-blue-600 mr-3 hover:underline"
+                            hx-post="{'action': 'approve'}"    
+                        >Edit</a>
                         <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
                             hx-push-url="true"
-                            class="cursor-pointer font-medium text-red-600 hover:underline">Delete</a>
+                            class="cursor-pointer font-medium text-red-600 mr-3 hover:underline"
+                            
+                            >Delete</a>
+                    {% endif  %}
+                    
+                    {% if is_admin %}
+                        <form id="action-form">
+                            {% csrf_token %}
+                            <button type="button" hx-post="{{ url('bounty-claim-action', args=(bounty.id, ) ) }}" hx-vals='{"action": "Rejected"}'  hx-include="[name='csrfmiddlewaretoken']" data-action="Completed"  hx-swap="none" class="cursor-pointer font-medium text-red-600 mr-3 hover:underline">Reject</button>
+                            <button type="button" hx-post="{{ url('bounty-claim-action', args=(bounty.id, ) ) }}" hx-vals='{"action": "Completed"}' hx-include="[name='csrfmiddlewaretoken']" data-action="Completed" hx-swap="none" class="cursor-pointer font-medium text-blue-600 mr-3 hover:underline">Approve</button>
+                            <button type="button" hx-post="{{ url('bounty-claim-action', args=(bounty.id, ) ) }}" hx-vals='{"action": "Granted"}'   hx-include="[name='csrfmiddlewaretoken']" data-action="Granted" hx-swap="none" class="cursor-pointer font-medium text-blue-600 mr-3 hover:underline">Request for Revision</button>
+                        </form>
+                        
+                    {% endif %}
 
-                        {% else %}
+                    {% if not  (current_user_created_claim_request or is_admin) %}
                         <p>No action is available for this bounty.</p>
-                        {% endif  %}
+                    {% endif %}
                     </div>
 
                 </td>
@@ -80,3 +105,31 @@
                                         focus-visible:outline-indigo-600" type="button">Create a bounty for this
         challenge</button></a>
 {% endif %}
+
+
+<script>
+    document.addEventListener('htmx:confirm', function(event) {
+        event.preventDefault()
+        var action = event.detail.elt.getAttribute('data-action')
+        if (action){
+            showConfirm({
+                message: "Are you sure you want to perform this action?",
+                callback: event.detail.issueRequest,
+            })
+            
+        }
+    })
+    document.addEventListener('htmx:afterRequest', function(event) {
+        if (event.detail.xhr.responseURL.indexOf('bounty-claim-action') !== -1) {
+            var response = JSON.parse(event.detail.xhr.responseText);
+            if (event.detail.xhr.status === 200) {
+                showNotification({
+                    type:"green", 
+                    title: "Success", 
+                    message: response.message
+                  })
+            } 
+        }
+    });
+</script>
+    
