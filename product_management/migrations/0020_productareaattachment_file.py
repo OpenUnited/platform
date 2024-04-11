@@ -19,4 +19,24 @@ class Migration(migrations.Migration):
                 blank=True, null=True, upload_to="attachments"
             ),
         ),
+        migrations.RemoveField(
+            model_name="productareaattachment",
+            name="attachment",
+        ),
+        migrations.AlterField(
+            model_name="productareaattachment",
+            name="file",
+            field=models.FileField(default=1, upload_to="attachments"),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name="productareaattachment",
+            name="description",
+            field=models.TextField(blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name="productareaattachment",
+            name="title",
+            field=models.CharField(blank=True, max_length=300, null=True),
+        ),
     ]
