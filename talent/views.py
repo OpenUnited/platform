@@ -242,7 +242,7 @@ class TalentPortfolio(TemplateView):
         person_skill = person.skills.all().first()
         # todo: check the statuses
         bounty_claims = BountyClaim.objects.filter(
-            Q(kind=BountyClaim.CLAIM_TYPE_DONE)
+            Q(status=BountyClaim.ClaimStatus.Completed)
             | Q(bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE)
             | Q(bounty__status=Bounty.BOUNTY_STATUS_CLAIMED),
             person=person,
@@ -416,7 +416,7 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
             instance.save()
 
             bounty_claim = instance.bounty_claim
-            bounty_claim.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
+            bounty_claim.status = BountyClaim.ClaimStatus.Contributed
             bounty_claim.save()
 
             return HttpResponseRedirect(self.success_url)
