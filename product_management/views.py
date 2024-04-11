@@ -1,4 +1,3 @@
-import contextlib
 from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
@@ -749,7 +748,12 @@ class bountyClaimActionView(LoginRequiredMixin, View):
     def post(self, request, pk):
         bounty = Bounty.objects.get(pk=pk)
         bounty.bountyclaim_set.all().update(status=request.POST.get("action"))
-        return JsonResponse({"status": "success", "message": "The status has successfuly updated."})
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "The status has successfuly updated.",
+            }
+        )
 
 
 class CreateProductView(LoginRequiredMixin, CreateView):

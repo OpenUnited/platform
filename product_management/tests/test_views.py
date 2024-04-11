@@ -544,6 +544,7 @@ class ChallengeDetailViewTest(BaseProductTestCase):
             "bounty_claim": None,
             "challenge": self.challenge,
             "current_user_created_claim_request": False,
+            "is_admin": False,
             "is_claimed": False,
         }
         self.assertDictEqual(actual, expected)
@@ -568,6 +569,7 @@ class ChallengeDetailViewTest(BaseProductTestCase):
             "bounty_claim": None,
             "current_user_created_claim_request": False,
             "is_claimed": False,
+            "is_admin": False,
         }
         self.assertDictEqual(actual, expected)
 
@@ -584,13 +586,13 @@ class ChallengeDetailViewTest(BaseProductTestCase):
         b_one = BountyFactory(challenge=challenge)
         b_two = BountyFactory(challenge=challenge)
         bc_one = BountyClaimFactory(
-            bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            bounty=b_one, status=BountyClaim.ClaimStatus.Granted
         )
         _ = BountyClaimFactory(
-            bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            bounty=b_one, status=BountyClaim.ClaimStatus.Granted
         )
         _ = BountyClaimFactory(
-            bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            bounty=b_two, status=BountyClaim.ClaimStatus.Granted
         )
 
         response = self.client.get(url)
@@ -607,6 +609,7 @@ class ChallengeDetailViewTest(BaseProductTestCase):
             "current_user_created_claim_request": False,
             "actions_available": False,
             "is_claimed": False,
+            "is_admin": False,
             "claimed_by": bc_one.person,
         }
         self.assertDictContainsSubset(actual, expected)
@@ -628,13 +631,13 @@ class ChallengeDetailViewTest(BaseProductTestCase):
         bc_one = BountyClaimFactory(
             bounty=b_one,
             person=self.person,
-            kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+            status=BountyClaim.ClaimStatus.Granted,
         )
         _ = BountyClaimFactory(
-            bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            bounty=b_one, status=BountyClaim.ClaimStatus.Granted
         )
         _ = BountyClaimFactory(
-            bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            bounty=b_two, status=BountyClaim.ClaimStatus.Granted
         )
 
         response = self.client.get(url)
@@ -651,6 +654,7 @@ class ChallengeDetailViewTest(BaseProductTestCase):
             "current_user_created_claim_request": True,
             "actions_available": False,
             "is_claimed": False,
+            "is_admin": False,
         }
         self.assertDictEqual(actual, expected)
 
