@@ -1,5 +1,4 @@
 from typing import Any, Dict
-from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -34,6 +33,7 @@ from .forms import (
     InitiativeForm,
     CapabilityForm,
     ProductAreaForm,
+    ProductAreaAttachmentSet,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -53,10 +53,7 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
 from .filters import ChallengeFilter
-from product_management.utils import (
-    has_product_modify_permission,
-    modify_permission_required,
-)
+from product_management import utils
 
 
 class ChallengeListView(ListView):
@@ -226,68 +223,15 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
-    template_name = "product_management/product_area_detail.html"
-    model = ProductArea
-    form_class = ProductAreaForm
-
-    def is_ajax(self):
-        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
-            return True
-        return False
-
-    def get_success_url(self):
-        conttext = self.get_context_data()
-        return reverse("product_tree", args=(conttext.get("product").slug,))
+class ProductTreeView(BaseProductDetailView, TemplateView):
+    template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        can_modify_product = has_product_modify_permission(
-            self.request.user, context["product"]
-        )
-        context["form"] = ProductAreaForm(
-            instance=self.get_object(),
-            can_modify_product=can_modify_product,
-        )
-        context["challenges"] = Challenge.objects.filter(
-            capability=self.get_object()
-        )
-        context["can_modify_product"] = can_modify_product
+
+        context.update({"capabilities": ProductArea.get_root_nodes()})
+
         return context
-
-    @modify_permission_required
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        if self.is_ajax():
-            if bool(self.request.POST.get("is_drag")):
-                if parent_id := self.request.POST.get("parent_id"):
-                    parent = ProductArea.objects.get(pk=parent_id)
-                    self.object.move(parent, "first-child")
-                    return JsonResponse({"success": True})
-                else:
-                    self.object.move(None, "first-sibling")
-                    return JsonResponse({"success": True})
-
-            self.object.save()
-            return JsonResponse({"success": True})
-
-        self.object.save()
-        return redirect(self.get_success_url())
-
-    def form_invalid(self, form):
-        if self.is_ajax():
-            return JsonResponse({"errors": form.errors}, status=400)
-        return redirect(self.get_success_url())
-
-    def delete(self, request, *args, **kwargs):
-        obj = ProductArea.objects.get(pk=kwargs.get("pk"))
-        if obj.numchild > 0:
-            return JsonResponse(
-                {"error": "Unable to delete a node with a child."}, status=400
-            )
-
-        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
-        return JsonResponse({"success": True}, status=204)
 
 
 class ProductAreaCreateView(BaseProductDetailView, CreateView):
@@ -306,12 +250,12 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = has_product_modify_permission(
+        context["can_modify_product"] = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
         return context
 
-    @modify_permission_required
+    @utils.modify_permission_required
     def form_valid(self, form):
         if parent_id := self.request.POST.get("parent_id", None):
             parent = self.model.objects.get(pk=parent_id)
@@ -327,12 +271,96 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         return redirect(self.get_success_url())
 
 
+class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
+    template_name = "product_management/product_area_detail.html"
+    model = ProductArea
+    form_class = ProductAreaForm
+
+    def is_ajax(self):
+        return self.request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return (
+                "product_management/product_area_detail_helper/empty_form.html"
+            )
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["can_modify_product"] = utils.has_product_modify_permission(
+            self.request.user, context["product"]
+        )
+        product_area = self.get_object()
+        context["product_area_form"] = ProductAreaForm(
+            can_modify_product=context["can_modify_product"]
+        )
+
+        context["form"] = ProductAreaForm(
+            instance=product_area,
+            can_modify_product=context["can_modify_product"],
+        )
+
+        context["attachment_formset"] = ProductAreaAttachmentSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+            instance=product_area,
+        )
+        context["challenges"] = Challenge.objects.filter(
+            capability=product_area
+        )
+        return context
+
+    def get_success_url(self):
+        product_slug = self.get_context_data()["product"].slug
+        product_area = self.get_object()
+
+        return reverse(
+            "product_area_with_pk", args=(product_slug, product_area.pk)
+        )
+
+    @utils.modify_permission_required
+    def form_valid(self, form):
+        if self.is_ajax():
+            if bool(self.request.POST.get("is_drag")):
+                if parent_id := self.request.POST.get("parent_id"):
+                    parent = ProductArea.objects.get(pk=parent_id)
+                    self.object.move(parent, "first-child")
+                    return JsonResponse({"success": True})
+                else:
+                    self.object.move(None, "first-sibling")
+                    return JsonResponse({"success": True})
+
+        context = self.get_context_data()
+        attachment_formset = context["attachment_formset"]
+        if attachment_formset.is_valid():
+            self.object = form.save()
+            attachment_formset.instance = self.object
+            attachment_formset.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        if self.is_ajax():
+            return JsonResponse({"errors": form.errors}, status=400)
+        return super().form_invalid(form)
+
+    def delete(self, request, *args, **kwargs):
+        obj = ProductArea.objects.get(pk=kwargs.get("pk"))
+        if obj.numchild > 0:
+            return JsonResponse(
+                {"error": "Unable to delete a node with a child."}, status=400
+            )
+
+        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
+        return JsonResponse({"success": True}, status=204)
+
+
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = has_product_modify_permission(
+        context["can_modify_product"] = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
         capability_root_trees = ProductArea.get_root_nodes()

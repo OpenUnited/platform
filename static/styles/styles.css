@@ -408,3 +408,8 @@ input[autocomplete=one-time-code] {
   overflow: hidden;
   padding-left: 5px;
 }
+
+.dz-image img{
+  width: 100px;
+  height:100px;
+}

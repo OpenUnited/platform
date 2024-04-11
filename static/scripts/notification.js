@@ -2,6 +2,7 @@ const showNotification = (data) =>{
     const type = data.type? data.type: "red"
     const message = data.message? data.message: "Something went wrong!"
     const title = data.title? data.title: 'Error!'
+    const displayTime = data.displayTime? data.displayTime: 1500
     var alert  = $.alert({
         title: title,
         content: message,
@@ -14,7 +15,7 @@ const showNotification = (data) =>{
 
     setTimeout(function() {
       alert.close();
-    }, 1500); 
+    }, displayTime); 
 }
 
 const showConfirm = (data) =>{

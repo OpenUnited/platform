@@ -66,12 +66,22 @@ class Attachment(models.Model):
         return self.file.name
 
 
-class CapabilityAttachment(models.Model):
-    capability = models.ForeignKey(ProductArea, on_delete=models.CASCADE)
-    attachment = models.ForeignKey(Attachment, on_delete=models.CASCADE)
+class AttachmentAbstract(models.Model):
+    file = models.FileField(upload_to="attachments")
+    title = models.CharField(max_length=300, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
-        db_table = "capability_attachment"
+        abstract = True
+
+
+class ProductAreaAttachment(AttachmentAbstract):
+    product_area = models.ForeignKey(
+        ProductArea, related_name="attachments", on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.product_area.name
 
 
 class Product(ProductMixin):

@@ -14,6 +14,12 @@ class ProductAreaAdmin(admin.ModelAdmin):
     search_fields = ["name", "video_link"]
 
 
+@admin.register(product.ProductAreaAttachment)
+class ProductAreaAttachmentAdmin(admin.ModelAdmin):
+    list_display = ["pk", "file"]
+    search_fields = ["pk", "file"]
+
+
 @admin.register(product.Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
     def capability_name(self, obj):
