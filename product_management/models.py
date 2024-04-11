@@ -13,7 +13,7 @@ from treebeard.mp_tree import MP_Node
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
-from talent.models import Person, Skill, Expertise
+from talent.models import Person, Skill, Expertise, BountyClaim
 
 
 class Tag(TimeStampMixin):
@@ -364,7 +364,10 @@ class Challenge(TimeStampMixin, UUIDMixin):
             filter_data["created_by__in"] = task_creator
 
         if assignee:
-            filter_data["bountyclaim__kind__in"] = [0, 1]
+            filter_data["bountyclaim__status__in"] = [
+                BountyClaim.ClaimStatus.Completed,
+                BountyClaim.ClaimStatus.Granted,
+            ]
             filter_data["bountyclaim__person_id__in"] = assignee
 
         if skills:
