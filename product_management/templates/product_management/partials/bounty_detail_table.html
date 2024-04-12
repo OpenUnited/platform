@@ -64,7 +64,6 @@
                     {% if current_user_created_claim_request  %}
                         <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             class="cursor-pointer font-medium text-blue-600 mr-3 hover:underline"
-                            hx-post="{'action': 'approve'}"    
                         >Edit</a>
                         <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"

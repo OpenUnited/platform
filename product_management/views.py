@@ -747,7 +747,8 @@ class BountyClaimView(LoginRequiredMixin, FormView):
 class bountyClaimActionView(LoginRequiredMixin, View):
     def post(self, request, pk):
         bounty = Bounty.objects.get(pk=pk)
-        bounty.bountyclaim_set.all().update(status=request.POST.get("action"))
+        action = request.POST.get("action")
+        bounty.bountyclaim_set.exclude(status=action).update(status=action)
         return JsonResponse(
             {
                 "status": "success",
