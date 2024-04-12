@@ -250,7 +250,11 @@ def generate_sample_data():
             "utility/sample_data/bounty_delivery_attempt.json",
             "bounty_delivery_attempt",
         )
-        completed_bounty_claims = [bc for bc in bounty_claims if bc.kind == 1]
+        completed_bounty_claims = [
+            bc
+            for bc in bounty_claims
+            if bc.status == BountyClaim.ClaimStatus.Granted
+        ]
 
         for data, bounty_claim in zip(
             bounty_delivery_attempt_data, completed_bounty_claims
