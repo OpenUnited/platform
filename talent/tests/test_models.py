@@ -110,12 +110,12 @@ class BountyClaimTest(TestCase):
     def setUp(self):
         self.bounty_one = BountyFactory(points=20)
         self.claim_one = BountyClaimFactory(
-            bounty=self.bounty_one, status=BountyClaim.ClaimStatus.Granted
+            bounty=self.bounty_one, status=BountyClaim.ClaimStatus.GRANTED
         )
 
         self.bounty_two = BountyFactory(points=100)
         self.claim_two = BountyClaimFactory(
-            bounty=self.bounty_two, status=BountyClaim.ClaimStatus.Granted
+            bounty=self.bounty_two, status=BountyClaim.ClaimStatus.GRANTED
         )
 
         self.person = PersonFactory()
@@ -123,14 +123,14 @@ class BountyClaimTest(TestCase):
         self.claim_three = BountyClaimFactory(
             person=self.person,
             bounty=self.bounty_three,
-            status=BountyClaim.ClaimStatus.Granted,
+            status=BountyClaim.ClaimStatus.GRANTED,
         )
 
         self.bounty_four = BountyFactory(points=100)
         self.claim_four = BountyClaimFactory(
             person=self.person,
             bounty=self.bounty_four,
-            status=BountyClaim.ClaimStatus.Granted,
+            status=BountyClaim.ClaimStatus.GRANTED,
         )
 
     def test_save_one(self):
@@ -140,7 +140,7 @@ class BountyClaimTest(TestCase):
         self.assertEqual(status.name, Status.DRONE)
         self.assertEqual(status.points, 0)
 
-        self.claim_one.status = BountyClaim.ClaimStatus.Completed
+        self.claim_one.status = BountyClaim.ClaimStatus.COMPLETED
         self.claim_one.save()
 
         status.refresh_from_db()
@@ -155,7 +155,7 @@ class BountyClaimTest(TestCase):
         self.assertEqual(status.name, Status.DRONE)
         self.assertEqual(status.points, 0)
 
-        self.claim_two.status = BountyClaim.ClaimStatus.Completed
+        self.claim_two.status = BountyClaim.ClaimStatus.COMPLETED
         self.claim_two.save()
 
         status.refresh_from_db()
@@ -169,7 +169,7 @@ class BountyClaimTest(TestCase):
         self.assertEqual(status.name, Status.DRONE)
         self.assertEqual(status.points, 0)
 
-        self.claim_three.status = BountyClaim.ClaimStatus.Completed
+        self.claim_three.status = BountyClaim.ClaimStatus.COMPLETED
         self.claim_three.save()
 
         status.refresh_from_db()
@@ -177,7 +177,7 @@ class BountyClaimTest(TestCase):
         self.assertEqual(status.name, Status.DRONE)
         self.assertEqual(status.points, 49)
 
-        self.claim_four.status = BountyClaim.ClaimStatus.Completed
+        self.claim_four.status = BountyClaim.ClaimStatus.COMPLETED
         self.claim_four.save()
 
         status.refresh_from_db()

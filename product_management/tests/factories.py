@@ -96,7 +96,7 @@ class BountyClaimFactory(DjangoModelFactory):
         date.today(), date.today().replace(year=date.today().year + 1)
     )
     # status = FuzzyChoice(list(BountyClaim.ClaimStatus))
-    status = BountyClaim.ClaimStatus.Granted
+    status = BountyClaim.ClaimStatus.GRANTED
 
     class Meta:
         model = BountyClaim

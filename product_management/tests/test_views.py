@@ -586,13 +586,13 @@ class ChallengeDetailViewTest(BaseProductTestCase):
         b_one = BountyFactory(challenge=challenge)
         b_two = BountyFactory(challenge=challenge)
         bc_one = BountyClaimFactory(
-            bounty=b_one, status=BountyClaim.ClaimStatus.Granted
+            bounty=b_one, status=BountyClaim.ClaimStatus.GRANTED
         )
         _ = BountyClaimFactory(
-            bounty=b_one, status=BountyClaim.ClaimStatus.Granted
+            bounty=b_one, status=BountyClaim.ClaimStatus.GRANTED
         )
         _ = BountyClaimFactory(
-            bounty=b_two, status=BountyClaim.ClaimStatus.Granted
+            bounty=b_two, status=BountyClaim.ClaimStatus.GRANTED
         )
 
         response = self.client.get(url)
@@ -631,13 +631,13 @@ class ChallengeDetailViewTest(BaseProductTestCase):
         bc_one = BountyClaimFactory(
             bounty=b_one,
             person=self.person,
-            status=BountyClaim.ClaimStatus.Granted,
+            status=BountyClaim.ClaimStatus.GRANTED,
         )
         _ = BountyClaimFactory(
-            bounty=b_one, status=BountyClaim.ClaimStatus.Granted
+            bounty=b_one, status=BountyClaim.ClaimStatus.GRANTED
         )
         _ = BountyClaimFactory(
-            bounty=b_two, status=BountyClaim.ClaimStatus.Granted
+            bounty=b_two, status=BountyClaim.ClaimStatus.GRANTED
         )
 
         response = self.client.get(url)

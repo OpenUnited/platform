@@ -287,12 +287,12 @@ class Expertise(AncestryMixin):
 
 class BountyClaim(TimeStampMixin, UUIDMixin):
     class ClaimStatus(models.TextChoices):
-        Requested = "Requested"
-        Rejected = "Rejected"
-        Granted = "Granted"
-        Contributed = "Contributed"
-        Completed = "Completed"
-        Failed = "Failed"
+        REQUESTED = "Requested"
+        REJECTED = "Rejected"
+        GRANTED = "Granted"
+        CONTRIBUTED = "Contributed"
+        COMPLETED = "Completed"
+        FAILED = "Failed"
 
     bounty = models.ForeignKey(
         "product_management.Bounty", on_delete=models.CASCADE
@@ -304,7 +304,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     status = models.CharField(
         max_length=255,
         choices=ClaimStatus.choices,
-        default=ClaimStatus.Requested,
+        default=ClaimStatus.REQUESTED,
     )
 
     def get_challenge_detail_url(self):
@@ -314,7 +314,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         return self.bounty.challenge.product.get_absolute_url()
 
     def save(self, *args, **kwargs):
-        if self.status == self.ClaimStatus.Completed:
+        if self.status == self.ClaimStatus.COMPLETED:
             self.person.status.add_points(self.bounty.points)
 
         super().save(*args, **kwargs)

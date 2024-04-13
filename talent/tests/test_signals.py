@@ -51,7 +51,7 @@ class BountyDeliveryAttemptRelatedTest(TestCase):
 
         self.assertEqual(
             self.bounty_delivery.bounty_claim.status,
-            BountyClaim.ClaimStatus.Granted,
+            BountyClaim.ClaimStatus.GRANTED,
         )
         self.assertEqual(self.bounty_delivery.bounty_claim.bounty.status, 4)
         self.assertEqual(
@@ -67,7 +67,7 @@ def test_rejected(self):
     self.assertEqual(self.bounty_delivery.bounty_claim.status, 2)
     self.assertEqual(
         self.bounty_delivery.bounty_claim.bounty.status,
-        BountyClaim.ClaimStatus.Failed,
+        BountyClaim.ClaimStatus.FAILED,
     )
     self.assertEqual(
         self.bounty_delivery.bounty_claim.bounty.challenge.status, 2

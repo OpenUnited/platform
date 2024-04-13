@@ -365,8 +365,8 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
         if assignee:
             filter_data["bountyclaim__status__in"] = [
-                BountyClaim.ClaimStatus.Completed,
-                BountyClaim.ClaimStatus.Granted,
+                BountyClaim.ClaimStatus.COMPLETED,
+                BountyClaim.ClaimStatus.GRANTED,
             ]
             filter_data["bountyclaim__person_id__in"] = assignee
 
