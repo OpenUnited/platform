@@ -414,12 +414,19 @@ class Bounty(TimeStampMixin):
         choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE
     )
     is_active = models.BooleanField(default=True)
+    description = models.TextField(blank=True, null=True)
 
     def get_expertise_as_str(self):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
+
+
+class BountyAttachment(TimeStampMixin, AttachmentAbstract):
+    bounty = models.ForeignKey(
+        Bounty, related_name="bounties", on_delete=models.CASCADE
+    )
 
 
 class ChallengeDependency(models.Model):

@@ -36,6 +36,12 @@ class BountyAdmin(admin.ModelAdmin):
     search_fields = ["pk", "status"]
 
 
+@admin.register(product.BountyAttachment)
+class BountyAttachmentAdmin(admin.ModelAdmin):
+    list_display = ["pk", "title", "description", "file"]
+    search_fields = ["pk", "title", "description"]
+
+
 @admin.register(models.BountyClaim)
 class BountyClaimAdmin(admin.ModelAdmin):
     def bounty_pk(self, obj):
