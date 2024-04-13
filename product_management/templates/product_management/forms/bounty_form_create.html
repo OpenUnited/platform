@@ -111,12 +111,6 @@
                         {{ form.description }}
                     </div>
                 </div>
-
-                <div class="col-span-full">
-                    {% with bounty_attachment_formset=bounty_attachment_formset, bounty=bounty %}
-                        {% include "product_management/forms/bounty_attachments.html" %}
-                    {% endwith %}
-                </div>
                 
             </div>
         </div>
