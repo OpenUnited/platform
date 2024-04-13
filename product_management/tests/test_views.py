@@ -883,6 +883,28 @@ class DeleteAttachmentViewTest(BaseProductTestCase):
             self.attachment_one.refresh_from_db()
 
 
+class BountyDetailViewTest(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.bounty = BountyFactory()
+        self.url = reverse(
+            "bounty-detail",
+            args=(
+                self.bounty.challenge.product.slug,
+                self.bounty.challenge.pk,
+                self.bounty.pk,
+            ),
+        )
+
+    def test_basic(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "product_management/bounty_detail.html", response.template_name
+        )
+
+
 class CreateBountyViewTest(BaseTestCase):
     def setUp(self):
         super().setUp()

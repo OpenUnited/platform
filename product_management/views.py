@@ -1231,6 +1231,11 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+class BountyDetailView(DetailView):
+    model = Bounty
+    template_name = "product_management/bounty_detail.html"
+
+
 # TODO: make sure the user can't manipulate the URL to create a bounty
 class CreateBountyView(LoginRequiredMixin, CreateView):
     model = Bounty

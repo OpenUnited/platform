@@ -5,36 +5,39 @@
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Skill
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Expertise
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Points
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Claimed
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Action
+                </th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                    <span class="sr-only">Edit</span>
                 </th>
             </tr>
         </thead>
         <tbody>
             {% for bounty in challenge.bounty_set.all() %}
             <tr class="bg-white border-b">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <th scope="row" class="px-2 py-1 font-medium text-gray-900 whitespace-nowrap">
                     {{ bounty.skill }}
                 </th>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     {{ bounty.get_expertise_as_str() }}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     {{ bounty.points }}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     {% if is_claimed %}
                     Assigned to <a href={{ claimed_by.get_absolute_url() }}
                         class="font-medium text-blue-600 hover:underline">{{ claimed_by }}</a>
@@ -49,7 +52,7 @@
                     </a>
                     {% endif %}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     <div class="flex">
                         {% if actions_available %}
                         <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
@@ -63,7 +66,9 @@
                         <p>No action is available for this bounty.</p>
                         {% endif  %}
                     </div>
-
+                </td>
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
+                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                 </td>
             </tr>
             {% endfor %}
