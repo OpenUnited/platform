@@ -1251,7 +1251,9 @@ class BountyDetailView(DetailView):
         )
 
         is_assigned = bounty_claims.exists()
-        assigned_to = bounty_claims.first().person
+        assigned_to = (
+            bounty_claims.first().person if bounty_claims else "No one"
+        )
 
         data.update(
             {

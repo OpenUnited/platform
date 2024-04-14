@@ -896,6 +896,22 @@ class BountyDetailViewTest(BaseTestCase):
             ),
         )
 
+        self.person = PersonFactory()
+        self.bounty_two = BountyFactory()
+        self.url_two = reverse(
+            "bounty-detail",
+            args=(
+                self.bounty_two.challenge.product.slug,
+                self.bounty_two.challenge.pk,
+                self.bounty_two.pk,
+            ),
+        )
+        self.bounty_claim = BountyClaimFactory(
+            person=self.person,
+            bounty=self.bounty_two,
+            kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+        )
+
     def test_basic(self):
         response = self.client.get(self.url)
 
@@ -903,6 +919,33 @@ class BountyDetailViewTest(BaseTestCase):
         self.assertIn(
             "product_management/bounty_detail.html", response.template_name
         )
+
+        actual = response.context_data
+        clean_up(actual, extra=["object", "bounty"])
+
+        expected = {
+            "is_assigned": False,
+            "assigned_to": "No one",
+            "product": self.bounty.challenge.product,
+            "challenge": self.bounty.challenge,
+        }
+
+        self.assertDictEqual(actual, expected)
+
+    def test_assigned(self):
+        response = self.client.get(self.url_two)
+
+        actual = response.context_data
+        clean_up(actual, extra=["object", "bounty"])
+
+        expected = {
+            "is_assigned": True,
+            "assigned_to": self.person,
+            "product": self.bounty_two.challenge.product,
+            "challenge": self.bounty_two.challenge,
+        }
+
+        self.assertDictEqual(actual, expected)
 
 
 class CreateBountyViewTest(BaseTestCase):
