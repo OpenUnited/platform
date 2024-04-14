@@ -10,7 +10,9 @@
 
 {% block content %}
 
+{% with bounty_attachment_formset=bounty_attachment_formset, bounty=bounty, type='update' %}
 {% include 'product_management/forms/bounty_form.html' %}
+{% endwith %}
 
 {% endblock %}
 
