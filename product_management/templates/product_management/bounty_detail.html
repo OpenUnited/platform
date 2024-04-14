@@ -34,6 +34,7 @@
             <a href="{{ assigned_to.get_absolute_url() }}"
                 class="font-medium text-blue-600 hover:underline">{{ assigned_to }}</a>
             {% else %}
+            <span class="block text-sm font-medium">None</span>
             <a href="#" class="font-medium text-blue-600 hover:underline">Create bounty claim request</a>
             {% endif %}
         </div>

@@ -522,73 +522,81 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, DetailView):
     model = Challenge
+    context_object_name = "challenge"
     template_name = "product_management/challenge_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         challenge = self.object
-        bounty = challenge.bounty_set.all().first()
-        # TODO: we need to allow multiple bounties for a challenge
-        bounty_claim = BountyClaim.objects.filter(
-            bounty=bounty,
-            kind__in=[
-                BountyClaim.CLAIM_TYPE_DONE,
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-            ],
-        ).first()
+        bounties = challenge.bounty_set.all()
+
+        extra_data = []
+        for bounty in bounties:
+            data = {"bounty": bounty}
+
+            user = self.request.user
+            if not user.is_authenticated:
+                data.update(
+                    {
+                        "current_user_created_claim_request": False,
+                        "actions_available": False,
+                    }
+                )
+            else:
+                person = user.person
+                bounty_claims = BountyClaim.objects.filter(
+                    bounty=bounty,
+                    person=person,
+                    kind__in=[
+                        BountyClaim.CLAIM_TYPE_ACTIVE,
+                        BountyClaim.CLAIM_TYPE_IN_REVIEW,
+                    ],
+                )
+
+                data.update(
+                    {
+                        "current_user_created_claim_request": bounty_claims.exists(),
+                        "actions_available": challenge.created_by == person,
+                    }
+                )
+
+                bounty_claim = BountyClaim.objects.filter(
+                    bounty=bounty,
+                    kind__in=[
+                        BountyClaim.CLAIM_TYPE_DONE,
+                        BountyClaim.CLAIM_TYPE_ACTIVE,
+                    ],
+                ).first()
+
+                if (
+                    bounty_claim
+                    and bounty_claim.bounty.status
+                    in [
+                        Bounty.BOUNTY_STATUS_DONE,
+                        Bounty.BOUNTY_STATUS_CLAIMED,
+                    ]
+                    and bounty_claim.bounty.challenge.status
+                    in [
+                        Challenge.CHALLENGE_STATUS_DONE,
+                        Challenge.CHALLENGE_STATUS_CLAIMED,
+                    ]
+                ):
+                    data.update(
+                        {"is_claimed": True, "claimed_by": bounty_claim.person}
+                    )
+                else:
+                    data.update({"is_claimed": False})
+
+            extra_data.append(data)
 
         context.update(
             {
-                "challenge": challenge,
-                "bounty": bounty,
-                "bounty_claim_form": BountyClaimForm(),
-                "bounty_claim": bounty_claim,
+                "bounty_data": extra_data,
+                "does_have_permission": utils.has_product_modify_permission(
+                    self.request.user, context.get("product")
+                ),
             }
         )
-
-        if self.request.user.is_authenticated:
-            bounty_claims = BountyClaim.objects.filter(
-                bounty=bounty,
-                person=self.request.user.person,
-                kind__in=[
-                    BountyClaim.CLAIM_TYPE_ACTIVE,
-                    BountyClaim.CLAIM_TYPE_IN_REVIEW,
-                ],
-            )
-
-            context.update(
-                {
-                    "current_user_created_claim_request": bounty_claims.count()
-                    > 0,
-                    "actions_available": challenge.created_by
-                    == self.request.user.person,
-                }
-            )
-        else:
-            context.update(
-                {
-                    "current_user_created_claim_request": False,
-                    "actions_available": False,
-                }
-            )
-
-        # todo: fix this ugly if statement
-        if (
-            bounty_claim
-            and bounty_claim.kind
-            in [
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_DONE,
-            ]
-            and bounty_claim.bounty.status == Bounty.BOUNTY_STATUS_DONE
-            and bounty_claim.bounty.challenge.status
-            == Challenge.CHALLENGE_STATUS_DONE
-        ):
-            context.update(
-                {"is_claimed": True, "claimed_by": bounty_claim.person}
-            )
-        else:
-            context.update({"is_claimed": False})
 
         return context
 
