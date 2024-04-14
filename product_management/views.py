@@ -1235,6 +1235,16 @@ class BountyDetailView(DetailView):
     model = Bounty
     template_name = "product_management/bounty_detail.html"
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+
+        bounty = data.get("bounty")
+        challenge = bounty.challenge
+        product = challenge.product
+
+        data.update({"product": product, "challenge": challenge})
+        return data
+
 
 # TODO: make sure the user can't manipulate the URL to create a bounty
 class CreateBountyView(LoginRequiredMixin, CreateView):

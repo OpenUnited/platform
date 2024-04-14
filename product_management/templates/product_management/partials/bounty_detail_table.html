@@ -21,7 +21,7 @@
                     Action
                 </th>
                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                    <span class="sr-only">Edit</span>
+                    <span class="sr-only">Details</span>
                 </th>
             </tr>
         </thead>
@@ -68,7 +68,7 @@
                     </div>
                 </td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
-                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}" class="text-indigo-600 hover:text-indigo-900">Details</a>
                 </td>
             </tr>
             {% endfor %}
