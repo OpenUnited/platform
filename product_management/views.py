@@ -1242,7 +1242,25 @@ class BountyDetailView(DetailView):
         challenge = bounty.challenge
         product = challenge.product
 
-        data.update({"product": product, "challenge": challenge})
+        bounty_claims = BountyClaim.objects.filter(
+            bounty=bounty,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_DONE,
+            ],
+        )
+
+        is_assigned = bounty_claims.exists()
+        assigned_to = bounty_claims.first().person
+
+        data.update(
+            {
+                "product": product,
+                "challenge": challenge,
+                "is_assigned": is_assigned,
+                "assigned_to": assigned_to,
+            }
+        )
         return data
 
 

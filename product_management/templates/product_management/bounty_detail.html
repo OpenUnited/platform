@@ -4,12 +4,69 @@
 
 {% block content %}
 {% include 'product_management/partials/breadcrumbs_bounty_detail.html' %}
-<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-    <h1 class="text-2xl font-bold mb-4">{{ bounty.challenge.title }}</h1>
-    <p class="text-lg mb-2">Skill: {{ bounty.skill }}</p>
-    <p class="text-lg mb-2">Expertise: {{ bounty.get_expertise_as_str() }}</p>
-    <p class="text-lg mb-2">Points: {{ bounty.points }}</p>
-    <p class="text-lg mb-2">Status: {{ bounty.get_status_display() }}</p>
-    <p class="text-lg mb-2">Active: {{ bounty.is_active }}</p>
+<div class="flex bg-white pt-6 pb-8 mb-4">
+    <div class="w-4/5 mr-4">
+        <div>
+            <h1 class="text-xl font-medium mb-4">Bounty Description</h1>
+            <div class="my-4">
+                <span class="text-gray-400 block text-sm my-1">Created at:
+                    {{ bounty.created_at.strftime('%b %d, %Y') }}</span>
+                <span class="text-gray-400 block text-sm my-1">Updated at:
+                    {{ bounty.updated_at.strftime('%b %d, %Y') }}</span>
+            </div>
+        </div>
+        <p class="text-md pr-10">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+            scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
+            electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
+            Aldus PageMaker including versions of Lorem Ipsum.
+        </p>
+    </div>
+    <div class="w-1/5 text-sm flex flex-wrap">
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Assignee</h1>
+            {% if is_assigned %}
+            <a href="{{ assigned_to.get_absolute_url() }}"
+                class="font-medium text-blue-600 hover:underline">{{ assigned_to }}</a>
+            {% else %}
+            <a href="#" class="font-medium text-blue-600 hover:underline">Create bounty claim request</a>
+            {% endif %}
+        </div>
+
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Status</h1>
+            <p>{{ bounty.get_status_display() }}</p>
+        </div>
+
+        <div class="w-full my-4">
+            <h1 class="font-medium text-gray-400">Expertise</h1>
+            {% for exp in bounty.expertise.all() %}
+            <div
+                class="inline-block mt-1.5 mr-1.5 last:mr-0 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+                <div class="flex items-center text-xs font-semibold leading-6">
+                    <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                        {% set expertise_icon_path = 'images/skills/' ~ exp ~ '.svg' %}
+                        <img src="{{ static(expertise_icon_path)}}" class="w-full h-full object-contain object-center"
+                            alt="#">
+                    </span>
+                    {{ exp }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Skill</h1>
+            <span
+                class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 my-2">Java</span>
+        </div>
+
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Points</h1>
+            <p>{{ bounty.points }}</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
