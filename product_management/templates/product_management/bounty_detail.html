@@ -7,7 +7,15 @@
 <div class="flex bg-white pt-6 pb-8 mb-4">
     <div class="w-4/5 mr-4">
         <div>
-            <h1 class="text-xl font-medium mb-4">Bounty Description</h1>
+            <div class="flex justify-between">
+                <h1 class="text-xl font-medium mb-4">Bounty Description</h1>
+
+                {% if challenge.created_by == request.user.person %}
+                <a href="{{ url('update-bounty', args=(product.slug, challenge.pk, bounty.pk,)) }}"
+                    class="text-white ml-auto mr-4 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">Edit
+                    Bounty</a>
+                {% endif %}
+            </div>
             <div class="my-4">
                 <span class="text-gray-400 block text-sm my-1">Created at:
                     {{ bounty.created_at.strftime('%b %d, %Y') }}</span>
@@ -16,12 +24,7 @@
             </div>
         </div>
         <p class="text-md pr-10">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-            electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-            Aldus PageMaker including versions of Lorem Ipsum.
+            {{ bounty.description }}
         </p>
     </div>
     <div class="w-1/5 text-sm flex flex-wrap">
@@ -60,12 +63,12 @@
         <div class="w-1/2 my-4">
             <h1 class="font-medium text-gray-400">Skill</h1>
             <span
-                class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 my-2">Java</span>
+                class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 my-2">{{ bounty.skill.name }}</span>
         </div>
 
         <div class="w-1/2 my-4">
             <h1 class="font-medium text-gray-400">Points</h1>
-            <p>{{ bounty.points }}</p>
+            <p class="my-2">{{ bounty.points }}</p>
         </div>
     </div>
 </div>
