@@ -48,6 +48,7 @@ from .models import (
     Skill,
     Expertise,
     Attachment,
+    BountyAttachment,
 )
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
@@ -1263,6 +1264,9 @@ class BountyDetailView(DetailView):
         assigned_to = (
             bounty_claims.first().person if bounty_claims else "No one"
         )
+        attachments = [
+            att.file for att in BountyAttachment.objects.filter(bounty=bounty)
+        ]
 
         data.update(
             {
@@ -1270,6 +1274,7 @@ class BountyDetailView(DetailView):
                 "challenge": challenge,
                 "is_assigned": is_assigned,
                 "assigned_to": assigned_to,
+                "attachments": attachments,
             }
         )
         return data

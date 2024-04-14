@@ -928,6 +928,7 @@ class BountyDetailViewTest(BaseTestCase):
             "assigned_to": "No one",
             "product": self.bounty.challenge.product,
             "challenge": self.bounty.challenge,
+            "attachments": [],
         }
 
         self.assertDictEqual(actual, expected)
@@ -943,6 +944,7 @@ class BountyDetailViewTest(BaseTestCase):
             "assigned_to": self.person,
             "product": self.bounty_two.challenge.product,
             "challenge": self.bounty_two.challenge,
+            "attachments": [],
         }
 
         self.assertDictEqual(actual, expected)
