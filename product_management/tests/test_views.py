@@ -1005,6 +1005,7 @@ class CreateBountyViewTest(BaseTestCase):
 
         data = {
             "challenge": self.challenge.id,
+            "description": "lorem ipsum it amet",
             "selected_skill_ids": f"[{skill.id}]",
             "selected_expertise_ids": f"[{expertise_one.id}, {expertise_two.id}]",
             "points": 10,
@@ -1105,6 +1106,7 @@ class UpdateBountyViewTest(BaseTestCase):
 
         data = {
             "challenge": self.challenge.id,
+            "description": "lorem ipsum it amet",
             "selected_skill_ids": f"[{skill.id}]",
             "selected_expertise_ids": f"[{expertise_one.id}, {expertise_two.id}]",
             "points": self.bounty.points + 20,
