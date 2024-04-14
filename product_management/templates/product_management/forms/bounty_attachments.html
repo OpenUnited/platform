@@ -1,0 +1,77 @@
+{{ bounty_attachment_formset.management_form }}
+
+<div class="">
+    <table class="min-w-full bg-white">
+        <thead class="bg-gray-200 text-gray-700 uppercase text-xs leading-normal">
+            <th class="py-3 px-2 text-left">File Attachments <span style="color: red;" class="required">*</span></th>
+            <th class="py-3  text-left"></th>
+            
+        </thead>
+
+        <tbody id="bounty-tbody-container" class="text-gray-600 text-sm font-light">
+            {% for bounty_attachment_form in bounty_attachment_formset %}
+                <tr id="attachment-{{ bounty_attachment_form.instance.pk }}" class="border-b border-gray-200 p-2">
+                    <td class="py-3">
+                        {{ bounty_attachment_form.id }}
+                        {% if bounty_attachment_form.instance.file %}
+                            <a href="{{ bounty_attachment_form.instance.file.url}}" target="_blank"> {{ bounty_attachment_form.instance.file.name}} </a>
+                        {% else %}
+                            {{ bounty_attachment_form.file}}
+                        {% endif %}
+
+                    </td>
+                    
+                    <td class="py-3">
+                        {% if bounty_attachment_form.DELETE %}
+                            <input type="checkbox" class="hidden" data-delete-id="" name="bounties-{{ loop.index0 }}-DELETE" id="id_bounties-{{ loop.index0 }}-DELETE">
+                            <button type="button"  class="bg-red-700 text-white py-1 px-2 rounded-full" onclick="checkCheckbox({{ loop.index0 }})">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                    {% endif %}    
+                    </td>
+
+                </tr>                    
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <br>
+    
+    <div class="w-full py-3 px-6 text-right">
+       <button
+            type="button"
+            hx-get="{{ url('update-bounty', args=(bounty.challenge.product.slug, bounty.challenge.id, bounty.id,)) }}"
+            hx-target="#bounty-tbody-container"
+            class="bg-indigo-600 text-white py-2 px-4 rounded focus:outline-none"
+            hx-swap="beforeend">Add Attachment
+        </button>
+    </div>
+</div>
+
+<script>
+
+function checkCheckbox(index) {
+    var checkboxId = `id_bounties-${index}-DELETE`;
+    var checkbox = document.getElementById(checkboxId);
+    checkbox.closest('tr').style.display="none";
+    checkbox.checked = true;
+}
+
+document.addEventListener('htmx:afterSwap', function(event) {
+    const tbodyContainer = document.getElementById("bounty-tbody-container")
+    if (tbodyContainer) {
+        var index = tbodyContainer.querySelectorAll('tr').length - 1;
+        var placeholderElements = event.target.querySelectorAll('[id^="id_bounties"]');
+        placeholderElements.forEach(function(element) {
+            element.name = element.name.replace('{{ index }}', index);
+            element.id = element.id.replace('{{ index }}', index);
+        });
+        var total_form_count = document.getElementById("id_bounties-TOTAL_FORMS")
+        total_form_count.value = parseInt(total_form_count.value) + 1
+    }
+});
+
+function removeClosestRow(button) {
+    button.closest("tr").remove()
+  }
+</script>

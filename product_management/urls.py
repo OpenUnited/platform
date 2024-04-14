@@ -54,6 +54,11 @@ urlpatterns = [
         name="bounty-claim",
     ),
     path(
+        "bounty-claim-action/<int:pk>/",
+        views.bountyClaimActionView.as_view(),
+        name="bounty-claim-action",
+    ),
+    path(
         "product/create",
         views.CreateProductView.as_view(),
         name="create-product",

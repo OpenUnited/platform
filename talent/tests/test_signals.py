@@ -4,7 +4,7 @@ from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyChoice, FuzzyText
 
 from .factories import PersonFactory
-from talent.models import Status, BountyDeliveryAttempt
+from talent.models import Status, BountyDeliveryAttempt, BountyClaim
 from product_management.tests.factories import BountyClaimFactory
 
 
@@ -48,7 +48,11 @@ class BountyDeliveryAttemptRelatedTest(TestCase):
         self.bounty_delivery.save()
 
         self.assertEqual(self.bounty_delivery.kind, 1)
-        self.assertEqual(self.bounty_delivery.bounty_claim.kind, 0)
+
+        self.assertEqual(
+            self.bounty_delivery.bounty_claim.status,
+            BountyClaim.ClaimStatus.GRANTED,
+        )
         self.assertEqual(self.bounty_delivery.bounty_claim.bounty.status, 4)
         self.assertEqual(
             self.bounty_delivery.bounty_claim.bounty.challenge.status, 4
@@ -60,8 +64,11 @@ def test_rejected(self):
     self.bounty_delivery.save()
 
     self.assertEqual(self.bounty_delivery.kind, 2)
-    self.assertEqual(self.bounty_delivery.bounty_claim.kind, 2)
-    self.assertEqual(self.bounty_delivery.bounty_claim.bounty.status, 2)
+    self.assertEqual(self.bounty_delivery.bounty_claim.status, 2)
+    self.assertEqual(
+        self.bounty_delivery.bounty_claim.bounty.status,
+        BountyClaim.ClaimStatus.FAILED,
+    )
     self.assertEqual(
         self.bounty_delivery.bounty_claim.bounty.challenge.status, 2
     )
