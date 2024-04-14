@@ -4,7 +4,12 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import (
+    Http404,
+    HttpResponse,
+    JsonResponse,
+    HttpResponseRedirect,
+)
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
@@ -25,7 +30,7 @@ from .models import (
     Feedback,
     BountyDeliveryAttempt,
 )
-from product_management.models import Challenge, Bounty
+from product_management.models import Product, Challenge, Bounty
 from .forms import (
     PersonProfileForm,
     FeedbackForm,
@@ -406,6 +411,32 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
         kwargs["request"] = self.request
 
         return kwargs
+
+    # todo: find a better way to check if the page exists
+    def get(self, request, *args, **kwargs):
+        product_slug = kwargs.get("product_slug")
+        challenge_id = kwargs.get("challenge_id")
+        bounty_id = kwargs.get("bounty_id")
+
+        product = get_object_or_404(
+            Product,
+            slug=product_slug,
+        )
+
+        challenge = get_object_or_404(
+            Challenge,
+            id=challenge_id,
+        )
+
+        bounty = get_object_or_404(
+            Bounty,
+            id=bounty_id,
+        )
+
+        if product != challenge.product or challenge != bounty.challenge:
+            raise Http404("No matches the given query.")
+
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES, request=request)

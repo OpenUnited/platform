@@ -46,7 +46,8 @@
                                 class="whitespace-nowrap py-4 text-center text-sm font-medium sm:pr-6 lg:pr-8 cursor-pointer">
                                 <!-- 1 == BountyClaim.CLAIM_TYPE_ACTIVE -->
                                 {% if bounty_claim.kind == 1 %}
-                                <a href="{{ url('create-bounty-delivery-attempt') }}?id={{ bounty_claim.id }}"
+                                {% set challenge = bounty_claim.bounty.challenge %}
+                                <a href="{{ url('create-bounty-delivery-attempt', args=(challenge.product.slug, challenge.id, bounty_claim.bounty.id,)) }}?id={{ bounty_claim.id }}"
                                     class="text-indigo-600 hover:text-indigo-900">Submit Work</a>
                                 <!-- 3 == BountyClaim.CLAIM_TYPE_IN_REVIEW -->
                                 {% elif bounty_claim.kind == 3 %}
