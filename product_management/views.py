@@ -1231,6 +1231,41 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+class BountyDetailView(DetailView):
+    model = Bounty
+    template_name = "product_management/bounty_detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+
+        bounty = data.get("bounty")
+        challenge = bounty.challenge
+        product = challenge.product
+
+        bounty_claims = BountyClaim.objects.filter(
+            bounty=bounty,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_DONE,
+            ],
+        )
+
+        is_assigned = bounty_claims.exists()
+        assigned_to = (
+            bounty_claims.first().person if bounty_claims else "No one"
+        )
+
+        data.update(
+            {
+                "product": product,
+                "challenge": challenge,
+                "is_assigned": is_assigned,
+                "assigned_to": assigned_to,
+            }
+        )
+        return data
+
+
 # TODO: make sure the user can't manipulate the URL to create a bounty
 class CreateBountyView(LoginRequiredMixin, CreateView):
     model = Bounty

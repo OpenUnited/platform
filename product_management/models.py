@@ -395,6 +395,7 @@ class Bounty(TimeStampMixin):
     )
 
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    description = models.TextField()
     skill = models.ForeignKey(
         Skill,
         on_delete=models.CASCADE,

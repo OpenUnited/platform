@@ -28,6 +28,11 @@ urlpatterns = [
         name="delete-challenge",
     ),
     path(
+        "<str:product_slug>/challenge/<int:challenge_id>/bounty/<int:pk>",
+        views.BountyDetailView.as_view(),
+        name="bounty-detail",
+    ),
+    path(
         "<str:product_slug>/challenge/<int:challenge_id>/bounty/create/",
         views.CreateBountyView.as_view(),
         name="create-bounty",

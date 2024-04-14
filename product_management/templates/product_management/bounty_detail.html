@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Bounty Detail{% endblock %}
+
+{% block content %}
+{% include 'product_management/partials/breadcrumbs_bounty_detail.html' %}
+<div class="flex bg-white pt-6 pb-8 mb-4">
+    <div class="w-4/5 mr-4">
+        <div>
+            <div class="flex justify-between">
+                <h1 class="text-xl font-medium mb-4">Bounty Description</h1>
+
+                {% if challenge.created_by == request.user.person %}
+                <a href="{{ url('update-bounty', args=(product.slug, challenge.pk, bounty.pk,)) }}"
+                    class="text-white ml-auto mr-4 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">Edit
+                    Bounty</a>
+                {% endif %}
+            </div>
+            <div class="my-4">
+                <span class="text-gray-400 block text-sm my-1">Created at:
+                    {{ bounty.created_at.strftime('%b %d, %Y') }}</span>
+                <span class="text-gray-400 block text-sm my-1">Updated at:
+                    {{ bounty.updated_at.strftime('%b %d, %Y') }}</span>
+            </div>
+        </div>
+        <p class="text-md pr-10">
+            {{ bounty.description }}
+        </p>
+    </div>
+    <div class="w-1/5 text-sm flex flex-wrap">
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Assignee</h1>
+            {% if is_assigned %}
+            <a href="{{ assigned_to.get_absolute_url() }}"
+                class="font-medium text-blue-600 hover:underline">{{ assigned_to }}</a>
+            {% else %}
+            <a href="#" class="font-medium text-blue-600 hover:underline">Create bounty claim request</a>
+            {% endif %}
+        </div>
+
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Status</h1>
+            <p>{{ bounty.get_status_display() }}</p>
+        </div>
+
+        <div class="w-full my-4">
+            <h1 class="font-medium text-gray-400">Expertise</h1>
+            {% for exp in bounty.expertise.all() %}
+            <div
+                class="inline-block mt-1.5 mr-1.5 last:mr-0 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+                <div class="flex items-center text-xs font-semibold leading-6">
+                    <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                        {% set expertise_icon_path = 'images/skills/' ~ exp ~ '.svg' %}
+                        <img src="{{ static(expertise_icon_path)}}" class="w-full h-full object-contain object-center"
+                            alt="#">
+                    </span>
+                    {{ exp }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Skill</h1>
+            <span
+                class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 my-2">{{ bounty.skill.name }}</span>
+        </div>
+
+        <div class="w-1/2 my-4">
+            <h1 class="font-medium text-gray-400">Points</h1>
+            <p class="my-2">{{ bounty.points }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
