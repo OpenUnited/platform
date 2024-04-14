@@ -34,6 +34,7 @@ from .forms import (
     CapabilityForm,
     ProductAreaForm,
     ProductAreaAttachmentSet,
+    BountyAttachmentFormSet,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -1275,11 +1276,29 @@ class BountyDetailView(DetailView):
 
 
 # TODO: make sure the user can't manipulate the URL to create a bounty
-class CreateBountyView(LoginRequiredMixin, CreateView):
+class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, CreateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "product_management/forms/bounty_empty_attachment.html"
+
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["bounty_attachment_formset"] = BountyAttachmentFormSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+        )
+        context["challenge"] = Challenge.objects.get(
+            pk=self.kwargs.get("challenge_id")
+        )
+
+        return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1303,6 +1322,13 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
             instance.skill = Skill.objects.get(id=skill_id)
             instance.save()
 
+            self.object = instance
+            context = self.get_context_data()
+            attachment_formset = context["bounty_attachment_formset"]
+            if attachment_formset.is_valid():
+                attachment_formset.instance = instance
+                attachment_formset.save()
+
             instance.expertise.add(
                 *Expertise.objects.filter(
                     id__in=form.cleaned_data.get("selected_expertise_ids")
@@ -1320,11 +1346,25 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class UpdateBountyView(LoginRequiredMixin, UpdateView):
+class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/update_bounty.html"
     login_url = "sign_in"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "product_management/forms/bounty_empty_attachment.html"
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["bounty_attachment_formset"] = BountyAttachmentFormSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+            instance=self.get_object(),
+        )
+        return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1344,28 +1384,37 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
             challenge_queryset=challenge_queryset,
         )
         if form.is_valid():
-            instance = form.save(commit=False)
-            skill_id = form.cleaned_data.get("selected_skill_ids")[0]
-            instance.skill = Skill.objects.get(id=skill_id)
-            instance.save()
-
-            instance.expertise.add(
-                *Expertise.objects.filter(
-                    id__in=form.cleaned_data.get("selected_expertise_ids")
-                )
-            )
-            instance.save()
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    self.object.challenge.product.slug,
-                    self.object.challenge.id,
-                ),
-            )
-            return redirect(self.success_url)
+            return self.handle_update(request, form)
 
         return super().post(request, *args, **kwargs)
+
+    def handle_update(self, request, form):
+        context = self.get_context_data()
+        instance = form.save(commit=False)
+        skill_id = form.cleaned_data.get("selected_skill_ids")[0]
+        instance.skill = Skill.objects.get(id=skill_id)
+        instance.save()
+
+        attachment_formset = context["bounty_attachment_formset"]
+        if attachment_formset.is_valid():
+            attachment_formset.instance = instance
+            attachment_formset.save()
+
+        instance.expertise.add(
+            *Expertise.objects.filter(
+                id__in=form.cleaned_data.get("selected_expertise_ids")
+            )
+        )
+        instance.save()
+
+        self.success_url = reverse(
+            "challenge_detail",
+            args=(
+                self.object.challenge.product.slug,
+                self.object.challenge.id,
+            ),
+        )
+        return redirect(self.success_url)
 
 
 class DeleteBountyView(LoginRequiredMixin, DeleteView):

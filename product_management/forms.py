@@ -19,6 +19,7 @@ from .models import (
     Initiative,
     ProductArea,
     ProductAreaAttachment,
+    BountyAttachment,
 )
 from django import forms
 from django.forms import inlineformset_factory
@@ -465,6 +466,24 @@ class BountyForm(forms.ModelForm):
         labels = {
             "is_active": "Is Active",
         }
+
+
+class BountyAttachmentForm(forms.ModelForm):
+    id = forms.IntegerField(required=False)
+
+    class Meta:
+        model = BountyAttachment
+        fields = ("id", "file")
+
+
+BountyAttachmentFormSet = inlineformset_factory(
+    Bounty,
+    BountyAttachment,
+    form=BountyAttachmentForm,
+    extra=0,
+    can_delete=True,
+    can_delete_extra=True,
+)
 
 
 class InitiativeForm(forms.ModelForm):
