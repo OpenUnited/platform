@@ -95,8 +95,7 @@ class BountyClaimFactory(DjangoModelFactory):
     expected_finish_date = FuzzyDate(
         date.today(), date.today().replace(year=date.today().year + 1)
     )
-    # status = FuzzyChoice(list(BountyClaim.ClaimStatus))
-    status = BountyClaim.ClaimStatus.GRANTED
+    kind = FuzzyChoice([kind[0] for kind in BountyClaim.CLAIM_TYPE])
 
     class Meta:
         model = BountyClaim

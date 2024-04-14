@@ -13,7 +13,7 @@ from treebeard.mp_tree import MP_Node
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
-from talent.models import Person, Skill, Expertise, BountyClaim
+from talent.models import Person, Skill, Expertise
 
 
 class Tag(TimeStampMixin):
@@ -364,10 +364,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
             filter_data["created_by__in"] = task_creator
 
         if assignee:
-            filter_data["bountyclaim__status__in"] = [
-                BountyClaim.ClaimStatus.COMPLETED,
-                BountyClaim.ClaimStatus.GRANTED,
-            ]
+            filter_data["bountyclaim__kind__in"] = [0, 1]
             filter_data["bountyclaim__person_id__in"] = assignee
 
         if skills:
@@ -414,19 +411,12 @@ class Bounty(TimeStampMixin):
         choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE
     )
     is_active = models.BooleanField(default=True)
-    description = models.TextField(blank=True, null=True)
 
     def get_expertise_as_str(self):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
-
-
-class BountyAttachment(TimeStampMixin, AttachmentAbstract):
-    bounty = models.ForeignKey(
-        Bounty, related_name="bounties", on_delete=models.CASCADE
-    )
 
 
 class ChallengeDependency(models.Model):

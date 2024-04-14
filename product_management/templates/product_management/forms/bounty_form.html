@@ -1,4 +1,4 @@
-<form method="post" enctype="multipart/form-data" >
+<form method="post">
     {% csrf_token %}
     <div class="space-y-12">
         <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
@@ -7,7 +7,7 @@
                 <p class="mt-1 text-sm leading-6 text-gray-600">General details about the bounty.</p>
             </div>
 
-            <div class="grid max-w-6xl grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-6 md:col-span-2  bg-white shadow-md rounded-xl overflow-x-auto px-2 py-2">
+            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
                 <div class="col-span-full">
                     {% if form.non_field_errors() %}
                     <div
@@ -22,7 +22,7 @@
                     {% endif %}
                 </div>
 
-                <div class="col-span-6">
+                <div class="col-span-4">
                     <label for="{{ form.challenge.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.challenge.label }}</label>
                     <div class="mt-2">
@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-6">
+                <div class="col-span-4">
                     <label for="{{ form.status.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.status.label }}</label>
                     <div class="mt-2">
@@ -89,7 +89,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-6">
+                <div class="col-span-3">
                     <div class="mt-6 space-y-6">
                         <div class="relative flex gap-x-3">
                             <div class="flex h-6 items-center">
@@ -103,24 +103,8 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-span-6">
-                    <label for="{{ form.description.id_for_label }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.description.label }}</label>
-                    <div class="mt-2">
-                        {{ form.description }}
-                    </div>
-                </div>
-
-                <div class="col-span-full">
-                    {% with bounty_attachment_formset=bounty_attachment_formset, bounty=bounty %}
-                        {% include "product_management/forms/bounty_attachments.html" %}
-                    {% endwith %}
-                </div>
-                
             </div>
         </div>
-
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <a href="javascript:history.go(-1)">
@@ -129,5 +113,4 @@
             <button type="submit"
                 class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
         </div>
-
 </form>

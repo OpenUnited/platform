@@ -16,7 +16,6 @@ from .models import (
     Product,
     Challenge,
     Bounty,
-    BountyAttachment,
     Initiative,
     ProductArea,
     ProductAreaAttachment,
@@ -433,7 +432,7 @@ class BountyForm(forms.ModelForm):
 
     class Meta:
         model = Bounty
-        fields = ["points", "status", "is_active", "description"]
+        fields = ["points", "status", "is_active"]
 
         widgets = {
             "points": forms.NumberInput(
@@ -451,13 +450,6 @@ class BountyForm(forms.ModelForm):
                     "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
                 }
             ),
-            "description": forms.Textarea(
-                attrs={
-                    "placeholder": "Enter description here",
-                    "rows": 4,
-                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
-                }
-            ),
         }
 
         help_texts = {
@@ -467,24 +459,6 @@ class BountyForm(forms.ModelForm):
         labels = {
             "is_active": "Is Active",
         }
-
-
-class BountyAttachmentForm(forms.ModelForm):
-    id = forms.IntegerField(required=False)
-
-    class Meta:
-        model = BountyAttachment
-        fields = ("id", "file")
-
-
-BountyAttachmentFormSet = inlineformset_factory(
-    Bounty,
-    BountyAttachment,
-    form=BountyAttachmentForm,
-    extra=0,
-    can_delete=True,
-    can_delete_extra=True,
-)
 
 
 class InitiativeForm(forms.ModelForm):
