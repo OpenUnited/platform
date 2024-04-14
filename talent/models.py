@@ -379,7 +379,13 @@ class BountyDeliveryAttempt(TimeStampMixin):
 
     def get_absolute_url(self):
         return reverse(
-            "bounty-delivery-attempt-detail", kwargs={"pk": self.pk}
+            "bounty-delivery-attempt-detail",
+            kwargs={
+                "product_slug": self.bounty_claim.bounty.challenge.product.slug,
+                "challenge_id": self.bounty_claim.bounty.challenge.id,
+                "bounty_id": self.bounty_claim.bounty.id,
+                "pk": self.pk,
+            },
         )
 
     def __str__(self):
