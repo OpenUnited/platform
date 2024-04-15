@@ -458,7 +458,7 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
 class BountyDeliveryAttemptDetail(DetailView):
     model = BountyDeliveryAttempt
     context_object_name = "object"
-    template_name = "product_management/bounty_delivery_attempt_detail.html"
+    template_name = "talent/bounty_delivery_attempt_detail.html"
 
     TRIGGER_KEY = "bounty-delivery-action"
     APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
