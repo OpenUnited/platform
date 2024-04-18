@@ -532,7 +532,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "bounty": bounty,
                 "current_user_created_claim_request": False,
                 "actions_available": False,
-                "is_claimed": False,
+                "has_claimed": False,
                 "claimed_by": None,
                 "show_actions": False,
                 "can_be_claimed": False,
@@ -550,15 +550,18 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 ).exists()
 
                 if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
-                    data["can_be_claimed"] = True
-                    data["show_actions"] = True
+                    has_record = bounty.bountyclaim_set.filter(
+                        person=person
+                    ).exists()
+                    data["can_be_claimed"] = not has_record
 
-                if claim := bounty.bountyclaim_set.filter(
-                    person=person
-                ).first():
+                if claim := bounty.bountyclaim_set.first():
                     data["claimed_by"] = claim.person
                     data["show_actions"] = data["claimed_by"] == claim.person
 
+            data["show_actions"] = (
+                data["can_be_claimed"] | data["can_be_modified"]
+            )
             data["status"] = Bounty.BOUNTY_STATUS[bounty.status][1]
             extra_data.append(data)
 
