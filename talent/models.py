@@ -310,8 +310,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
 
     class Meta:
         unique_together = ("bounty", "person")
-
- 
+        ordering = ("-created_at",)
 
     def get_challenge_detail_url(self):
         return self.bounty.challenge.get_absolute_url()
