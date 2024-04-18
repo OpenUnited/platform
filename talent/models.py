@@ -308,6 +308,11 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         choices=CLAIM_TYPE, default=CLAIM_TYPE_IN_REVIEW
     )
 
+    class Meta:
+        unique_together = ("bounty", "person")
+
+ 
+
     def get_challenge_detail_url(self):
         return self.bounty.challenge.get_absolute_url()
 
