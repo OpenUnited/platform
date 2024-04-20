@@ -1,10 +1,11 @@
 {% if bounty_data %}
-<div class="my-2.5 font-medium text-sm text-black/[0.85]">Bounty Table</div>
-
 <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
+                <th scope="col" class="px-2 py-3">
+                    Bounty
+                </th>
                 <th scope="col" class="px-2 py-3">
                     Skill
                 </th>
@@ -24,15 +25,16 @@
                 <th scope="col" class="px-2 py-3">
                     Actions
                 </th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                    <span class="sr-only">Details</span>
-                </th>
             </tr>
         </thead>
         <tbody>
             {% for elem in bounty_data %}
             {% set bounty = elem.bounty %}
             <tr class="bg-white border-b">
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
+                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                        class="text-indigo-600 hover:text-indigo-900">{{ bounty.title }}</a>
+                </td>
                 <th scope="row" class="px-2 py-1 font-medium text-gray-900 whitespace-nowrap">
                     {{ bounty.skill }}
                 </th>
@@ -67,40 +69,33 @@
                     <p>
                     </p>
                 </td>
-                <td class="px-2 py-1">
+                <td class="relative whitespace-nowrap">
                     {% if elem.show_actions %}
                         {% if elem.can_be_claimed %}
-                            <div class="flex">
-                                <button hx-post="{{ url('bounty-claim', args=(bounty.pk,)) }}"
-                                    class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1"
-                                    hx-swap="none"
-                                    claim-bounty="true">Claim
-                                </button>
-                            
+                            <button hx-post="{{ url('bounty-claim', args=(bounty.pk,)) }}"
+                                class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1"
+                                hx-swap="none"
+                                claim-bounty="true">Claim
+                            </button>
                         {% endif %}
 
                         {% if elem.can_be_modified %}
                             <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                                class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Edit</a>
-                           
+                                class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Edit</a>
+
                             <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                                 hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
                                 hx-push-url="true"
                                 class="text-red-700 cursor-pointer hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mr-1">Delete
                             </a>
-
                         {% endif %}
 
                     {% else %}
                         <p>No action is available for this bounty.</p>
                     {% endif %}
 
-                    </div>
                 </td>
-                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
-                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                        class="text-indigo-600 hover:text-indigo-900">Details</a>
-                </td>
+
             </tr>
             {% endfor %}
         </tbody>
