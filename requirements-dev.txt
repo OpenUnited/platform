@@ -1,2 +1,3 @@
 black==2.0.1
 django-debug-toolbar==4.1.0
+factory-boy==3.3.0

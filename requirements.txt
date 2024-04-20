@@ -13,7 +13,6 @@ django-lifecycle==1.0.0
 django-model-utils==4.3.1
 django-storages==1.14.2
 django-treebeard==4.7
-factory-boy==3.3.0
 psycopg2-binary==2.9.6
 python-dotenv==1.0.0
 sendgrid==6.10.0
