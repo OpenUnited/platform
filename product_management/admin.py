@@ -31,4 +31,4 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 @admin.register(product.Bounty)
 class BountyAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["pk", "title", "status"]
