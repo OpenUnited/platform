@@ -1006,6 +1006,7 @@ class CreateBountyViewTest(BaseTestCase):
         expertise_two = ExpertiseFactory(skill=skill)
 
         data = {
+            "title": "lorem ipsum",
             "challenge": self.challenge.id,
             "description": "lorem ipsum it amet",
             "selected_skill_ids": f"[{skill.id}]",
@@ -1107,6 +1108,7 @@ class UpdateBountyViewTest(BaseTestCase):
         expertise_two = ExpertiseFactory(skill=skill)
 
         data = {
+            "title": "lorem ipsum",
             "challenge": self.challenge.id,
             "description": "lorem ipsum it amet",
             "selected_skill_ids": f"[{skill.id}]",
