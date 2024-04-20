@@ -23,6 +23,14 @@
                 </div>
 
                 <div class="col-span-4">
+                    <label for="{{ form.title.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.title.label }}</label>
+                    <div class="mt-2">
+                        {{ form.title }}
+                    </div>
+                </div>
+
+                <div class="col-span-4">
                     <label for="{{ form.challenge.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.challenge.label }}</label>
                     <div class="mt-2">
