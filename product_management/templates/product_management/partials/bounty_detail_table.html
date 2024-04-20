@@ -54,17 +54,12 @@
                     {% elif claimed_by %}
                         <div class="flex items-center text-xs text-black/[0.85]">
                             <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center ml-4">
-                            <div class="text-neutral-800">
-                                <b>Claimed by:</b> 
-                                {% if claimed_by==request.user.person %}
-                                </b> You
-                                {% else %}
-                                {{ claimed_by.get_full_name() }}
-                                {% endif %}
-                            </div>
-                            <div class="flex items-center justify-center shrink-0 w-8 h-8 ml-1.5">
+                            <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                                 <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
                                     src="{{ claimed_by.get_photo_url() }}" alt="Created By">
+                            </div>
+                            <div class="text-neutral-800">
+                                {{ claimed_by.get_full_name() }}
                             </div>
                             </a>
                         </div>
