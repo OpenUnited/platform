@@ -68,7 +68,7 @@ class ChallengeListView(ListView):
     def get_template_names(self):
         if self.request.htmx:
             return [
-                "product_management/partials/chalenge_filter_partials.html"
+                "product_management/partials/challenge_filter_partial.html"
             ]
         return super().get_template_names()
 

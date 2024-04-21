@@ -116,7 +116,7 @@
 </div>
 
 <!-- Pagination -->
-<div class="flex mx-auto gap-x-2 mt-10">
+<div class="flex justify-center gap-x-2 mt-10">
     {% if page_obj.has_previous() %}
     <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
         href="?{{ request.GET.urlencode() }}&page={{ page_obj.previous_page_number }}">&laquo;</a></div>
