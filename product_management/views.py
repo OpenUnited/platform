@@ -363,24 +363,8 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
             self.request.user, context["product"]
         )
         capability_root_trees = ProductArea.get_root_nodes()
-
-        def serialize_tree(node):
-            serialized_node = {
-                "id": node.pk,
-                "name": node.name,
-                "description": node.description,
-                "video_link": node.video_link,
-                "video_name": node.video_name,
-                "video_duration": node.video_duration,
-                "has_saved": True,
-                "children": [
-                    serialize_tree(child) for child in node.get_children()
-                ],
-            }
-            return serialized_node
-
         context["tree_data"] = [
-            serialize_tree(node) for node in capability_root_trees
+            utils.serialize_tree(node) for node in capability_root_trees
         ]
 
         return context
@@ -388,27 +372,103 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
 
 def load_tree(request):
     capability_root_trees = ProductArea.get_root_nodes()
-
-    def serialize_tree(node):
-        serialized_node = {
-            "id": node.pk,
-            "name": node.name,
-            "description": node.description,
-            "video_link": node.video_link,
-            "video_name": node.video_name,
-            "video_duration": node.video_duration,
-            "has_saved": True,
-            "children": [
-                serialize_tree(child) for child in node.get_children()
-            ],
-        }
-        return serialized_node
-
-    tree_data = [serialize_tree(node) for node in capability_root_trees]
+    tree_data = [
+        utils.serialize_tree(node)(node) for node in capability_root_trees
+    ]
     return JsonResponse(tree_data, safe=False)
 
 
-def add_new_node(request, pk):
+def add_new_node(request):
+    if request.method == "POST":
+        form = ProductAreaForm(request.POST)
+
+        if form.is_valid():
+            if parent_id := request.POST.get("parent_id", None):
+                parent = ProductArea.objects.get(pk=parent_id)
+                new_node = parent.add_child(**form.cleaned_data)
+
+            context = {
+                "node": new_node,
+                "product_area": ProductArea.objects.first(),
+                "parent_id": int(request.POST.get("parent_id", 0)),
+                "depth": int(request.POST.get("depth", 0)),
+            }
+            template_name = (
+                "product_management/tree_helper/add_node_partial.html"
+            )
+            return render(request, template_name, context)
+
+        return render(request, template_name, form.errors)
+
+    else:
+        import uuid
+
+        context = {
+            "id": str(uuid.uuid4())[:8],
+            "product_area": ProductArea.objects.first(),
+            "parent_id": int(request.GET.get("parent_id", 0)),
+            "margin_left": int(request.GET.get("margin_left", 0)) + 4,
+            "depth": int(request.GET.get("depth", 0)),
+        }
+
+        template_name = (
+            "product_management/tree_helper/create_node_partial.html"
+        )
+
+    return render(request, template_name, context)
+
+
+def update_node(request, pk):
+    product_area = ProductArea.objects.get(pk=pk)
+    context = {
+        "product_area": product_area,
+        "node": product_area,
+    }
+    if request.method == "POST":
+        form = ProductAreaForm(request.POST)
+        has_cancelled = bool(request.POST.get("cancelled", False))
+        has_dropped = bool(request.POST.get("has_dropped", False))
+
+        print(request.POST)
+
+        parent_id = request.POST.get("parent_id")
+        if not has_cancelled and has_dropped and parent_id:
+            parent = ProductArea.objects.get(pk=parent_id)
+            product_area.move(parent, "last-child")
+            return JsonResponse({})
+
+        if not has_cancelled and form.is_valid():
+            product_area.name = form.cleaned_data["name"]
+            product_area.description = form.cleaned_data["description"]
+            product_area.save()
+
+        context["parent_id"] = int(request.POST.get("parent_id", 0))
+        context["depth"] = int(request.POST.get("depth", 0))
+        context["descendants"] = utils.serialize_tree(product_area)["children"]
+        context["product"] = Product.objects.first()
+        template_name = "product_management/tree_helper/add_node_partial.html"
+
+    elif request.method == "GET":
+        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
+        context["depth"] = int(request.GET.get("depth", 0))
+        template_name = (
+            "product_management/tree_helper/update_node_partial.html"
+        )
+
+    elif request.method == "DELETE":
+        if product_area.numchild > 0:
+            return JsonResponse(
+                {"error": "Unable to delete a node with a child."}, status=400
+            )
+        ProductArea.objects.filter(pk=pk).delete()
+        return JsonResponse(
+            {"message:": "The node has deleted successfully"}, status=204
+        )
+
+    return render(request, template_name, context)
+
+
+def add_tree_node(request, pk):
     template_name = "product_management/tree_helper/partial_update_node.html"
     product_area = ProductArea.objects.get(pk=pk)
 

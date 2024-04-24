@@ -1,0 +1,23 @@
+<li draggable="false" id="li_node_{{id}}" class="ml-{{margin_left}} mb-2">
+    <form method="post" hx-post="{{ url('add_new_node') }}" hx-target="#li_node_{{id}}">
+        <div class="pl-2 pr-2  mt-1 block border border-gray-300 rounded-md text-blue-500">
+          <div class="w-full">
+            <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white">Name</label>
+            <input type="text" name="name" id="name" class="bg-gray-50 border rounded-lg focus:ring-blue-500 block w-full" placeholder="Name..." required />
+          </div>
+          <input type="hidden" name="parent_id" value="{{ parent_id }}"/>
+          <input type="hidden" name="depth" value="{{ depth }}"/>
+      
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-900 dark:text-white">Description</label>
+            <textarea id="description" name="description" rows="4" class="bg-gray-50 border rounded-lg focus:ring-blue-500 block w-full p-2.5" placeholder="Write your description here..." required></textarea>        
+          </div>
+      
+          <button 
+            type="submit" 
+            class="w-full mt-2 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
+            Save
+          </button>
+        </div>
+    </form>
+</li>

@@ -2,68 +2,16 @@
 
 {% block title %}Product - Summary{% endblock %}
 {% block product_content %}
-{% macro generate_product_area_tree(node, depth=0) %}
-    {% for child in node %}
-        <li draggable="true" 
-            ondragstart="drag(event)" 
-            id="li_node_{{child.id}}"
-            data-node-name="{{ child.name }}"
-            data-node-description="{{ child.description }}"
-            data-url-with-id="{{ url('product_area_with_pk', args=(product_slug, child.id,)) }}"
-        >
-            <div class="flex justify-start">
-                <button onclick="toggleVisibility(event)">
-                    <i class="fa fa-chevron-circle-right text-gray-400" aria-hidden="true"></i>
-                </button>
-                <a  id="anchor_node_{{child.id}}" href="{{ url('product_area_with_pk', args=(product_slug, child.id,)) }}" 
-                    class="flex flex-col items-start gap-2 group/item block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 w-full"
-                >
-                    <div class="w-full">
-                        <div class="flex justify-between w-full">
-                            <div class="view-node-group flex justify-between "> 
-                                {% include "product_management/tree_helper/drag.html" %} {{ child.name }} 
+{% import "product_management/tree_helper/product_tree_macros.html" as tree_macros %}
 
-                                {% with child=child %}
-                                    {% include "product_management/tree_helper/video.html" %}
-                                {% endwith %}
-                                
-                            </div>
-                                                        
-                            {% with parent_id=child.id %}
-                                {% include "product_management/tree_helper/action_buttons.html" %}
-                            {% endwith %}
-                        
-                        </div>
-                        <div class="description view-node-group text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
-                           {{child.description}}
-                        </div>
-                    </div>
-                </a>
-            </div> 
-            {% if child.children %}
-                <ul ondragover="allowDrop(event)" ondrop="drop(event)" class="nested-item__child pl-8">
-                    {{ generate_product_area_tree(child.children, depth + 1) }}
-                </ul>
-            {% endif %}
-        </li>
-    {% endfor %}
-{% endmacro %}
-
-<ul ondragover="allowDrop(event)" ondrop="drop(event)" class="pl-0" id="tree-container">
-    {{ generate_product_area_tree(tree_data) }}
+<ul ondrop="drop(event)" class="pl-0">
+    {{ tree_macros.generate_product_area_tree(tree_data) }}
 </ul>
 
-{% include "product_management/tree_helper/add_new_script.html" %}
-
 <script>
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    function drag(event) {
-        event.dataTransfer.setData("text", event.target.id);
-    }
+    
     function toggleVisibility(event) {
+        event.preventDefault()
         const targetElement = event.target.closest("li");
         const ul = targetElement.querySelector("ul");
         const icon = targetElement.querySelector("i");
@@ -79,70 +27,18 @@
         if (ul) {
             ul.classList.toggle("hidden");
         }
-
-    }
-    function editNode(event, node_id) {
-        event.preventDefault();
-        var newLiTemplate = document.getElementById("add-new-node").innerHTML;
-        var targetElement = event.target.closest("li");
-
-        newLiTemplate= newLiTemplate.replace(/___rename_input__/g, targetElement.getAttribute("data-node-name"));
-        newLiTemplate= newLiTemplate.replace(/___rename_description__/g, targetElement.getAttribute("data-node-description"));
-        newLiTemplate= newLiTemplate.replace(/__prefix__/g, node_id);
-
-        var tempDiv = document.createElement('div');
-        tempDiv.innerHTML = newLiTemplate;
-
-        tempDiv.querySelector("form").action = `${tempDiv.querySelector("form").action}/${node_id}`
-        targetElement.outerHTML = tempDiv.innerHTML;        
-
-
-    }
-    function addNode(event, parent_id) {
-            event.preventDefault();
-            var newLiTemplate = document.getElementById("add-new-node").innerHTML;
-            const count = document.getElementById("tree-container").querySelectorAll("li").length;
-            newLiTemplate= newLiTemplate.replace(/__prefix__/g, count);
-            newLiTemplate= newLiTemplate.replace(/__parent__value__/g, parent_id);
-            newLiTemplate= newLiTemplate.replace(/___rename_input__/g, "");
-            newLiTemplate= newLiTemplate.replace(/___rename_description__/g, "");
-
-
-            
-            var targetElement = event.target.closest("li");
-            var ul = targetElement.querySelector("ul");
-            if (ul && ul.classList.contains("hidden")){
-                ul.classList.remove("hidden");
-            }
-            
-            var parentUl = targetElement.closest("ul")
-            if (parentUl){
-                var parentClass = parentUl.className;
-                var currentMarginLeft = parseInt(parentClass.match(/pl-([0-9]+)/)[1])
-                var childMargin = currentMarginLeft + 4
-                var childClass = parentClass.replace(/pl-[0-9]+/, "pl-" + childMargin);
-            }
-            if (!ul) {
-                ul = document.createElement("ul");
-                ul.className = childClass;
-                targetElement.appendChild(ul);
-
-            }
-            ul.insertAdjacentHTML("afterbegin", newLiTemplate);
-
-
     }
 
-    function drop(event) {
-        event.preventDefault();
+    function drop(event) {     
         var data = event.dataTransfer.getData("text");
-        var draggedElement = document.getElementById(data);
-        var targetElement = event.target.closest("li");
+        console.log(data)
+        var draggedElement = document.getElementById(data)
+        var targetElement = event.target.closest("li")
         var existingUl = targetElement.querySelector("ul");
         var parentUl = targetElement.closest("ul"); 
-        
 
         var parentClass = parentUl.className;
+
         var currentMarginLeft = parseInt(parentClass.match(/pl-([0-9]+)/)[1])
         var childMargin = currentMarginLeft + 4
         var childClass = parentClass.replace(/pl-[0-9]+/, "pl-" + childMargin);
@@ -152,18 +48,26 @@
             existingUl.className = childClass;
             targetElement.appendChild(existingUl);
         }
-
         existingUl.appendChild(draggedElement);
+
+        const targetId = draggedElement.getAttribute("data-id")
+        const parentId = targetElement.getAttribute("data-id")
+
+        document.getElementById(`drop_parent_${targetId}`).value = parentId
+        document.getElementById(`drop_submit_${targetId}`).click()
+        event.stopPropagation();
     }
 
-    document.querySelectorAll("li").forEach(li => {
-        const icon = li.querySelector("i");
-        const ul = li.querySelector("ul");
-            if (ul) {
-            ul.classList.add("hidden");
-        }
-    });
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+
+
 </script>
 
-
 {% endblock product_content %}
+

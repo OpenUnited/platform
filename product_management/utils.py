@@ -56,3 +56,18 @@ def modify_permission_required(view_func):
                 return HttpResponseRedirect(self.get_success_url())
 
     return _wrapped_view
+
+
+def serialize_tree(node):
+    """Serializer for the tree."""
+    return {
+        "id": node.pk,
+        "node_id": uuid.uuid4(),
+        "name": node.name,
+        "description": node.description,
+        "video_link": node.video_link,
+        "video_name": node.video_name,
+        "video_duration": node.video_duration,
+        "has_saved": True,
+        "children": [serialize_tree(child) for child in node.get_children()],
+    }
