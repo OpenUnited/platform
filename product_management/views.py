@@ -11,11 +11,11 @@ from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.exceptions import BadRequest, PermissionDenied
+from django.views import View
 from django.views.generic import (
     ListView,
     TemplateView,
     RedirectView,
-    FormView,
     CreateView,
     UpdateView,
     DeleteView,
@@ -518,13 +518,7 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        context.update(
-            {
-                "pk": self.object.pk,
-            }
-        )
-
+        context["pk"] = self.object.pk
         return context
 
 
@@ -541,72 +535,47 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
 
         extra_data = []
         for bounty in bounties:
-            data = {"bounty": bounty}
+            data = {
+                "bounty": bounty,
+                "current_user_created_claim_request": False,
+                "actions_available": False,
+                "has_claimed": False,
+                "claimed_by": None,
+                "show_actions": False,
+                "can_be_claimed": False,
+                "can_be_modified": False,
+                "is_product_admin": False,
+            }
 
             user = self.request.user
-            if not user.is_authenticated:
-                data.update(
-                    {
-                        "current_user_created_claim_request": False,
-                        "actions_available": False,
-                    }
-                )
-            else:
-                person = user.person
-                bounty_claims = BountyClaim.objects.filter(
-                    bounty=bounty,
+            if user.is_authenticated:
+                person = self.request.user.person
+                data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
-                    kind__in=[
-                        BountyClaim.CLAIM_TYPE_ACTIVE,
-                        BountyClaim.CLAIM_TYPE_IN_REVIEW,
-                    ],
-                )
+                    product=context["product"],
+                    role=ProductRoleAssignment.PRODUCT_ADMIN,
+                ).exists()
 
-                data.update(
-                    {
-                        "current_user_created_claim_request": bounty_claims.exists(),
-                        "actions_available": challenge.created_by == person,
-                    }
-                )
+                if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+                    has_record = bounty.bountyclaim_set.filter(
+                        person=person
+                    ).exists()
+                    data["can_be_claimed"] = not has_record
 
-                bounty_claim = BountyClaim.objects.filter(
-                    bounty=bounty,
-                    kind__in=[
-                        BountyClaim.CLAIM_TYPE_DONE,
-                        BountyClaim.CLAIM_TYPE_ACTIVE,
-                    ],
-                ).first()
+                if claim := bounty.bountyclaim_set.first():
+                    data["claimed_by"] = claim.person
+                    data["show_actions"] = data["claimed_by"] == claim.person
 
-                if (
-                    bounty_claim
-                    and bounty_claim.bounty.status
-                    in [
-                        Bounty.BOUNTY_STATUS_DONE,
-                        Bounty.BOUNTY_STATUS_CLAIMED,
-                    ]
-                    and bounty_claim.bounty.challenge.status
-                    in [
-                        Challenge.CHALLENGE_STATUS_DONE,
-                        Challenge.CHALLENGE_STATUS_CLAIMED,
-                    ]
-                ):
-                    data.update(
-                        {"is_claimed": True, "claimed_by": bounty_claim.person}
-                    )
-                else:
-                    data.update({"is_claimed": False})
-
+            data["show_actions"] = (
+                data["can_be_claimed"] | data["can_be_modified"]
+            )
+            data["status"] = Bounty.BOUNTY_STATUS[bounty.status][1]
             extra_data.append(data)
 
-        context.update(
-            {
-                "bounty_data": extra_data,
-                "does_have_permission": utils.has_product_modify_permission(
-                    self.request.user, context.get("product")
-                ),
-            }
+        context["bounty_data"] = extra_data
+        context["does_have_permission"] = utils.has_product_modify_permission(
+            self.request.user, context.get("product")
         )
-
         return context
 
 
@@ -709,49 +678,25 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
         return context
 
 
-class BountyClaimView(LoginRequiredMixin, FormView):
+class BountyClaimView(LoginRequiredMixin, View):
     form_class = BountyClaimForm
-    template_name = "product_management/bounty_claim.html"
-    login_url = "sign_in"
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
+    def post(self, request, pk, *args, **kwargs):
+        form = BountyClaimForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({"errors": form.errors}, status=400)
 
-        pk = self.kwargs.get("pk")
-        challenge = get_object_or_404(Challenge, pk=pk)
+        instance = form.save(commit=False)
+        instance.bounty_id = pk
+        instance.person = request.user.person
+        instance.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
+        instance.save()
 
-        context["challenge_pk"] = pk
-        context["challenge"] = challenge
+        bounty = instance.bounty
+        bounty.status = Bounty.BOUNTY_STATUS_CLAIMED
+        bounty.save()
 
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-
-            context = self.get_context_data(**kwargs)
-            challenge = context.get("challenge")
-
-            instance.bounty = challenge.bounty_set.all().first()
-            instance.person = request.user.person
-            instance.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
-            instance.save()
-
-            messages.success(
-                request, "Your bounty claim request is successfully sent!"
-            )
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    challenge.product.slug,
-                    challenge.pk,
-                ),
-            )
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
+        return JsonResponse({"success": True})
 
 
 class CreateProductView(LoginRequiredMixin, CreateView):

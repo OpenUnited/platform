@@ -393,7 +393,7 @@ class Bounty(TimeStampMixin):
         (BOUNTY_STATUS_DONE, "Done"),
         (BOUNTY_STATUS_IN_REVIEW, "In review"),
     )
-
+    title = models.CharField(max_length=400)
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     description = models.TextField()
     skill = models.ForeignKey(
