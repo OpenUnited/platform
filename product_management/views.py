@@ -361,6 +361,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
         has_cancelled = bool(request.POST.get("cancelled", False))
         has_dropped = bool(request.POST.get("has_dropped", False))
         parent_id = request.POST.get("parent_id")
+
         if request.htmx:
             if not has_cancelled and has_dropped and parent_id:
                 parent = ProductArea.objects.get(pk=parent_id)
@@ -383,6 +384,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
             )
             return render(request, template_name, context)
         else:
+            print("============================:")
             attachment_formset = context["attachment_formset"]
             if form.is_valid() and attachment_formset.is_valid():
                 obj = form.save()
