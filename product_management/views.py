@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -21,6 +22,7 @@ from django.views.generic import (
     DeleteView,
     DetailView,
 )
+from django.views import View
 
 from .forms import (
     BountyClaimForm,
@@ -56,6 +58,7 @@ from openunited.mixins import HTMXInlineFormValidationMixin
 
 from .filters import ChallengeFilter
 from product_management import utils
+import uuid
 
 
 class ChallengeListView(ListView):
@@ -123,18 +126,11 @@ class ProductListView(ListView):
 class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         product = get_object_or_404(
             Product, slug=self.kwargs.get("product_slug", None)
         )
-
-        context.update(
-            {
-                "product": product,
-                "product_slug": product.slug,
-            }
-        )
-
+        context["product"] = product
+        context["product_slug"] = product.slug
         return context
 
 
@@ -244,55 +240,13 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 
 class ProductAreaCreateView(BaseProductDetailView, CreateView):
-    template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = ProductAreaForm
-
-    def is_ajax(self):
-        return self.request.headers.get("x-requested-with") == "XMLHttpRequest"
-
-    def get_success_url(self):
-        conttext = self.get_context_data()
-        return reverse("product_tree", args=(conttext.get("product").slug,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = utils.has_product_modify_permission(
-            self.request.user, context["product"]
-        )
-        return context
-
-    # @utils.modify_permission_required
-    def form_valid(self, form):
-        if parent_id := self.request.POST.get("parent_id", None):
-            parent = self.model.objects.get(pk=parent_id)
-            parent.add_child(**form.cleaned_data)
-        else:
-            self.model.add_root(**form.cleaned_data)
-
-        if self.is_ajax():
-            return JsonResponse({"success": True})
-        return redirect(self.get_success_url())
-
-    def form_invalid(self, form):
-        if self.is_ajax():
-            return JsonResponse({"errors": form.errors}, status=400)
-        return redirect(self.get_success_url())
-
-
-class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
-    template_name = "product_management/product_area_detail.html"
-    model = ProductArea
-    form_class = ProductAreaForm
-
-    def is_ajax(self):
-        return self.request.headers.get("x-requested-with") == "XMLHttpRequest"
+    template_name = "product_management/tree_helper/create_node_partial.html"
 
     def get_template_names(self):
-        if self.request.htmx:
-            return (
-                "product_management/product_area_detail_helper/empty_form.html"
-            )
+        if self.request.method == "POST":
+            return ["product_management/tree_helper/add_node_partial.html"]
         return super().get_template_names()
 
     def get_context_data(self, **kwargs):
@@ -300,65 +254,156 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
         context["can_modify_product"] = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
-        product_area = self.get_object()
-        context["product_area_form"] = ProductAreaForm(
-            can_modify_product=context["can_modify_product"]
-        )
-
-        context["form"] = ProductAreaForm(
-            instance=product_area,
-            can_modify_product=context["can_modify_product"],
-        )
-
-        context["attachment_formset"] = ProductAreaAttachmentSet(
-            self.request.POST or None,
-            self.request.FILES or None,
-            instance=product_area,
-        )
-        context["challenges"] = Challenge.objects.filter(
-            capability=product_area
-        )
         return context
+
+    # @utils.modify_permission_required
+    def post(self, request, **kwargs):
+        form = ProductAreaForm(request.POST)
+        if not form.is_valid():
+            return render(request, self.get_template_names(), form.errors)
+        context = {}
+        return self.valid_form(request, form, context)
+
+    def valid_form(self, request, form, context):
+        if request.POST.get("parent_id") == "None":
+            new_node = ProductArea.add_root(**form.cleaned_data)
+        else:
+            parent_id = request.POST.get("parent_id")
+            parent = ProductArea.objects.get(pk=parent_id)
+            context["parent_id"] = parent_id
+            new_node = parent.add_child(**form.cleaned_data)
+        context["product_area"] = new_node
+        context["node"] = new_node
+        context["depth"] = int(request.POST.get("depth", 0))
+        return render(request, self.get_template_names(), context)
+
+    def get(self, request, *args, **kwargs):
+        product_area = ProductArea.objects.first()
+        if request.GET.get("parent_id"):
+            margin_left = int(request.GET.get("margin_left", 0)) + 4
+        else:
+            margin_left = request.GET.get("margin_left", 0)
+
+        context = {
+            "id": str(uuid.uuid4())[:8],
+            "product_area": product_area,
+            "parent_id": request.GET.get("parent_id"),
+            "margin_left": margin_left,
+            "depth": request.GET.get("depth", 0),
+            "product_slug": kwargs.get("product_slug"),
+        }
+        return render(request, self.get_template_names(), context)
+
+
+class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
+    template_name = "product_management/product_area_detail.html"
+    model = ProductArea
+    form_class = ProductAreaForm
 
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
         product_area = self.get_object()
         return reverse(
-            "product_area_with_pk", args=(product_slug, product_area.pk)
+            "product_area_update", args=(product_slug, product_area.pk)
         )
 
-    # @utils.modify_permission_required
-    def form_valid(self, form):
-        if self.request.htmx and bool(self.request.POST.get("is_drag")):
-            if parent_id := self.request.POST.get("parent_id"):
-                parent = ProductArea.objects.get(pk=parent_id)
-                self.object.move(parent, "first-child")
-            else:
-                self.object.move(None, "first-sibling")
-            return JsonResponse({"success": True})
+    def get_context_data(self, **kwargs):
+        product = Product.objects.get(slug=self.kwargs.get("product_slug"))
+        product_perm = utils.has_product_modify_permission(
+            self.request.user, product
+        )
+        product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
 
+        attachment_formset = ProductAreaAttachmentSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+            instance=product_area,
+        )
+        challenges = Challenge.objects.filter(capability=product_area)
+
+        form = ProductAreaForm(
+            instance=product_area, can_modify_product=product_perm
+        )
+        return {
+            "product": product,
+            "product_slug": product.slug,
+            "can_modify_product": product_perm,
+            "form": form,
+            "attachment_formset": attachment_formset,
+            "challenges": challenges,
+            "product_area": product_area,
+        }
+
+    def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        attachment_formset = context["attachment_formset"]
-        if attachment_formset.is_valid():
-            self.object = form.save()
-            attachment_formset.instance = self.object
-            attachment_formset.save()
-        return super().form_valid(form)
+        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
+        context["depth"] = int(request.GET.get("depth", 0))
 
-    def form_invalid(self, form):
-        if self.is_ajax():
-            return JsonResponse({"errors": form.errors}, status=400)
-        return super().form_invalid(form)
+        if request.htmx and request.GET.get("is_attachment", False):
+            template_name = (
+                "product_management/product_area_detail_helper/empty_form.html"
+            )
+        elif request.htmx:
+            template_name = (
+                "product_management/tree_helper/update_node_partial.html"
+            )
+        else:
+            template_name = "product_management/product_area_detail.html"
 
+        return render(request, template_name, context)
+
+    def form_valid(self, form):
+        request = self.request
+        context = self.get_context_data()
+        product_area = context["product_area"]
+        product = context["product"]
+
+        has_cancelled = bool(request.POST.get("cancelled", False))
+        has_dropped = bool(request.POST.get("has_dropped", False))
+        parent_id = request.POST.get("parent_id")
+        if request.htmx:
+            if not has_cancelled and has_dropped and parent_id:
+                parent = ProductArea.objects.get(pk=parent_id)
+                product_area.move(parent, "last-child")
+                return JsonResponse({})
+
+            if not has_cancelled and form.is_valid():
+                product_area.name = form.cleaned_data["name"]
+                product_area.description = form.cleaned_data["description"]
+                product_area.save()
+
+            context["parent_id"] = int(request.POST.get("parent_id", 0))
+            context["depth"] = int(request.POST.get("depth", 0))
+            context["descendants"] = utils.serialize_tree(product_area)[
+                "children"
+            ]
+            context["product"] = product
+            template_name = (
+                "product_management/tree_helper/add_node_partial.html"
+            )
+            return render(request, template_name, context)
+        else:
+            attachment_formset = context["attachment_formset"]
+            if form.is_valid() and attachment_formset.is_valid():
+                obj = form.save()
+                attachment_formset.instance = obj
+                attachment_formset.save()
+
+            return super().form_valid(form)
+
+
+class ProductAreaDetailDeleteView(View):
     def delete(self, request, *args, **kwargs):
-        obj = ProductArea.objects.get(pk=kwargs.get("pk"))
-        if obj.numchild > 0:
+        product_area = ProductArea.objects.get(pk=kwargs.get("pk"))
+        if product_area.numchild > 0:
             return JsonResponse(
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        # ProductArea.objects.get(pk=kwargs.get("pk")).delete()
-        return JsonResponse({"success": True}, status=204)
+        product_area.delete()
+        return JsonResponse(
+            {"message": "The node has been deleted successfully"}, status=204
+        )
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
@@ -377,58 +422,11 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
         return context
 
 
-def load_tree(request):
-    capability_root_trees = ProductArea.get_root_nodes()
-    tree_data = [
-        utils.serialize_tree(node)(node) for node in capability_root_trees
-    ]
-    return JsonResponse(tree_data, safe=False)
-
-
-def add_new_node(request):
-    if request.method == "POST":
-        form = ProductAreaForm(request.POST)
-
-        if form.is_valid():
-            if parent_id := request.POST.get("parent_id", None):
-                parent = ProductArea.objects.get(pk=parent_id)
-                new_node = parent.add_child(**form.cleaned_data)
-
-            context = {
-                "node": new_node,
-                "product_area": ProductArea.objects.first(),
-                "parent_id": int(request.POST.get("parent_id", 0)),
-                "depth": int(request.POST.get("depth", 0)),
-            }
-            template_name = (
-                "product_management/tree_helper/add_node_partial.html"
-            )
-            return render(request, template_name, context)
-
-        return render(request, template_name, form.errors)
-
-    else:
-        import uuid
-
-        context = {
-            "id": str(uuid.uuid4())[:8],
-            "product_area": ProductArea.objects.first(),
-            "parent_id": int(request.GET.get("parent_id", 0)),
-            "margin_left": int(request.GET.get("margin_left", 0)) + 4,
-            "depth": int(request.GET.get("depth", 0)),
-        }
-
-        template_name = (
-            "product_management/tree_helper/create_node_partial.html"
-        )
-
-    return render(request, template_name, context)
-
-
 def update_node(request, pk):
     product_area = ProductArea.objects.get(pk=pk)
     context = {
         "product_area": product_area,
+        "product_slug": product_area.slug,
         "node": product_area,
     }
     if request.method == "POST":
