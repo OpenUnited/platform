@@ -693,7 +693,7 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance.save()
 
         bounty = instance.bounty
-        bounty.status = Bounty.BOUNTY_STATUS_CLAIMED
+        bounty.status = Bounty.BOUNTY_STATUS_IN_REVIEW
         bounty.save()
 
         return JsonResponse({"success": True})
