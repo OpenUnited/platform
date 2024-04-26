@@ -31,7 +31,7 @@
             {% for elem in bounty_data %}
             {% set bounty = elem.bounty %}
             <tr class="bg-white border-b">
-                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
+                <td class="relative whitespace-normal py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
                     <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                         class="text-indigo-600 hover:text-indigo-900">{{ bounty.title }}</a>
                 </td>

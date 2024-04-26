@@ -80,18 +80,6 @@
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Priority:</strong> <span class="text-green-400 ml-1">{{ challenge.get_priority_display() }}</span>
         </div>
-        {% if challenge.reviewer %}
-        <div class="flex items-center text-xs text-black/[0.85]">
-            <strong>Reviewer:</strong>
-            <a href="{{ challenge.reviewer.get_absolute_url() }}" class="flex items-center ml-4">
-                <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
-                    <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                        src="{{ challenge.reviewer.get_photo_url() }}" alt="Reviewer Photo">
-                </div>
-                <div class="text-neutral-800">{{ challenge.reviewer.get_full_name() }}</div>
-            </a>
-        </div>
-        {% endif %}
     </div>
     <!-- Comments are temporarily disabled -->
     <!--

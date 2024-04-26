@@ -191,7 +191,6 @@ def generate_sample_data():
             # elem["initiative"] = choice(initiatives)
             # elem["capability"] = choice(capabilities)
             # elem["updated_by"] = choice(people)
-            elem["reviewer"] = product.content_object
 
         for cd in temp_challenge_data:
             challenge = Challenge.objects.create(**cd)
