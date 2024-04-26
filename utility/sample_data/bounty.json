@@ -1,500 +1,707 @@
 [{
+        "title": "Enhance Fitness Monitoring Capability",
+        "description": "Introduce advanced fitness monitoring capabilities to accurately track workout activities including steps, distance, and calories burnt. This feature empowers users to monitor their fitness progress seamlessly, enabling them to set and achieve personal fitness milestones effortlessly. Whether users prefer jogging, cycling, or other physical exercises, our enhanced fitness monitoring ensures precise data collection for informed performance optimization.",
         "points": 55,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Revamp Alert System",
+        "description": "Upgrade the alert system to offer users expanded customization options and streamline the delivery of alerts from linked devices. With the revamped alert system of Smartwatch Pro, users gain control over their notification preferences, ensuring crucial alerts are prioritized while minimizing distractions. Whether it's calls, messages, emails, or app notifications, users can effortlessly manage their notifications to stay informed without feeling overwhelmed. The revamped alert system guarantees users receive timely updates while preserving a seamless and user-friendly experience.",
         "points": 30,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Optimize Energy Consumption",
+        "description": "Enhance the software algorithms to optimize energy consumption and prolong the battery life of Smartwatch Pro, ensuring users can use their device for extended periods without needing to recharge frequently. With optimized energy consumption, Smartwatch Pro offers users a longer usage time for tracking workouts, receiving notifications, and utilizing other features, providing a seamless and uninterrupted experience throughout the day. The optimized energy consumption not only improves the device's battery life but also enhances overall user satisfaction by reducing the need for frequent charging.",
         "points": 25,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Advanced Sleep Analysis",
+        "description": "Incorporate advanced sleep analysis features into Smartwatch Pro to provide users with detailed insights into their sleep patterns and quality. With advanced sleep analysis, Smartwatch Pro goes beyond basic sleep tracking, offering users comprehensive data on their sleep stages, disturbances, and overall sleep quality. By providing users with actionable insights and personalized recommendations for improving their sleep, Smartwatch Pro empowers users to make informed decisions to enhance their overall well-being and sleep habits.",
         "points": 40,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance Pulse Tracking Accuracy",
+        "description": "Upgrade the pulse tracking functionality of Smartwatch Pro to improve accuracy and reliability, ensuring users receive precise heart rate data during various activities and conditions. With enhanced pulse tracking accuracy, Smartwatch Pro provides users with more reliable information for monitoring their fitness levels, optimizing workouts, and tracking their overall health. Whether users are engaged in intense workouts or monitoring their heart rate throughout the day, the enhanced accuracy of Smartwatch Pro ensures users can trust the data provided by their device.",
         "points": 75,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Hydration Reminder System",
+        "description": "Introduce a hydration reminder system in Smartwatch Pro to help users stay hydrated throughout the day by sending timely reminders to drink water. With the hydration reminder system, Smartwatch Pro encourages users to maintain optimal hydration levels, promoting better health and well-being. By monitoring users' hydration habits and providing gentle reminders, Smartwatch Pro supports users in developing healthy hydration routines, ensuring they remain energized and focused throughout their daily activities.",
         "points": 45,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Improve Location Accuracy for Outdoor Activities",
+        "description": "Enhance the GPS capabilities of Smartwatch Pro to improve location accuracy during outdoor activities such as running, hiking, and cycling. With improved location accuracy, Smartwatch Pro ensures users can accurately track their routes, measure distances, and navigate unfamiliar terrain with confidence. Whether users are exploring new trails or training for outdoor events, the enhanced GPS accuracy of Smartwatch Pro provides reliable performance and precise location tracking for a seamless outdoor experience.",
         "points": 70,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Introduce Personalized Workout Recommendations",
+        "description": "Implement a feature in Smartwatch Pro that provides users with personalized workout recommendations based on their fitness goals, preferences, and performance data. With personalized workout recommendations, Smartwatch Pro offers users tailored exercise plans to help them achieve their objectives effectively and efficiently. Whether users aim to lose weight, build muscle, or improve endurance, the personalized recommendations provided by Smartwatch Pro empower users to make the most of their workouts and achieve optimal results.",
         "points": 60,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance Display Visibility in Low-Light Conditions",
+        "description": "Improve the display technology of Smartwatch Pro to enhance visibility in low-light conditions, ensuring users can easily read their screen in various environments. With enhanced display visibility, Smartwatch Pro provides users with clear and legible information even in dimly lit surroundings, enhancing user experience and usability. Whether users are in a dark room, outdoors at night, or in other low-light situations, the improved display visibility of Smartwatch Pro ensures they can access information without difficulty.",
         "points": 18,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Seamless Voice Interaction",
+        "description": "Integrate seamless voice interaction capabilities into Smartwatch Pro, allowing users to perform tasks, access information, and control their device using natural voice commands. With seamless voice interaction, Smartwatch Pro offers users a hands-free experience, enabling them to stay connected and productive without needing to touch their device. Whether users are busy with activities, driving, or exercising, the intuitive voice interaction of Smartwatch Pro provides convenience and accessibility for effortless interaction.",
         "points": 32,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Develop Immersive Audio Experience",
+        "description": "Develop an immersive audio experience for Wireless Earbuds X by implementing advanced sound technologies and audio enhancement features. With the immersive audio experience, Wireless Earbuds X deliver rich, high-quality sound with deep bass and clear highs, providing users with an unparalleled listening experience. Whether users are listening to music, watching movies, or taking calls, the immersive audio experience of Wireless Earbuds X enhances enjoyment and immersion for every audio activity.",
         "points": 18,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance Comfort and Fit for Extended Wear",
+        "description": "Enhance the design and ergonomics of Wireless Earbuds X to improve comfort and fit for extended wear, ensuring users can enjoy long listening sessions without discomfort or fatigue. With enhanced comfort and fit, Wireless Earbuds X provide a secure and comfortable seal in the ear, reducing pressure points and ensuring a snug fit for all-day wear. Whether users are commuting, working out, or relaxing at home, the improved comfort and fit of Wireless Earbuds X enhance user satisfaction and enjoyment.",
         "points": 25,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Smart Touch Controls",
+        "description": "Implement smart touch controls in Wireless Earbuds X, allowing users to easily manage music playback, adjust volume, and answer calls with intuitive touch gestures. With smart touch controls, users can control their audio experience effortlessly without needing to reach for their device. Whether users are on the go, in the gym, or multitasking throughout the day, the intuitive touch controls of Wireless Earbuds X provide convenience and accessibility for seamless audio interaction.",
         "points": 75,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance Wireless Connectivity",
+        "description": "Improve the wireless connectivity of Wireless Earbuds X by enhancing stability and range for seamless pairing and uninterrupted audio streaming across devices. With enhanced wireless connectivity, users can enjoy reliable wireless performance and seamless audio streaming whether they're using Wireless Earbuds X with their smartphone, tablet, or laptop. Whether users are commuting, working out, or relaxing at home, the improved wireless connectivity of Wireless Earbuds X ensures a hassle-free listening experience.",
         "points": 32,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Customize Audio Experience with EQ Settings",
+        "description": "Enable users to customize their audio experience with Wireless Earbuds X by creating customizable equalizer settings that allow them to tailor the sound output according to their preferences. With customizable EQ settings, users can fine-tune the audio profile of Wireless Earbuds X to suit their music genre, listening environment, and personal preferences. Whether users prefer deep bass, crisp highs, or balanced sound, the customizable EQ settings of Wireless Earbuds X provide a personalized listening experience for every user.",
         "points": 40,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Locate Misplaced Earbuds with Find My Earbuds",
+        "description": "Integrate a 'Find My Earbuds' feature into Wireless Earbuds X that helps users locate their misplaced earbuds using the companion mobile app. With the Find My Earbuds feature, users can quickly locate their Wireless Earbuds X by triggering a sound alert or viewing their last known location on a map. Whether users misplaced their earbuds at home, in the office, or while traveling, the Find My Earbuds feature provides peace of mind and ensures that users can easily retrieve their lost earbuds.",
         "points": 70,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Optimize Comfort and Fit for Extended Wear",
+        "description": "Optimize the design and ergonomics of Wireless Earbuds X to ensure a comfortable and secure fit for users during extended wear. With optimized comfort and fit, users can wear Wireless Earbuds X for extended periods without experiencing discomfort or fatigue. Whether users are working out, commuting, or simply listening to music throughout the day, the ergonomic design of Wireless Earbuds X provides a snug and secure fit for a comfortable listening experience.",
         "points": 60,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enable Seamless Multi-Device Pairing",
+        "description": "Enable Wireless Earbuds X to simultaneously pair with multiple devices, allowing users to seamlessly switch between devices without the need for re-pairing. With multi-device pairing, users can connect Wireless Earbuds X to their smartphone, tablet, laptop, and other Bluetooth-enabled devices simultaneously. Whether users want to listen to music from their smartphone, take calls on their laptop, or watch videos on their tablet, the multi-device pairing feature of Wireless Earbuds X provides flexibility and convenience for a seamless listening experience across devices.",
         "points": 55,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance Durability with Water and Sweat Resistance",
+        "description": "Enhance the durability of Wireless Earbuds X by making them water and sweat-resistant, suitable for use during workouts and outdoor activities. With water and sweat resistance, users can confidently use Wireless Earbuds X in various environments, including gyms, outdoor trails, and rainy weather conditions. Whether users are sweating it out at the gym or braving the elements during outdoor adventures, the water and sweat resistance of Wireless Earbuds X ensure reliable performance and durability in any situation.",
         "points": 45,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Facilitate Global Communication with Real-Time Translation",
+        "description": "Introduce a real-time language translation feature for Wireless Earbuds X, allowing users to communicate effortlessly in different languages. With real-time language translation, users can have seamless conversations with people who speak different languages, whether they're traveling, working, or socializing. Whether users need to translate a conversation during business meetings, navigate foreign countries, or connect with people from diverse backgrounds, the real-time language translation feature of Wireless Earbuds X provides convenience and accessibility for global communication.",
         "points": 30,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Embark on Coffee-themed Web Development Journey",
+        "description": "Challenge participants to embark on a coffee-themed web development journey using Gourmet Coffee Blend as the theme. Participants can showcase their skills in HTML, CSS, JavaScript, and other relevant technologies by developing a web application related to coffee, leveraging the Gourmet Coffee Blend theme to create engaging and immersive user experiences.",
         "points": 38,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Integrate Gourmet Coffee Blend Data into Applications",
+        "description": "Challenge participants to integrate Gourmet Coffee Blend data into their existing applications or create new ones. Participants can use APIs provided by Gourmet Coffee Blend to fetch information such as coffee blends, brewing methods, and tasting notes, enhancing their applications with rich and relevant coffee-related data to provide valuable insights and experiences for users.",
         "points": 63,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Explore Coffee with Machine Learning Models",
+        "description": "Challenge participants to explore the world of coffee using machine learning models and Gourmet Coffee Blend data. Participants can build models related to coffee flavor prediction, customer preference analysis, or coffee bean classification, leveraging machine learning techniques to uncover insights and patterns in the vast and diverse landscape of coffee.",
         "points": 41,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Craft a Coffee-Centric Mobile App",
+        "description": "Challenge participants to craft a mobile application centered around coffee, leveraging Gourmet Coffee Blend as the central theme. They can showcase their expertise in mobile app development, UI/UX design, and backend integration to create an engaging and immersive coffee experience for users.",
         "points": 24,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Visualize Coffee Data with Interactivity",
+        "description": "Challenge participants to create interactive data visualizations related to coffee using Gourmet Coffee Blend data. They can utilize tools like D3.js, Plotly, or Tableau to visualize coffee consumption trends, flavor profiles, or geographic distribution, enhancing understanding and engagement with coffee data.",
         "points": 72,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Set Up CI/CD Pipeline for Coffee Projects",
+        "description": "Challenge participants to establish a continuous integration/continuous deployment (CI/CD) pipeline for a coffee-related project with Gourmet Coffee Blend as the focal point. They can demonstrate proficiency in tools such as Jenkins, GitLab CI/CD, Docker, and Kubernetes to automate and streamline the development process.",
         "points": 57,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Ensure Security of Coffee-Related Applications",
+        "description": "Challenge participants to identify and address security vulnerabilities in a coffee-related web application incorporating Gourmet Coffee Blend data. They can demonstrate their skills in penetration testing, code review, and implementation of security best practices to safeguard user data and application integrity.",
         "points": 19,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Deploy Coffee App on Scalable Cloud Platform",
+        "description": "Challenge participants to deploy a scalable and fault-tolerant coffee-related application on a cloud platform of their choice, integrating Gourmet Coffee Blend data. They can showcase their expertise in cloud architecture, deployment automation, and scalability to ensure optimal performance and reliability of the coffee application.",
         "points": 36,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Blockchain for Coffee Bean Tracking",
+        "description": "Challenge participants to develop a blockchain-based solution for tracking the journey of coffee beans from farm to cup, utilizing Gourmet Coffee Blend data. They can explore concepts such as supply chain transparency, fair trade certification, and coffee authentication to enhance trust and traceability in the coffee supply chain.",
         "points": 68,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create AI-Powered Coffee Chatbot",
+        "description": "Challenge participants to build an AI-powered chatbot that offers personalized coffee recommendations and brewing tips based on user preferences and Gourmet Coffee Blend data. They can showcase their expertise in natural language processing (NLP) and conversational AI to deliver an interactive and informative coffee experience.",
         "points": 50,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Develop an Organic Skincare E-Commerce Platform",
+        "description": "Challenge participants to develop an e-commerce website dedicated to selling organic skincare products, focusing on the Organic Skincare Set. They can exhibit their skills in front-end development, back-end development, and database management to create a seamless and secure online shopping experience for customers.",
         "points": 33,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Analyze Organic Skincare Set Ingredients for Skin Health",
+        "description": "Challenge participants to analyze the ingredients of the Organic Skincare Set and provide insights into their benefits for skin health. They can explore the properties of each ingredient and how they contribute to nourishing and rejuvenating the skin, helping consumers make informed decisions about skincare products.",
         "points": 51,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Redesign Organic Skincare Set Packaging for Sustainability",
+        "description": "Challenge participants to redesign the packaging of the Organic Skincare Set to make it more eco-friendly and visually appealing. They can explore sustainable materials, minimalist design principles, and innovative packaging solutions to reduce environmental impact and enhance product aesthetics.",
         "points": 48,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance User Experience of Organic Skincare Set",
+        "description": "Challenge participants to improve the user experience (UX) of using the Organic Skincare Set based on user feedback. They can focus on aspects such as ease of application, texture, scent, and overall satisfaction, gathering insights from users to propose enhancements that elevate the skincare experience.",
         "points": 27,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Craft a Social Media Marketing Campaign for Organic Skincare Set",
+        "description": "Challenge participants to create a social media marketing campaign for promoting the Organic Skincare Set. They can develop engaging content, run targeted ads, and leverage influencers to increase brand awareness and drive sales, effectively communicating the benefits of organic skincare.",
         "points": 22,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Assess Sustainability of Organic Skincare Set Production",
+        "description": "Challenge participants to assess the sustainability of the Organic Skincare Set production process and propose recommendations for improvement. They can evaluate factors such as ingredient sourcing, manufacturing practices, and packaging materials to enhance environmental stewardship and sustainability.",
         "points": 66,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Conduct Dermatological Testing of Organic Skincare Set",
+        "description": "Challenge participants to conduct dermatological testing of the Organic Skincare Set to evaluate its safety and efficacy for various skin types. They can collaborate with dermatologists and conduct clinical trials to gather data, ensuring the skincare products meet high standards of quality and performance.",
         "points": 35,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Explore Green Chemistry for Organic Skincare Set Formulations",
+        "description": "Challenge participants to explore green chemistry principles and propose innovative formulations for the Organic Skincare Set using environmentally friendly ingredients and manufacturing processes. They can prioritize sustainability, safety, and efficacy to create skincare products that are gentle on both the skin and the planet.",
         "points": 59,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Craft a Social Media Marketing Campaign for Organic Skincare Set",
+        "description": "Challenge participants to create a social media marketing campaign for promoting the Organic Skincare Set. They can develop engaging content, run targeted ads, and leverage influencers to increase brand awareness and drive sales, effectively communicating the benefits of organic skincare.",
+        "points": 22,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Assess Sustainability of Organic Skincare Set Production",
+        "description": "Challenge participants to assess the sustainability of the Organic Skincare Set production process and propose recommendations for improvement. They can evaluate factors such as ingredient sourcing, manufacturing practices, and packaging materials to enhance environmental stewardship and sustainability.",
+        "points": 66,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Conduct Dermatological Testing of Organic Skincare Set",
+        "description": "Challenge participants to conduct dermatological testing of the Organic Skincare Set to evaluate its safety and efficacy for various skin types. They can collaborate with dermatologists and conduct clinical trials to gather data, ensuring the skincare products meet high standards of quality and performance.",
+        "points": 35,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Explore Green Chemistry for Organic Skincare Set Formulations",
+        "description": "Challenge participants to explore green chemistry principles and propose innovative formulations for the Organic Skincare Set using environmentally friendly ingredients and manufacturing processes. They can prioritize sustainability, safety, and efficacy to create skincare products that are gentle on both the skin and the planet.",
+        "points": 59,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Evaluate Customer Satisfaction with Organic Skincare Set",
+        "description": "Challenge participants to assess customer satisfaction with the Organic Skincare Set through surveys, reviews, and feedback. They can analyze customer opinions, preferences, and experiences to identify areas for improvement and enhance overall satisfaction with the skincare products.",
         "points": 44,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Analyze Market Trends for Organic Skincare Products",
+        "description": "Challenge participants to analyze market trends and consumer preferences related to organic skincare products. They can conduct market research, competitor analysis, and trend forecasting to identify opportunities for innovation and growth in the organic skincare market.",
         "points": 29,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Develop New Packaging Design for Organic Skincare Set",
+        "description": "Challenge participants to design new packaging for the Organic Skincare Set that reflects the brand's values and appeals to target customers. They can explore sustainable materials, unique shapes, and visually appealing graphics to create packaging that stands out on the shelf.",
         "points": 47,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Educational Content about Skincare Ingredients",
+        "description": "Challenge participants to create educational content about skincare ingredients featured in the Organic Skincare Set. They can explain the benefits, properties, and uses of each ingredient, helping consumers make informed decisions about their skincare routine.",
         "points": 31,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Optimize Organic Skincare Set Website for Search Engines",
+        "description": "Challenge participants to optimize the Organic Skincare Set website for search engines to improve visibility and attract organic traffic. They can use SEO techniques such as keyword optimization, meta tags, and link building to increase the website's ranking in search engine results.",
         "points": 56,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Design Promotional Campaign for Organic Skincare Set Launch",
+        "description": "Challenge participants to design a promotional campaign for the launch of the Organic Skincare Set. They can create teaser videos, social media teasers, and email newsletters to build anticipation and excitement around the new skincare products.",
         "points": 42,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Identify Key Demographics for Organic Skincare Set",
+        "description": "Challenge participants to identify key demographics and target audiences for the Organic Skincare Set. They can conduct market segmentation, demographic analysis, and consumer profiling to understand the preferences and needs of different customer groups.",
         "points": 21,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Develop Personalized Skincare Routine Recommendations",
+        "description": "Challenge participants to develop personalized skincare routine recommendations based on individual skin types and concerns. They can create interactive quizzes, skincare assessments, and product recommendations to help consumers achieve their skincare goals.",
         "points": 75,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Engaging Social Media Content for Organic Skincare Set",
+        "description": "Challenge participants to create engaging social media content for the Organic Skincare Set, including posts, stories, and videos. They can showcase product features, benefits, and user testimonials to attract and engage followers on social media platforms.",
         "points": 39,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Customer Loyalty Program for Organic Skincare Set",
+        "description": "Challenge participants to implement a customer loyalty program for the Organic Skincare Set to reward repeat purchases and encourage brand loyalty. They can design loyalty tiers, offer rewards, and track customer engagement to increase retention and lifetime value.",
         "points": 61,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Enhance User Experience (UX) of Organic Skincare Set Mobile App",
+        "description": "Challenge participants to enhance the user experience (UX) of the Organic Skincare Set mobile app to improve usability and satisfaction. They can redesign interfaces, streamline navigation, and optimize performance to create a seamless and enjoyable app experience for users.",
         "points": 26,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Visual Content for Organic Skincare Set Social Media Campaign",
+        "description": "Challenge participants to create visual content for the Organic Skincare Set social media campaign, including photos, graphics, and illustrations. They can use imagery to convey product benefits, evoke emotions, and enhance engagement on social media platforms.",
         "points": 69,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Email Marketing Strategy for Organic Skincare Set",
+        "description": "Challenge participants to implement an email marketing strategy for the Organic Skincare Set to nurture leads and drive conversions. They can create email sequences, newsletters, and promotional offers to engage subscribers and encourage purchases.",
         "points": 23,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Educational Blog Content about Skincare Tips and Trends",
+        "description": "Challenge participants to create educational blog content about skincare tips, trends, and best practices. They can research industry trends, skincare routines, and ingredient benefits to provide valuable insights and information to readers.",
         "points": 64,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Optimize Product Listings for Organic Skincare Set E-commerce Platforms",
+        "description": "Challenge participants to optimize product listings for the Organic Skincare Set on e-commerce platforms to improve visibility and sales. They can write compelling product descriptions, optimize images, and use keywords to enhance product discoverability and conversion.",
         "points": 49,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Video Tutorials for Using Organic Skincare Set Products",
+        "description": "Challenge participants to create video tutorials demonstrating how to use the Organic Skincare Set products effectively. They can showcase application techniques, skincare routines, and tips for maximizing the benefits of the skincare products.",
         "points": 34,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Collaborate with Beauty Influencers to Promote Organic Skincare Set",
+        "description": "Challenge participants to collaborate with beauty influencers to promote the Organic Skincare Set. They can partner with influencers who align with the brand values and audience demographics to create authentic content and reach a wider audience.",
         "points": 58,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Optimize Organic Skincare Set Packaging for Eco-Friendly Materials",
+        "description": "Challenge participants to optimize the packaging of the Organic Skincare Set using eco-friendly materials and sustainable packaging solutions. They can explore recyclable materials, biodegradable packaging, and minimalistic design to reduce environmental impact.",
         "points": 43,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Design Interactive Skincare Quiz for Organic Skincare Set",
+        "description": "Challenge participants to design an interactive skincare quiz for the Organic Skincare Set website to engage visitors and collect data. They can create questions about skin types, concerns, and preferences to provide personalized product recommendations.",
         "points": 28,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create User-Generated Content Campaign for Organic Skincare Set",
+        "description": "Challenge participants to create a user-generated content campaign for the Organic Skincare Set, encouraging customers to share their experiences and testimonials. They can incentivize participation, curate user-generated content, and amplify customer voices on social media.",
         "points": 62,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Sustainable Packaging Solutions for Organic Skincare Set",
+        "description": "Challenge participants to implement sustainable packaging solutions for the Organic Skincare Set to reduce environmental impact. They can explore compostable materials, refillable packaging, and innovative design concepts to create packaging that is both eco-friendly and functional.",
         "points": 25,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Develop Educational Webinars on Skincare Science and Ingredients",
+        "description": "Challenge participants to develop educational webinars on skincare science and ingredients featured in the Organic Skincare Set. They can invite experts, conduct demonstrations, and engage participants in discussions to provide in-depth knowledge and insights.",
         "points": 71,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Launch Influencer Ambassador Program for Organic Skincare Set",
+        "description": "Challenge participants to launch an influencer ambassador program for the Organic Skincare Set, recruiting influencers to represent the brand and share their experiences with the products. They can establish partnerships, provide exclusive perks, and track ambassador performance.",
         "points": 37,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Seasonal Skincare Bundles with Organic Skincare Set Products",
+        "description": "Challenge participants to create seasonal skincare bundles featuring the Organic Skincare Set products. They can curate product combinations, design themed packaging, and offer special promotions to attract customers and boost sales during different seasons.",
         "points": 65,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Design Engaging Infographics about Skincare Benefits",
+        "description": "Challenge participants to design engaging infographics about the benefits of skincare ingredients featured in the Organic Skincare Set. They can visually communicate key information, scientific facts, and skincare tips to educate and inspire consumers.",
         "points": 30,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Host Virtual Skincare Workshops for Organic Skincare Set Users",
+        "description": "Challenge participants to host virtual skincare workshops for Organic Skincare Set users, offering expert advice, demonstrations, and interactive sessions. They can cover topics such as skincare routines, ingredient benefits, and product usage tips to empower participants to achieve healthy, glowing skin.",
         "points": 53,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Behind-the-Scenes Content for Organic Skincare Set Production",
+        "description": "Challenge participants to create behind-the-scenes content showcasing the production process of the Organic Skincare Set. They can offer glimpses into ingredient sourcing, manufacturing facilities, and quality control procedures to build trust and transparency with customers.",
         "points": 46,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Implement Social Listening Strategy for Organic Skincare Set Brand",
+        "description": "Challenge participants to implement a social listening strategy for the Organic Skincare Set brand to monitor conversations, trends, and sentiment on social media platforms. They can use social listening tools, analyze data, and respond to customer feedback to enhance brand reputation and engagement.",
         "points": 20,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Interactive Product Demos for Organic Skincare Set",
+        "description": "Challenge participants to create interactive product demos for the Organic Skincare Set, allowing customers to explore product features and benefits virtually. They can develop immersive experiences, interactive tutorials, and virtual try-on tools to engage and inform potential buyers.",
         "points": 73,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Offer Personalized Skincare Consultations for Organic Skincare Set Customers",
+        "description": "Challenge participants to offer personalized skincare consultations for Organic Skincare Set customers, providing customized recommendations and advice based on individual skin concerns and goals. They can conduct virtual consultations, skincare assessments, and follow-up sessions to support customer needs.",
         "points": 54,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Collaborate with Environmental Organizations for Organic Skincare Set",
+        "description": "Challenge participants to collaborate with environmental organizations to support sustainability initiatives related to the Organic Skincare Set. They can donate a percentage of sales, participate in eco-friendly events, and raise awareness about environmental issues to demonstrate corporate social responsibility.",
         "points": 74,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Engaging Skincare Challenges for Organic Skincare Set Community",
+        "description": "Challenge participants to create engaging skincare challenges for the Organic Skincare Set community, encouraging participation and interaction. They can design challenges focused on skincare goals, product usage, and self-care routines to foster a sense of community and camaraderie among participants.",
         "points": 52,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Launch Organic Skincare Set Subscription Box Service",
+        "description": "Challenge participants to launch an Organic Skincare Set subscription box service, offering curated selections of skincare products delivered regularly to subscribers. They can design subscription tiers, personalize boxes, and offer exclusive perks to attract and retain subscribers.",
         "points": 67,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Create Skincare Product Comparison Guide for Organic Skincare Set",
+        "description": "Challenge participants to create a skincare product comparison guide for the Organic Skincare Set, helping customers make informed decisions about their skincare purchases. They can compare product features, ingredients, and benefits to highlight the unique selling points of the Organic Skincare Set.",
         "points": 55,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Organize Virtual Skincare Masterclasses with Industry Experts",
+        "description": "Challenge participants to organize virtual skincare masterclasses featuring industry experts and thought leaders. They can cover topics such as skincare trends, ingredient science, and advanced skincare techniques to educate and inspire participants.",
         "points": 32,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Host Organic Skincare Set Launch Event",
+        "description": "Challenge participants to host a launch event for the Organic Skincare Set, inviting media, influencers, and customers to experience the new products firsthand. They can create an immersive brand experience, offer product demonstrations, and generate buzz around the launch.",
         "points": 18,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Offer Limited Edition Skincare Sets for Organic Skincare Set",
+        "description": "Challenge participants to offer limited edition skincare sets featuring exclusive products from the Organic Skincare Set. They can create themed sets, collaborate with artists or designers, and promote scarcity to drive excitement and demand among customers.",
         "points": 78,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Partner with Beauty Influencers for Organic Skincare Set",
+        "description": "Challenge participants to partner with beauty influencers to promote the Organic Skincare Set. They can collaborate on sponsored content, product reviews, and giveaways to leverage the influencers' reach and credibility in the beauty community.",
         "points": 44,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 37,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 52,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 59,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 63,
-        "status": 2,
-        "is_active": true
-    },
-    {
+        "title": "Develop DIY Skincare Recipes Featuring Organic Skincare Set Ingredients",
+        "description": "Challenge participants to develop DIY skincare recipes using ingredients from the Organic Skincare Set. They can create recipes for facial masks, scrubs, and treatments, showcasing the versatility and effectiveness of the skincare products.",
         "points": 42,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 22,
+        "title": "Organize Online Skincare Symposium on Sustainable Beauty Practices",
+        "description": "Challenge participants to organize an online skincare symposium focused on sustainable beauty practices. They can invite industry experts, discuss topics such as clean beauty, ethical sourcing, and eco-friendly packaging, and engage participants in thought-provoking discussions.",
+        "points": 21,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 51,
+        "title": "Create Social Media Challenges to Highlight Organic Skincare Set Benefits",
+        "description": "Challenge participants to create social media challenges to highlight the benefits of the Organic Skincare Set. They can design fun and interactive challenges, encourage user participation, and reward participants with prizes to increase brand engagement and awareness.",
+        "points": 75,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 47,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 64,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 58,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 27,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 73,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 35,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 33,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 66,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 45,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 26,
-        "status": 2,
-        "is_active": true
-    },
-    {
-        "points": 30,
-        "status": 2,
-        "is_active": true
-    },
-    {
+        "title": "Design Limited Edition Packaging for Seasonal Organic Skincare Set Releases",
+        "description": "Challenge participants to design limited edition packaging for seasonal releases of the Organic Skincare Set. They can create themed packaging designs inspired by holidays or seasonal motifs, adding a festive touch to the skincare products.",
         "points": 39,
         "status": 2,
         "is_active": true
     },
     {
+        "title": "Host Virtual Skincare Panels with Dermatologists and Skincare Experts",
+        "description": "Challenge participants to host virtual skincare panels featuring dermatologists and skincare experts. They can cover topics such as skincare routines, ingredient science, and common skincare concerns, providing valuable insights and advice to participants.",
+        "points": 61,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Launch Organic Skincare Set Pop-Up Experience",
+        "description": "Challenge participants to launch an Organic Skincare Set pop-up experience, offering immersive brand experiences to customers. They can create interactive product displays, offer skincare consultations, and host workshops to engage visitors and drive sales.",
+        "points": 26,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Create Skincare Product Reviews Featuring Organic Skincare Set",
+        "description": "Challenge participants to create skincare product reviews featuring the Organic Skincare Set. They can produce video reviews, blog posts, or social media content sharing their experiences and insights about the skincare products.",
+        "points": 69,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Design Sustainable Merchandise to Complement Organic Skincare Set",
+        "description": "Challenge participants to design sustainable merchandise to complement the Organic Skincare Set. They can create branded reusable tote bags, eco-friendly water bottles, or bamboo skincare accessories, aligning with the brand's values of sustainability.",
+        "points": 23,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Collaborate with Wellness Influencers to Promote Organic Skincare Set",
+        "description": "Challenge participants to collaborate with wellness influencers to promote the Organic Skincare Set. They can partner with influencers who advocate for holistic health and wellness, positioning the skincare products as part of a comprehensive self-care routine.",
+        "points": 64,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Host Virtual Skincare Q&A Sessions with Experts",
+        "description": "Challenge participants to host virtual skincare Q&A sessions with experts to address customer questions and concerns. They can invite dermatologists, estheticians, or brand representatives to provide expert advice and recommendations to participants.",
+        "points": 49,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Launch Digital Skincare Magazine Featuring Organic Skincare Set",
+        "description": "Challenge participants to launch a digital skincare magazine featuring the Organic Skincare Set. They can curate articles, interviews, and skincare tips, offering valuable content to educate and inspire readers about skincare and wellness.",
+        "points": 34,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Create Social Media Contests to Showcase Organic Skincare Set Results",
+        "description": "Challenge participants to create social media contests to showcase the results of using the Organic Skincare Set. They can encourage customers to share before-and-after photos, testimonials, or skincare routines, demonstrating the effectiveness of the products.",
+        "points": 58,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Organize Virtual Skincare Retreat for Organic Skincare Set Users",
+        "description": "Challenge participants to organize a virtual skincare retreat for Organic Skincare Set users, offering relaxation, education, and skincare tips. They can host meditation sessions, skincare workshops, and wellness activities to create a rejuvenating experience for participants.",
+        "points": 43,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Create Eco-Friendly Skincare Packaging Design Challenge",
+        "description": "Challenge participants to create an eco-friendly skincare packaging design challenge. They can invite designers to submit sustainable packaging concepts for the Organic Skincare Set, promoting innovation and creativity in sustainable packaging solutions.",
+        "points": 28,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Implement Skincare Recycling Program for Organic Skincare Set",
+        "description": "Challenge participants to implement a skincare recycling program for the Organic Skincare Set. They can provide instructions for recycling empty product containers, offer incentives for participation, and partner with recycling facilities to promote environmental responsibility.",
+        "points": 62,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Develop Skincare Ingredient Glossary for Organic Skincare Set",
+        "description": "Challenge participants to develop a skincare ingredient glossary for the Organic Skincare Set. They can compile information about skincare ingredients, their benefits, and potential concerns, empowering customers to make informed decisions about their skincare purchases.",
+        "points": 25,
+        "status": 2,
+        "is_active": true
+    },
+    {
+        "title": "Host Virtual Skincare Product Launch Party",
+        "description": "Challenge participants to host a virtual skincare product launch party for the Organic Skincare Set. They can create an interactive online event, unveil new products, offer exclusive discounts, and engage attendees with fun activities and giveaways.",
         "points": 71,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 77,
+        "title": "Create Skincare Product Bundles for Organic Skincare Set",
+        "description": "Challenge participants to create skincare product bundles featuring complementary products from the Organic Skincare Set. They can curate bundles for different skin concerns, skincare routines, or seasonal needs to offer customers convenient and value-packed options.",
+        "points": 63,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 68,
+        "title": "Host Virtual Skincare Q&A Sessions for Organic Skincare Set Users",
+        "description": "Challenge participants to host virtual skincare Q&A sessions for Organic Skincare Set users, providing expert advice, answering questions, and addressing common skincare concerns. They can engage with the community, offer personalized recommendations, and build trust with participants.",
+        "points": 41,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 55,
+        "title": "Create DIY Skincare Recipes Using Organic Skincare Set Ingredients",
+        "description": "Challenge participants to create DIY skincare recipes using ingredients featured in the Organic Skincare Set. They can develop easy-to-follow recipes for homemade masks, scrubs, and treatments, showcasing the versatility and benefits of the skincare products.",
+        "points": 57,
         "status": 2,
         "is_active": true
     },
     {
-        "points": 28,
+        "title": "Launch Skincare Subscription Service Exclusively for Organic Skincare Set",
+        "description": "Challenge participants to launch a skincare subscription service exclusively for the Organic Skincare Set, offering subscribers access to new products, exclusive discounts, and personalized skincare recommendations. They can tailor subscription plans to meet different skincare needs and preferences.",
+        "points": 38,
         "status": 2,
         "is_active": true
     }

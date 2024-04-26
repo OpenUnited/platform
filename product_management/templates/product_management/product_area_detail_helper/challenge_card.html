@@ -55,9 +55,6 @@
 
                 {% if challenge_listing.status == 'Claimed' %}
                     Claimed by <a class="text-indigo-500" href=""</a>
-                {% elif challenge_listing.status == 'In Review' %}
-                        In Review <a class="text-indigo-500" href="/">{{
-                    challenge_listing.reviewer.firstName }}</a>
                 {% else %}
                     {{ challenge_listing.status }}
                 {% endif %}

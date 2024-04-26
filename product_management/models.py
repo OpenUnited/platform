@@ -272,9 +272,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         null=True,
         editable=False,
     )
-    reviewer = models.ForeignKey(
-        "talent.Person", on_delete=models.SET_NULL, null=True
-    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     video_url = models.URLField(blank=True, null=True)
     contribution_guide = models.ForeignKey(

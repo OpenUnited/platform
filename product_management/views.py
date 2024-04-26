@@ -522,6 +522,9 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
+from django.template import Context, Template
+
+
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, DetailView):
     model = Challenge
@@ -545,6 +548,8 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "can_be_claimed": False,
                 "can_be_modified": False,
                 "is_product_admin": False,
+                "created_bounty_claim_request": False,
+                "bounty_claim_id": None,
             }
 
             user = self.request.user
@@ -556,18 +561,24 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     role=ProductRoleAssignment.PRODUCT_ADMIN,
                 ).exists()
 
+                bounty_claims = bounty.bountyclaim_set.filter(person=person)
                 if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
-                    has_record = bounty.bountyclaim_set.filter(
-                        person=person
-                    ).exists()
+                    has_record = bounty_claims.exists()
                     data["can_be_claimed"] = not has_record
+
+                claim = bounty_claims.first()
+                if claim and claim.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW:
+                    data["created_bounty_claim_request"] = True
+                    data["bounty_claim"] = claim
 
                 if claim := bounty.bountyclaim_set.first():
                     data["claimed_by"] = claim.person
                     data["show_actions"] = data["claimed_by"] == claim.person
 
             data["show_actions"] = (
-                data["can_be_claimed"] | data["can_be_modified"]
+                data["can_be_claimed"]
+                | data["can_be_modified"]
+                | data["created_bounty_claim_request"]
             )
             data["status"] = Bounty.BOUNTY_STATUS[bounty.status][1]
             extra_data.append(data)
@@ -693,10 +704,14 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance.save()
 
         bounty = instance.bounty
-        bounty.status = Bounty.BOUNTY_STATUS_CLAIMED
+        bounty.status = Bounty.BOUNTY_STATUS_AVAILABLE
         bounty.save()
 
-        return JsonResponse({"success": True})
+        return render(
+            request,
+            "product_management/partials/buttons/delete_bounty_claim_button.html",
+            context={"bounty_claim": instance},
+        )
 
 
 class CreateProductView(LoginRequiredMixin, CreateView):
@@ -1410,6 +1425,24 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
             )
 
         return redirect(self.success_url)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        instance = BountyClaim.objects.get(pk=self.object.pk)
+        if instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW:
+            instance.delete()
+
+        context = self.get_context_data()
+        context["bounty"] = self.object.bounty
+        template_name = self.request.POST.get("from")
+        if template_name == "bounty_detail_table.html":
+            return render(
+                request,
+                "product_management/partials/buttons/create_bounty_claim_button.html",
+                context,
+            )
+
+        return super().post(request, *args, **kwargs)
 
 
 def bounty_claim_actions(request, pk):
