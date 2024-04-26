@@ -51,12 +51,12 @@ urlpatterns = [
         name="delete-feedback",
     ),
     path(
-        "bounty-delivery-attempt/create/",
+        "<str:product_slug>/challenges/<int:challenge_id>/bounties/<int:bounty_id>/submissions/create",
         CreateBountyDeliveryAttemptView.as_view(),
         name="create-bounty-delivery-attempt",
     ),
     path(
-        "bounty-delivery-attempt/<int:pk>/",
+        "<str:product_slug>/challenges/<int:challenge_id>/bounties/<int:bounty_id>/submissions/<int:pk>/",
         BountyDeliveryAttemptDetail.as_view(),
         name="bounty-delivery-attempt-detail",
     ),

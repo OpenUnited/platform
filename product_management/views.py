@@ -34,6 +34,7 @@ from .forms import (
     CapabilityForm,
     ProductAreaForm,
     ProductAreaAttachmentSet,
+    BountyAttachmentFormSet,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -47,6 +48,7 @@ from .models import (
     Skill,
     Expertise,
     Attachment,
+    BountyAttachment,
 )
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
@@ -62,6 +64,13 @@ class ChallengeListView(ListView):
     template_name = "product_management/challenges.html"
     paginate_by = 8
     filterset_class = ChallengeFilter
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return [
+                "product_management/partials/challenge_filter_partial.html"
+            ]
+        return super().get_template_names()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -244,9 +253,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 
     def get_success_url(self):
         conttext = self.get_context_data()
-        return reverse(
-            "product_tree_interactive", args=(conttext.get("product").slug,)
-        )
+        return reverse("product_tree", args=(conttext.get("product").slug,))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -355,7 +362,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_tree_interactive.html"
+    template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -613,73 +620,81 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
 # TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, DetailView):
     model = Challenge
+    context_object_name = "challenge"
     template_name = "product_management/challenge_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         challenge = self.object
-        bounty = challenge.bounty_set.all().first()
-        # TODO: we need to allow multiple bounties for a challenge
-        bounty_claim = BountyClaim.objects.filter(
-            bounty=bounty,
-            kind__in=[
-                BountyClaim.CLAIM_TYPE_DONE,
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-            ],
-        ).first()
+        bounties = challenge.bounty_set.all()
+
+        extra_data = []
+        for bounty in bounties:
+            data = {"bounty": bounty}
+
+            user = self.request.user
+            if not user.is_authenticated:
+                data.update(
+                    {
+                        "current_user_created_claim_request": False,
+                        "actions_available": False,
+                    }
+                )
+            else:
+                person = user.person
+                bounty_claims = BountyClaim.objects.filter(
+                    bounty=bounty,
+                    person=person,
+                    kind__in=[
+                        BountyClaim.CLAIM_TYPE_ACTIVE,
+                        BountyClaim.CLAIM_TYPE_IN_REVIEW,
+                    ],
+                )
+
+                data.update(
+                    {
+                        "current_user_created_claim_request": bounty_claims.exists(),
+                        "actions_available": challenge.created_by == person,
+                    }
+                )
+
+                bounty_claim = BountyClaim.objects.filter(
+                    bounty=bounty,
+                    kind__in=[
+                        BountyClaim.CLAIM_TYPE_DONE,
+                        BountyClaim.CLAIM_TYPE_ACTIVE,
+                    ],
+                ).first()
+
+                if (
+                    bounty_claim
+                    and bounty_claim.bounty.status
+                    in [
+                        Bounty.BOUNTY_STATUS_DONE,
+                        Bounty.BOUNTY_STATUS_CLAIMED,
+                    ]
+                    and bounty_claim.bounty.challenge.status
+                    in [
+                        Challenge.CHALLENGE_STATUS_DONE,
+                        Challenge.CHALLENGE_STATUS_CLAIMED,
+                    ]
+                ):
+                    data.update(
+                        {"is_claimed": True, "claimed_by": bounty_claim.person}
+                    )
+                else:
+                    data.update({"is_claimed": False})
+
+            extra_data.append(data)
 
         context.update(
             {
-                "challenge": challenge,
-                "bounty": bounty,
-                "bounty_claim_form": BountyClaimForm(),
-                "bounty_claim": bounty_claim,
+                "bounty_data": extra_data,
+                "does_have_permission": utils.has_product_modify_permission(
+                    self.request.user, context.get("product")
+                ),
             }
         )
-
-        if self.request.user.is_authenticated:
-            bounty_claims = BountyClaim.objects.filter(
-                bounty=bounty,
-                person=self.request.user.person,
-                kind__in=[
-                    BountyClaim.CLAIM_TYPE_ACTIVE,
-                    BountyClaim.CLAIM_TYPE_IN_REVIEW,
-                ],
-            )
-
-            context.update(
-                {
-                    "current_user_created_claim_request": bounty_claims.count()
-                    > 0,
-                    "actions_available": challenge.created_by
-                    == self.request.user.person,
-                }
-            )
-        else:
-            context.update(
-                {
-                    "current_user_created_claim_request": False,
-                    "actions_available": False,
-                }
-            )
-
-        # todo: fix this ugly if statement
-        if (
-            bounty_claim
-            and bounty_claim.kind
-            in [
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_DONE,
-            ]
-            and bounty_claim.bounty.status == Bounty.BOUNTY_STATUS_DONE
-            and bounty_claim.bounty.challenge.status
-            == Challenge.CHALLENGE_STATUS_DONE
-        ):
-            context.update(
-                {"is_claimed": True, "claimed_by": bounty_claim.person}
-            )
-        else:
-            context.update({"is_claimed": False})
 
         return context
 
@@ -1322,12 +1337,69 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
+class BountyDetailView(DetailView):
+    model = Bounty
+    template_name = "product_management/bounty_detail.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+
+        bounty = data.get("bounty")
+        challenge = bounty.challenge
+        product = challenge.product
+
+        bounty_claims = BountyClaim.objects.filter(
+            bounty=bounty,
+            kind__in=[
+                BountyClaim.CLAIM_TYPE_ACTIVE,
+                BountyClaim.CLAIM_TYPE_DONE,
+            ],
+        )
+
+        is_assigned = bounty_claims.exists()
+        assigned_to = (
+            bounty_claims.first().person if bounty_claims else "No one"
+        )
+        attachments = [
+            att.file for att in BountyAttachment.objects.filter(bounty=bounty)
+        ]
+
+        data.update(
+            {
+                "product": product,
+                "challenge": challenge,
+                "is_assigned": is_assigned,
+                "assigned_to": assigned_to,
+                "attachments": attachments,
+            }
+        )
+        return data
+
+
 # TODO: make sure the user can't manipulate the URL to create a bounty
-class CreateBountyView(LoginRequiredMixin, CreateView):
+class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, CreateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "product_management/forms/bounty_empty_attachment.html"
+
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["bounty_attachment_formset"] = BountyAttachmentFormSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+        )
+        context["challenge"] = Challenge.objects.get(
+            pk=self.kwargs.get("challenge_id")
+        )
+
+        return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1351,6 +1423,13 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
             instance.skill = Skill.objects.get(id=skill_id)
             instance.save()
 
+            self.object = instance
+            context = self.get_context_data()
+            attachment_formset = context["bounty_attachment_formset"]
+            if attachment_formset.is_valid():
+                attachment_formset.instance = instance
+                attachment_formset.save()
+
             instance.expertise.add(
                 *Expertise.objects.filter(
                     id__in=form.cleaned_data.get("selected_expertise_ids")
@@ -1368,11 +1447,25 @@ class CreateBountyView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class UpdateBountyView(LoginRequiredMixin, UpdateView):
+class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     model = Bounty
     form_class = BountyForm
     template_name = "product_management/update_bounty.html"
     login_url = "sign_in"
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return "product_management/forms/bounty_empty_attachment.html"
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["bounty_attachment_formset"] = BountyAttachmentFormSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+            instance=self.get_object(),
+        )
+        return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -1392,28 +1485,37 @@ class UpdateBountyView(LoginRequiredMixin, UpdateView):
             challenge_queryset=challenge_queryset,
         )
         if form.is_valid():
-            instance = form.save(commit=False)
-            skill_id = form.cleaned_data.get("selected_skill_ids")[0]
-            instance.skill = Skill.objects.get(id=skill_id)
-            instance.save()
-
-            instance.expertise.add(
-                *Expertise.objects.filter(
-                    id__in=form.cleaned_data.get("selected_expertise_ids")
-                )
-            )
-            instance.save()
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    self.object.challenge.product.slug,
-                    self.object.challenge.id,
-                ),
-            )
-            return redirect(self.success_url)
+            return self.handle_update(request, form)
 
         return super().post(request, *args, **kwargs)
+
+    def handle_update(self, request, form):
+        context = self.get_context_data()
+        instance = form.save(commit=False)
+        skill_id = form.cleaned_data.get("selected_skill_ids")[0]
+        instance.skill = Skill.objects.get(id=skill_id)
+        instance.save()
+
+        attachment_formset = context["bounty_attachment_formset"]
+        if attachment_formset.is_valid():
+            attachment_formset.instance = instance
+            attachment_formset.save()
+
+        instance.expertise.add(
+            *Expertise.objects.filter(
+                id__in=form.cleaned_data.get("selected_expertise_ids")
+            )
+        )
+        instance.save()
+
+        self.success_url = reverse(
+            "challenge_detail",
+            args=(
+                self.object.challenge.product.slug,
+                self.object.challenge.id,
+            ),
+        )
+        return redirect(self.success_url)
 
 
 class DeleteBountyView(LoginRequiredMixin, DeleteView):

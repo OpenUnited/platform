@@ -4,7 +4,12 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import (
+    Http404,
+    HttpResponse,
+    JsonResponse,
+    HttpResponseRedirect,
+)
 from django.contrib import messages
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
@@ -25,7 +30,7 @@ from .models import (
     Feedback,
     BountyDeliveryAttempt,
 )
-from product_management.models import Challenge, Bounty
+from product_management.models import Product, Challenge, Bounty
 from .forms import (
     PersonProfileForm,
     FeedbackForm,
@@ -407,6 +412,32 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
 
         return kwargs
 
+    # todo: find a better way to check if the page exists
+    def get(self, request, *args, **kwargs):
+        product_slug = kwargs.get("product_slug")
+        challenge_id = kwargs.get("challenge_id")
+        bounty_id = kwargs.get("bounty_id")
+
+        product = get_object_or_404(
+            Product,
+            slug=product_slug,
+        )
+
+        challenge = get_object_or_404(
+            Challenge,
+            id=challenge_id,
+        )
+
+        bounty = get_object_or_404(
+            Bounty,
+            id=bounty_id,
+        )
+
+        if product != challenge.product or challenge != bounty.challenge:
+            raise Http404("No matches the given query.")
+
+        return super().get(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES, request=request)
         if form.is_valid():
@@ -427,7 +458,7 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
 class BountyDeliveryAttemptDetail(DetailView):
     model = BountyDeliveryAttempt
     context_object_name = "object"
-    template_name = "product_management/bounty_delivery_attempt_detail.html"
+    template_name = "talent/bounty_delivery_attempt_detail.html"
 
     TRIGGER_KEY = "bounty-delivery-action"
     APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"

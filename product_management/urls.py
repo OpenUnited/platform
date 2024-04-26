@@ -28,6 +28,11 @@ urlpatterns = [
         name="delete-challenge",
     ),
     path(
+        "<str:product_slug>/challenge/<int:challenge_id>/bounty/<int:pk>",
+        views.BountyDetailView.as_view(),
+        name="bounty-detail",
+    ),
+    path(
         "<str:product_slug>/challenge/<int:challenge_id>/bounty/create/",
         views.CreateBountyView.as_view(),
         name="create-bounty",
@@ -148,9 +153,9 @@ urlpatterns += [
         name="product_challenges",
     ),
     path(
-        "<str:product_slug>/tree-interactive",
+        "<str:product_slug>/tree",
         views.ProductTreeInteractiveView.as_view(),
-        name="product_tree_interactive",
+        name="product_tree",
     ),
     path("load-tree", views.load_tree, name="load_tree"),
     path("add-new-node", views.add_new_node, name="add_new_node"),

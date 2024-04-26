@@ -1,57 +1,60 @@
-{% if challenge.bounty_set.all() %}
-<div class="mb-2.5 font-medium text-sm text-black/[0.85]">Bounty</div>
+{% if bounty_data %}
+<div class="my-2.5 font-medium text-sm text-black/[0.85]">Bounty Table</div>
 
 <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Skill
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Expertise
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Points
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Claimed
                 </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-2 py-3">
                     Action
+                </th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                    <span class="sr-only">Details</span>
                 </th>
             </tr>
         </thead>
         <tbody>
-            {% for bounty in challenge.bounty_set.all() %}
+            {% for elem in bounty_data %}
+            {% set bounty = elem.bounty %}
             <tr class="bg-white border-b">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <th scope="row" class="px-2 py-1 font-medium text-gray-900 whitespace-nowrap">
                     {{ bounty.skill }}
                 </th>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     {{ bounty.get_expertise_as_str() }}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     {{ bounty.points }}
                 </td>
-                <td class="px-6 py-4">
-                    {% if is_claimed %}
-                    Assigned to <a href={{ claimed_by.get_absolute_url() }}
-                        class="font-medium text-blue-600 hover:underline">{{ claimed_by }}</a>
-                    {% elif current_user_created_claim_request %}
+                <td class="px-2 py-1">
+                    {% if elem.is_claimed %}
+                    <p>This bounty is not available for claiming.</p>
+                    {% elif elem.current_user_created_claim_request %}
                     <p>You have created a claim request for this bounty.</p>
                     {% else %}
-                    <a href="{{ url('bounty-claim', args=(bounty.challenge.pk,)) }}">
-                        <button type="button"
-                            class="appearance-none w-fit flex items-center justify-center rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/[0.85] transition-all">
+                    <p>
+                        <a href="{{ url('bounty-claim', args=(bounty.challenge.pk,)) }}"
+                            class="px-4 py-2 rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] transition-all">
                             Claim
-                        </button>
-                    </a>
+                        </a>
+                    </p>
                     {% endif %}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-2 py-1">
                     <div class="flex">
-                        {% if actions_available %}
+                        {% if elem.actions_available %}
                         <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Edit</a>
                         <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
@@ -63,7 +66,10 @@
                         <p>No action is available for this bounty.</p>
                         {% endif  %}
                     </div>
-
+                </td>
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
+                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                        class="text-indigo-600 hover:text-indigo-900">Details</a>
                 </td>
             </tr>
             {% endfor %}
@@ -71,12 +77,28 @@
     </table>
 </div>
 </div>
+
+{% if does_have_permission %}
+<p>
+    <a class="inline-block" href=" {{ url('create-bounty', args=(challenge.product.slug, challenge.pk,)) }}">
+        <button class="p-4 rounded-md bg-indigo-600 mt-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+            type="button">
+            Create another bounty for this challenge</button>
+    </a>
+</p>
+{% endif %}
+
 {% else %}
 <p class="text-sm italic text-red-600">This challenge has no bounty associated with it.</p>
-<a class="inline-block" style="max-width: 300px;"
-    href=" {{ url('create-bounty', args=(challenge.product.slug, challenge.pk,)) }}"><button class="justify-center px-8 rounded-md bg-indigo-600 mt-4 py-4 text-sm
-                                        font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline
-                                        focus-visible:outline-2 focus-visible:outline-offset-2
-                                        focus-visible:outline-indigo-600" type="button">Create a bounty for this
-        challenge</button></a>
+
+{% if does_have_permission %}
+<p>
+    <a class="inline-block" href=" {{ url('create-bounty', args=(challenge.product.slug, challenge.pk,)) }}">
+        <button class="p-4 rounded-md bg-indigo-600 mt-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+            type="button">
+            Create a bounty for this</button>
+    </a>
+</p>
+{% endif %}
+
 {% endif %}

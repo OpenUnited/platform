@@ -395,6 +395,7 @@ class Bounty(TimeStampMixin):
     )
 
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    description = models.TextField()
     skill = models.ForeignKey(
         Skill,
         on_delete=models.CASCADE,
@@ -417,6 +418,12 @@ class Bounty(TimeStampMixin):
 
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
+
+
+class BountyAttachment(TimeStampMixin, AttachmentAbstract):
+    bounty = models.ForeignKey(
+        Bounty, related_name="bounties", on_delete=models.CASCADE
+    )
 
 
 class ChallengeDependency(models.Model):

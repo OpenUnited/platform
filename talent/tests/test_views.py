@@ -17,7 +17,11 @@ from .factories import (
     PersonSkillFactory,
     FeedbackFactory,
 )
-from product_management.tests.factories import BountyClaimFactory
+from product_management.tests.factories import (
+    BountyClaimFactory,
+    ChallengeFactory,
+    BountyFactory,
+)
 
 
 class TalentAppLoginRequiredTest(TestCase):
@@ -417,7 +421,12 @@ class DeleteFeedbackViewTest(TestCase):
 class CreateBountyDeliveryAttempViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse("create-bounty-delivery-attempt")
+        challenge = ChallengeFactory()
+        bounty = BountyFactory(challenge=challenge)
+        self.url = reverse(
+            "create-bounty-delivery-attempt",
+            args=(challenge.product.slug, challenge.id, bounty.id),
+        )
         self.person = PersonFactory()
         self.login_url = reverse("sign_in")
 
