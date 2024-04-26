@@ -52,10 +52,10 @@
                     {% set claimed_by = elem.claimed_by %}
 
                     {% if elem.can_be_claimed %}
-                        No one Assigned
+                    No one Assigned
                     {% elif claimed_by %}
-                        <div class="flex items-center text-xs text-black/[0.85]">
-                            <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center ml-4">
+                    <div class="flex items-center text-xs text-black/[0.85]">
+                        <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center ml-4">
                             <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                                 <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
                                     src="{{ claimed_by.get_photo_url() }}" alt="Created By">
@@ -63,35 +63,38 @@
                             <div class="text-neutral-800">
                                 {{ claimed_by.get_full_name() }}
                             </div>
-                            </a>
-                        </div>
+                        </a>
+                    </div>
                     {% endif %}
                     <p>
                     </p>
                 </td>
                 <td class="relative whitespace-nowrap">
                     {% if elem.show_actions %}
-                        {% if elem.can_be_claimed %}
-                            <button hx-post="{{ url('bounty-claim', args=(bounty.pk,)) }}"
-                                class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1"
-                                hx-swap="none"
-                                claim-bounty="true">Claim
-                            </button>
-                        {% endif %}
+                    {% if elem.can_be_claimed %}
+                    {% with bounty=elem.bounty %}
+                    {% include 'product_management/partials/buttons/create_bounty_claim_button.html' %}
+                    {% endwith %}
+                    {% endif %}
+                    {% if elem.can_be_modified %}
+                    <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                        class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Edit</a>
 
-                        {% if elem.can_be_modified %}
-                            <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                                class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Edit</a>
+                    <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                        hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
+                        hx-push-url="true"
+                        class="text-red-700 cursor-pointer hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mr-1">Delete
+                    </a>
+                    {% endif %}
 
-                            <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                                hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
-                                hx-push-url="true"
-                                class="text-red-700 cursor-pointer hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mr-1">Delete
-                            </a>
-                        {% endif %}
+                    {% if elem.created_bounty_claim_request %}
+                    {% with bounty_claim=elem.bounty_claim %}
+                    {% include 'product_management/partials/buttons/delete_bounty_claim_button.html' %}
+                    {% endwith %}
+                    {% endif %}
 
                     {% else %}
-                        <p>No action is available for this bounty.</p>
+                    <p>No action is available for this bounty.</p>
                     {% endif %}
 
                 </td>
@@ -129,18 +132,18 @@
 {% endif %}
 
 <script>
-    document.addEventListener('htmx:confirm', function(event) {
-        if (event.detail.elt.getAttribute('claim-bounty')){
+    document.addEventListener('htmx:confirm', function (event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
             event.preventDefault()
             $.confirm({
-            title: 'Bounty Claim',
-            typeAnimated: true,
-            boxWidth: '350px',
-            useBootstrap: false,
-            onOpenBefore: function() {
-               this.$content.find('#expected_submission_date')[0].valueAsDate = new Date();
-              },
-            content: `
+                title: 'Bounty Claim',
+                typeAnimated: true,
+                boxWidth: '350px',
+                useBootstrap: false,
+                onOpenBefore: function () {
+                    this.$content.find('#expected_submission_date')[0].valueAsDate = new Date();
+                },
+                content: `
             <hr><br>
             <form class="w-full max-w-sm confirm-form" >
                 <div class="w-full px-3">
@@ -157,61 +160,58 @@
 
               </form>
             `,
-            buttons: {
-                formSubmit: {
-                    text: 'Request claim',
-                    btnClass: 'btn-blue',
-                    useBootstrap: false,
-                    action: function () {
-                        const inputField = document.getElementById("expected_submission_date");
-                        const checkbox = document.getElementById("term_checkbox");
+                buttons: {
+                    formSubmit: {
+                        text: 'Request claim',
+                        btnClass: 'btn-blue',
+                        useBootstrap: false,
+                        action: function () {
+                            const inputField = document.getElementById("expected_submission_date");
+                            const checkbox = document.getElementById("term_checkbox");
 
-                        const form = document.querySelector('.confirm-form');
-                          if (!form.checkValidity()) {
-                            const formControls = form.querySelectorAll('input');
-                            formControls.forEach(function(control) {
-                              if (!control.checkValidity()) {
-                                control.reportValidity();
-                              }
-                            });
-                            return false;
-                          }
-                        else{
-                            const data = {
-                                are_terms_accepted: true,
-                                expected_finish_date: inputField.value,
-                            };
-                            event.target.setAttribute("hx-vals", JSON.stringify(data));
+                            const form = document.querySelector('.confirm-form');
+                            if (!form.checkValidity()) {
+                                const formControls = form.querySelectorAll('input');
+                                formControls.forEach(function (control) {
+                                    if (!control.checkValidity()) {
+                                        control.reportValidity();
+                                    }
+                                });
+                                return false;
+                            } else {
+                                const data = {
+                                    are_terms_accepted: true,
+                                    expected_finish_date: inputField.value,
+                                };
+                                event.target.setAttribute("hx-vals", JSON.stringify(data));
 
-                            event.detail.issueRequest()
-                            this.close();
-                        }
+                                event.detail.issueRequest()
+                                this.close();
+                            }
+
+                        },
 
                     },
-
+                    cancel: function () {
+                        this.close();
+                    },
                 },
-                cancel: function () {
-                    this.close();
-                },
-            },
             });
         }
     })
 
-    document.addEventListener('htmx:afterRequest', function(event) {
-        if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
-            var response = JSON.parse(event.detail.xhr.responseText);
-            if (event.detail.xhr.status === 200) {
-                const  tdTag = event.target.closest("td")
-                event.target.classList.add("hidden")
-                const visibleButtonCount = tdTag.querySelectorAll('a:not([class*="hidden"]').length;
-                if (visibleButtonCount == 0) {
-                    tdTag.innerHTML = "No action is available for this bounty.";
-                    tdTag.classList.remove("hidden")
-                }
-            } 
-        }
-    });
+    // document.addEventListener('htmx:afterRequest', function(event) {
+    //     if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
+    //         var response = JSON.parse(event.detail.xhr.responseText);
+    //         if (event.detail.xhr.status === 200) {
+    //             const  tdTag = event.target.closest("td")
+    //             event.target.classList.add("hidden")
+    //             const visibleButtonCount = tdTag.querySelectorAll('a:not([class*="hidden"]').length;
+    //             if (visibleButtonCount == 0) {
+    //                 tdTag.innerHTML = "No action is available for this bounty.";
+    //                 tdTag.classList.remove("hidden")
+    //             }
+    //         } 
+    //     }
+    // });
 </script>
-
-

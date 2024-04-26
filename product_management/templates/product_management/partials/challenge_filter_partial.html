@@ -70,7 +70,7 @@
                 {% if TASK_TYPES[challenge.status] == 'Claimed' %}
                 Claimed by <a class="text-blue-400" href="#">challenge.assignedToPerson.firstName</a>
                 {% elif TASK_TYPES[challenge.status] == 'In Review' %}
-                In Review{{
+                In Review
                 {% else %}
                 {{ TASK_TYPES[challenge.status] }}
                 {% endif %}
