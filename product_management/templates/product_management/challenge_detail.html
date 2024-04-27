@@ -42,7 +42,7 @@
         {% include 'product_management/partials/bounty_detail_table.html' %}
     </div>
 
-    {% if challenge.attachment %}
+    {% if challenge.attachment.exists() %}
     <div class="mt-4">
         {% with attachments=challenge.attachment.all() %}
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
