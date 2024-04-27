@@ -172,9 +172,7 @@ class FeedbackForm(forms.ModelForm):
 class BountyDeliveryAttemptForm(forms.ModelForm):
     bounty_claim = forms.ModelChoiceField(
         empty_label="Select a Bounty Claim",
-        queryset=BountyClaim.objects.filter(
-            kind=BountyClaim.CLAIM_TYPE_ACTIVE
-        ),
+        queryset=BountyClaim.objects.filter(status=BountyClaim.Status.GRANTED),
         label="Bounty Claim",
         widget=forms.Select(
             attrs={

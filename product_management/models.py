@@ -361,7 +361,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
             filter_data["created_by__in"] = task_creator
 
         if assignee:
-            filter_data["bountyclaim__kind__in"] = [0, 1]
+            filter_data["bountyclaim__status__in"] = [0, 1]
             filter_data["bountyclaim__person_id__in"] = assignee
 
         if skills:

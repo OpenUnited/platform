@@ -216,21 +216,21 @@ def generate_sample_data():
             person = people[(index % len(people)) + len(products)]
             bounty = bounties[(index % 10) + step]
 
-            kind = 3
+            status = BountyClaim.Status.CONTRIBUTED
             if index < 5:
-                kind = 0  # CLAIM_TYPE_DONE
+                status = BountyClaim.Status.COMPLETED
                 bounty.status = 4  # done
                 bounty.challenge.status = 4  # done
             elif index >= 5 and index < 10:
-                kind = 1  # CLAIM_TYPE_ACTIVE
+                status = BountyClaim.Status.GRANTED
                 bounty.status = 3  # claimed
                 bounty.challenge.status = 3  # claimed
             elif index >= 10 and index < 15:
-                kind = 2  # CLAIM_TYPE_FAILED
+                status = BountyClaim.Status.FAILED
                 bounty.status = 2  # available
                 bounty.challenge.status = 2  # available
             else:
-                kind = 3  # CLAIM_TYPE_IN_REVIEW
+                status = BountyClaim.Status.CONTRIBUTED
                 bounty.status = 5  # in review
                 bounty.challenge.status = 5  # in review
 
@@ -239,7 +239,7 @@ def generate_sample_data():
                 "person": person,
                 "bounty": bounty,
                 "expected_finish_date": generate_random_future_date(),
-                "kind": kind,
+                "status": status,
             }
 
             bounty_claim = BountyClaim.objects.create(**bounty_claim_dict)
@@ -250,7 +250,11 @@ def generate_sample_data():
             "utility/sample_data/bounty_delivery_attempt.json",
             "bounty_delivery_attempt",
         )
-        completed_bounty_claims = [bc for bc in bounty_claims if bc.kind == 1]
+        completed_bounty_claims = [
+            bc
+            for bc in bounty_claims
+            if bc.status == BountyClaim.Status.GRANTED
+        ]
 
         for data, bounty_claim in zip(
             bounty_delivery_attempt_data, completed_bounty_claims
@@ -261,17 +265,17 @@ def generate_sample_data():
 
             # Work is approved
             if work.kind == 0:
-                work.bounty_claim.kind = 1  # ACTIVE
+                work.bounty_claim.kind = BountyClaim.Status.CONTRIBUTED
                 work.bounty_claim.bounty.status = 3  # CLAIMED
                 work.bounty_claim.bounty.challenge.status = 3  # CLAIMED
                 work.save()
             elif work.kind == 1:
-                work.bounty_claim.kind = 0  # DONE
+                work.bounty_claim.kind = BountyClaim.Status.COMPLETED
                 work.bounty_claim.bounty.status = 4  # DONE
                 work.bounty_claim.bounty.challenge.status = 4  # DONE
                 work.save()
             elif work.kind == 2:
-                work.bounty_claim.kind = 2  # DONE
+                work.bounty_claim.kind = BountyClaim.Status.FAILED
                 work.bounty_claim.bounty.status = 2  # available
                 work.bounty_claim.bounty.challenge.status = 2  # available
 
@@ -283,6 +287,22 @@ def generate_sample_data():
                 product=product,
                 role=0,
             )
+
+    # temporary solution to fix the inaccuracies
+    bounties = Bounty.objects.filter(
+        status__in=[
+            Bounty.BOUNTY_STATUS_IN_REVIEW,
+            Bounty.BOUNTY_STATUS_CLAIMED,
+            Bounty.BOUNTY_STATUS_DONE,
+        ]
+    )
+
+    for bounty in bounties:
+        claims = bounty.bounties
+        if not claims.exists():
+            bounty.status = Bounty.BOUNTY_STATUS_AVAILABLE
+            bounty.challenge.status = Challenge.CHALLENGE_STATUS_AVAILABLE
+            bounty.save()
 
     # Create Idea model instances
     idea_data = read_json_data("utility/sample_data/idea.json", "idea")
@@ -356,7 +376,7 @@ def generate_sample_data():
     index = 0
     for product in products:
         bounty_claims = BountyClaim.objects.filter(
-            bounty__challenge__product=product, kind=0
+            bounty__challenge__product=product, status=0
         )
 
         for bounty_claim in bounty_claims:
