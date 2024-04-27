@@ -1232,7 +1232,7 @@ class BountyDetailView(DetailView):
             bounty_claims.first().person if bounty_claims else "No one"
         )
         attachments = [
-            att.file for att in BountyAttachment.objects.filter(bounty=bounty)
+            att for att in BountyAttachment.objects.filter(bounty=bounty)
         ]
 
         data.update(
