@@ -26,13 +26,6 @@ logger = logging.getLogger(__name__)
 
 
 class OrganisationService:
-    @staticmethod
-    def create(**kwargs):
-        organisation = Organisation(**kwargs)
-        organisation.save()
-
-        return organisation
-
     @transaction.atomic
     def update(self, id: int, name: str) -> Organisation:
         try:
@@ -56,13 +49,6 @@ class OrganisationService:
 
 
 class OrganisationAccountService:
-    @staticmethod
-    def create(**kwargs):
-        organisation_account = OrganisationAccount(**kwargs)
-        organisation_account.save()
-
-        return organisation_account
-
     # @transaction.atomic
     # def create(
     #     self,
@@ -157,13 +143,6 @@ class OrganisationAccountService:
 
 
 class OrganisationAccountCreditService:
-    @staticmethod
-    def create(**kwargs):
-        org_acc_credit = OrganisationAccountCredit(**kwargs)
-        org_acc_credit.save()
-
-        return org_acc_credit
-
     # @transaction.atomic
     # def create(
     #     self, organisation_account: OrganisationAccount, number_of_points: int
