@@ -567,7 +567,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     data["can_be_claimed"] = not has_record
 
                 claim = bounty_claims.first()
-                if claim and claim.status == BountyClaim.CLAIM_TYPE_IN_REVIEW:
+                if claim and claim.status == BountyClaim.Status.REQUESTED:
                     data["created_bounty_claim_request"] = True
                     data["bounty_claim"] = claim
 
@@ -700,7 +700,7 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance = form.save(commit=False)
         instance.bounty_id = pk
         instance.person = request.user.person
-        instance.status = BountyClaim.CLAIM_TYPE_IN_REVIEW
+        instance.status = BountyClaim.Status.REQUESTED
         instance.save()
 
         bounty = instance.bounty
@@ -978,7 +978,7 @@ class DashboardView(DashboardBaseView, TemplateView):
 
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(
-            person=person, status=BountyClaim.CLAIM_TYPE_ACTIVE
+            person=person, status=BountyClaim.Status.GRANTED
         )
         product_roles_queryset = ProductRoleAssignment.objects.filter(
             person=person
@@ -1005,7 +1005,7 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
 
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(
-            person=person, status=BountyClaim.CLAIM_TYPE_ACTIVE
+            person=person, status=BountyClaim.Status.GRANTED
         )
         product_roles_queryset = ProductRoleAssignment.objects.filter(
             person=person
@@ -1033,8 +1033,8 @@ class ManageBountiesView(DashboardBaseView, TemplateView):
         queryset = BountyClaim.objects.filter(
             person=person,
             status__in=[
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.REQUESTED,
             ],
         )
         context.update({"bounty_claims": queryset})
@@ -1052,8 +1052,8 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
         queryset = BountyClaim.objects.filter(
             person=person,
             status__in=[
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.REQUESTED,
             ],
         )
         return queryset
@@ -1160,7 +1160,7 @@ class DashboardProductBountiesView(LoginRequiredMixin, ListView):
         product = Product.objects.get(slug=product_slug)
         queryset = BountyClaim.objects.filter(
             bounty__challenge__product=product,
-            status=BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            status=BountyClaim.Status.REQUESTED,
         )
         return queryset
 
@@ -1222,8 +1222,9 @@ class BountyDetailView(DetailView):
         bounty_claims = BountyClaim.objects.filter(
             bounty=bounty,
             status__in=[
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_DONE,
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.CONTRIBUTED,
+                BountyClaim.Status.COMPLETED,
             ],
         )
 
@@ -1411,8 +1412,9 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.status == BountyClaim.CLAIM_TYPE_IN_REVIEW:
-            instance.delete()
+        if instance.status == BountyClaim.Status.REQUESTED:
+            instance.status = BountyClaim.Status.CANCELLED
+            instance.save()
             messages.success(
                 request, _("The bounty claim is successfully deleted.")
             )
@@ -1429,8 +1431,9 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.status == BountyClaim.CLAIM_TYPE_IN_REVIEW:
-            instance.delete()
+        if instance.status == BountyClaim.Status.REQUESTED:
+            instance.status = BountyClaim.Status.CANCELLED
+            instance.save()
 
         context = self.get_context_data()
         context["bounty"] = self.object.bounty
@@ -1449,15 +1452,15 @@ def bounty_claim_actions(request, pk):
     instance = BountyClaim.objects.get(pk=pk)
     action_type = request.GET.get("action")
     if action_type == "accept":
-        instance.status = BountyClaim.CLAIM_TYPE_ACTIVE
+        instance.status = BountyClaim.Status.GRANTED
 
         # If one claim is accepted for a particular challenge, the other claims automatically fails.
         challenge = instance.bounty.challenge
         _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(
-            status=BountyClaim.CLAIM_TYPE_FAILED
+            status=BountyClaim.Status.REJECTED
         )
     elif action_type == "reject":
-        instance.status = BountyClaim.CLAIM_TYPE_FAILED
+        instance.status = BountyClaim.Status.REJECTED
     else:
         raise BadRequest()
 

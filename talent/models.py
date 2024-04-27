@@ -286,17 +286,15 @@ class Expertise(AncestryMixin):
 
 
 class BountyClaim(TimeStampMixin, UUIDMixin):
-    CLAIM_TYPE_DONE = 0
-    CLAIM_TYPE_ACTIVE = 1
-    CLAIM_TYPE_FAILED = 2
-    CLAIM_TYPE_IN_REVIEW = 3
+    class Status(models.TextChoices):
+        REQUESTED = "Requested"
+        CANCELLED = "Cancelled"
+        REJECTED = "Rejected"
+        GRANTED = "Granted"
+        CONTRIBUTED = "Contributed"
+        COMPLETED = "Completed"
+        FAILED = "Failed"
 
-    CLAIM_TYPE = (
-        (CLAIM_TYPE_DONE, "Done"),
-        (CLAIM_TYPE_ACTIVE, "Active"),
-        (CLAIM_TYPE_FAILED, "Failed"),
-        (CLAIM_TYPE_IN_REVIEW, "In review"),
-    )
     bounty = models.ForeignKey(
         "product_management.Bounty", on_delete=models.CASCADE
     )
@@ -304,9 +302,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         Person, on_delete=models.CASCADE, blank=True, null=True
     )
     expected_finish_date = models.DateField(default=date.today)
-    status = models.IntegerField(
-        choices=CLAIM_TYPE, default=CLAIM_TYPE_IN_REVIEW
-    )
+    status = models.CharField(choices=Status.choices, default=Status.REQUESTED)
 
     class Meta:
         unique_together = ("bounty", "person")
@@ -319,7 +315,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         return self.bounty.challenge.product.get_absolute_url()
 
     def save(self, *args, **kwargs):
-        if self.status == self.CLAIM_TYPE_DONE:
+        if self.status == self.Status.COMPLETED:
             self.person.status.add_points(self.bounty.points)
 
         super().save(*args, **kwargs)

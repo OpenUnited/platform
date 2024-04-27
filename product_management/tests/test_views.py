@@ -584,13 +584,13 @@ class CapabilityDetailViewTest(BaseProductTestCase):
 #         b_one = BountyFactory(challenge=challenge)
 #         b_two = BountyFactory(challenge=challenge)
 #         bc_one = BountyClaimFactory(
-#             bounty=b_one, status=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_one, status=BountyClaim.Status.GRANTED
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_one, status=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_one, status=BountyClaim.Status.GRANTED
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_two, status=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_two, status=BountyClaim.Status.GRANTED
 #         )
 
 #         response = self.client.get(url)
@@ -628,13 +628,13 @@ class CapabilityDetailViewTest(BaseProductTestCase):
 #         bc_one = BountyClaimFactory(
 #             bounty=b_one,
 #             person=self.person,
-#             status=BountyClaim.CLAIM_TYPE_ACTIVE,
+#             status=BountyClaim.Status.GRANTED,
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_one, status=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_one, status=BountyClaim.Status.GRANTED
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_two, status=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_two, status=BountyClaim.Status.GRANTED
 #         )
 
 #         response = self.client.get(url)
@@ -872,7 +872,7 @@ class BountyDetailViewTest(BaseTestCase):
         self.bounty_claim = BountyClaimFactory(
             person=self.person,
             bounty=self.bounty_two,
-            status=BountyClaim.CLAIM_TYPE_ACTIVE,
+            status=BountyClaim.Status.GRANTED,
         )
 
     def test_basic(self):

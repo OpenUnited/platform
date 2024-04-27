@@ -16,12 +16,12 @@ def update_bounty_delivery_status(sender, instance, created, **kwargs):
     if not created:
         action_mapping = {
             BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED: {
-                "bounty_claim_status": BountyClaim.CLAIM_TYPE_DONE,
+                "bounty_claim_status": BountyClaim.Status.COMPLETED,
                 "bounty_status": Bounty.BOUNTY_STATUS_DONE,
                 "challenge_status": Challenge.CHALLENGE_STATUS_DONE,
             },
             BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED: {
-                "bounty_claim_status": BountyClaim.CLAIM_TYPE_FAILED,
+                "bounty_claim_status": BountyClaim.Status.FAILED,
                 "bounty_status": Bounty.BOUNTY_STATUS_AVAILABLE,
                 "challenge_status": Challenge.CHALLENGE_STATUS_AVAILABLE,
             },

@@ -210,6 +210,7 @@ def generate_sample_data():
             bounty.expertise.set(sample(expertise, k=randint(1, 4)))
             bounties.append(bounty)
 
+        # todo: fix the following statuses
         # Create BountyClaim model instances
         bounty_claims = []
         for index in range(0, BOUNTY_CLAIM_COUNT):
