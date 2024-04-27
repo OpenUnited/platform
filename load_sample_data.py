@@ -216,21 +216,21 @@ def generate_sample_data():
             person = people[(index % len(people)) + len(products)]
             bounty = bounties[(index % 10) + step]
 
-            kind = 3
+            status = 3
             if index < 5:
-                kind = 0  # CLAIM_TYPE_DONE
+                status = 0  # CLAIM_TYPE_DONE
                 bounty.status = 4  # done
                 bounty.challenge.status = 4  # done
             elif index >= 5 and index < 10:
-                kind = 1  # CLAIM_TYPE_ACTIVE
+                status = 1  # CLAIM_TYPE_ACTIVE
                 bounty.status = 3  # claimed
                 bounty.challenge.status = 3  # claimed
             elif index >= 10 and index < 15:
-                kind = 2  # CLAIM_TYPE_FAILED
+                status = 2  # CLAIM_TYPE_FAILED
                 bounty.status = 2  # available
                 bounty.challenge.status = 2  # available
             else:
-                kind = 3  # CLAIM_TYPE_IN_REVIEW
+                status = 3  # CLAIM_TYPE_IN_REVIEW
                 bounty.status = 5  # in review
                 bounty.challenge.status = 5  # in review
 
@@ -239,7 +239,7 @@ def generate_sample_data():
                 "person": person,
                 "bounty": bounty,
                 "expected_finish_date": generate_random_future_date(),
-                "kind": kind,
+                "status": status,
             }
 
             bounty_claim = BountyClaim.objects.create(**bounty_claim_dict)
@@ -250,7 +250,9 @@ def generate_sample_data():
             "utility/sample_data/bounty_delivery_attempt.json",
             "bounty_delivery_attempt",
         )
-        completed_bounty_claims = [bc for bc in bounty_claims if bc.kind == 1]
+        completed_bounty_claims = [
+            bc for bc in bounty_claims if bc.status == 1
+        ]
 
         for data, bounty_claim in zip(
             bounty_delivery_attempt_data, completed_bounty_claims
@@ -356,7 +358,7 @@ def generate_sample_data():
     index = 0
     for product in products:
         bounty_claims = BountyClaim.objects.filter(
-            bounty__challenge__product=product, kind=0
+            bounty__challenge__product=product, status=0
         )
 
         for bounty_claim in bounty_claims:

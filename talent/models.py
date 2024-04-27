@@ -304,7 +304,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         Person, on_delete=models.CASCADE, blank=True, null=True
     )
     expected_finish_date = models.DateField(default=date.today)
-    kind = models.IntegerField(
+    status = models.IntegerField(
         choices=CLAIM_TYPE, default=CLAIM_TYPE_IN_REVIEW
     )
 
@@ -319,13 +319,13 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         return self.bounty.challenge.product.get_absolute_url()
 
     def save(self, *args, **kwargs):
-        if self.kind == self.CLAIM_TYPE_DONE:
+        if self.status == self.CLAIM_TYPE_DONE:
             self.person.status.add_points(self.bounty.points)
 
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
+        return f"{self.bounty.challenge}: {self.person} ({self.get_status_display()})"
 
 
 class Comment(MP_Node):
