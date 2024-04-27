@@ -3,69 +3,8 @@ from django.db.models import Count, Avg
 
 from .models import (
     Person,
-    Skill,
-    Expertise,
-    Status,
-    PersonSkill,
-    BountyClaim,
     Feedback,
 )
-
-
-class StatusService:
-    @staticmethod
-    def create(**kwargs):
-        status = Status(**kwargs)
-        status.save()
-
-        return status
-
-
-class PersonService:
-    @staticmethod
-    def create(**kwargs):
-        password = kwargs.pop("password", None)
-        person = Person(**kwargs)
-        if password:
-            person.set_password(password)
-        person.save()
-        return person
-
-
-class SkillService:
-    @staticmethod
-    def create(**kwargs):
-        skill = Skill(**kwargs)
-        skill.save()
-
-        return skill
-
-
-class ExpertiseService:
-    @staticmethod
-    def create(**kwargs):
-        expertise = Expertise(**kwargs)
-        expertise.save()
-
-        return expertise
-
-
-class PersonSkillService:
-    @staticmethod
-    def create(**kwargs):
-        person_skill = PersonSkill(**kwargs)
-        person_skill.save()
-
-        return person_skill
-
-
-class BountyClaimService:
-    @staticmethod
-    def create(**kwargs):
-        bounty_claim = BountyClaim(**kwargs)
-        bounty_claim.save()
-
-        return bounty_claim
 
 
 class FeedbackService:

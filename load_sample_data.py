@@ -2,7 +2,7 @@ import os
 import datetime
 import random
 import django
-from random import choice, sample, randint, getrandbits
+from random import choice, sample, randint
 from django.apps import apps
 import json
 from utility.utils import *
@@ -93,11 +93,12 @@ def generate_sample_data():
 
     tags = []
     for tag in tag_data:
-        tags.append(TagService.create(**tag))
+        tags.append(Tag.objects.create(**tag))
 
     # Create User model instances
     user_data = read_json_data("utility/sample_data/user.json", "user")
 
+    # todo: check if the password is hashed
     users = []
     for ud in user_data:
         users.append(UserService.create(**ud))
@@ -112,14 +113,14 @@ def generate_sample_data():
 
     people = []
     for pd in person_data:
-        people.append(PersonService.create(**pd))
+        people.append(Person.objects.create(**pd))
 
     # Create Skill model instances
     skill_data = read_json_data("utility/sample_data/skill.json", "skill")
 
     skills = []
     for sk in skill_data:
-        skills.append(SkillService.create(**sk))
+        skills.append(Skill.objects.create(**sk))
 
     skill_ids = [skill.id for skill in skills]
     skill_name_queryset = Skill.objects.filter(
@@ -133,7 +134,7 @@ def generate_sample_data():
 
     expertise = []
     for exp in expertise_data:
-        expertise.append(ExpertiseService.create(**exp))
+        expertise.append(Expertise.objects.create(**exp))
 
     expertise_ids = [exp.id for exp in expertise]
     expertise_name_queryset = Expertise.objects.filter(
@@ -154,7 +155,7 @@ def generate_sample_data():
         person = people[index]
         pd["content_object"] = person
 
-        product = ProductService.create(**pd)
+        product = Product.objects.create(**pd)
         products.append(product)
 
     # Create ProductRoleAssignment instances (part 1/2)
@@ -205,7 +206,7 @@ def generate_sample_data():
             bd["skill"] = choice(skills)
 
         for bd in temp_bounty_data:
-            bounty = BountyService.create(**bd)
+            bounty = Bounty.objects.create(**bd)
             bounty.expertise.set(sample(expertise, k=randint(1, 4)))
             bounties.append(bounty)
 
@@ -241,7 +242,7 @@ def generate_sample_data():
                 "kind": kind,
             }
 
-            bounty_claim = BountyClaimService.create(**bounty_claim_dict)
+            bounty_claim = BountyClaim.objects.create(**bounty_claim_dict)
             bounty_claims.append(bounty_claim)
 
         # Create BountyDeliveryAttempt model instances
@@ -373,7 +374,7 @@ def generate_sample_data():
 
     organisations = []
     for org_data in organisation_data:
-        organisations.append(OrganisationService.create(**org_data))
+        organisations.append(Organisation.objects.create(**org_data))
 
     # Create OrganisationAccount model instances
     organisation_account_data = read_json_data(
@@ -385,7 +386,7 @@ def generate_sample_data():
 
     organisation_accounts = []
     for oad in organisation_account_data:
-        organisation_accounts.append(OrganisationAccountService.create(**oad))
+        organisation_accounts.append(OrganisationAccount.objects.create(**oad))
 
     # Create OrganisationAccountCredit model instances
     organisation_account_credit_data = read_json_data(
@@ -399,14 +400,13 @@ def generate_sample_data():
     organisation_account_credits = []
     for oacd in organisation_account_credit_data:
         organisation_account_credits.append(
-            OrganisationAccountCreditService.create(**oacd)
+            OrganisationAccountCredit.objects.create(**oacd)
         )
 
     # Create PointPriceConfiguration instance
     fancy_out("Create a PointPriceConfiguration record")
 
-    point_price_conf_service = PointPriceConfigurationService()
-    point_price_conf_service.create(
+    PointPriceConfiguration.objects.create(
         applicable_from_date=datetime.date.today(),
         usd_point_inbound_price_in_cents=2,
         eur_point_inbound_price_in_cents=2,
@@ -425,19 +425,19 @@ def generate_sample_data():
 
     carts = []
     for cd in cart_data:
-        carts.append(CartService.create(**cd))
+        carts.append(Cart.objects.create(**cd))
 
     fancy_out("Complete!")
 
 
 def run_data_generation():
-    # proceed = input(
-    #     "Running this script will replace all your current data. Ok? (Y/N)"
-    # ).lower()
+    proceed = input(
+        "Running this script will replace all your current data. Ok? (Y/N)"
+    ).lower()
 
-    # if not proceed or proceed[0] != "y":
-    #     fancy_out("Execution Abandoned")
-    #     exit()
+    if not proceed or proceed[0] != "y":
+        fancy_out("Execution Abandoned")
+        exit()
 
     model_app_mapping = read_json_data(
         "utility/sample_data/model_app_mapping.json"
@@ -453,7 +453,7 @@ if __name__ == "__main__":
     )
     django.setup()
 
-    from security.models import ProductRoleAssignment
+    from security.models import ProductRoleAssignment, User
     from talent.models import (
         Skill,
         Expertise,
@@ -465,37 +465,21 @@ if __name__ == "__main__":
     )
     from product_management.models import (
         Bounty,
+        Product,
         Challenge,
         Idea,
         Bug,
         Initiative,
         ProductArea,
+        Tag,
     )
-    from commerce.services import (
-        OrganisationService,
-        OrganisationAccountService,
-        OrganisationAccountCreditService,
-        CartService,
-        PointPriceConfigurationService,
+    from commerce.models import (
+        Organisation,
+        OrganisationAccount,
+        OrganisationAccountCredit,
+        Cart,
+        PointPriceConfiguration,
     )
-    from security.services import ProductRoleAssignmentService, UserService
-    from talent.services import (
-        PersonService,
-        SkillService,
-        ExpertiseService,
-        StatusService,
-        PersonSkillService,
-        BountyClaimService,
-        FeedbackService,
-    )
-    from product_management.services import (
-        InitiativeService,
-        TagService,
-        ProductService,
-        ChallengeService,
-        BountyService,
-        IdeaService,
-        BugService,
-    )
+    from security.services import UserService
 
     run_data_generation()

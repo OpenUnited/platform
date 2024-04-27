@@ -1561,25 +1561,3 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
             return redirect("product_bug_detail", **kwargs)
 
         return super().post(request, *args, **kwargs)
-
-
-class DeleteAttachmentView(LoginRequiredMixin, DeleteView):
-    model = Attachment
-    template_name = "product_management/delete_attachment.html"
-    login_url = "sign_in"
-
-    def get(self, request, *args, **kwargs):
-        attachment = self.get_object()
-        challenge = Challenge.objects.get(attachment=attachment)
-        if request.user.person == challenge.created_by:
-            attachment.delete()
-            messages.success(
-                request, _("The attachment is successfully deleted!")
-            )
-
-        return redirect(
-            reverse(
-                "challenge_detail",
-                args=(challenge.product.slug, challenge.id),
-            )
-        )
