@@ -246,9 +246,4 @@ urlpatterns += [
         views.ChallengeDetailView.as_view(),
         name="challenge_detail",
     ),
-    path(
-        "attachment/delete/<int:pk>",
-        views.DeleteAttachmentView.as_view(),
-        name="delete-attachment",
-    ),
 ]

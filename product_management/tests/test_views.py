@@ -846,43 +846,6 @@ class ProductBugListViewTest(BaseProductTestCase):
         self.assertDictEqual(actual, expected)
 
 
-class DeleteAttachmentViewTest(BaseProductTestCase):
-    def setUp(self):
-        super().setUp()
-        self.challenge = ChallengeFactory(
-            created_by=self.product.content_object
-        )
-        self.attachment_one = AttachmentFactory()
-        self.challenge.attachment.add(self.attachment_one)
-        self.url = reverse(
-            "delete-attachment",
-            args=(self.attachment_one.id,),
-        )
-
-    def test_get_anon(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response,
-            f"{self.login_url}?next=/attachment/delete/{self.attachment_one.id}",
-        )
-
-    def test_get_auth(self):
-        self.client.force_login(self.product.content_object.user)
-
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            f"/{self.challenge.product.slug}/challenge/{self.challenge.id}",
-        )
-
-        # add test to make sure the request owner has rights to delete the image(s)
-        with self.assertRaises(Attachment.DoesNotExist):
-            self.attachment_one.refresh_from_db()
-
-
 class BountyDetailViewTest(BaseTestCase):
     def setUp(self):
         super().setUp()
