@@ -571,7 +571,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     data["created_bounty_claim_request"] = True
                     data["bounty_claim"] = claim
 
-                if claim := bounty.bountyclaim_set.first():
+                if claim and claim.status == BountyClaim.Status.GRANTED:
                     data["claimed_by"] = claim.person
                     data["show_actions"] = data["claimed_by"] == claim.person
 

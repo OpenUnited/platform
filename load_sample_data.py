@@ -210,28 +210,27 @@ def generate_sample_data():
             bounty.expertise.set(sample(expertise, k=randint(1, 4)))
             bounties.append(bounty)
 
-        # todo: fix the following statuses
         # Create BountyClaim model instances
         bounty_claims = []
         for index in range(0, BOUNTY_CLAIM_COUNT):
             person = people[(index % len(people)) + len(products)]
             bounty = bounties[(index % 10) + step]
 
-            status = 3
+            status = BountyClaim.Status.CONTRIBUTED
             if index < 5:
-                status = 0  # CLAIM_TYPE_DONE
+                status = BountyClaim.Status.COMPLETED
                 bounty.status = 4  # done
                 bounty.challenge.status = 4  # done
             elif index >= 5 and index < 10:
-                status = 1  # CLAIM_TYPE_ACTIVE
+                status = BountyClaim.Status.GRANTED
                 bounty.status = 3  # claimed
                 bounty.challenge.status = 3  # claimed
             elif index >= 10 and index < 15:
-                status = 2  # CLAIM_TYPE_FAILED
+                status = BountyClaim.Status.FAILED
                 bounty.status = 2  # available
                 bounty.challenge.status = 2  # available
             else:
-                status = 3  # CLAIM_TYPE_IN_REVIEW
+                status = BountyClaim.Status.CONTRIBUTED
                 bounty.status = 5  # in review
                 bounty.challenge.status = 5  # in review
 
@@ -252,7 +251,9 @@ def generate_sample_data():
             "bounty_delivery_attempt",
         )
         completed_bounty_claims = [
-            bc for bc in bounty_claims if bc.status == 1
+            bc
+            for bc in bounty_claims
+            if bc.status == BountyClaim.Status.GRANTED
         ]
 
         for data, bounty_claim in zip(
@@ -264,17 +265,17 @@ def generate_sample_data():
 
             # Work is approved
             if work.kind == 0:
-                work.bounty_claim.kind = 1  # ACTIVE
+                work.bounty_claim.kind = BountyClaim.Status.CONTRIBUTED
                 work.bounty_claim.bounty.status = 3  # CLAIMED
                 work.bounty_claim.bounty.challenge.status = 3  # CLAIMED
                 work.save()
             elif work.kind == 1:
-                work.bounty_claim.kind = 0  # DONE
+                work.bounty_claim.kind = BountyClaim.Status.COMPLETED
                 work.bounty_claim.bounty.status = 4  # DONE
                 work.bounty_claim.bounty.challenge.status = 4  # DONE
                 work.save()
             elif work.kind == 2:
-                work.bounty_claim.kind = 2  # DONE
+                work.bounty_claim.kind = BountyClaim.Status.FAILED
                 work.bounty_claim.bounty.status = 2  # available
                 work.bounty_claim.bounty.challenge.status = 2  # available
 
@@ -286,6 +287,22 @@ def generate_sample_data():
                 product=product,
                 role=0,
             )
+
+    # temporary solution to fix the inaccuracies
+    bounties = Bounty.objects.filter(
+        status__in=[
+            Bounty.BOUNTY_STATUS_IN_REVIEW,
+            Bounty.BOUNTY_STATUS_CLAIMED,
+            Bounty.BOUNTY_STATUS_DONE,
+        ]
+    )
+
+    for bounty in bounties:
+        claims = bounty.bounties
+        if not claims.exists():
+            bounty.status = Bounty.BOUNTY_STATUS_AVAILABLE
+            bounty.challenge.status = Challenge.CHALLENGE_STATUS_AVAILABLE
+            bounty.save()
 
     # Create Idea model instances
     idea_data = read_json_data("utility/sample_data/idea.json", "idea")
