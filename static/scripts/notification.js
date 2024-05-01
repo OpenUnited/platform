@@ -1,6 +1,26 @@
 const typeSuccess="success"
 const typeError="error"
 
+{/* 
+
+*/}
+
+const openVideoModal = (videoLink) => {
+  alertify.alert().setting({
+      modal: true,
+      basic: true,
+      message: `
+          <div style="height: 50vh; width: 100%;">
+            <iframe style="height: 100%; width: 100%" frameborder="0" allowfullscreen src="${videoLink}"></iframe> 
+          </div>
+      `,
+      onshow: function () {
+          this.elements.dialog.style.maxWidth = "none"; 
+          this.elements.dialog.style.width = "60%";
+          this.elements.dialog.style.height = "auto"; 
+      }
+  }).show();
+}
 
 const showNotification = (data) =>{
     const type = data.type || typeError
