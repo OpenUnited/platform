@@ -261,7 +261,9 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         form = ProductAreaForm(request.POST)
         if not form.is_valid():
             return render(request, self.get_template_names(), form.errors)
-        context = {}
+        context = {
+            "product_slug": kwargs.get("product_slug"),
+        }
         return self.valid_form(request, form, context)
 
     def valid_form(self, request, form, context):
@@ -384,7 +386,6 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
             )
             return render(request, template_name, context)
         else:
-            print("============================:")
             attachment_formset = context["attachment_formset"]
             if form.is_valid() and attachment_formset.is_valid():
                 obj = form.save()
