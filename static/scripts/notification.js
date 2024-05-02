@@ -1,10 +1,6 @@
 const typeSuccess="success"
 const typeError="error"
 
-{/* 
-
-*/}
-
 const openVideoModal = (videoLink) => {
   alertify.alert().setting({
       modal: true,
@@ -24,11 +20,10 @@ const openVideoModal = (videoLink) => {
 
 const showNotification = (data) =>{
     const type = data.type || typeError
-    const message = data.message|| "Something went wrong!"
-    const title =  data.title|| 'Error'
+    const message = `<span class="text-white">${data.message|| "Something went wrong!"} </span>`
     alertify.set('notifier', 'position', 'top-right');
-    alertify.notify(message, type)
-    }
+    alertify.error(message, type);
+  }
 
 
 const showConfirm = (data) =>{

@@ -437,8 +437,6 @@ def update_node(request, pk):
         has_cancelled = bool(request.POST.get("cancelled", False))
         has_dropped = bool(request.POST.get("has_dropped", False))
 
-        print(request.POST)
-
         parent_id = request.POST.get("parent_id")
         if not has_cancelled and has_dropped and parent_id:
             parent = ProductArea.objects.get(pk=parent_id)
