@@ -136,9 +136,21 @@
     document.addEventListener('htmx:confirm', function (event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {
             event.preventDefault()
-            claimConfirm(event)
+            claimConfirm(event, "{{ url('terms-of-use') }}")
         }
     })
+
+    document.addEventListener('htmx:confirm', function (event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+            event.preventDefault()
+            claimConfirm(event, "{{ url('terms-of-use') }}")
+        }
+    })
+    document.addEventListener('htmx:responseError', function(event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+          showNotification({message: JSON.parse(event.detail.xhr.response).errors.expected_finish_date})
+        }
+      });
 
     document.addEventListener('htmx:afterRequest', function (event) {
         if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
