@@ -4,7 +4,6 @@
 {% block product_content %}
 {% import "product_management/tree_helper/product_tree_macros.html" as tree_macros %}
 
-
 <div class="">
     <h3 class="text-xl text-gray-900 font-bold mb-3">Product Tree-Interactive</h3>
     <div class="flex flex-col sm:flex-row gap-4">
@@ -34,7 +33,7 @@
         <div id="product_tree"
           class="tree-demo flex flex-col gap-4 tree_container overflow-x-auto sm:overflow-x-hidden overflow-y-hidden">
             <ul ondrop="drop(event)" class="pl-0">
-                {{ tree_macros.generate_product_area_tree(tree_data, product_slug) }}
+                {{ tree_macros.generate_product_area_tree(tree_data, product_slug, can_modify_product) }}
           </ul>
         </div>
       </div>
