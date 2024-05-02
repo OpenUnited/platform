@@ -78,7 +78,7 @@ const authPopUp = (event, signUpUrl, signInUrl) =>{
 }
 
 
-function claimConfirm(event){
+function claimConfirm(event, termConditionUrl){
   alertify.confirm('Bounty Claim', `
   <hr><br>
   <form class="w-full max-w-sm confirm-form">
@@ -91,7 +91,7 @@ function claimConfirm(event){
 
       <div class="w-full px-3">
           <input id="term_checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  focus:ring-2" required>
-          <label for="term_checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I accept the <a href="{{ url('terms-of-use') }}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">terms and conditions</a>.</label>
+          <label for="term_checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I accept the <a href="${termConditionUrl}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">terms and conditions</a>.</label>
       </div>
   </form>
 `, function () {
@@ -103,7 +103,7 @@ function claimConfirm(event){
           formControls.forEach(function (control) {
               if (!control.checkValidity()) {
                   control.reportValidity();
-              }
+              }   
           });
           return false;
       } else {
@@ -116,6 +116,5 @@ function claimConfirm(event){
           event.detail.issueRequest()
           this.close();
       }
-  }, function () {
-  });
+  }, function () {}).set('labels', {ok: 'Request claim', cancel: 'Cancel'})
 }
