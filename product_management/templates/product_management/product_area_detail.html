@@ -51,9 +51,43 @@
             </thead>
 
             <tbody id="tbody-container" class="text-gray-600 text-sm font-light">
+                {#
+                    {% for attachment_form in attachment_formset %}
+                <tr id="attachment-{{ attachment_form.instance.pk }}" class="border-b border-gray-200 p-2">
+                    <td class="py-3">
+                        {{ attachment_form.id }}
+                        {% if attachment_form.instance.file %}
+                        <a href="{{ attachment_form.instance.file.url}}" target="_blank">
+                            {{ attachment_form.instance.file.name}} </a>
+                        {% else %}
+                        {{ attachment_form.file}}
+                        {% endif %}    
+                    </td>
+    
+                    <td class="py-3">
+                        {% if attachment_form.DELETE %}
+                        <input type="checkbox" class="hidden" data-delete-id="" name="attachments-{{ loop.index0 }}-DELETE"
+                            id="id_attachments-{{ loop.index0 }}-DELETE">
+                        <button type="button" class="bg-red-700 text-white py-1 px-2 rounded-full"
+                            onclick="checkCheckbox({{ loop.index0 }})">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                        {% endif %}
+                    </td>
+    
+                </tr>
+                {% endfor %}
+
+                #}
+
+
+
+
+
                 {% for attachment_form in attachment_formset %}
                     {% set outer_index = loop.index0 %}
                     <tr id="attachment-{{ attachment_form.instance.pk }}" class="border-b border-gray-200">
+                        
                         {% for attachment_field in  attachment_form %}
                                 {% if  attachment_field.is_hidden %}
                                     {{ attachment_field }}
@@ -64,6 +98,8 @@
                                             <i class="fa fa-times" aria-hidden="true"></i>
                                         </button>
                                     </td>
+
+                                    
                                     
                                 {% elif attachment_field.name == "file" %}
                                     <td class="py-2 w-2/5">
@@ -80,14 +116,16 @@
                         </td>
                     </tr>
                 {% endfor %}
+
             </tbody>
         </table>
         <br>
         <div class="w-full py-3 px-6 text-right">
-            <button hx-get="{{ url('product_area_with_pk', args=(product_slug, form.instance.pk,)) }}" 
+            <button hx-get="{{ url('product_area_update', args=(product_slug, form.instance.pk,)) }}" 
                     hx-target="#tbody-container"
                     class="bg-gray-700 text-white py-2 px-4 rounded focus:outline-none"
                     hx-swap="beforeend"
+                    hx-vals='{"is_attachment":"{{ True }}" }'
                     >
                 Add Attachment
             </button>
@@ -98,6 +136,13 @@
 
 
 <script>
+    function checkCheckbox(index) {
+        var checkboxId = `id_attachments-${index}-DELETE`;
+        var checkbox = document.getElementById(checkboxId);
+        checkbox.closest('tr').style.display = "none";
+        checkbox.checked = true;
+    }
+
     document.addEventListener("click", function(event){
         const tbodyContainer = document.getElementById("tbody-container")
         const anchorTags = tbodyContainer.querySelectorAll("a");

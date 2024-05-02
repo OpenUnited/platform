@@ -1,51 +1,43 @@
-const showNotification = (data) =>{
-    const type = data.type? data.type: "red"
-    const message = data.message? data.message: "Something went wrong!"
-    const title = data.title? data.title: 'Error!'
-    const displayTime = data.displayTime? data.displayTime: 1500
-    var alert  = $.alert({
-        title: title,
-        content: message,
-        useBootstrap: false,
-        boxWidth: '350px',
-        type: type,
-        typeAnimated: true,
-        icon: 'fa fa-exclamation-circle',
-    });
+const typeSuccess="success"
+const typeError="error"
 
-    setTimeout(function() {
-      alert.close();
-    }, displayTime); 
+{/* 
+
+*/}
+
+const openVideoModal = (videoLink) => {
+  alertify.alert().setting({
+      modal: true,
+      basic: true,
+      message: `
+          <div style="height: 50vh; width: 100%;">
+            <iframe style="height: 100%; width: 100%" frameborder="0" allowfullscreen src="${videoLink}"></iframe> 
+          </div>
+      `,
+      onshow: function () {
+          this.elements.dialog.style.maxWidth = "none"; 
+          this.elements.dialog.style.width = "60%";
+          this.elements.dialog.style.height = "auto"; 
+      }
+  }).show();
 }
 
-const showConfirm = (data) =>{
-  const type = data.type? data.type: "red"
-  const message = data.message? data.message: "Are you sure you want to delete this item?"
-  const title = data.title? data.title: 'Warning!'
-  const callback = data.callback
-  const callback_data = data.callback_data
-
-  $.confirm({
-    title: title,
-    content: message,
-    type: type,
-    typeAnimated: true,
-    boxWidth: '350px',
-    useBootstrap: false,
-    icon: 'fa fa-exclamation-circle',
-    buttons: {
-        confirm: {
-            text: 'Confirm!',
-            btnClass: 'btn-red',
-            action: function(){
-              if (callback){
-                callback(callback_data)
-              }
-            }
-        },
-        close: function () {
-        }
+const showNotification = (data) =>{
+    const type = data.type || typeError
+    const message = data.message|| "Something went wrong!"
+    const title =  data.title|| 'Error'
+    alertify.set('notifier', 'position', 'top-right');
+    alertify.notify(message, type)
     }
-});
+
+
+const showConfirm = (data) =>{
+  const type =  data.type|| "red"
+  const message = data.message|| "Are you sure you want to delete this item?"
+  const title = data.title|| 'Warning!'
+  return new Promise((resolve) => {
+    alertify.confirm(title, message, function (confirmed) {
+      resolve(confirmed)}, function(){});
+})
 }
 

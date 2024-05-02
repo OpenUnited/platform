@@ -158,14 +158,24 @@ urlpatterns += [
         name="product_tree",
     ),
     path(
+        "update-node/<str:product_slug>/<int:pk>",
+        views.update_node,
+        name="update_node",
+    ),
+    path(
         "<str:product_slug>/product-areas",
         views.ProductAreaCreateView.as_view(),
         name="product_area",
     ),
     path(
-        "<str:product_slug>/product-areas/<int:pk>",
+        "<str:product_slug>/product-areas/<int:pk>/update",
         views.ProductAreaDetailUpdateView.as_view(),
-        name="product_area_with_pk",
+        name="product_area_update",
+    ),
+    path(
+        "<str:product_slug>/product-areas/<int:pk>/delete",
+        views.ProductAreaDetailDeleteView.as_view(),
+        name="product_area_delete",
     ),
     path(
         "<str:product_slug>/idea-list",
