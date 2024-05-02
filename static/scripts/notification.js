@@ -41,3 +41,39 @@ const showConfirm = (data) =>{
 })
 }
 
+
+
+const authPopUp = (event, signUpUrl, signInUrl) =>{
+  const currentPageUrl = window.location.href;
+
+  signUpUrl += '?next=' + encodeURIComponent(currentPageUrl);
+  signInUrl += '?next=' + encodeURIComponent(currentPageUrl);
+
+  $.confirm({
+    type: "blue",
+    typeAnimated: true,
+    boxWidth: '350px',
+    useBootstrap: false,
+    icon: 'fa fa-info-circle',
+    title: 'Sign In or Sign Up',
+    content: `
+        <div class="bg-white mt-4 bg-indigo-600">
+          <div class="form-group ">
+            <p class="text-gray-700 mb-4">To claim a bounty you need to be signed in.</p>
+            <p class="text-gray-700 mb-4">
+              Already have an account?
+              <a href="${signInUrl}" class="text-blue-500 hover:text-blue-700">Sign in here</a>
+            </p>
+            <p class="text-gray-700 mb-4">
+              New to OpenUnited?
+              <a href="${signUpUrl}" class="text-blue-500 hover:text-blue-700">Sign up here</a>
+            </p>
+          </div>
+        </div>
+    `,
+    buttons: {
+        cancel: function () {},
+    },
+});
+}
+
