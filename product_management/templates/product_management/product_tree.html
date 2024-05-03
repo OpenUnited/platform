@@ -2,137 +2,18 @@
 
 {% block title %}Product - Summary{% endblock %}
 {% block product_content %}
-{% import "product_management/tree_helper/product_tree_macros.html" as tree_macros %}
 
 <div class="">
     <h3 class="text-xl text-gray-900 font-bold mb-3">Product Tree-Interactive</h3>
     <div class="flex flex-col sm:flex-row gap-4">
-      <div class="flex items-center">
-        <input type="search" name="search-field" id="search-field" 
-          class="block w-full sm:max-w-[320px] rounded-l-md border-0 py-1.5 px-3 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus-visible:outline-none sm:text-sm sm:leading-6 h-9 p-3  rounded-md"
-          placeholder="Search...">
-      </div>
-      {% if can_modify_product %}
-        <button id="AddFirst"
-            onclick="event.preventDefault()" 
-            hx-swap="afterend" 
-            hx-get="{{ url('product_area', args=(product_slug,)) }}" 
-            hx-target="#product_tree"
-          class="py-1 sm:py-0 transition-all duration-300 ease-linear text-indigo-600 rounded bg-white border border-indigo-600 px-4 transition-all ease-linear duration-100 hover:bg-indigo-600 hover:text-white">Add
-          Product Area
-        </button>
-      {% endif %}
+      {% include "product_management/tree_helper/search_component.html" %}
+      {% include "product_management/tree_helper/add_product_area_button.html" %}
     </div>
-    <div class="flex flex-col flex-grow nested">
-      <div class="hidden search_empty flex justify-center items-center flex-col gap-5 ">
-        <img src="{{ static('images/no-data.svg') }}" alt="no data">
-        <span class="text-base text-gray-900 font-medium mb-2">There is no product area</span>
-      </div>
 
-      <div class="mt-4 lg:mt-6">
-        <div id="product_tree"
-          class="tree-demo flex flex-col gap-4 tree_container overflow-x-auto sm:overflow-x-hidden overflow-y-hidden">
-            <ul ondrop="drop(event)" class="pl-0">
-                {{ tree_macros.generate_product_area_tree(tree_data, product_slug, can_modify_product) }}
-          </ul>
-        </div>
-      </div>
-    </div>
+      {% include "product_management/tree_helper/tree_main_content.html" %}
   
   </div>
 
-<script>
-  var searchField = document.getElementById("search-field");
-  var searchEmptyElement = document.querySelector(".search_empty");
-  var treeContainer = document.getElementById("product_tree");
-  var treeNodes = treeContainer.querySelectorAll("li");
-
-  searchField.addEventListener('input', (e) => {
-    var searchTerm = e.currentTarget.value.trim().toLowerCase();
-  
-    if (searchTerm === "") {
-      searchEmptyElement.classList.add("hidden");
-      treeNodes.forEach(function(node) {
-        node.classList.remove("hidden");
-      });
-    } else {
-      var foundMatch = false;
-      treeNodes.forEach(function(node) {
-        var textContent = node.textContent.trim().toLowerCase();
-        if (textContent.includes(searchTerm)) {
-          node.classList.remove("hidden");
-          foundMatch = true;
-        } else {
-          node.classList.add("hidden");
-        }
-      });
-  
-      if (!foundMatch) {
-        searchEmptyElement.classList.remove("hidden");
-      } else {
-        searchEmptyElement.classList.add("hidden");
-      }
-    }
-  });
-
-    function toggleVisibility(event) {
-        event.preventDefault()
-        const targetElement = event.target.closest("li");
-        const ul = targetElement.querySelector("ul");
-        const icon = targetElement.querySelector("i");
-
-        if (icon.classList.contains("fa-chevron-circle-right")){
-            icon.classList.remove("fa-chevron-circle-right");
-            icon.classList.add("fa-chevron-circle-down");
-        }
-        else{
-            icon.classList.remove("fa-chevron-circle-down");
-            icon.classList.add("fa-chevron-circle-right");
-        }
-        if (ul) {
-            ul.classList.toggle("hidden");
-        }
-    }
-
-    function drop(event) {     
-        var data = event.dataTransfer.getData("text");
-        console.log(data)
-        var draggedElement = document.getElementById(data)
-        var targetElement = event.target.closest("li")
-        var existingUl = targetElement.querySelector("ul");
-        var parentUl = targetElement.closest("ul"); 
-
-        var parentClass = parentUl.className;
-
-        var currentMarginLeft = parseInt(parentClass.match(/pl-([0-9]+)/)[1])
-        var childMargin = currentMarginLeft + 4
-        var childClass = parentClass.replace(/pl-[0-9]+/, "pl-" + childMargin);
-
-        if (!existingUl) {
-            existingUl = document.createElement("ul");
-            existingUl.className = childClass;
-            targetElement.appendChild(existingUl);
-        }
-        existingUl.appendChild(draggedElement);
-
-        const targetId = draggedElement.getAttribute("data-id")
-        const parentId = targetElement.getAttribute("data-id")
-
-        document.getElementById(`drop_parent_${targetId}`).value = parentId
-        document.getElementById(`drop_submit_${targetId}`).click()
-        event.stopPropagation();
-    }
-
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    function drag(event) {
-        event.dataTransfer.setData("text", event.target.id);
-    }
-
-
-</script>
 
 {% endblock product_content %}
 

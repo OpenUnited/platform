@@ -1,11 +1,14 @@
 {% macro generate_product_area_tree(node, product_slug, can_modify_product, depth=1) %}
 {% for child in node %}
-  <li draggable="true" 
+  <li 
       ondragstart="drag(event)" 
       ondragover="allowDrop(event)"  
       id="li_node_{{child.id}}" 
       class="w-full" 
       data-id="{{child.id}}"
+      {% if can_modify_product %} 
+      draggable="true" 
+      {% endif %}
     >
             <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
                 <div class="flex justify-between w-full gap-2 group/item inline-flex">
