@@ -22,7 +22,13 @@ const showNotification = (data) =>{
     const type = data.type || typeError
     const message = `<span class="text-white">${data.message|| "Something went wrong!"} </span>`
     alertify.set('notifier', 'position', 'top-right');
-    alertify.error(message, type);
+
+    if (type==typeSuccess){
+      alertify.success(message);
+    }
+    else if (type==typeError){
+      alertify.error(message);
+    }
   }
 
 
@@ -44,37 +50,32 @@ const authPopUp = (event, signUpUrl, signInUrl) =>{
   signInUrl += '?next=' + encodeURIComponent(currentPageUrl);
 
   alertify.alert().set({'frameless':true, padding: false}).setting({
-    title: 'Sign In or Sign Up',
     message: `
-      <div class="">
-        <div class="relative transform overflow-hidden rounded-lg bg-white px-1 pb-1 pt-5 text-left shadow-xl transition-all">
-          <div class="sm:flex sm:items-start"> 
-            <div class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-600">
-                <i class="fa fa-info text-white"></i>
-            </div>
-            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-              <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Sign In or Sign Up</h3>
-              <div class="mt-2">
-                  <p class="text-gray-700 mb-1">To claim a bounty you need to be signed in.</p>
-                  <p class="text-gray-700 mb-1">
-                    Already have an account?
-                    <a href="${signInUrl}" class="text-blue-500 hover:text-blue-700">Sign in here</a>
-                  </p>
-                  <p class="text-gray-700 mb-1">
-                    New to OpenUnited?
-                    <a href="${signUpUrl}" class="text-blue-500 hover:text-blue-700">Sign up here</a>
-                  </p>
-              </div>
+      <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 px-4 py-3 text-left shadow-xl transition-all">
+        <div class="border-b border-gray-200 flex items-center justify-between">
+          <h3 class="text-lg font-semibold leading-6 text-gray-900 px-4 py-2" id="modal-title">
+            <i class="fa fa-sign-in text-indigo-600 w-5" aria-hidden="true"></i>
+            Sign In or Sign Up
+          </h3>
+        </div>
+        <div class="sm:flex sm:items-start"> 
+          <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+            <div class="border-t border-gray-200 px-4 py-2">
+              <p class="text-gray-800">To claim a bounty, please sign in.</p>
+              <p class="text-gray-800">Already have an account? <a href="${signInUrl}" class="text-blue-500 hover:text-blue-700">Sign in here</a></p>
+              <p class="text-gray-800">New to OpenUnited? <a href="${signUpUrl}" class="text-blue-500 hover:text-blue-700">Sign up here</a></p>
             </div>
           </div>
-          <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse m-2">
-            <button  type="button" onclick="alertify.alert().close();" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
-          </div>
+        </div>
+        <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse m-2">
+          <button type="button" onclick="alertify.alert().close();" class="mt-3 inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:mt-0 sm:w-auto">
+            Close
+          </button>
         </div>
       </div>
     `,
-  }).show();
-
+  }).show()
+  
 }
 
 
