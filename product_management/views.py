@@ -155,22 +155,17 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
         )
         if self.request.user.is_authenticated:
-            context.update(
-                {
-                    "can_edit_product": product_role_assignments.filter(
-                        person=self.request.user.person
-                    ).exists()
-                }
-            )
+            context["can_modify_product"] = product_role_assignments.filter(
+                person=self.request.user.person
+            ).exists()
+
         else:
-            context.update({"can_edit_product": False})
-        context.update(
-            {
-                "product": product,
-                "challenges": challenges,
-                "capabilities": ProductArea.objects.filter(),
-            }
-        )
+            context["can_modify_product"] = False
+
+        context["challenges"] = challenges
+        context["tree_data"] = [
+            utils.serialize_tree(node) for node in ProductArea.get_root_nodes()
+        ]
         return context
 
 
