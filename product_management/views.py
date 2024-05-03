@@ -610,10 +610,6 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
-from django.template import Context, Template
-
-
-# TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, DetailView):
     model = Challenge
     context_object_name = "challenge"
@@ -623,8 +619,12 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
         context = super().get_context_data(**kwargs)
         challenge = self.object
         bounties = challenge.bounty_set.all()
+        claim_status = BountyClaim.Status
 
         extra_data = []
+        user = self.request.user
+        person = user.person if user.is_authenticated else None
+
         for bounty in bounties:
             data = {
                 "bounty": bounty,
@@ -640,41 +640,52 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "bounty_claim_id": None,
             }
 
-            user = self.request.user
-            if user.is_authenticated:
-                person = self.request.user.person
+            if person:
                 data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
                     product=context["product"],
                     role=ProductRoleAssignment.PRODUCT_ADMIN,
                 ).exists()
 
-                bounty_claims = bounty.bountyclaim_set.filter(person=person)
+                bounty_claim = bounty.bountyclaim_set.filter(
+                    person=person
+                ).first()
+                last_claim = bounty.bountyclaim_set.filter(
+                    status__in=[
+                        claim_status.GRANTED,
+                        claim_status.COMPLETED,
+                        claim_status.CONTRIBUTED,
+                    ]
+                ).first()
+
                 if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
-                    has_record = bounty_claims.exists()
-                    data["can_be_claimed"] = not has_record
+                    data["can_be_claimed"] = not bounty_claim
 
-                claim = bounty_claims.first()
-                if claim and claim.status == BountyClaim.Status.REQUESTED:
+                if (
+                    bounty_claim
+                    and bounty_claim.status == claim_status.REQUESTED
+                    and not last_claim
+                ):
                     data["created_bounty_claim_request"] = True
-                    data["bounty_claim"] = claim
+                    data["bounty_claim"] = bounty_claim
 
-                if claim and claim.status == BountyClaim.Status.GRANTED:
-                    data["claimed_by"] = claim.person
-                    data["show_actions"] = data["claimed_by"] == claim.person
+                if last_claim:
+                    data["claimed_by"] = last_claim.person
+
             else:
                 data["can_be_claimed"] = True
+
             data["show_actions"] = (
                 data["can_be_claimed"]
-                | data["can_be_modified"]
-                | data["created_bounty_claim_request"]
+                or data["can_be_modified"]
+                or data["created_bounty_claim_request"]
             )
             data["status"] = Bounty.BOUNTY_STATUS[bounty.status][1]
             extra_data.append(data)
 
         context["bounty_data"] = extra_data
         context["does_have_permission"] = utils.has_product_modify_permission(
-            self.request.user, context.get("product")
+            user, context.get("product")
         )
         return context
 
