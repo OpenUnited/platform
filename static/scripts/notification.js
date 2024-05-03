@@ -1,10 +1,6 @@
 const typeSuccess="success"
 const typeError="error"
 
-{/* 
-
-*/}
-
 const openVideoModal = (videoLink) => {
   alertify.alert().setting({
       modal: true,
@@ -24,11 +20,10 @@ const openVideoModal = (videoLink) => {
 
 const showNotification = (data) =>{
     const type = data.type || typeError
-    const message = data.message|| "Something went wrong!"
-    const title =  data.title|| 'Error'
+    const message = `<span class="text-white">${data.message|| "Something went wrong!"} </span>`
     alertify.set('notifier', 'position', 'top-right');
-    alertify.notify(message, type)
-    }
+    alertify.error(message, type);
+  }
 
 
 const showConfirm = (data) =>{
@@ -83,6 +78,43 @@ const authPopUp = (event, signUpUrl, signInUrl) =>{
 }
 
 
+function claimConfirm(event, termConditionUrl){
+  alertify.confirm('Bounty Claim', `
+  <hr><br>
+  <form class="w-full max-w-sm confirm-form">
+      <div class="w-full px-3">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="expected_submission_date">
+              Expected Submission Date
+          </label>
+          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="expected_submission_date" type="date" placeholder="DD/MM/YY" required>
+      </div>
 
+      <div class="w-full px-3">
+          <input id="term_checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  focus:ring-2" required>
+          <label for="term_checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I accept the <a href="${termConditionUrl}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">terms and conditions</a>.</label>
+      </div>
+  </form>
+`, function () {
+      const inputField = document.getElementById("expected_submission_date");
+      const checkbox = document.getElementById("term_checkbox");
+      const form = document.querySelector('.confirm-form');
+      if (!form.checkValidity()) {
+          const formControls = form.querySelectorAll('input');
+          formControls.forEach(function (control) {
+              if (!control.checkValidity()) {
+                  control.reportValidity();
+              }   
+          });
+          return false;
+      } else {
+          const data = {
+              are_terms_accepted: true,
+              expected_finish_date: inputField.value,
+          };
+          event.target.setAttribute("hx-vals", JSON.stringify(data));
 
-
+          event.detail.issueRequest()
+          this.close();
+      }
+  }, function () {}).set('labels', {ok: 'Request claim', cancel: 'Cancel'})
+}

@@ -1,4 +1,4 @@
-{% macro generate_product_area_tree(node, product_slug, depth=1) %}
+{% macro generate_product_area_tree(node, product_slug, can_modify_product, depth=1) %}
 {% for child in node %}
   <li draggable="true" 
       ondragstart="drag(event)" 
@@ -26,7 +26,7 @@
                         {% endwith %}
                         </a> 
                     </div>
-                    {% with id=child.id, depth=depth %}
+                    {% with id=child.id, depth=depth, can_modify_product=can_modify_product%}
                         {% include "product_management/tree_helper/action_buttons.html" %}
                     {% endwith %}
                 </div>
@@ -45,7 +45,7 @@
 
         {% if child["children"] %}
             <ul ondrop="drop(event)" class="hidden pl-{{depth * 4}}">
-                {{ generate_product_area_tree(child["children"], product_slug, depth + 1)}}
+                {{ generate_product_area_tree(child["children"], product_slug, can_modify_product, depth + 1)}}
             </ul>
         {% endif %}
         </li>

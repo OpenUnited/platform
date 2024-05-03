@@ -1,7 +1,7 @@
 import os
 from datetime import date
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.core.exceptions import ValidationError
@@ -314,11 +314,27 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     def get_product_detail_url(self):
         return self.bounty.challenge.product.get_absolute_url()
 
-    def save(self, *args, **kwargs):
-        if self.status == self.Status.COMPLETED:
-            self.person.status.add_points(self.bounty.points)
+    @receiver(pre_save, sender="talent.BountyClaim")
+    def _pre_save(sender, instance, **kwargs):
+        from product_management.models import Bounty
 
-        super().save(*args, **kwargs)
+        if instance.status == instance.Status.COMPLETED:
+            instance.person.status.add_points(instance.bounty.points)
+
+        bounty_to_bounty_claim_status = {
+            sender.Status.REQUESTED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.CANCELLED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.FAILED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.REJECTED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.GRANTED: Bounty.BOUNTY_STATUS_CLAIMED,
+            sender.Status.COMPLETED: Bounty.BOUNTY_STATUS_DONE,
+            sender.Status.CONTRIBUTED: Bounty.BOUNTY_STATUS_IN_REVIEW,
+        }
+
+        if instance.status in bounty_to_bounty_claim_status:
+            bounty = instance.bounty
+            bounty.status = bounty_to_bounty_claim_status[instance.status]
+            bounty.save()
 
     def __str__(self):
         return f"{self.bounty.challenge}: {self.person} ({self.status})"
