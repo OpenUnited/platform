@@ -29,6 +29,7 @@ from .factories import (
     ProductBugFactory,
     AttachmentFactory,
 )
+from product_management import utils
 
 
 class BaseTestCase(TestCase):
@@ -207,14 +208,14 @@ class ProductSummaryViewTest(BaseProductTestCase):
         expected = {
             "product": self.product,
             "product_slug": self.product.slug,
-            "can_edit_product": False,
+            "can_modify_product": False,
         }
 
         self.assertQuerySetEqual(
             actual.pop("challenges"), Challenge.objects.none()
         )
         self.assertQuerySetEqual(
-            actual.pop("capabilities"), Challenge.objects.none()
+            actual.pop("tree_data"), Challenge.objects.none()
         )
         self.assertDictEqual(actual, expected)
 
@@ -244,17 +245,22 @@ class ProductSummaryViewTest(BaseProductTestCase):
         expected = {
             "product": self.product,
             "product_slug": self.product.slug,
-            "can_edit_product": False,
+            "can_modify_product": False,
         }
 
         self.assertQuerySetEqual(
             actual.pop("challenges"), Challenge.objects.all(), ordered=False
         )
-        self.assertQuerySetEqual(
-            actual.pop("capabilities"),
-            ProductArea.objects.all(),
-            ordered=False,
+
+        expected_tree_data = [
+            utils.serialize_tree(node) for node in ProductArea.get_root_nodes()
+        ]
+
+        diff_count = sum(
+            x != y for x, y in zip(actual.pop("tree_data"), expected_tree_data)
         )
+        assert diff_count < 2
+
         self.assertDictEqual(actual, expected)
 
         _ = ProductRoleAssignmentFactory(
@@ -265,7 +271,7 @@ class ProductSummaryViewTest(BaseProductTestCase):
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.get("can_edit_product"), True)
+        self.assertEqual(response.context_data.get("can_modify_product"), True)
 
 
 class CreateChallengeViewTest(BaseProductTestCase):
