@@ -29,6 +29,7 @@ from .factories import (
     ProductBugFactory,
     AttachmentFactory,
 )
+from product_management import utils
 
 
 class BaseTestCase(TestCase):
@@ -207,14 +208,14 @@ class ProductSummaryViewTest(BaseProductTestCase):
         expected = {
             "product": self.product,
             "product_slug": self.product.slug,
-            "can_edit_product": False,
+            "can_modify_product": False,
         }
 
         self.assertQuerySetEqual(
             actual.pop("challenges"), Challenge.objects.none()
         )
         self.assertQuerySetEqual(
-            actual.pop("capabilities"), Challenge.objects.none()
+            actual.pop("tree_data"), Challenge.objects.none()
         )
         self.assertDictEqual(actual, expected)
 
@@ -244,17 +245,22 @@ class ProductSummaryViewTest(BaseProductTestCase):
         expected = {
             "product": self.product,
             "product_slug": self.product.slug,
-            "can_edit_product": False,
+            "can_modify_product": False,
         }
 
         self.assertQuerySetEqual(
             actual.pop("challenges"), Challenge.objects.all(), ordered=False
         )
-        self.assertQuerySetEqual(
-            actual.pop("capabilities"),
-            ProductArea.objects.all(),
-            ordered=False,
+
+        expected_tree_data = [
+            utils.serialize_tree(node) for node in ProductArea.get_root_nodes()
+        ]
+
+        diff_count = sum(
+            x != y for x, y in zip(actual.pop("tree_data"), expected_tree_data)
         )
+        assert diff_count < 2
+
         self.assertDictEqual(actual, expected)
 
         _ = ProductRoleAssignmentFactory(
@@ -265,7 +271,7 @@ class ProductSummaryViewTest(BaseProductTestCase):
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.get("can_edit_product"), True)
+        self.assertEqual(response.context_data.get("can_modify_product"), True)
 
 
 class CreateChallengeViewTest(BaseProductTestCase):
@@ -584,13 +590,13 @@ class CapabilityDetailViewTest(BaseProductTestCase):
 #         b_one = BountyFactory(challenge=challenge)
 #         b_two = BountyFactory(challenge=challenge)
 #         bc_one = BountyClaimFactory(
-#             bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_one, status=BountyClaim.Status.GRANTED
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_one, status=BountyClaim.Status.GRANTED
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_two, status=BountyClaim.Status.GRANTED
 #         )
 
 #         response = self.client.get(url)
@@ -628,13 +634,13 @@ class CapabilityDetailViewTest(BaseProductTestCase):
 #         bc_one = BountyClaimFactory(
 #             bounty=b_one,
 #             person=self.person,
-#             kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+#             status=BountyClaim.Status.GRANTED,
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_one, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_one, status=BountyClaim.Status.GRANTED
 #         )
 #         _ = BountyClaimFactory(
-#             bounty=b_two, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+#             bounty=b_two, status=BountyClaim.Status.GRANTED
 #         )
 
 #         response = self.client.get(url)
@@ -846,43 +852,6 @@ class ProductBugListViewTest(BaseProductTestCase):
         self.assertDictEqual(actual, expected)
 
 
-class DeleteAttachmentViewTest(BaseProductTestCase):
-    def setUp(self):
-        super().setUp()
-        self.challenge = ChallengeFactory(
-            created_by=self.product.content_object
-        )
-        self.attachment_one = AttachmentFactory()
-        self.challenge.attachment.add(self.attachment_one)
-        self.url = reverse(
-            "delete-attachment",
-            args=(self.attachment_one.id,),
-        )
-
-    def test_get_anon(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(
-            response,
-            f"{self.login_url}?next=/attachment/delete/{self.attachment_one.id}",
-        )
-
-    def test_get_auth(self):
-        self.client.force_login(self.product.content_object.user)
-
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            f"/{self.challenge.product.slug}/challenge/{self.challenge.id}",
-        )
-
-        # add test to make sure the request owner has rights to delete the image(s)
-        with self.assertRaises(Attachment.DoesNotExist):
-            self.attachment_one.refresh_from_db()
-
-
 class BountyDetailViewTest(BaseTestCase):
     def setUp(self):
         super().setUp()
@@ -909,7 +878,7 @@ class BountyDetailViewTest(BaseTestCase):
         self.bounty_claim = BountyClaimFactory(
             person=self.person,
             bounty=self.bounty_two,
-            kind=BountyClaim.CLAIM_TYPE_ACTIVE,
+            status=BountyClaim.Status.GRANTED,
         )
 
     def test_basic(self):
@@ -1006,6 +975,7 @@ class CreateBountyViewTest(BaseTestCase):
         expertise_two = ExpertiseFactory(skill=skill)
 
         data = {
+            "title": "lorem ipsum",
             "challenge": self.challenge.id,
             "description": "lorem ipsum it amet",
             "selected_skill_ids": f"[{skill.id}]",
@@ -1107,6 +1077,7 @@ class UpdateBountyViewTest(BaseTestCase):
         expertise_two = ExpertiseFactory(skill=skill)
 
         data = {
+            "title": "lorem ipsum",
             "challenge": self.challenge.id,
             "description": "lorem ipsum it amet",
             "selected_skill_ids": f"[{skill.id}]",

@@ -1,0 +1,37 @@
+
+{% import "product_management/tree_helper/product_tree_macros.html" as product_area_macros %}
+
+<li draggable="true" id="li_node_{{product_area.id}}" class="ml-{{margin_left}}">
+    <div  class="flex flex-col items-start gap-2 group/item block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 w-full">
+        <div class="flex justify-between w-full gap-2 group/item inline-flex">
+            <div class="flex justify-start">
+                <button onclick="toggleVisibility(event)" class="mr-2">
+                    <i class="fa fa-chevron-circle-right text-gray-400" aria-hidden="true"></i>
+                </button>
+
+                <a href="{{ url('product_area_update', args=(product_slug, product_area.id,)) }}">
+                    <a class="flex justify-between" href="{{ url('product_area_update', args=(product_slug, product_area.id,)) }}">
+                        <span class="w-full">
+                            {% include "product_management/tree_helper/drag.html" %} {{ product_area.name }} 
+
+           
+                        </span>
+                        {% with child=product_area %}
+                        {% include "product_management/tree_helper/video.html" %}
+                    {% endwith %}
+                    </a> 
+                </a> 
+            </div>
+            {% with id=product_area.id %}
+                {% include "product_management/tree_helper/action_buttons.html" %}
+            {% endwith %}
+        </div>
+
+        <div class="description view-node-group text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">{{ product_area.description }}</div>
+    </div>
+
+    <ul class="hidden pl-{{depth * 4}}">
+        {{ product_area_macros.generate_product_area_tree(descendants,product_slug,can_modify_product, depth+1) }}
+    </ul>
+
+</li>

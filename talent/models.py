@@ -1,7 +1,7 @@
 import os
 from datetime import date
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.core.exceptions import ValidationError
@@ -286,17 +286,15 @@ class Expertise(AncestryMixin):
 
 
 class BountyClaim(TimeStampMixin, UUIDMixin):
-    CLAIM_TYPE_DONE = 0
-    CLAIM_TYPE_ACTIVE = 1
-    CLAIM_TYPE_FAILED = 2
-    CLAIM_TYPE_IN_REVIEW = 3
+    class Status(models.TextChoices):
+        REQUESTED = "Requested"
+        CANCELLED = "Cancelled"
+        REJECTED = "Rejected"
+        GRANTED = "Granted"
+        CONTRIBUTED = "Contributed"
+        COMPLETED = "Completed"
+        FAILED = "Failed"
 
-    CLAIM_TYPE = (
-        (CLAIM_TYPE_DONE, "Done"),
-        (CLAIM_TYPE_ACTIVE, "Active"),
-        (CLAIM_TYPE_FAILED, "Failed"),
-        (CLAIM_TYPE_IN_REVIEW, "In review"),
-    )
     bounty = models.ForeignKey(
         "product_management.Bounty", on_delete=models.CASCADE
     )
@@ -304,9 +302,11 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         Person, on_delete=models.CASCADE, blank=True, null=True
     )
     expected_finish_date = models.DateField(default=date.today)
-    kind = models.IntegerField(
-        choices=CLAIM_TYPE, default=CLAIM_TYPE_IN_REVIEW
-    )
+    status = models.CharField(choices=Status.choices, default=Status.REQUESTED)
+
+    class Meta:
+        unique_together = ("bounty", "person")
+        ordering = ("-created_at",)
 
     def get_challenge_detail_url(self):
         return self.bounty.challenge.get_absolute_url()
@@ -314,14 +314,30 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     def get_product_detail_url(self):
         return self.bounty.challenge.product.get_absolute_url()
 
-    def save(self, *args, **kwargs):
-        if self.kind == self.CLAIM_TYPE_DONE:
-            self.person.status.add_points(self.bounty.points)
+    @receiver(pre_save, sender="talent.BountyClaim")
+    def _pre_save(sender, instance, **kwargs):
+        from product_management.models import Bounty
 
-        super().save(*args, **kwargs)
+        if instance.status == instance.Status.COMPLETED:
+            instance.person.status.add_points(instance.bounty.points)
+
+        bounty_to_bounty_claim_status = {
+            sender.Status.REQUESTED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.CANCELLED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.FAILED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.REJECTED: Bounty.BOUNTY_STATUS_AVAILABLE,
+            sender.Status.GRANTED: Bounty.BOUNTY_STATUS_CLAIMED,
+            sender.Status.COMPLETED: Bounty.BOUNTY_STATUS_DONE,
+            sender.Status.CONTRIBUTED: Bounty.BOUNTY_STATUS_IN_REVIEW,
+        }
+
+        if instance.status in bounty_to_bounty_claim_status:
+            bounty = instance.bounty
+            bounty.status = bounty_to_bounty_claim_status[instance.status]
+            bounty.save()
 
     def __str__(self):
-        return f"{self.bounty.challenge}: {self.person} ({self.get_kind_display()})"
+        return f"{self.bounty.challenge}: {self.person} ({self.status})"
 
 
 class Comment(MP_Node):

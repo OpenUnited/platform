@@ -272,9 +272,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         null=True,
         editable=False,
     )
-    reviewer = models.ForeignKey(
-        "talent.Person", on_delete=models.SET_NULL, null=True
-    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     video_url = models.URLField(blank=True, null=True)
     contribution_guide = models.ForeignKey(
@@ -364,7 +361,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
             filter_data["created_by__in"] = task_creator
 
         if assignee:
-            filter_data["bountyclaim__kind__in"] = [0, 1]
+            filter_data["bountyclaim__status__in"] = [0, 1]
             filter_data["bountyclaim__person_id__in"] = assignee
 
         if skills:
@@ -393,7 +390,7 @@ class Bounty(TimeStampMixin):
         (BOUNTY_STATUS_DONE, "Done"),
         (BOUNTY_STATUS_IN_REVIEW, "In review"),
     )
-
+    title = models.CharField(max_length=400)
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     description = models.TextField()
     skill = models.ForeignKey(

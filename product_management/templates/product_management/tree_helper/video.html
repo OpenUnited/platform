@@ -1,21 +1,21 @@
     <span class="flex flex-wrap items-center font-semibold">
-        
-        {% include "product_management/tree_helper/name.html" %}
-
-        {% if item['video_link'] %}
+        {% if child.video_link %}
             <button 
-                class="btn-video__open appearance-none rounded border border-light-gray flex items-center whitespace-nowrap px-6 py-2"
-                data-video="{{item['video_link']}}"
+                class="appearance-none rounded border border-light-gray flex items-center whitespace-nowrap px-4 py-2"
+                data-video="{{ child.video_link }}"
+                onclick="event.preventDefault(); openVideoModal('{{ child.video_link }}')"
             >
-                <img src="{{ static('images/play.svg') }}" class="btn-video__open w-[14px] h-[15px]" alt="#">
+                <img src="{{ static('images/play.svg') }}" class="btn-video__open w-[14px] h-[15px]" alt="#"
+                    onclick="event.preventDefault();"
+                >
                 <span class="btn-video__open text-dark text-sm ml-[9px] font-normal font-medium">
-                    {% if item['video_name'] %} 
-                        {{ item['video_name'] }} 
+                    {% if child.video_name %} 
+                        {{ child.video_name }} 
                     {% endif %}
 
                     <span class="text-gray-dark">
-                        {% if item['video_duration'] %} 
-                            ({{ item['video_duration'] }})
+                        {% if child.video_duration %} 
+                            ({{ child.video_duration }})
                         {% endif %}
                     </span>
                 </span>

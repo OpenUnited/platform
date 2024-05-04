@@ -23,10 +23,12 @@ class ProductAreaAttachmentAdmin(admin.ModelAdmin):
 @admin.register(product.Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
     def capability_name(self, obj):
-        if obj.capability:
-            return obj.capability.name
-
-        return "-"
+        return obj.capability.name if obj.capability else "-"
 
     list_display = ["pk", "title", "status", "priority", "capability_name"]
     search_fields = ["title"]
+
+
+@admin.register(product.Bounty)
+class BountyAdmin(admin.ModelAdmin):
+    list_display = ["pk", "title", "status"]

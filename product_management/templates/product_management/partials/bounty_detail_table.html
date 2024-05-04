@@ -1,27 +1,29 @@
 {% if bounty_data %}
-<div class="my-2.5 font-medium text-sm text-black/[0.85]">Bounty Table</div>
-
 <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
+                <th scope="col" class="px-2 py-3">
+                    Bounty
+                </th>
                 <th scope="col" class="px-2 py-3">
                     Skill
                 </th>
                 <th scope="col" class="px-2 py-3">
                     Expertise
                 </th>
+
                 <th scope="col" class="px-2 py-3">
                     Points
                 </th>
                 <th scope="col" class="px-2 py-3">
-                    Claimed
+                    Status
                 </th>
                 <th scope="col" class="px-2 py-3">
-                    Action
+                    Claimed By
                 </th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                    <span class="sr-only">Details</span>
+                <th scope="col" class="px-2 py-3">
+                    Actions
                 </th>
             </tr>
         </thead>
@@ -29,6 +31,10 @@
             {% for elem in bounty_data %}
             {% set bounty = elem.bounty %}
             <tr class="bg-white border-b">
+                <td class="relative whitespace-normal py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
+                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                        class="text-indigo-600 hover:text-indigo-900">{{ bounty.title }}</a>
+                </td>
                 <th scope="row" class="px-2 py-1 font-medium text-gray-900 whitespace-nowrap">
                     {{ bounty.skill }}
                 </th>
@@ -39,38 +45,61 @@
                     {{ bounty.points }}
                 </td>
                 <td class="px-2 py-1">
-                    {% if elem.is_claimed %}
-                    <p>This bounty is not available for claiming.</p>
-                    {% elif elem.current_user_created_claim_request %}
-                    <p>You have created a claim request for this bounty.</p>
-                    {% else %}
-                    <p>
-                        <a href="{{ url('bounty-claim', args=(bounty.challenge.pk,)) }}"
-                            class="px-4 py-2 rounded-md bg-blue-400 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-400/[0.85] transition-all">
-                            Claim
-                        </a>
-                    </p>
-                    {% endif %}
+                    {{ elem.status }}
                 </td>
                 <td class="px-2 py-1">
-                    <div class="flex">
-                        {% if elem.actions_available %}
+
+                    {% set claimed_by = elem.claimed_by %}
+
+                    {% if bounty.status == 2 %}
+                        Unclaimed
+                    {% elif claimed_by %}
+                    <div class="flex items-center text-xs text-black/[0.85]">
+                        <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center ml-4">
+                            <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
+                                <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
+                                    src="{{ claimed_by.get_photo_url() }}" alt="Created By">
+                            </div>
+                            <div class="text-neutral-800">
+                                {{ claimed_by.get_full_name() }}
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                    <p>
+                    </p>
+                </td>
+                <td class="relative whitespace-nowrap">
+                    {% if elem.show_actions %}
+                        {% if elem.can_be_claimed %}
+                            {% with bounty=elem.bounty %}
+                                {% include 'product_management/partials/buttons/create_bounty_claim_button.html' %}
+                            {% endwith %}
+                        {% endif %}
+
+                    {% if elem.can_be_modified %}
                         <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                            class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Edit</a>
+                            class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Edit</a>
+
                         <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
                             hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
                             hx-push-url="true"
-                            class="cursor-pointer font-medium text-red-600 hover:underline">Delete</a>
+                            class="text-red-700 cursor-pointer hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mr-1">Delete
+                        </a>
+                    {% endif %}
+                    
+                    {% if elem.created_bounty_claim_request %}
+                        {% with bounty_claim=elem.bounty_claim %}
+                            {% include 'product_management/partials/buttons/delete_bounty_claim_button.html' %}
+                        {% endwith %}
+                    {% endif %}
 
-                        {% else %}
+                    {% else %}
                         <p>No action is available for this bounty.</p>
-                        {% endif  %}
-                    </div>
+                    {% endif %}
+
                 </td>
-                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
-                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                        class="text-indigo-600 hover:text-indigo-900">Details</a>
-                </td>
+
             </tr>
             {% endfor %}
         </tbody>
@@ -102,3 +131,39 @@
 {% endif %}
 
 {% endif %}
+
+<script>
+    document.addEventListener('htmx:confirm', function (event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+            event.preventDefault()
+            claimConfirm(event, "{{ url('terms-of-use') }}")
+        }
+    })
+
+    document.addEventListener('htmx:confirm', function (event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+            event.preventDefault()
+            claimConfirm(event, "{{ url('terms-of-use') }}")
+        }
+    })
+    document.addEventListener('htmx:responseError', function(event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+          showNotification({message: JSON.parse(event.detail.xhr.response).errors.expected_finish_date})
+        }
+      });
+
+    document.addEventListener('htmx:afterRequest', function (event) {
+        if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
+            var response = JSON.parse(event.detail.xhr.responseText);
+            if (event.detail.xhr.status === 200) {
+                const tdTag = event.target.closest("td")
+                event.target.classList.add("hidden")
+                const visibleButtonCount = tdTag.querySelectorAll('a:not([class*="hidden"]').length;
+                if (visibleButtonCount == 0) {
+                    tdTag.innerHTML = "No action is available for this bounty.";
+                    tdTag.classList.remove("hidden")
+                }
+            }
+        }
+    });
+</script>

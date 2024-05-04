@@ -316,16 +316,6 @@ class ChallengeForm(forms.ModelForm):
         help_text="To select multiple files, hold 'Shift' key for Windows, 'Command' for MacOS",
         required=False,
     )
-    # TODO: limit this with ProductRoleAssignment
-    # reviewer = forms.ModelChoiceField(
-    #     empty_label="Select a reviewer",
-    #     queryset=ProductRoleAssignment.objects.none(),
-    #     widget=forms.Select(
-    #         attrs={
-    #             "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
-    #         }
-    #     ),
-    # )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -433,9 +423,15 @@ class BountyForm(forms.ModelForm):
 
     class Meta:
         model = Bounty
-        fields = ["description", "points", "status", "is_active"]
+        fields = ["title", "description", "points", "status", "is_active"]
 
         widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "placeholder": "Enter the title here ...",
+                }
+            ),
             "description": forms.Textarea(
                 attrs={
                     "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",

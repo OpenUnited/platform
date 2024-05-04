@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -11,16 +12,17 @@ from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.exceptions import BadRequest, PermissionDenied
+from django.views import View
 from django.views.generic import (
     ListView,
     TemplateView,
     RedirectView,
-    FormView,
     CreateView,
     UpdateView,
     DeleteView,
     DetailView,
 )
+from django.views import View
 
 from .forms import (
     BountyClaimForm,
@@ -56,6 +58,7 @@ from openunited.mixins import HTMXInlineFormValidationMixin
 
 from .filters import ChallengeFilter
 from product_management import utils
+import uuid
 
 
 class ChallengeListView(ListView):
@@ -64,6 +67,13 @@ class ChallengeListView(ListView):
     template_name = "product_management/challenges.html"
     paginate_by = 8
     filterset_class = ChallengeFilter
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return [
+                "product_management/partials/challenge_filter_partial.html"
+            ]
+        return super().get_template_names()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -116,18 +126,11 @@ class ProductListView(ListView):
 class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         product = get_object_or_404(
             Product, slug=self.kwargs.get("product_slug", None)
         )
-
-        context.update(
-            {
-                "product": product,
-                "product_slug": product.slug,
-            }
-        )
-
+        context["product"] = product
+        context["product_slug"] = product.slug
         return context
 
 
@@ -152,22 +155,17 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
             Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
         )
         if self.request.user.is_authenticated:
-            context.update(
-                {
-                    "can_edit_product": product_role_assignments.filter(
-                        person=self.request.user.person
-                    ).exists()
-                }
-            )
+            context["can_modify_product"] = product_role_assignments.filter(
+                person=self.request.user.person
+            ).exists()
+
         else:
-            context.update({"can_edit_product": False})
-        context.update(
-            {
-                "product": product,
-                "challenges": challenges,
-                "capabilities": ProductArea.objects.filter(),
-            }
-        )
+            context["can_modify_product"] = False
+
+        context["challenges"] = challenges
+        context["tree_data"] = [
+            utils.serialize_tree(node) for node in ProductArea.get_root_nodes()
+        ]
         return context
 
 
@@ -237,55 +235,13 @@ class ProductTreeView(BaseProductDetailView, TemplateView):
 
 
 class ProductAreaCreateView(BaseProductDetailView, CreateView):
-    template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = ProductAreaForm
-
-    def is_ajax(self):
-        if self.request.headers.get("x-requested-with") == "XMLHttpRequest":
-            return True
-        return False
-
-    def get_success_url(self):
-        conttext = self.get_context_data()
-        return reverse("product_tree", args=(conttext.get("product").slug,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = utils.has_product_modify_permission(
-            self.request.user, context["product"]
-        )
-        return context
-
-    @utils.modify_permission_required
-    def form_valid(self, form):
-        if parent_id := self.request.POST.get("parent_id", None):
-            parent = self.model.objects.get(pk=parent_id)
-            parent.add_child(**form.cleaned_data)
-        else:
-            self.model.add_root(**form.cleaned_data)
-
-        return JsonResponse({"success": True})
-
-    def form_invalid(self, form):
-        if self.is_ajax():
-            return JsonResponse({"errors": form.errors}, status=400)
-        return redirect(self.get_success_url())
-
-
-class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
-    template_name = "product_management/product_area_detail.html"
-    model = ProductArea
-    form_class = ProductAreaForm
-
-    def is_ajax(self):
-        return self.request.headers.get("x-requested-with") == "XMLHttpRequest"
+    template_name = "product_management/tree_helper/create_node_partial.html"
 
     def get_template_names(self):
-        if self.request.htmx:
-            return (
-                "product_management/product_area_detail_helper/empty_form.html"
-            )
+        if self.request.method == "POST":
+            return ["product_management/tree_helper/add_node_partial.html"]
         return super().get_template_names()
 
     def get_context_data(self, **kwargs):
@@ -293,68 +249,159 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
         context["can_modify_product"] = utils.has_product_modify_permission(
             self.request.user, context["product"]
         )
-        product_area = self.get_object()
-        context["product_area_form"] = ProductAreaForm(
-            can_modify_product=context["can_modify_product"]
-        )
-
-        context["form"] = ProductAreaForm(
-            instance=product_area,
-            can_modify_product=context["can_modify_product"],
-        )
-
-        context["attachment_formset"] = ProductAreaAttachmentSet(
-            self.request.POST or None,
-            self.request.FILES or None,
-            instance=product_area,
-        )
-        context["challenges"] = Challenge.objects.filter(
-            capability=product_area
-        )
         return context
+
+    # @utils.modify_permission_required
+    def post(self, request, **kwargs):
+        form = ProductAreaForm(request.POST)
+        if not form.is_valid():
+            return render(request, self.get_template_names(), form.errors)
+        context = {
+            "product_slug": kwargs.get("product_slug"),
+        }
+        return self.valid_form(request, form, context)
+
+    def valid_form(self, request, form, context):
+        if request.POST.get("parent_id") == "None":
+            new_node = ProductArea.add_root(**form.cleaned_data)
+        else:
+            parent_id = request.POST.get("parent_id")
+            parent = ProductArea.objects.get(pk=parent_id)
+            context["parent_id"] = parent_id
+            new_node = parent.add_child(**form.cleaned_data)
+        context["product_area"] = new_node
+        context["node"] = new_node
+        context["depth"] = int(request.POST.get("depth", 0))
+        return render(request, self.get_template_names(), context)
+
+    def get(self, request, *args, **kwargs):
+        product_area = ProductArea.objects.first()
+        if request.GET.get("parent_id"):
+            margin_left = int(request.GET.get("margin_left", 0)) + 4
+        else:
+            margin_left = request.GET.get("margin_left", 0)
+
+        context = {
+            "id": str(uuid.uuid4())[:8],
+            "product_area": product_area,
+            "parent_id": request.GET.get("parent_id"),
+            "margin_left": margin_left,
+            "depth": request.GET.get("depth", 0),
+            "product_slug": kwargs.get("product_slug"),
+        }
+        return render(request, self.get_template_names(), context)
+
+
+class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
+    template_name = "product_management/product_area_detail.html"
+    model = ProductArea
+    form_class = ProductAreaForm
 
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
         product_area = self.get_object()
-
         return reverse(
-            "product_area_with_pk", args=(product_slug, product_area.pk)
+            "product_area_update", args=(product_slug, product_area.pk)
         )
 
-    @utils.modify_permission_required
-    def form_valid(self, form):
-        if self.is_ajax():
-            if bool(self.request.POST.get("is_drag")):
-                if parent_id := self.request.POST.get("parent_id"):
-                    parent = ProductArea.objects.get(pk=parent_id)
-                    self.object.move(parent, "first-child")
-                    return JsonResponse({"success": True})
-                else:
-                    self.object.move(None, "first-sibling")
-                    return JsonResponse({"success": True})
+    def get_context_data(self, **kwargs):
+        product = Product.objects.get(slug=self.kwargs.get("product_slug"))
+        product_perm = utils.has_product_modify_permission(
+            self.request.user, product
+        )
+        product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
 
+        attachment_formset = ProductAreaAttachmentSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+            instance=product_area,
+        )
+        challenges = Challenge.objects.filter(capability=product_area)
+
+        form = ProductAreaForm(
+            instance=product_area, can_modify_product=product_perm
+        )
+        return {
+            "product": product,
+            "product_slug": product.slug,
+            "can_modify_product": product_perm,
+            "form": form,
+            "attachment_formset": attachment_formset,
+            "challenges": challenges,
+            "product_area": product_area,
+        }
+
+    def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-        attachment_formset = context["attachment_formset"]
-        if attachment_formset.is_valid():
-            self.object = form.save()
-            attachment_formset.instance = self.object
-            attachment_formset.save()
-        return super().form_valid(form)
+        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
+        context["depth"] = int(request.GET.get("depth", 0))
 
-    def form_invalid(self, form):
-        if self.is_ajax():
-            return JsonResponse({"errors": form.errors}, status=400)
-        return super().form_invalid(form)
+        if request.htmx and request.GET.get("is_attachment", False):
+            template_name = (
+                "product_management/product_area_detail_helper/empty_form.html"
+            )
+        elif request.htmx:
+            template_name = (
+                "product_management/tree_helper/update_node_partial.html"
+            )
+        else:
+            template_name = "product_management/product_area_detail.html"
 
+        return render(request, template_name, context)
+
+    def form_valid(self, form):
+        request = self.request
+        context = self.get_context_data()
+        product_area = context["product_area"]
+        product = context["product"]
+
+        has_cancelled = bool(request.POST.get("cancelled", False))
+        has_dropped = bool(request.POST.get("has_dropped", False))
+        parent_id = request.POST.get("parent_id")
+
+        if request.htmx:
+            if not has_cancelled and has_dropped and parent_id:
+                parent = ProductArea.objects.get(pk=parent_id)
+                product_area.move(parent, "last-child")
+                return JsonResponse({})
+
+            if not has_cancelled and form.is_valid():
+                product_area.name = form.cleaned_data["name"]
+                product_area.description = form.cleaned_data["description"]
+                product_area.save()
+
+            context["parent_id"] = int(request.POST.get("parent_id", 0))
+            context["depth"] = int(request.POST.get("depth", 0))
+            context["descendants"] = utils.serialize_tree(product_area)[
+                "children"
+            ]
+            context["product"] = product
+            template_name = (
+                "product_management/tree_helper/add_node_partial.html"
+            )
+            return render(request, template_name, context)
+        else:
+            attachment_formset = context["attachment_formset"]
+            if form.is_valid() and attachment_formset.is_valid():
+                obj = form.save()
+                attachment_formset.instance = obj
+                attachment_formset.save()
+
+            return super().form_valid(form)
+
+
+class ProductAreaDetailDeleteView(View):
     def delete(self, request, *args, **kwargs):
-        obj = ProductArea.objects.get(pk=kwargs.get("pk"))
-        if obj.numchild > 0:
+        product_area = ProductArea.objects.get(pk=kwargs.get("pk"))
+        if product_area.numchild > 0:
             return JsonResponse(
                 {"error": "Unable to delete a node with a child."}, status=400
             )
 
-        ProductArea.objects.get(pk=kwargs.get("pk")).delete()
-        return JsonResponse({"success": True}, status=204)
+        product_area.delete()
+        return JsonResponse(
+            {"message": "The node has been deleted successfully"}, status=204
+        )
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
@@ -366,27 +413,70 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
             self.request.user, context["product"]
         )
         capability_root_trees = ProductArea.get_root_nodes()
-
-        def serialize_tree(node):
-            serialized_node = {
-                "id": node.pk,
-                "name": node.name,
-                "description": node.description,
-                "video_link": node.video_link,
-                "video_name": node.video_name,
-                "video_duration": node.video_duration,
-                "has_saved": True,
-                "children": [
-                    serialize_tree(child) for child in node.get_children()
-                ],
-            }
-            return serialized_node
-
         context["tree_data"] = [
-            serialize_tree(node) for node in capability_root_trees
+            utils.serialize_tree(node) for node in capability_root_trees
         ]
 
         return context
+
+
+def update_node(request, pk):
+    product_area = ProductArea.objects.get(pk=pk)
+    context = {
+        "product_area": product_area,
+        "product_slug": product_area.slug,
+        "node": product_area,
+    }
+    if request.method == "POST":
+        form = ProductAreaForm(request.POST)
+        has_cancelled = bool(request.POST.get("cancelled", False))
+        has_dropped = bool(request.POST.get("has_dropped", False))
+
+        parent_id = request.POST.get("parent_id")
+        if not has_cancelled and has_dropped and parent_id:
+            parent = ProductArea.objects.get(pk=parent_id)
+            product_area.move(parent, "last-child")
+            return JsonResponse({})
+
+        if not has_cancelled and form.is_valid():
+            product_area.name = form.cleaned_data["name"]
+            product_area.description = form.cleaned_data["description"]
+            product_area.save()
+
+        context["parent_id"] = int(request.POST.get("parent_id", 0))
+        context["depth"] = int(request.POST.get("depth", 0))
+        context["descendants"] = utils.serialize_tree(product_area)["children"]
+        context["product"] = Product.objects.first()
+        template_name = "product_management/tree_helper/add_node_partial.html"
+
+    elif request.method == "GET":
+        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
+        context["depth"] = int(request.GET.get("depth", 0))
+        template_name = (
+            "product_management/tree_helper/update_node_partial.html"
+        )
+
+    elif request.method == "DELETE":
+        if product_area.numchild > 0:
+            return JsonResponse(
+                {"error": "Unable to delete a node with a child."}, status=400
+            )
+        ProductArea.objects.filter(pk=pk).delete()
+        return JsonResponse(
+            {"message:": "The node has deleted successfully"}, status=204
+        )
+
+    return render(request, template_name, context)
+
+
+def add_tree_node(request, pk):
+    template_name = "product_management/tree_helper/partial_update_node.html"
+    product_area = ProductArea.objects.get(pk=pk)
+
+    context = {
+        "product_area": product_area,
+    }
+    return render(request, template_name, context)
 
 
 class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
@@ -511,17 +601,10 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        context.update(
-            {
-                "pk": self.object.pk,
-            }
-        )
-
+        context["pk"] = self.object.pk
         return context
 
 
-# TODO: note that id's must be related to products. For product1, challenges must start from 1. For product2, challenges must start from 1 etc.
 class ChallengeDetailView(BaseProductDetailView, DetailView):
     model = Challenge
     context_object_name = "challenge"
@@ -531,75 +614,74 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
         context = super().get_context_data(**kwargs)
         challenge = self.object
         bounties = challenge.bounty_set.all()
+        claim_status = BountyClaim.Status
 
         extra_data = []
+        user = self.request.user
+        person = user.person if user.is_authenticated else None
+
         for bounty in bounties:
-            data = {"bounty": bounty}
+            data = {
+                "bounty": bounty,
+                "current_user_created_claim_request": False,
+                "actions_available": False,
+                "has_claimed": False,
+                "claimed_by": None,
+                "show_actions": False,
+                "can_be_claimed": False,
+                "can_be_modified": False,
+                "is_product_admin": False,
+                "created_bounty_claim_request": False,
+                "bounty_claim_id": None,
+            }
 
-            user = self.request.user
-            if not user.is_authenticated:
-                data.update(
-                    {
-                        "current_user_created_claim_request": False,
-                        "actions_available": False,
-                    }
-                )
-            else:
-                person = user.person
-                bounty_claims = BountyClaim.objects.filter(
-                    bounty=bounty,
+            if person:
+                data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
-                    kind__in=[
-                        BountyClaim.CLAIM_TYPE_ACTIVE,
-                        BountyClaim.CLAIM_TYPE_IN_REVIEW,
-                    ],
-                )
+                    product=context["product"],
+                    role=ProductRoleAssignment.PRODUCT_ADMIN,
+                ).exists()
 
-                data.update(
-                    {
-                        "current_user_created_claim_request": bounty_claims.exists(),
-                        "actions_available": challenge.created_by == person,
-                    }
-                )
-
-                bounty_claim = BountyClaim.objects.filter(
-                    bounty=bounty,
-                    kind__in=[
-                        BountyClaim.CLAIM_TYPE_DONE,
-                        BountyClaim.CLAIM_TYPE_ACTIVE,
-                    ],
+                bounty_claim = bounty.bountyclaim_set.filter(
+                    person=person
                 ).first()
+                last_claim = bounty.bountyclaim_set.filter(
+                    status__in=[
+                        claim_status.GRANTED,
+                        claim_status.COMPLETED,
+                        claim_status.CONTRIBUTED,
+                    ]
+                ).first()
+
+                if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+                    data["can_be_claimed"] = not bounty_claim
 
                 if (
                     bounty_claim
-                    and bounty_claim.bounty.status
-                    in [
-                        Bounty.BOUNTY_STATUS_DONE,
-                        Bounty.BOUNTY_STATUS_CLAIMED,
-                    ]
-                    and bounty_claim.bounty.challenge.status
-                    in [
-                        Challenge.CHALLENGE_STATUS_DONE,
-                        Challenge.CHALLENGE_STATUS_CLAIMED,
-                    ]
+                    and bounty_claim.status == claim_status.REQUESTED
+                    and not last_claim
                 ):
-                    data.update(
-                        {"is_claimed": True, "claimed_by": bounty_claim.person}
-                    )
-                else:
-                    data.update({"is_claimed": False})
+                    data["created_bounty_claim_request"] = True
+                    data["bounty_claim"] = bounty_claim
 
+                if last_claim:
+                    data["claimed_by"] = last_claim.person
+
+            else:
+                data["can_be_claimed"] = True
+
+            data["show_actions"] = (
+                data["can_be_claimed"]
+                or data["can_be_modified"]
+                or data["created_bounty_claim_request"]
+            )
+            data["status"] = Bounty.BOUNTY_STATUS[bounty.status][1]
             extra_data.append(data)
 
-        context.update(
-            {
-                "bounty_data": extra_data,
-                "does_have_permission": utils.has_product_modify_permission(
-                    self.request.user, context.get("product")
-                ),
-            }
+        context["bounty_data"] = extra_data
+        context["does_have_permission"] = utils.has_product_modify_permission(
+            user, context.get("product")
         )
-
         return context
 
 
@@ -702,49 +784,29 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
         return context
 
 
-class BountyClaimView(LoginRequiredMixin, FormView):
+class BountyClaimView(LoginRequiredMixin, View):
     form_class = BountyClaimForm
-    template_name = "product_management/bounty_claim.html"
-    login_url = "sign_in"
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
+    def post(self, request, pk, *args, **kwargs):
+        form = BountyClaimForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({"errors": form.errors}, status=400)
 
-        pk = self.kwargs.get("pk")
-        challenge = get_object_or_404(Challenge, pk=pk)
+        instance = form.save(commit=False)
+        instance.bounty_id = pk
+        instance.person = request.user.person
+        instance.status = BountyClaim.Status.REQUESTED
+        instance.save()
 
-        context["challenge_pk"] = pk
-        context["challenge"] = challenge
+        bounty = instance.bounty
+        bounty.status = Bounty.BOUNTY_STATUS_AVAILABLE
+        bounty.save()
 
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-
-            context = self.get_context_data(**kwargs)
-            challenge = context.get("challenge")
-
-            instance.bounty = challenge.bounty_set.all().first()
-            instance.person = request.user.person
-            instance.kind = BountyClaim.CLAIM_TYPE_IN_REVIEW
-            instance.save()
-
-            messages.success(
-                request, "Your bounty claim request is successfully sent!"
-            )
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    challenge.product.slug,
-                    challenge.pk,
-                ),
-            )
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
+        return render(
+            request,
+            "product_management/partials/buttons/delete_bounty_claim_button.html",
+            context={"bounty_claim": instance},
+        )
 
 
 class CreateProductView(LoginRequiredMixin, CreateView):
@@ -1011,7 +1073,7 @@ class DashboardView(DashboardBaseView, TemplateView):
 
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(
-            person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            person=person, status=BountyClaim.Status.GRANTED
         )
         product_roles_queryset = ProductRoleAssignment.objects.filter(
             person=person
@@ -1038,7 +1100,7 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
 
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(
-            person=person, kind=BountyClaim.CLAIM_TYPE_ACTIVE
+            person=person, status=BountyClaim.Status.GRANTED
         )
         product_roles_queryset = ProductRoleAssignment.objects.filter(
             person=person
@@ -1065,9 +1127,9 @@ class ManageBountiesView(DashboardBaseView, TemplateView):
         person = self.request.user.person
         queryset = BountyClaim.objects.filter(
             person=person,
-            kind__in=[
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            status__in=[
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.REQUESTED,
             ],
         )
         context.update({"bounty_claims": queryset})
@@ -1084,9 +1146,9 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
         person = self.request.user.person
         queryset = BountyClaim.objects.filter(
             person=person,
-            kind__in=[
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            status__in=[
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.REQUESTED,
             ],
         )
         return queryset
@@ -1193,7 +1255,7 @@ class DashboardProductBountiesView(LoginRequiredMixin, ListView):
         product = Product.objects.get(slug=product_slug)
         queryset = BountyClaim.objects.filter(
             bounty__challenge__product=product,
-            kind=BountyClaim.CLAIM_TYPE_IN_REVIEW,
+            status=BountyClaim.Status.REQUESTED,
         )
         return queryset
 
@@ -1254,9 +1316,10 @@ class BountyDetailView(DetailView):
 
         bounty_claims = BountyClaim.objects.filter(
             bounty=bounty,
-            kind__in=[
-                BountyClaim.CLAIM_TYPE_ACTIVE,
-                BountyClaim.CLAIM_TYPE_DONE,
+            status__in=[
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.CONTRIBUTED,
+                BountyClaim.Status.COMPLETED,
             ],
         )
 
@@ -1265,7 +1328,7 @@ class BountyDetailView(DetailView):
             bounty_claims.first().person if bounty_claims else "No one"
         )
         attachments = [
-            att.file for att in BountyAttachment.objects.filter(bounty=bounty)
+            att for att in BountyAttachment.objects.filter(bounty=bounty)
         ]
 
         data.update(
@@ -1444,8 +1507,9 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.kind == BountyClaim.CLAIM_TYPE_IN_REVIEW:
-            instance.delete()
+        if instance.status == BountyClaim.Status.REQUESTED:
+            instance.status = BountyClaim.Status.CANCELLED
+            instance.save()
             messages.success(
                 request, _("The bounty claim is successfully deleted.")
             )
@@ -1459,20 +1523,39 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
 
         return redirect(self.success_url)
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        instance = BountyClaim.objects.get(pk=self.object.pk)
+        if instance.status == BountyClaim.Status.REQUESTED:
+            instance.status = BountyClaim.Status.CANCELLED
+            instance.save()
+
+        context = self.get_context_data()
+        context["bounty"] = self.object.bounty
+        template_name = self.request.POST.get("from")
+        if template_name == "bounty_detail_table.html":
+            return render(
+                request,
+                "product_management/partials/buttons/create_bounty_claim_button.html",
+                context,
+            )
+
+        return super().post(request, *args, **kwargs)
+
 
 def bounty_claim_actions(request, pk):
     instance = BountyClaim.objects.get(pk=pk)
     action_type = request.GET.get("action")
     if action_type == "accept":
-        instance.kind = BountyClaim.CLAIM_TYPE_ACTIVE
+        instance.status = BountyClaim.Status.GRANTED
 
         # If one claim is accepted for a particular challenge, the other claims automatically fails.
         challenge = instance.bounty.challenge
         _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(
-            kind=BountyClaim.CLAIM_TYPE_FAILED
+            status=BountyClaim.Status.REJECTED
         )
     elif action_type == "reject":
-        instance.kind = BountyClaim.CLAIM_TYPE_FAILED
+        instance.status = BountyClaim.Status.REJECTED
     else:
         raise BadRequest()
 
@@ -1576,25 +1659,3 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
             return redirect("product_bug_detail", **kwargs)
 
         return super().post(request, *args, **kwargs)
-
-
-class DeleteAttachmentView(LoginRequiredMixin, DeleteView):
-    model = Attachment
-    template_name = "product_management/delete_attachment.html"
-    login_url = "sign_in"
-
-    def get(self, request, *args, **kwargs):
-        attachment = self.get_object()
-        challenge = Challenge.objects.get(attachment=attachment)
-        if request.user.person == challenge.created_by:
-            attachment.delete()
-            messages.success(
-                request, _("The attachment is successfully deleted!")
-            )
-
-        return redirect(
-            reverse(
-                "challenge_detail",
-                args=(challenge.product.slug, challenge.id),
-            )
-        )
