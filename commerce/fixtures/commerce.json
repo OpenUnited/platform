@@ -1,0 +1,324 @@
+[
+    {
+        "model": "commerce.organisation",
+        "pk": 1,
+        "fields": {
+            "created_at": "2024-05-06T17:34:49.308Z",
+            "updated_at": "2024-05-06T17:34:49.308Z",
+            "username": "organisation_username_one",
+            "name": "organisation_name_one",
+            "photo": ""
+        }
+    },
+    {
+        "model": "commerce.organisation",
+        "pk": 2,
+        "fields": {
+            "created_at": "2024-05-06T17:34:49.311Z",
+            "updated_at": "2024-05-06T17:34:49.311Z",
+            "username": "organisation_username_two",
+            "name": "organisation_name_two",
+            "photo": ""
+        }
+    },
+    {
+        "model": "commerce.organisation",
+        "pk": 3,
+        "fields": {
+            "created_at": "2024-05-06T17:34:49.312Z",
+            "updated_at": "2024-05-06T17:34:49.312Z",
+            "username": "organisation_username_three",
+            "name": "organisation_name_three",
+            "photo": ""
+        }
+    },
+    {
+        "model": "commerce.organisation",
+        "pk": 4,
+        "fields": {
+            "created_at": "2024-05-06T17:34:49.314Z",
+            "updated_at": "2024-05-06T17:34:49.314Z",
+            "username": "organisation_username_four",
+            "name": "organisation_name_four",
+            "photo": ""
+        }
+    },
+    {
+        "model": "commerce.organisation",
+        "pk": 5,
+        "fields": {
+            "created_at": "2024-05-06T17:34:49.315Z",
+            "updated_at": "2024-05-06T17:34:49.315Z",
+            "username": "organisation_username_five",
+            "name": "organisation_name_five",
+            "photo": ""
+        }
+    },
+    {
+        "model": "commerce.organisation",
+        "pk": 6,
+        "fields": {
+            "created_at": "2024-05-06T17:34:49.316Z",
+            "updated_at": "2024-05-06T17:34:49.316Z",
+            "username": "organisation_username_six",
+            "name": "organisation_name_six",
+            "photo": ""
+        }
+    },
+    {
+        "model": "commerce.organisationaccountcredit",
+        "pk": 1,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.341Z",
+            "updated_at": "2024-05-06T17:34:50.341Z",
+            "uuid": "236d16bd-f30a-433d-9767-03d52913f106",
+            "organisation_account": 1,
+            "number_of_points": 10,
+            "type_of_points": 1,
+            "credit_reason": 1
+        }
+    },
+    {
+        "model": "commerce.organisationaccountcredit",
+        "pk": 2,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.344Z",
+            "updated_at": "2024-05-06T17:34:50.344Z",
+            "uuid": "2a6f6f00-936e-4331-bf7f-ff2e27aba088",
+            "organisation_account": 2,
+            "number_of_points": 20,
+            "type_of_points": 1,
+            "credit_reason": 1
+        }
+    },
+    {
+        "model": "commerce.organisationaccountcredit",
+        "pk": 3,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.346Z",
+            "updated_at": "2024-05-06T17:34:50.346Z",
+            "uuid": "599accbb-5dc0-4c2e-b797-935dfcd9bc2c",
+            "organisation_account": 3,
+            "number_of_points": 30,
+            "type_of_points": 1,
+            "credit_reason": 1
+        }
+    },
+    {
+        "model": "commerce.organisationaccountcredit",
+        "pk": 4,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.347Z",
+            "updated_at": "2024-05-06T17:34:50.347Z",
+            "uuid": "d1d5dce1-8c5a-48d1-a72f-a8ab0d428877",
+            "organisation_account": 4,
+            "number_of_points": 40,
+            "type_of_points": 2,
+            "credit_reason": 2
+        }
+    },
+    {
+        "model": "commerce.organisationaccountcredit",
+        "pk": 5,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.349Z",
+            "updated_at": "2024-05-06T17:34:50.349Z",
+            "uuid": "baf36f46-4c56-4cad-885e-cc4265387190",
+            "organisation_account": 5,
+            "number_of_points": 50,
+            "type_of_points": 2,
+            "credit_reason": 2
+        }
+    },
+    {
+        "model": "commerce.organisationaccountcredit",
+        "pk": 6,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.350Z",
+            "updated_at": "2024-05-06T17:34:50.350Z",
+            "uuid": "49deb1ba-6c5d-4c40-a6e4-821b9e22ddee",
+            "organisation_account": 6,
+            "number_of_points": 60,
+            "type_of_points": 2,
+            "credit_reason": 2
+        }
+    },
+    {
+        "model": "commerce.organisationaccount",
+        "pk": 1,
+        "fields": {
+            "organisation": 1,
+            "liquid_points_balance": 10,
+            "nonliquid_points_balance": 10
+        }
+    },
+    {
+        "model": "commerce.organisationaccount",
+        "pk": 2,
+        "fields": {
+            "organisation": 2,
+            "liquid_points_balance": 20,
+            "nonliquid_points_balance": 20
+        }
+    },
+    {
+        "model": "commerce.organisationaccount",
+        "pk": 3,
+        "fields": {
+            "organisation": 3,
+            "liquid_points_balance": 30,
+            "nonliquid_points_balance": 30
+        }
+    },
+    {
+        "model": "commerce.organisationaccount",
+        "pk": 4,
+        "fields": {
+            "organisation": 4,
+            "liquid_points_balance": 40,
+            "nonliquid_points_balance": 40
+        }
+    },
+    {
+        "model": "commerce.organisationaccount",
+        "pk": 5,
+        "fields": {
+            "organisation": 5,
+            "liquid_points_balance": 50,
+            "nonliquid_points_balance": 50
+        }
+    },
+    {
+        "model": "commerce.organisationaccount",
+        "pk": 6,
+        "fields": {
+            "organisation": 6,
+            "liquid_points_balance": 60,
+            "nonliquid_points_balance": 60
+        }
+    },
+    {
+        "model": "commerce.cart",
+        "pk": 1,
+        "fields": {
+            "created_at": "2024-05-06T17:34:51.363Z",
+            "updated_at": "2024-05-06T17:34:51.363Z",
+            "uuid": "d99298b1-23f7-4ae9-8263-fe1e590bf585",
+            "organisation_account": 1,
+            "creator": 17,
+            "number_of_points": 1000,
+            "currency_of_payment": 1,
+            "price_per_point_in_cents": 100,
+            "subtotal_in_cents": 10,
+            "sales_tax_in_cents": 19,
+            "total_payable_in_cents": 29,
+            "payment_type": 1
+        }
+    },
+    {
+        "model": "commerce.cart",
+        "pk": 2,
+        "fields": {
+            "created_at": "2024-05-06T17:34:51.366Z",
+            "updated_at": "2024-05-06T17:34:51.366Z",
+            "uuid": "aba3aacb-1ecd-42b9-b1b2-b464dd13ebdc",
+            "organisation_account": 2,
+            "creator": 9,
+            "number_of_points": 1000,
+            "currency_of_payment": 1,
+            "price_per_point_in_cents": 200,
+            "subtotal_in_cents": 10,
+            "sales_tax_in_cents": 19,
+            "total_payable_in_cents": 29,
+            "payment_type": 1
+        }
+    },
+    {
+        "model": "commerce.cart",
+        "pk": 3,
+        "fields": {
+            "created_at": "2024-05-06T17:34:51.367Z",
+            "updated_at": "2024-05-06T17:34:51.367Z",
+            "uuid": "3906b11f-963b-4840-9f83-40a2c5f02246",
+            "organisation_account": 3,
+            "creator": 30,
+            "number_of_points": 2000,
+            "currency_of_payment": 2,
+            "price_per_point_in_cents": 300,
+            "subtotal_in_cents": 20,
+            "sales_tax_in_cents": 29,
+            "total_payable_in_cents": 39,
+            "payment_type": 1
+        }
+    },
+    {
+        "model": "commerce.cart",
+        "pk": 4,
+        "fields": {
+            "created_at": "2024-05-06T17:34:51.369Z",
+            "updated_at": "2024-05-06T17:34:51.369Z",
+            "uuid": "d5993636-69aa-4b0e-8f45-0be21a14c1c2",
+            "organisation_account": 4,
+            "creator": 18,
+            "number_of_points": 2000,
+            "currency_of_payment": 2,
+            "price_per_point_in_cents": 100,
+            "subtotal_in_cents": 20,
+            "sales_tax_in_cents": 29,
+            "total_payable_in_cents": 39,
+            "payment_type": 1
+        }
+    },
+    {
+        "model": "commerce.cart",
+        "pk": 5,
+        "fields": {
+            "created_at": "2024-05-06T17:34:51.370Z",
+            "updated_at": "2024-05-06T17:34:51.370Z",
+            "uuid": "99d6ea05-43df-4b60-916a-da8b8f874568",
+            "organisation_account": 5,
+            "creator": 3,
+            "number_of_points": 3000,
+            "currency_of_payment": 3,
+            "price_per_point_in_cents": 200,
+            "subtotal_in_cents": 30,
+            "sales_tax_in_cents": 39,
+            "total_payable_in_cents": 49,
+            "payment_type": 1
+        }
+    },
+    {
+        "model": "commerce.cart",
+        "pk": 6,
+        "fields": {
+            "created_at": "2024-05-06T17:34:51.372Z",
+            "updated_at": "2024-05-06T17:34:51.372Z",
+            "uuid": "26423f8c-198f-4b0c-857b-44654d57c9bb",
+            "organisation_account": 6,
+            "creator": 29,
+            "number_of_points": 3000,
+            "currency_of_payment": 3,
+            "price_per_point_in_cents": 300,
+            "subtotal_in_cents": 30,
+            "sales_tax_in_cents": 39,
+            "total_payable_in_cents": 49,
+            "payment_type": 1
+        }
+    },
+    {
+        "model": "commerce.pointpriceconfiguration",
+        "pk": 1,
+        "fields": {
+            "created_at": "2024-05-06T17:34:50.856Z",
+            "updated_at": "2024-05-06T17:34:50.856Z",
+            "uuid": "985e978c-cf2d-4739-a3fc-ddaeb0d84585",
+            "applicable_from_date": "2024-05-06",
+            "usd_point_inbound_price_in_cents": 2,
+            "eur_point_inbound_price_in_cents": 2,
+            "gbp_point_inbound_price_in_cents": 2,
+            "usd_point_outbound_price_in_cents": 1,
+            "eur_point_outbound_price_in_cents": 1,
+            "gbp_point_outbound_price_in_cents": 1
+        }
+    }
+]
