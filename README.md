@@ -31,3 +31,41 @@ If you have any questions about OpenUnited:
 
 Your feedback is always welcome.
 
+
+### Make commands
+1.  Install Makefile e.g. [Makefile for mac](https://formulae.brew.sh/formula/make)
+2.  Run the server
+
+    make run
+
+3. Run tests
+
+    make test
+
+4. Run migrations and migrate
+
+    make migrate
+
+5. Create superuser 
+
+    make admin
+
+6. Seed data to specific app
+
+    make seed app="app_name"
+
+7. To setup the app with initial data from fixtures. Note that this command will reset the database.
+
+    make setup
+
+8. Dump data from the database to the application fixture. 
+
+    make dumpdata
+
+9. Generate the tailwindcss
+
+    make tailwindcss
+
+10. Format the fixtures located in each app.
+    
+    make format_fixtures
