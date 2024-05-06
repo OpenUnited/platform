@@ -28,3 +28,4 @@ django_htmx==1.17.3
 social-auth-app-django==5.4.1
 django-model-utils==4.5.1
 django_lifecycle==1.2.3
+black==24.4.2
