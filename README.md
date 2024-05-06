@@ -33,6 +33,7 @@ Your feedback is always welcome.
 
 
 ## Make commands
+
 1.  Install Makefile e.g. [Makefile for mac](https://formulae.brew.sh/formula/make)
 2.  Run the server
 
