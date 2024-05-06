@@ -7,13 +7,6 @@
                     Bounty
                 </th>
                 <th scope="col" class="px-2 py-3">
-                    Skill
-                </th>
-                <th scope="col" class="px-2 py-3">
-                    Expertise
-                </th>
-
-                <th scope="col" class="px-2 py-3">
                     Points
                 </th>
                 <th scope="col" class="px-2 py-3">
@@ -31,16 +24,14 @@
             {% for elem in bounty_data %}
             {% set bounty = elem.bounty %}
             <tr class="bg-white border-b">
-                <td class="relative whitespace-normal py-4 pl-3 pr-4 text-sm font-medium sm:pr-0">
-                    <a href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                        class="text-indigo-600 hover:text-indigo-900">{{ bounty.title }}</a>
+                <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                    <a class="text-gray-900" 
+                        href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}">
+                        {{ bounty.title }}
+                    </a>
+                    <div class="mt-1 text-gray-500">{{ bounty.skill }} ({{bounty.get_expertise_as_str()}})</div>
                 </td>
-                <th scope="row" class="px-2 py-1 font-medium text-gray-900 whitespace-nowrap">
-                    {{ bounty.skill }}
-                </th>
-                <td class="px-2 py-1">
-                    {{ bounty.get_expertise_as_str() }}
-                </td>
+
                 <td class="px-2 py-1">
                     {{ bounty.points }}
                 </td>
@@ -111,8 +102,7 @@
 <p>
     <a class="inline-block" href=" {{ url('create-bounty', args=(challenge.product.slug, challenge.pk,)) }}">
         <button class="p-4 rounded-md bg-indigo-600 mt-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-            type="button">
-            Create another bounty for this challenge</button>
+            type="button">Add Bounty</button>
     </a>
 </p>
 {% endif %}
