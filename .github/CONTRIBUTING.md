@@ -16,13 +16,17 @@ cd platform
 cp .env.example .env
 ```
 
+### Installing Makefile
+
+Install Makefile e.g. [Makefile for mac](https://formulae.brew.sh/formula/make)
+
 #### Database Set Up
 
 We recommend using PostgreSQL for your database. 
 
 By default, the OpenUnited platform will look for a database named `ou_db` and use `postgres` as both the username and password. This is set in your .env file and can be overriden of course. 
 
-The [setup.sh](../setup.sh) script you run later on will create this database for you automatically by calling the [reset_database.py](../reset_database.py) script.
+The `make setup` command you run later on will create this database for you automatically by calling the [reset_database.py](../reset_database.py) script.
 
 In case you don't already have PostgreSQL running locally, the end of this guide you can see some helpful tips for installing PostgreSQL with and without Docker.
 
@@ -39,16 +43,15 @@ python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=openunited.settings.development
-./setup.sh
 ```
 
 Run the tests:
 
-`python manage.py test`
+`make test`
 
 Finally, start the server:
 
-`python manage.py runserver`
+`make run`
 
 Then navigate to: http://localhost:8000/ in your browser.
 
@@ -148,3 +151,43 @@ services:
 ```
 
 - After adding ipdb/pdb/breakpoint, you can check container id by `docker ps` and attach it to debug `docker attach <container-id>`
+
+
+### Make commands
+
+- Install Makefile e.g. [Makefile for mac](https://formulae.brew.sh/formula/make)
+- Run the server
+
+  `make run`
+
+- Run tests
+
+  `make test`
+
+- Run migrations and migrate
+
+  `make migrate`
+
+- Create superuser 
+
+  `make admin`
+
+- Seed data to specific app
+
+  `make seed app="app_name"`
+
+- To setup the app with initial data from fixtures. Note that this command will reset the database.
+
+  `make setup`
+
+- Dump data from the database to the application fixture. 
+
+  `make dumpdata`
+
+- Generate the tailwindcss
+
+  `make tailwindcss`
+
+- Format the fixtures located in each app.
+
+  `make format_fixtures`
