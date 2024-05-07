@@ -155,28 +155,37 @@ services:
 
 - Install Makefile e.g. [Makefile for mac](https://formulae.brew.sh/formula/make)
 - Run the server
+
   `make run`
 
 - Run tests
+
   `make test`
 
 - Run migrations and migrate
+
   `make migrate`
 
 - Create superuser 
+
   `make admin`
 
 - Seed data to specific app
+
   `make seed app="app_name"`
 
 - To setup the app with initial data from fixtures. Note that this command will reset the database.
+
   `make setup`
 
 - Dump data from the database to the application fixture. 
+
   `make dumpdata`
 
 - Generate the tailwindcss
+
   `make tailwindcss`
-  
+
 - Format the fixtures located in each app.
+
   `make format_fixtures`
