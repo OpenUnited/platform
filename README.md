@@ -30,4 +30,3 @@ If you have any questions about OpenUnited:
 - [File an issue.](https://github.com/OpenUnited/platform/issues)
 
 Your feedback is always welcome.
-
