@@ -1,0 +1,23 @@
+<form hx-get="{{ url('bounties') }}" hx-target="#item-container" hx-trigger="change" hx-swap="innerHTML">
+    <div class="flex items-end">
+      <div class="mr-4">
+        <label for="{{ filter.form.status.id_for_label }}"
+          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.status.label }}</label>
+        {{ filter.form.status }}
+      </div>
+
+      <div class="mr-4">
+        <label for="{{ filter.form.skill.id_for_label }}"
+          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.skill.label }}</label>
+        {{ filter.form.skill }}
+      </div>
+
+      <div class="mr-4">
+        <label for="{{ filter.form.expertise.id_for_label }}"
+          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.expertise.label }}</label>
+        {{ filter.form.expertise }}
+      </div>
+      <div>
+      </div>
+    </div>
+  </form>
