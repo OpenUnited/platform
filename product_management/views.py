@@ -172,7 +172,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
 class BountyListView(ListView):
     model = Bounty
     context_object_name = "bounties"
-    paginate_by = 9
+    paginate_by = 50
     filterset_class = BountyFilter
 
     def get_template_names(self):
@@ -198,7 +198,7 @@ class BountyListView(ListView):
 class ProductBountyListView(BaseProductDetailView, ListView):
     model = Bounty
     context_object_name = "bounties"
-    paginate_by = 6
+    paginate_by = 50
     filterset_class = BountyFilter
 
     def get_template_names(self):
