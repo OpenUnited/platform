@@ -160,7 +160,7 @@ class SignInViewTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("challenges"))
+        self.assertEqual(response.url, reverse("bounties"))
 
     def test_post_invalid_email(self):
         response = self.client.post(
@@ -204,7 +204,7 @@ class SignInViewTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("challenges"))
+        self.assertEqual(response.url, reverse("bounties"))
 
     def test_post_invalid_credentials(self):
         plain_password = "12345"
