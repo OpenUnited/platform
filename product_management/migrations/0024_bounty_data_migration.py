@@ -9,10 +9,16 @@ def forward_func(apps, schema_editor):
         expertise_as_str = ", ".join(
             [exp.name.title() for exp in bounty.expertise.all()]
         )
+        skill_name = ""
         if expertise_as_str:
             expertise_as_str = f"({expertise_as_str})"
 
-        bounty.title = f"{bounty.skill.name} {expertise_as_str} - {bounty.challenge.title}"
+        if bounty.skill:
+            skill_name = bounty.skill.name
+
+        bounty.title = (
+            f"{skill_name} {expertise_as_str} - {bounty.challenge.title}"
+        )
         bounty.save()
 
 
