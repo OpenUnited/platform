@@ -416,6 +416,18 @@ class Bounty(TimeStampMixin):
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
 
+    @property
+    def last_claim(self):
+        from talent.models import BountyClaim
+
+        return self.bountyclaim_set.filter(
+            status__in=[
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.COMPLETED,
+                BountyClaim.Status.CONTRIBUTED,
+            ]
+        ).first()
+
 
 class BountyAttachment(TimeStampMixin, AttachmentAbstract):
     bounty = models.ForeignKey(

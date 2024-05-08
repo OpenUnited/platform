@@ -89,7 +89,7 @@ class SignUpWizard(SessionWizardView):
             self.request, username=username, password=password
         )
         login(self.request, authenticated_user)
-        return redirect(reverse("challenges"))
+        return redirect(reverse("bounties"))
 
 
 class SignInView(TemplateView):
@@ -142,7 +142,7 @@ class SignInView(TemplateView):
                 if next_url:
                     return redirect(next_url)
                 else:
-                    return redirect("challenges")
+                    return redirect("bounties")
             else:
                 if user_obj.password_reset_required:
                     return redirect("password_reset_required")
