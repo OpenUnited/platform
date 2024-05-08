@@ -3,7 +3,6 @@ name: Deploy to Staging
 concurrency: deploy_to_staging
 
 on:
-  workflow_dispatch:
   push:
     branches: [ "main" ]
 
