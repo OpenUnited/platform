@@ -56,7 +56,7 @@ from commerce.models import Organisation
 from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 
-from .filters import ChallengeFilter
+from .filters import ChallengeFilter, BountyFilter
 from product_management import utils
 import uuid
 
@@ -166,6 +166,56 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         context["tree_data"] = [
             utils.serialize_tree(node) for node in ProductArea.get_root_nodes()
         ]
+        return context
+
+
+class BountyListView(ListView):
+    model = Bounty
+    context_object_name = "bounties"
+    paginate_by = 9
+    filterset_class = BountyFilter
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ["product_management/bounty/partials/list_partials.html"]
+        return ["product_management/bounty/list.html"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return self.filterset_class(
+            data=self.request.GET, queryset=queryset
+        ).qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["request"] = self.request
+        context["filter"] = self.filterset_class(
+            self.request.GET, queryset=self.get_queryset()
+        )
+        return context
+
+
+class ProductBountyListView(BaseProductDetailView, ListView):
+    model = Bounty
+    context_object_name = "bounties"
+    paginate_by = 6
+    filterset_class = BountyFilter
+
+    def get_template_names(self):
+        return ["product_management/bounty/product_bounties.html"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return self.filterset_class(
+            data=self.request.GET, queryset=queryset
+        ).qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["request"] = self.request
+        context["filter"] = self.filterset_class(
+            self.request.GET, queryset=self.get_queryset()
+        )
         return context
 
 
