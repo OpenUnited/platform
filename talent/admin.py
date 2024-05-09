@@ -24,9 +24,9 @@ class BountyClaimAdmin(admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ["pk", "name"]
+    list_display = ["pk", "name", "parent"]
 
 
 @admin.register(Expertise)
 class ExpertiseAdmin(admin.ModelAdmin):
-    list_display = ["pk", "name", "skill"]
+    list_display = ["pk", "name", "skill", "parent"]
