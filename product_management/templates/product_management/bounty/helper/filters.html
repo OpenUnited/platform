@@ -1,35 +1,57 @@
+    
+  {% import "product_management/bounty/helper/macros_fun.html" as macros_fun %}
+  <form hx-get="{{ url("bounties") }}" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML">
     <div class="flex items-end">
       <div class="mr-4">
-        <label for="{{ filter.form.status.id_for_label }}"
-          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.status.label }}</label>
-        {{ filter.form.status }}
+        <label for="id_status"
+          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">Status</label>
+        <select id="id_status" name="status" class="w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+          <option value="">All</option>
+          {% for index, value in statuses %}
+              <option value="{{index}}"> {{ value }}</option>
+          {% endfor %}
+        </select>
+
       </div>
 
       <div class="mr-4">
-        <label for="{{ filter.form.skill.id_for_label }}"
-          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.skill.label }}</label>
-        {{ filter.form.skill }}
+        <label for="id_skill"
+          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">Skill</label>
+        <select id="id_skill" name="skill" onchange=""  class="w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+            <option value="">All</option>
+          {{ macros_fun.skill_expertise_filter_tree(skills) }}
+
+        </select>
       </div>
 
-      <div class="mr-4" id="expertise_container">
-        <label for="{{ filter.form.expertise.id_for_label }}"
-          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.expertise.label }}</label>
-        {{ filter.form.expertise }}
-      </div>
-      <div>
-      </div>
+      {% with expertises=expertises %}
+        {% include "product_management/bounty/helper/expertise_filter.html" %}
+      {% endwith %}
+
     </div>
+  </form>
 
     <script>
       document.addEventListener("htmx:afterRequest", function(event) {
-        if (event.target.id == "id_skill" && event.detail.successful) {
+        console.log(event.target)
+        if (event.target.getAttribute("target_id") == "id_skill" && event.detail.successful) {
             const responseData = JSON.parse(event.detail.xhr.response);
-            console.log(responseData)
             document.querySelector("#item_list_container").innerHTML = responseData.list_html;
             document.querySelector("#expertise_container").innerHTML = responseData.expertise_html;
-
+            event.target.setAttribute("target_id", "none-skill")
+            event.target.setAttribute("target_id", "none-skill")
+            event.target.setAttribute("hx-vals", "");
         }
     });
-    
-      </script>
+
+    document.getElementById("id_skill").addEventListener("change", function(event) {
+        const data = {
+            target: "skill",
+          };
+        const closestForm = event.target.closest("form")
+        closestForm.setAttribute("hx-vals", JSON.stringify(data));
+        closestForm.setAttribute("target_id", "id_skill");
+
+    });
+    </script>
       
