@@ -57,7 +57,7 @@ from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
 from django.http import JsonResponse
 
-from .filters import ChallengeFilter, BountyFilter
+from .filters import ChallengeFilter
 from product_management import utils
 import uuid
 
@@ -174,29 +174,53 @@ class BountyListView(ListView):
     model = Bounty
     context_object_name = "bounties"
     paginate_by = 50
-    filterset_class = BountyFilter
 
     def get_template_names(self):
+        if self.request.htmx:
+            return ["product_management/bounty/partials/list_partials.html"]
         return ["product_management/bounty/list.html"]
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return self.filterset_class(
-            data=self.request.GET, queryset=queryset
-        ).qs
+        filters = Q()
+
+        if expertise := self.request.GET.get("expertise"):
+            filters &= Q(expertise=expertise)
+
+        if status := self.request.GET.get("status"):
+            filters &= Q(status=status)
+
+        if skill := self.request.GET.get("skill"):
+            filters &= Q(skill=skill)
+
+        return queryset.filter(filters)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["request"] = self.request
-        context["filter"] = self.filterset_class(
-            self.request.GET, queryset=self.get_queryset()
-        )
+
+        expertises = []
+        if skill := self.request.GET.get("skill"):
+            expertises = Expertise.get_roots().filter(skill=skill)
+
+        context["skills"] = [
+            utils.serialize_other_type_tree(skill)
+            for skill in Skill.get_roots()
+        ]
+        context["expertises"] = [
+            utils.serialize_other_type_tree(expertise)
+            for expertise in expertises
+        ]
+        context["statuses"] = [
+            status for status in Bounty.BOUNTY_STATUS if status[0] != 0
+        ]
+
         return context
 
     def render_to_response(self, context, **response_kwargs):
         from django.template.loader import render_to_string
 
-        if self.request.htmx:
+        if self.request.htmx and self.request.GET.get("target") == "skill":
             list_html = render_to_string(
                 "product_management/bounty/partials/list_partials.html",
                 context,
@@ -217,23 +241,13 @@ class ProductBountyListView(BaseProductDetailView, ListView):
     model = Bounty
     context_object_name = "bounties"
     paginate_by = 50
-    filterset_class = BountyFilter
 
     def get_template_names(self):
         return ["product_management/bounty/product_bounties.html"]
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return self.filterset_class(
-            data=self.request.GET, queryset=queryset
-        ).qs
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["request"] = self.request
-        context["filter"] = self.filterset_class(
-            self.request.GET, queryset=self.get_queryset()
-        )
         return context
 
 
