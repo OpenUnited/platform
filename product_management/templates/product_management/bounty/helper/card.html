@@ -10,6 +10,7 @@
           <a href="{{ url('challenge_detail', args=(product.slug, challenge.pk)) }}"
             class="truncate text-sm font-medium text-gray-900">{{ challenge.title }}</a>
         </div>
+        {{bounty.get_expertise_as_str()}}
         <p class="mt-1 truncate text-sm text-gray-500"> {{ challenge.short_description }}</p>
         <p class="mt-1 truncate text-sm text-gray-500 mt-2"> {{ bounty.skill }} 
           {% if bounty.get_expertise_as_str() %}

@@ -420,13 +420,15 @@ class Bounty(TimeStampMixin):
     def last_claim(self):
         from talent.models import BountyClaim
 
-        return self.bountyclaim_set.filter(
-            status__in=[
-                BountyClaim.Status.GRANTED,
-                BountyClaim.Status.COMPLETED,
-                BountyClaim.Status.CONTRIBUTED,
-            ]
-        ).first()
+        last_claimed = self.bountyclaim_set.first()
+        if last_claimed.status in [
+            BountyClaim.Status.GRANTED,
+            BountyClaim.Status.COMPLETED,
+            BountyClaim.Status.CONTRIBUTED,
+        ]:
+            return last_claimed
+        else:
+            return None
 
 
 class BountyAttachment(TimeStampMixin, AttachmentAbstract):
