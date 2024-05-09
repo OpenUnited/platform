@@ -238,6 +238,14 @@ class Skill(AncestryMixin):
     def __str__(self):
         return self.name
 
+    @property
+    def get_children(self):
+        return self.children.filter(active=True)
+
+    @classmethod
+    def get_roots(cls):
+        return cls.objects.filter(parent=None, active=True)
+
     @staticmethod
     def get_active_skills(active=True, parent=None):
         return Skill.objects.filter(active=active, parent=parent).all()
@@ -271,6 +279,14 @@ class Expertise(AncestryMixin):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_roots(cls):
+        return cls.objects.filter(parent=None)
+
+    @property
+    def get_children(self):
+        return self.expertise_children.filter()
 
     @staticmethod
     def get_skill_expertise(skill):
