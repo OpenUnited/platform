@@ -55,6 +55,7 @@ from .models import (
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment
 from openunited.mixins import HTMXInlineFormValidationMixin
+from django.http import JsonResponse
 
 from .filters import ChallengeFilter, BountyFilter
 from product_management import utils
@@ -176,8 +177,6 @@ class BountyListView(ListView):
     filterset_class = BountyFilter
 
     def get_template_names(self):
-        if self.request.htmx:
-            return ["product_management/bounty/partials/list_partials.html"]
         return ["product_management/bounty/list.html"]
 
     def get_queryset(self):
@@ -193,6 +192,25 @@ class BountyListView(ListView):
             self.request.GET, queryset=self.get_queryset()
         )
         return context
+
+    def render_to_response(self, context, **response_kwargs):
+        from django.template.loader import render_to_string
+
+        if self.request.htmx:
+            list_html = render_to_string(
+                "product_management/bounty/partials/list_partials.html",
+                context,
+                request=self.request,
+            )
+            expertise_html = render_to_string(
+                "product_management/bounty/partials/expertise.html",
+                context,
+                request=self.request,
+            )
+            return JsonResponse(
+                {"list_html": list_html, "expertise_html": expertise_html}
+            )
+        return super().render_to_response(context, **response_kwargs)
 
 
 class ProductBountyListView(BaseProductDetailView, ListView):
