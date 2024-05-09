@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Person, Status, Feedback, BountyClaim
+from .models import Person, Status, Feedback, BountyClaim, Expertise, Skill
 
 admin.site.register([Person, Status, Feedback])
 
@@ -20,3 +20,13 @@ class BountyClaimAdmin(admin.ModelAdmin):
         "expected_finish_date",
         "status",
     ]
+
+
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ["pk", "name"]
+
+
+@admin.register(Expertise)
+class ExpertiseAdmin(admin.ModelAdmin):
+    list_display = ["pk", "name", "skill"]
