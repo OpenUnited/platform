@@ -874,6 +874,52 @@
         }
     },
     {
+        "model": "security.user",
+        "pk": 40,
+        "fields": {
+            "password": "pbkdf2_sha256$600000$1tF5lg6h0HxMd7RdOoKs50$xD2Hq9Pl0TveBMmnaT1BJ8CDZ6tAYD/jZG4B7rawkbo=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "paceywitter",
+            "first_name": "Pacey",
+            "last_name": "Witter",
+            "email": "paceywitter@example.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-05-06T17:34:34.045Z",
+            "created_at": "2024-05-06T17:34:34.614Z",
+            "updated_at": "2024-05-06T17:34:34.614Z",
+            "remaining_budget_for_failed_logins": 3,
+            "password_reset_required": false,
+            "is_test_user": false,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "security.user",
+        "pk": 41,
+        "fields": {
+            "password": "pbkdf2_sha256$600000$1tF5lg6h0HxMd7RdOoKs50$xD2Hq9Pl0TveBMmnaT1BJ8CDZ6tAYD/jZG4B7rawkbo=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "georginasparks",
+            "first_name": "Georgina",
+            "last_name": "Sparks",
+            "email": "georginasparks@example.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-05-06T17:34:34.045Z",
+            "created_at": "2024-05-06T17:34:34.614Z",
+            "updated_at": "2024-05-06T17:34:34.614Z",
+            "remaining_budget_for_failed_logins": 3,
+            "password_reset_required": false,
+            "is_test_user": false,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
         "model": "security.productroleassignment",
         "pk": 1,
         "fields": {
@@ -1591,6 +1637,54 @@
             "person": 20,
             "product": 10,
             "role": 0
+        }
+    },
+    {
+        "model": "security.productroleassignment",
+        "pk": 61,
+        "fields": {
+            "created_at": "2024-05-06T17:34:45.243Z",
+            "updated_at": "2024-05-06T17:34:45.243Z",
+            "uuid": "5141af53-c8c7-405f-b6e6-a277567170aa",
+            "person": 40,
+            "product": 1,
+            "role": 1
+        }
+    },
+    {
+        "model": "security.productroleassignment",
+        "pk": 62,
+        "fields": {
+            "created_at": "2024-05-06T17:34:45.243Z",
+            "updated_at": "2024-05-06T17:34:45.243Z",
+            "uuid": "5141af53-c8c7-405f-b6e6-a277567170aa",
+            "person": 40,
+            "product": 2,
+            "role": 1
+        }
+    },
+    {
+        "model": "security.productroleassignment",
+        "pk": 63,
+        "fields": {
+            "created_at": "2024-05-06T17:34:45.243Z",
+            "updated_at": "2024-05-06T17:34:45.243Z",
+            "uuid": "5141af53-c8c7-405f-b6e6-a277567170aa",
+            "person": 39,
+            "product": 3,
+            "role": 1
+        }
+    },
+    {
+        "model": "security.productroleassignment",
+        "pk": 63,
+        "fields": {
+            "created_at": "2024-05-06T17:34:45.243Z",
+            "updated_at": "2024-05-06T17:34:45.243Z",
+            "uuid": "5141af53-c8c7-405f-b6e6-a277567170aa",
+            "person": 40,
+            "product": 4,
+            "role": 1
         }
     }
 ]
