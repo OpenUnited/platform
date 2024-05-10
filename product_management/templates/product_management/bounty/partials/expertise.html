@@ -1,6 +1,3 @@
-<label for="{{ filter.form.expertise.id_for_label }}"
-class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">{{ filter.form.expertise.label }}</label>
-
-{{ filter.form.expertise }}
-
-
+{% with expertises=expertises %}
+    {% include "product_management/bounty/helper/expertise_filter.html" %}
+{% endwith %}
