@@ -18,10 +18,12 @@
               </div>
           
               <div class="flex justify-end mr-2 mt-2 mb-2">
-                <button type="submit" class="bg-gray-700 text-white py-2 px-4 rounded mr-2">Save</button>
-                <button type="button" class="bg-red-700 text-white py-2 px-4 rounded" onclick="event.target.closest('li').remove()">Cancel</button>
+                <button type="button" class="py-1 sm:py-0 transition-all duration-300 ease-linear text-indigo-600 rounded bg-white border border-indigo-600 px-4 transition-all ease-linear duration-100 hover:bg-indigo-600 hover:text-white mr-2" onclick="event.target.closest('li').remove()">Cancel</button>
+                <button type="submit" class="bg-indigo-600  text-white py-2 px-4 rounded">Save</button>
+
               </div>
             </div>
         </form>
     </li>
 {% if not parent_id %} </ul> {% endif %}
+

@@ -13,14 +13,18 @@
             <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
                 <div class="flex justify-between w-full gap-2 group/item inline-flex">
                     <div class="flex justify-start">
-                        
-                        <button onclick="toggleVisibility(event)" class="mr-2">
-                            <i class="fa fa-chevron-circle-right text-gray-400" aria-hidden="true"></i>
-                        </button>
+                        {% if child["children"] %}
+                            <button onclick="toggleVisibility(event)" class="mr-2">
+                                <i class="fa fa-chevron-circle-right text-gray-400" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
             
                         <a class="flex justify-between" href="{{ url('product_area_update', args=(product_slug, child.id,)) }}">
                             <span class="w-full">
-                                {% include "product_management/tree_helper/drag.html" %} {{ child.name }} 
+                                {% if  can_modify_product %}
+                                    {% include "product_management/tree_helper/drag.html" %} 
+                                {% endif %}
+                                {{ child.name }} 
 
                
                             </span>
