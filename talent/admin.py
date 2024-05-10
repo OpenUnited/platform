@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import Person, Status, Feedback, BountyClaim, Expertise, Skill
+from . import models
 
-admin.site.register([Person, Status, Feedback])
+admin.site.register([models.Status, models.Feedback])
 
 
-@admin.register(BountyClaim)
+@admin.register(models.BountyClaim)
 class BountyClaimAdmin(admin.ModelAdmin):
     list_display = [
         "pk",
@@ -22,11 +22,21 @@ class BountyClaimAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(Skill)
+@admin.register(models.Skill)
 class SkillAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "parent"]
 
 
-@admin.register(Expertise)
+@admin.register(models.Expertise)
 class ExpertiseAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "skill", "parent"]
+
+
+@admin.register(models.Person)
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ["pk", "full_name", "user"]
+
+
+@admin.register(models.PersonSkill)
+class PersonSkillAdmin(admin.ModelAdmin):
+    list_display = ["pk", "person", "skill", "expertise"]
