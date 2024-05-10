@@ -21,7 +21,9 @@
                     class="font-medium text-blue-600 hover:underline">{{ bounty_claim }}</a>
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ bounty_claim.person }}
+                <a href="{{ bounty_claim.person.get_absolute_url() }}"
+                class="font-medium text-blue-600 hover:underline">{{ bounty_claim.person }}
+            </a>
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ bounty_claim.expected_finish_date }}
             </td>

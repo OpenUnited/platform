@@ -6,7 +6,7 @@ help:
 	@echo "test               -- run all tests                                 "
 	@echo "migrate            -- prepare migrations and migrate                "
 	@echo "admin              -- Created superuser and it prompt for password  "
-	@echo "seed               -- Seed or load data from specific app		   "
+	@echo "seed               -- Seed or load data from each app		 	   "
 	@echo "setup              -- load all the data from the fixture to the app "
 	@echo "dumpdata           -- Backup the data from the running django app   "
 	@echo "tailwindcss        -- Generate Tailwindcss 						   "
@@ -23,8 +23,8 @@ migrate:
 	$(MANAGE) migrate
 
 seed:
-	${MANAGE} loaddata ${app}
-	
+	${MANAGE} loaddata canopy commerce engagement product_management security talent
+
 setup:
 	python reset_database.py 
 	make migrate
