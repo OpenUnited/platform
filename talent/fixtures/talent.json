@@ -6134,8 +6134,6 @@
             "status": "Completed"
         }
     },
-    
-
     {
         "model": "talent.bountyclaim",
         "pk": 205,
@@ -6147,19 +6145,6 @@
             "person": 40,
             "expected_finish_date": "2024-05-12",
             "status": "Granted"
-        }
-    },
-    {
-        "model": "talent.bountyclaim",
-        "pk": 206,
-        "fields": {
-            "created_at": "2024-05-06T17:34:44.707Z",
-            "updated_at": "2024-05-06T17:34:44.707Z",
-            "uuid": "c891f51e-a81d-41e2-bf22-4429416a9786",
-            "bounty": 11,
-            "person": 40,
-            "expected_finish_date": "2024-05-12",
-            "status": "Requested"
         }
     },
     {
@@ -6189,8 +6174,45 @@
         }
     },
 
-
-
+    {
+        "model": "talent.bountyclaim",
+        "pk": 209,
+        "fields": {
+            "created_at": "2024-05-06T17:34:44.707Z",
+            "updated_at": "2024-05-06T17:34:44.707Z",
+            "uuid": "c891f51e-a81d-41e2-bf22-4429416a9786",
+            "bounty": 1,
+            "person": 29,
+            "expected_finish_date": "2024-05-12",
+            "status": "Requested"
+        }
+    },
+    {
+        "model": "talent.bountyclaim",
+        "pk": 210,
+        "fields": {
+            "created_at": "2024-05-06T17:34:44.707Z",
+            "updated_at": "2024-05-06T17:34:44.707Z",
+            "uuid": "c891f51e-a81d-41e2-bf22-4429416a9786",
+            "bounty": 11,
+            "person": 29,
+            "expected_finish_date": "2024-05-12",
+            "status": "Requested"
+        }
+    },
+    {
+        "model": "talent.bountyclaim",
+        "pk": 211,
+        "fields": {
+            "created_at": "2024-05-06T17:34:44.707Z",
+            "updated_at": "2024-05-06T17:34:44.707Z",
+            "uuid": "c891f51e-a81d-41e2-bf22-4429416a9786",
+            "bounty": 21,
+            "person": 29,
+            "expected_finish_date": "2024-05-12",
+            "status": "Requested"
+        }
+    },
 
     {
         "model": "talent.bountydeliveryattempt",
