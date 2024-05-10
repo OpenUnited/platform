@@ -1,4 +1,5 @@
-<div class="flex gap-3 items-center view-node-group">
+{% if can_modify_product %}
+<div class="flex gap-3 items-center view-node-group">  
   <button type="button" class="add_node w-5 h-5" 
           onclick="event.preventDefault()" 
           trigger="create_node_{{id}}"  
@@ -29,24 +30,16 @@
       <img src="{{ static('images/delete.svg')}}" class="" alt="#">
     </button>
 </div>
+{% endif %}
 
 <script>
-  var has_permission = "{{can_modify_product}}" == "True"
-
   document.addEventListener("htmx:confirm", function(event) {
     var triggers = ['delete_node_{{id}}', 'create_node_{{id}}', 'update_node_{{id}}'];
-    
     if (triggers.includes(event.detail.elt.getAttribute('trigger'))) {
-      if (has_permission){
         if (event.detail.elt.getAttribute('trigger') === 'delete_node_{{id}}') {
           event.preventDefault()
           showConfirm({}).then(function(){event.detail.issueRequest()})
         }
-      }
-      else{
-        event.preventDefault()
-        showNotification({message: "Sorry, You don't have permissions to perform this action."})
-      }
     }
   })
   

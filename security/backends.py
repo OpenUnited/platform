@@ -13,5 +13,5 @@ class EmailOrUsernameModelBackend(ModelBackend):
 
         user = UserModel.objects.get_user_by_username_or_email(username)
 
-        if user.check_password(password):
+        if user and user.check_password(password):
             return user

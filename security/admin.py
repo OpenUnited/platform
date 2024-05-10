@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.contrib.auth import admin as auth_admin
 from .models import (
     User,
     SignInAttempt,
@@ -10,7 +10,6 @@ from .models import (
 
 admin.site.register(
     [
-        User,
         SignInAttempt,
         SignUpRequest,
         BlacklistedUsernames,
@@ -32,3 +31,9 @@ class ProductRoleAssignmentAdmin(admin.ModelAdmin):
         "person__user__email",
         "product__name",
     ]
+
+
+@admin.register(User)
+class UserAdminAdmin(auth_admin.UserAdmin):
+    list_display = ["pk", "first_name", "last_name", "username"]
+    search_fields = ["pk", "first_name", "last_name", "username"]
