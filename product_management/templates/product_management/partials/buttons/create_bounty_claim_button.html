@@ -1,9 +1,22 @@
 {% if request.user.is_authenticated %}
-    <button
-        hx-post="{{ url('bounty-claim', args=(bounty.pk,)) }}"
-        class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1"
-        hx-swap="outerHTML" hx-target="this" claim-bounty="true">Claim
-    </button>
+    {% if elem.can_be_claimed %}
+        <button
+            hx-post="{{ url('bounty-claim', args=(elem.bounty.pk,)) }}"
+            class="{{button_class}}"
+            id="claim_request_{{bounty.pk}}"
+            hx-swap="afterend" hx-target="#ulDropdownMenu_{{elem.bounty.pk}}" claim-bounty="true">Claim
+        </button>
+    {% endif %}
 {% else %}
-    <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign_in') }}')" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Claim</button>
+    <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign_in') }}')" class="{{button_class}}">Claim</button>
 {% endif %}
+
+<script>
+    document.addEventListener("htmx:afterRequest", function(event) {
+        if (event.target.id=="claim_request_{{bounty.pk}}" && event.detail.successful) {
+            document.getElementById("dropdownHoverButton_{{bounty.pk}}").classList.toggle("hidden")
+        }
+    });
+</script>
+
+  
