@@ -44,7 +44,7 @@
                     Unclaimed
                 {% elif claimed_by %}
                 <div class="flex items-center text-xs text-black/[0.85]">
-                    <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center ml-4">
+                    <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center">
                         <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                             <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
                                 src="{{ claimed_by.get_photo_url() }}" alt="Created By">

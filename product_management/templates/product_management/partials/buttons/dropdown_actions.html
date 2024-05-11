@@ -11,43 +11,46 @@
         <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign_in') }}')" class="{{button_class}}">Claim</button>
     {% endif %}
 
-    <button id="dropdownHoverButton_{{bounty.pk}}" data-dropdown-toggle="dropdownHover_{{bounty.pk}}" data-dropdown-trigger="hover" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-between items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="button">
-        <svg class="w-2.5 h-2.5 me-3 order-first" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-        </svg>
-        Actions
-    </button>
-    
+    {% if  elem.created_bounty_claim_request or elem.can_be_modified  %}
+        <button id="dropdownHoverButton_{{bounty.pk}}" data-dropdown-toggle="dropdownHover_{{bounty.pk}}" data-dropdown-trigger="hover" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-between items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="button">
+            <svg class="w-2.5 h-2.5 me-3 order-first" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg>
+            Actions
+        </button>
+        
 
-    <!-- Dropdown menu -->
-    <div id="dropdownHover_{{bounty.pk}}" class="z-10 hidden bg-white divide-y divide-white rounded-lg shadow w-44 border border-gray-100">
-        <ul  class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton_{{bounty.pk}}">
-            <li>
-            {% if elem.created_bounty_claim_request %}
-            <button hx-post="{{ url('delete-bounty-claim', args=(elem.bounty_claim.pk,)) }}"
-                class="{{li_class}}"
-                hx-swap="outerHTML" hx-target="this" hx-vals='{"from": "bounty_detail_table.html"}' hx-confirm="Are you sure to cancel your bounty claim request?">
-                Cancel Request
-            </button>
-            {% endif %}
-            </li>
-            <li>
-                {% if not elem.can_be_modified %}
-                    <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                        class="{{li_class}}">Edit</a>
+        <!-- Dropdown menu -->
+        <div id="dropdownHover_{{bounty.pk}}" class="z-10 hidden bg-white divide-y divide-white rounded-lg shadow w-44 border border-gray-100">
+            <ul  class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton_{{bounty.pk}}">
+                <li>
+                {% if elem.created_bounty_claim_request %}
+                <button hx-post="{{ url('delete-bounty-claim', args=(elem.bounty_claim.pk,)) }}"
+                    class="{{li_class}}"
+                    hx-swap="outerHTML" hx-target="this" hx-vals='{"from": "bounty_detail_table.html"}' hx-confirm="Are you sure to cancel your bounty claim request?">
+                    Cancel Request
+                </button>
                 {% endif %}
-            </li>
-            <li>
-            {% if not elem.can_be_modified %}
-            <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
-                hx-push-url="true"
-                class="{{li_class}} text-red-500">Delete
-            </a>
-        {% endif %}
-            </li>
-        </ul>
-    </div>
+                </li>
+
+                {% if elem.can_be_modified  %}
+                    <li>
+                        <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                                class="{{li_class}}">Edit</a>
+                    </li>
+                    <li>
+                        <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                            hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
+                            hx-push-url="true"
+                            class="{{li_class}} text-red-500">Delete
+                        </a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </div>
+
+    {% endif %}
 
 
 
