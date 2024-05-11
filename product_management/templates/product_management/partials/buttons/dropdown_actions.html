@@ -1,48 +1,77 @@
-<div class="max-w-lg mx-auto flex justify-left">
+{% set bounty=elem.bounty%}
+{% set button_class="text-indigo hover:text-white border border-indigo-500 hover:bg-indigo-700 focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-indigo-500  dark:hover:bg-indigo-600 dark:focus:ring-indigo-900 mr-1" %}
+{% set li_class = "block px-4 py-2 text-indigo-500 hover:bg-indigo-500 dark:hover:bg-indigo-500 dark:hover:text-white" %}
+{% if request.user.is_authenticated %}
     <button
-        class="flex justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center"
-        type="button" data-dropdown-toggle="dropdown_{{elem.bounty.pk}}"><svg class="w-4 h-4" fill="none"
-            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 9l-7 7-7-7"></path>
-        </svg>
+        hx-post="{{ url('bounty-claim', args=(elem.bounty.pk,)) }}"
+        class="{{button_class}}"
+        hx-swap="outerHTML" hx-target="this" claim-bounty="true">Claim
     </button>
+    {% else %}
+        <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign_in') }}')" class="{{button_class}}">Claim</button>
+    {% endif %}
 
+    <button id="dropdownHoverButton_{{bounty.pk}}" data-dropdown-toggle="dropdownHover_{{bounty.pk}}" data-dropdown-trigger="hover" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-between items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="button">
+        <svg class="w-2.5 h-2.5 me-3 order-first" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+        </svg>
+        Actions
+    </button>
+    
 
     <!-- Dropdown menu -->
-    <div class="hidden bg-white text-base z-50 list-none divide-y divide-gray-100 rounded-xl shadow my-4 p-4"
-        id="dropdown_{{elem.bounty.pk}}">
-        <ul class="py-1" aria-labelledby="dropdown">
+    <div id="dropdownHover_{{bounty.pk}}" class="z-10 hidden bg-white divide-y divide-white rounded-lg shadow w-44 border border-gray-100">
+        <ul  class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton_{{bounty.pk}}">
             <li>
-                {% if elem.can_be_claimed %}
-                    {% with bounty=elem.bounty %}
-                        {% include 'product_management/partials/buttons/create_bounty_claim_button.html' %}
-                    {% endwith %}
-                {% endif %}
+            {% if elem.created_bounty_claim_request %}
+            <button hx-post="{{ url('delete-bounty-claim', args=(elem.bounty_claim.pk,)) }}"
+                class="{{li_class}}"
+                hx-swap="outerHTML" hx-target="this" hx-vals='{"from": "bounty_detail_table.html"}' hx-confirm="Are you sure to cancel your bounty claim request?">
+                Cancel Request
+            </button>
+            {% endif %}
             </li>
-            <li class="mt-2">
-                {% if elem.can_be_modified %}
+            <li>
+                {% if not elem.can_be_modified %}
                     <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                        class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600 dark:focus:ring-blue-900 mr-1">Edit</a>
+                        class="{{li_class}}">Edit</a>
                 {% endif %}
             </li>
-
-            <li class="mt-2">
-                {% if elem.created_bounty_claim_request %}
-                    {% with bounty_claim=elem.bounty_claim %}
-                        {% include 'product_management/partials/buttons/delete_bounty_claim_button.html' %}
-                    {% endwith %}
-                {% endif %}
-            </li>
-            <li class="mt-2">
-                {% if elem.can_be_modified %}
-                    <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
-                        hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
-                        hx-push-url="true"
-                        class="text-red-700 cursor-pointer hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 mr-1">Delete
-                    </a>
-                {% endif %}
+            <li>
+            {% if not elem.can_be_modified %}
+            <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
+                hx-push-url="true"
+                class="{{li_class}} text-red-500">Delete
+            </a>
+        {% endif %}
             </li>
         </ul>
     </div>
-</div>
+
+
+
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+    </svg>
+    </button>
+    
+    <!-- Dropdown menu -->
+    <div id="dropdownDivider" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDividerButton">
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+          </li>
+        </ul>
+        <div class="py-2">
+          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
+        </div>
+    </div>
+    
+        
+
