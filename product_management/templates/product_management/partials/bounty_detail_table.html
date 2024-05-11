@@ -1,6 +1,7 @@
 {% if bounty_data %}
-<div class="relative">
-    <table class="w-full text-sm text-left text-gray-500 ">
+
+<div class="mt-4 w-full">
+    <table class="w-full text-sm text-left text-gray-500 hidden md:block md:table">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
                 <th scope="col" class="px-2 py-3">
@@ -80,7 +81,15 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
+      
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+        {% for elem in bounty_data %}
+            {% with elem=elem %}
+                {% include "product_management/bounty/helper/small_card.html" %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+
 </div>
 
 {% if does_have_permission %}
@@ -106,6 +115,9 @@
 {% endif %}
 
 {% endif %}
+
+
+
 
 <script>
     document.addEventListener('htmx:confirm', function (event) {
@@ -142,3 +154,6 @@
         }
     });
 </script>
+
+
+
