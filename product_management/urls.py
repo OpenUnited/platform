@@ -247,9 +247,9 @@ urlpatterns += [
         name="create-initiative",
     ),
     path(
-        "<str:product_slug>/initiative/<int:initiative_id>",
+        "<str:product_slug>/initiative/<int:pk>",
         views.InitiativeDetailView.as_view(),
-        name="initiative_details",
+        name="initiative_detail",
     ),
     path(
         "<str:product_slug>/capability/create",

@@ -106,7 +106,7 @@
           <div>
             {% if challenge.initiative %}
             <a class="text-indigo-500 text-sm w-full block text-end"
-                href="{{ url('initiative_details', args=(product.slug, challenge.initiative.pk,)) }}">
+                href="{{ url('initiative_detail', args=(product.slug, challenge.initiative.pk,)) }}">
                 {{ challenge.initiative.name }}
             </a>
             {% else %}
