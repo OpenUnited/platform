@@ -135,6 +135,7 @@
   z-index: 2;
   cursor: pointer;
   transform: scale(1) rotate(45deg);
+  opacity: 0;
 }
 
 .heart__checkbox:focus {

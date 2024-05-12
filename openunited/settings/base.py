@@ -265,4 +265,5 @@ SOCIAL_AUTH_PIPELINE = (
 CORS_ALLOWED_ORIGINS = [
     "https://staging.openunited.com",
     "https://openunited.com",
+    "https://demo.openunited.com",
 ]
