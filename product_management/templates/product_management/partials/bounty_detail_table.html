@@ -1,88 +1,7 @@
 {% if bounty_data %}
 
-<div class="mt-4 w-full">
-    <table class="w-full text-sm text-left text-gray-500 hidden md:block md:table">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-            <tr>
-                <th scope="col" class="px-2 py-3">
-                    Bounty
-                </th>
-                <th scope="col" class="px-2 py-3">
-                    Points
-                </th>
-                <th scope="col" class="px-2 py-3">
-                    Status
-                </th>
-                <th scope="col" class="px-2 py-3">
-                    Claimed By
-                </th>
-                <th scope="col" class="px-2 py-3">
-                    Actions
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for elem in bounty_data %}
-            {% set bounty = elem.bounty %}
-                <tr class="bg-white border-b">
-                    <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                        <a class="text-gray-900" 
-                            href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}">
-                            {{ bounty.title }}
-                        </a>
-                        <div class="mt-1 text-gray-500">{{ bounty.skill }} 
-                            {% if bounty.get_expertise_as_str() %}
-                                ({{bounty.get_expertise_as_str()}})
-                            {% endif %}
-                        
-                        </div>
-                    </td>
-
-                    <td class="px-2 py-1">
-                        {{ bounty.points }}
-                    </td>
-                    <td class="px-2 py-1">
-                        {{ elem.status }}
-                    </td>
-
-                    <td class="px-2 py-1">
-
-                        {% set claimed_by = elem.claimed_by %}
-
-                        {% if bounty.status == 2 %}
-                            Unclaimed
-                        {% elif claimed_by %}
-                        <div class="flex items-center text-xs text-black/[0.85]">
-                            <a href="{{ claimed_by.get_absolute_url() }}" class="flex items-center ml-4">
-                                <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
-                                    <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                                        src="{{ claimed_by.get_photo_url() }}" alt="Created By">
-                                </div>
-                                <div class="text-neutral-800">
-                                    {{ claimed_by.get_full_name() }}
-                                </div>
-                            </a>
-                        </div>
-                        {% endif %}
-                        <p>
-                        </p>
-                    </td>
-                    
-                    <td class="relative whitespace-nowrap">
-                        {% if elem.show_actions %}
-                            {% with elem=elem %}
-                                {% include "product_management/partials/buttons/dropdown_actions.html" %}
-                            {% endwith %}
-                        {% else %}
-                            <p>No action is available for this bounty.</p>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-      
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+<div class="mt-4 w-full">      
+    <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-4">
         {% for elem in bounty_data %}
             {% with elem=elem %}
                 {% include "product_management/bounty/helper/small_card.html" %}
@@ -139,6 +58,7 @@
         }
       });
 
+    {#
     document.addEventListener('htmx:afterRequest', function (event) {
         if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
             var response = JSON.parse(event.detail.xhr.responseText);
@@ -153,6 +73,7 @@
             }
         }
     });
+    #}
 </script>
 
 

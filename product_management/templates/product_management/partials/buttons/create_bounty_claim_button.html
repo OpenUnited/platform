@@ -4,7 +4,7 @@
             hx-post="{{ url('bounty-claim', args=(elem.bounty.pk,)) }}"
             class="{{button_class}}"
             id="claim_request_{{bounty.pk}}"
-            hx-swap="afterend" hx-target="#ulDropdownMenu_{{elem.bounty.pk}}" claim-bounty="true">Claim
+            hx-swap="afterend" hx-target="#ulDropdownMenu_{{elem.bounty.pk}}" claim-bounty="true">Claim Bounty
         </button>
     {% endif %}
 {% else %}
