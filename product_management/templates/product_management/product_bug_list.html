@@ -2,7 +2,7 @@
 {% if bugs|length %}
 <ul role="list" class="divide-y divide-gray-100">
     {% for bug in bugs %}
-    <li class="flex flex-col items-start justify-between gap-y-4 py-5">
+    <li class="flex flex-col justify-between gap-y-4 py-5">
         <a href="{{ url('product_bug_detail', args=(product_slug, bug.pk,)) }}">
             <div class="flex flex-col gap-y-2">
                 <div class="flex items-start justify-between gap-x-4 xl:gap-x-6">
