@@ -603,7 +603,9 @@ ProductAreaAttachmentSet = inlineformset_factory(
 )
 
 
-class CapabilityForm(forms.ModelForm):
+class ProductAreaForm1(forms.ModelForm):
+    """TODO Merge this form to ProductAreaForm if we can"""
+
     root = forms.ModelChoiceField(
         required=False,
         empty_label="Select a product area",
