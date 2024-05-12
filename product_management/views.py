@@ -880,10 +880,6 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance.status = BountyClaim.Status.REQUESTED
         instance.save()
 
-        bounty = instance.bounty
-        bounty.status = Bounty.BOUNTY_STATUS_AVAILABLE
-        bounty.save()
-
         return render(
             request,
             "product_management/partials/buttons/delete_bounty_claim_button.html",
