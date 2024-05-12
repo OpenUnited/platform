@@ -233,7 +233,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
     initiative = models.ForeignKey(
         Initiative, on_delete=models.SET_NULL, blank=True, null=True
     )
-    capability = models.ForeignKey(
+    product_area = models.ForeignKey(
         ProductArea, on_delete=models.SET_NULL, blank=True, null=True
     )
     title = models.TextField()
