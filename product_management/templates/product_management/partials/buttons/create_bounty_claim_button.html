@@ -14,7 +14,8 @@
 <script>
     document.addEventListener("htmx:afterRequest", function(event) {
         if (event.target.id=="claim_request_{{bounty.pk}}" && event.detail.successful) {
-            document.getElementById("dropdownHoverButton_{{bounty.pk}}").classList.toggle("hidden")
+            document.getElementById("dropdownHoverButton_{{bounty.pk}}").classList.remove("hidden")
+            document.getElementById("claim_request_{{bounty.pk}}").classList.add("hidden")
         }
     });
 </script>
