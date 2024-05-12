@@ -810,6 +810,7 @@ class InitiativeDetailView(BaseProductDetailView, DetailView):
         initiative = self.object
         return context
 
+
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
     form_class = CapabilityForm
     template_name = "product_management/create_capability.html"
