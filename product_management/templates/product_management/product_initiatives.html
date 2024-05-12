@@ -49,7 +49,7 @@
                     {% endfor %}
                 </div>
                 <div class="mt-auto space-y-3 flex flex-col">
-                    <a href="{{ url('initiative_details', args=(product_slug, initiative.id,)) }}"
+                    <a href="{{ url('initiative_detail', args=(product_slug, initiative.id,)) }}"
                         class="text-base text-black transition-all hover:text-blue-400">
                         {{ initiative.name }}
                     </a>
