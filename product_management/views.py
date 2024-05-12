@@ -714,7 +714,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "can_be_modified": False,
                 "is_product_admin": False,
                 "created_bounty_claim_request": False,
-                "bounty_claim_id": None,
+                "bounty_claim": None,
             }
 
             if person:
