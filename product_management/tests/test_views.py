@@ -508,7 +508,7 @@ class CapabilityDetailViewTest(BaseProductTestCase):
 
         challenge_count = 5
         self.challenge_list = [
-            ChallengeFactory(capability=self.root_capability)
+            ChallengeFactory(product_area=self.root_capability)
             for _ in range(challenge_count)
         ]
 
