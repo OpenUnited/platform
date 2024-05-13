@@ -352,6 +352,11 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
             bounty.status = bounty_to_bounty_claim_status[instance.status]
             bounty.save()
 
+        if instance.status == sender.Status.GRANTED:
+            bounty = instance.bounty
+            bounty.claimed_by = instance.person
+            bounty.save()
+
     def __str__(self):
         return f"{self.bounty.challenge}: {self.person} ({self.status})"
 
