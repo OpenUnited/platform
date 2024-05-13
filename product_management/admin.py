@@ -32,3 +32,4 @@ class ChallengeAdmin(admin.ModelAdmin):
 @admin.register(product.Bounty)
 class BountyAdmin(admin.ModelAdmin):
     list_display = ["pk", "title", "status"]
+    filter_horizontal = ["expertise"]
