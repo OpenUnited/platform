@@ -7,7 +7,7 @@
             hx-swap="afterend" hx-target="#ulDropdownMenu_{{elem.bounty.pk}}" claim-bounty="true">Claim Bounty
         </button>
     {% endif %}
-{% else %}
+{% elif elem.can_be_claimed %}
     <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign_in') }}')" class="{{button_class}}">Claim Bounty</button>
 {% endif %}
 
