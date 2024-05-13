@@ -716,7 +716,13 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "created_bounty_claim_request": False,
                 "bounty_claim": None,
             }
-
+            last_claim = bounty.bountyclaim_set.filter(
+                status__in=[
+                    claim_status.GRANTED,
+                    claim_status.COMPLETED,
+                    claim_status.CONTRIBUTED,
+                ]
+            ).first()
             if person:
                 data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
@@ -726,13 +732,6 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
 
                 bounty_claim = bounty.bountyclaim_set.filter(
                     person=person
-                ).first()
-                last_claim = bounty.bountyclaim_set.filter(
-                    status__in=[
-                        claim_status.GRANTED,
-                        claim_status.COMPLETED,
-                        claim_status.CONTRIBUTED,
-                    ]
                 ).first()
 
                 if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
@@ -746,11 +745,12 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     data["created_bounty_claim_request"] = True
                     data["bounty_claim"] = bounty_claim
 
-                if last_claim:
-                    data["claimed_by"] = last_claim.person
-
             else:
-                data["can_be_claimed"] = True
+                if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+                    data["can_be_claimed"] = True
+
+            if last_claim:
+                data["claimed_by"] = last_claim.person
 
             data["show_actions"] = (
                 data["can_be_claimed"]
