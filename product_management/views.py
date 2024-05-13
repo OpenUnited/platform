@@ -400,7 +400,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
             self.request.FILES or None,
             instance=product_area,
         )
-        challenges = Challenge.objects.filter(capability=product_area)
+        challenges = Challenge.objects.filter(product_area=product_area)
 
         form = ProductAreaForm(
             instance=product_area, can_modify_product=product_perm
