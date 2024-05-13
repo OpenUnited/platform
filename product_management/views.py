@@ -181,7 +181,6 @@ class BountyListView(ListView):
         return ["product_management/bounty/list.html"]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         filters = Q()
 
         if expertise := self.request.GET.get("expertise"):
@@ -193,11 +192,14 @@ class BountyListView(ListView):
         if skill := self.request.GET.get("skill"):
             filters &= Q(skill=skill)
 
-        return queryset.filter(filters)
+        return (
+            Bounty.objects.filter(filters)
+            .select_related("challenge", "skill")
+            .prefetch_related("expertise")
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["request"] = self.request
 
         expertises = []
         if skill := self.request.GET.get("skill"):
@@ -716,13 +718,19 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "created_bounty_claim_request": False,
                 "bounty_claim": None,
             }
-            last_claim = bounty.bountyclaim_set.filter(
-                status__in=[
-                    claim_status.GRANTED,
-                    claim_status.COMPLETED,
-                    claim_status.CONTRIBUTED,
-                ]
-            ).first()
+
+            last_claim = (
+                bounty.bountyclaim_set.filter(
+                    status__in=[
+                        claim_status.GRANTED,
+                        claim_status.COMPLETED,
+                        claim_status.CONTRIBUTED,
+                    ]
+                )
+                .select_related("person", "bounty")
+                .first()
+            )
+
             if person:
                 data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
@@ -800,15 +808,8 @@ class CreateInitiativeView(
         return super().post(request, *args, **kwargs)
 
 
-class InitiativeDetailView(BaseProductDetailView, DetailView):
+class InitiativeDetailView(BaseProductDetailView, TemplateView):
     template_name = "product_management/initiative_detail.html"
-    model = Initiative
-    context_object_name = "initiative"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        initiative = self.object
-        return context
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
@@ -1398,34 +1399,66 @@ class BountyDetailView(DetailView):
         bounty = data.get("bounty")
         challenge = bounty.challenge
         product = challenge.product
-
-        bounty_claims = BountyClaim.objects.filter(
-            bounty=bounty,
-            status__in=[
-                BountyClaim.Status.GRANTED,
-                BountyClaim.Status.CONTRIBUTED,
-                BountyClaim.Status.COMPLETED,
-            ],
+        user = self.request.user
+        last_claim = (
+            bounty.bountyclaim_set.filter(
+                status__in=[
+                    BountyClaim.Status.GRANTED,
+                    BountyClaim.Status.COMPLETED,
+                    BountyClaim.Status.CONTRIBUTED,
+                ]
+            )
+            .select_related("person", "bounty")
+            .first()
         )
+        can_be_modified = False
+        can_be_claimed = False
+        created_bounty_claim_request = False
+        bounty_claim = None
+        if user.is_authenticated:
+            person = user.person
+            _bounty_claim = bounty.bountyclaim_set.filter(
+                person=person
+            ).first()
 
-        is_assigned = bounty_claims.exists()
-        assigned_to = (
-            bounty_claims.first().person if bounty_claims else "No one"
-        )
-        attachments = [
-            att for att in BountyAttachment.objects.filter(bounty=bounty)
-        ]
+            if (
+                _bounty_claim
+                and _bounty_claim.status == BountyClaim.Status.REQUESTED
+                and not last_claim
+            ):
+                created_bounty_claim_request = True
+                bounty_claim = _bounty_claim
+
+            if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+                can_be_claimed = not _bounty_claim
+
+            can_be_modified = ProductRoleAssignment.objects.filter(
+                person=person,
+                product=product,
+                role=ProductRoleAssignment.PRODUCT_ADMIN,
+            ).exists()
 
         data.update(
             {
                 "product": product,
                 "challenge": challenge,
-                "is_assigned": is_assigned,
-                "assigned_to": assigned_to,
-                "attachments": attachments,
+                "claimed_by": getattr(last_claim, "person", None),
+                "attachments": list(
+                    BountyAttachment.objects.filter(bounty=bounty)
+                ),
+                "bounty_claim": bounty_claim,
+                "show_actions": created_bounty_claim_request
+                or can_be_claimed
+                or can_be_modified,
+                "show_actions": True,
+                "can_be_claimed": can_be_claimed,
+                "can_be_modified": can_be_modified,
+                "is_product_admin": True,
+                "created_bounty_claim_request": created_bounty_claim_request,
             }
         )
-        return data
+
+        return {"data": data}
 
 
 # TODO: make sure the user can't manipulate the URL to create a bounty

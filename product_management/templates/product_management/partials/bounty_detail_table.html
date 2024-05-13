@@ -38,43 +38,7 @@
 
 
 
-<script>
-    document.addEventListener('htmx:confirm', function (event) {
-        if (event.detail.elt.getAttribute('claim-bounty')) {
-            event.preventDefault()
-            claimConfirm(event, "{{ url('terms-of-use') }}")
-        }
-    })
 
-    document.addEventListener('htmx:confirm', function (event) {
-        if (event.detail.elt.getAttribute('claim-bounty')) {
-            event.preventDefault()
-            claimConfirm(event, "{{ url('terms-of-use') }}")
-        }
-    })
-    document.addEventListener('htmx:responseError', function(event) {
-        if (event.detail.elt.getAttribute('claim-bounty')) {
-          showNotification({message: JSON.parse(event.detail.xhr.response).errors.expected_finish_date})
-        }
-      });
-
-    {#
-    document.addEventListener('htmx:afterRequest', function (event) {
-        if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
-            var response = JSON.parse(event.detail.xhr.responseText);
-            if (event.detail.xhr.status === 200) {
-                const tdTag = event.target.closest("td")
-                event.target.classList.add("hidden")
-                const visibleButtonCount = tdTag.querySelectorAll('a:not([class*="hidden"]').length;
-                if (visibleButtonCount == 0) {
-                    tdTag.innerHTML = "No action is available for this bounty.";
-                    tdTag.classList.remove("hidden")
-                }
-            }
-        }
-    });
-    #}
-</script>
 
 
 

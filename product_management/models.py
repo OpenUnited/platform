@@ -410,25 +410,14 @@ class Bounty(TimeStampMixin):
     )
     is_active = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ("-created_at",)
+
     def get_expertise_as_str(self):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
-
-    @property
-    def last_claim(self):
-        from talent.models import BountyClaim
-
-        last_claimed = self.bountyclaim_set.first()
-        if last_claimed.status in [
-            BountyClaim.Status.GRANTED,
-            BountyClaim.Status.COMPLETED,
-            BountyClaim.Status.CONTRIBUTED,
-        ]:
-            return last_claimed
-        else:
-            return None
 
 
 class BountyAttachment(TimeStampMixin, AttachmentAbstract):
