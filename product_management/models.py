@@ -410,8 +410,24 @@ class Bounty(TimeStampMixin):
     )
     is_active = models.BooleanField(default=True)
 
+    claimed_by = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="bounty_claimed_by",
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         ordering = ("-created_at",)
+
+    @property
+    def has_claimed(self):
+        return self.status in [
+            self.BOUNTY_STATUS_CLAIMED,
+            self.BOUNTY_STATUS_DONE,
+            self.BOUNTY_STATUS_IN_REVIEW,
+        ]
 
     def get_expertise_as_str(self):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
