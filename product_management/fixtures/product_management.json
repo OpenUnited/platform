@@ -640,14 +640,14 @@
         "model": "product_management.initiative",
         "pk": 3,
         "fields": {
-        "created_at": "2024-05-06T17:35:15.903Z",
-        "updated_at": "2024-05-06T17:35:15.903Z",
-        "uuid": "3d895f9c-4387-49bc-991f-3046f22e703f",
-        "name": "ArtCollab Artist Workshops",
-        "product": 1,
-        "description": "Launch an initiative to host virtual artist workshops on ArtCollab, featuring renowned artists who will share their techniques, tips, and insights with the community. The initiative aims to inspire and educate artists of all skill levels.",
-        "status": 1,
-        "video_url": "https://www.youtube.com/embed/artcollab-artist-workshops"
+            "created_at": "2024-05-06T17:35:15.903Z",
+            "updated_at": "2024-05-06T17:35:15.903Z",
+            "uuid": "3d895f9c-4387-49bc-991f-3046f22e703f",
+            "name": "ArtCollab Artist Workshops",
+            "product": 1,
+            "description": "Launch an initiative to host virtual artist workshops on ArtCollab, featuring renowned artists who will share their techniques, tips, and insights with the community. The initiative aims to inspire and educate artists of all skill levels.",
+            "status": 1,
+            "video_url": "https://www.youtube.com/embed/artcollab-artist-workshops"
         }
     },
     {
@@ -668,28 +668,28 @@
         "model": "product_management.initiative",
         "pk": 5,
         "fields": {
-        "created_at": "2024-05-06T17:35:45.415Z",
-        "updated_at": "2024-05-06T17:35:45.415Z",
-        "uuid": "5d895f9c-4387-49bc-991f-3046f22e703f",
-        "name": "ArtCollab Feature Enhancement",
-        "product": 1,
-        "description": "Launch an initiative to enhance features and functionalities on ArtCollab based on user feedback and platform usage data. The initiative aims to improve the overall user experience and expand the capabilities of the platform.",
-        "status": 1,
-        "video_url": "https://www.youtube.com/embed/artcollab-feature-enhancement"
+            "created_at": "2024-05-06T17:35:45.415Z",
+            "updated_at": "2024-05-06T17:35:45.415Z",
+            "uuid": "5d895f9c-4387-49bc-991f-3046f22e703f",
+            "name": "ArtCollab Feature Enhancement",
+            "product": 1,
+            "description": "Launch an initiative to enhance features and functionalities on ArtCollab based on user feedback and platform usage data. The initiative aims to improve the overall user experience and expand the capabilities of the platform.",
+            "status": 1,
+            "video_url": "https://www.youtube.com/embed/artcollab-feature-enhancement"
         }
     },
     {
         "model": "product_management.initiative",
         "pk": 6,
         "fields": {
-        "created_at": "2024-05-06T17:34:47.103Z",
-        "updated_at": "2024-05-06T17:34:47.103Z",
-        "uuid": "59f8c3fd-a112-4a04-b017-1814ff57a062",
-        "name": "Quest-Based Learning Modules",
-        "product": 2,
-        "description": "Launch an initiative to develop quest-based learning modules for the interactive learning management system, incorporating gamified elements such as challenges, rewards, and progression tracking. The initiative aims to make learning more engaging and immersive for students.",
-        "status": 1,
-        "video_url": "https://www.youtube.com/embed/quest-based-learning-modules"
+            "created_at": "2024-05-06T17:34:47.103Z",
+            "updated_at": "2024-05-06T17:34:47.103Z",
+            "uuid": "59f8c3fd-a112-4a04-b017-1814ff57a062",
+            "name": "Quest-Based Learning Modules",
+            "product": 2,
+            "description": "Launch an initiative to develop quest-based learning modules for the interactive learning management system, incorporating gamified elements such as challenges, rewards, and progression tracking. The initiative aims to make learning more engaging and immersive for students.",
+            "status": 1,
+            "video_url": "https://www.youtube.com/embed/quest-based-learning-modules"
         }
     },
     {
@@ -710,14 +710,14 @@
         "model": "product_management.initiative",
         "pk": 8,
         "fields": {
-        "created_at": "2024-05-06T17:35:15.953Z",
-        "updated_at": "2024-05-06T17:35:15.953Z",
-        "uuid": "79f8c3fd-a112-4a04-b017-1814ff57a062",
-        "name": "Gamified Quiz Modules",
-        "product": 2,
-        "description": "Launch an initiative to develop gamified quiz modules for the interactive learning management system, incorporating game mechanics such as time limits, power-ups, and scoring systems to make assessments more engaging and enjoyable for students.",
-        "status": 1,
-        "video_url": "https://www.youtube.com/embed/gamified-quiz-modules"
+            "created_at": "2024-05-06T17:35:15.953Z",
+            "updated_at": "2024-05-06T17:35:15.953Z",
+            "uuid": "79f8c3fd-a112-4a04-b017-1814ff57a062",
+            "name": "Gamified Quiz Modules",
+            "product": 2,
+            "description": "Launch an initiative to develop gamified quiz modules for the interactive learning management system, incorporating game mechanics such as time limits, power-ups, and scoring systems to make assessments more engaging and enjoyable for students.",
+            "status": 1,
+            "video_url": "https://www.youtube.com/embed/gamified-quiz-modules"
         }
     },
     {
@@ -738,14 +738,14 @@
         "model": "product_management.initiative",
         "pk": 10,
         "fields": {
-        "created_at": "2024-05-06T17:35:45.474Z",
-        "updated_at": "2024-05-06T17:35:45.474Z",
-        "uuid": "99f8c3fd-a112-4a04-b017-1814ff57a062",
-        "name": "Virtual Learning Adventures",
-        "product": 2,
-        "description": "Launch an initiative to introduce virtual learning adventures within the interactive learning management system, enabling students to explore simulated environments, solve puzzles, and complete quests to acquire knowledge and skills. The initiative aims to make learning more immersive and memorable.",
-        "status": 1,
-        "video_url": "https://www.youtube.com/embed/virtual-learning-adventures"
+            "created_at": "2024-05-06T17:35:45.474Z",
+            "updated_at": "2024-05-06T17:35:45.474Z",
+            "uuid": "99f8c3fd-a112-4a04-b017-1814ff57a062",
+            "name": "Virtual Learning Adventures",
+            "product": 2,
+            "description": "Launch an initiative to introduce virtual learning adventures within the interactive learning management system, enabling students to explore simulated environments, solve puzzles, and complete quests to acquire knowledge and skills. The initiative aims to make learning more immersive and memorable.",
+            "status": 1,
+            "video_url": "https://www.youtube.com/embed/virtual-learning-adventures"
         }
     },
     {
@@ -1027,7 +1027,7 @@
             "status": 1,
             "video_url": "https://www.youtube.com/embed/comprehensive-event-analytics"
         }
-    },    
+    },
     {
         "model": "product_management.initiative",
         "pk": 31,
@@ -1644,7 +1644,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [14]
+            "tag": [
+                14
+            ]
         }
     },
     {
@@ -1673,7 +1675,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [8]
+            "tag": [
+                8
+            ]
         }
     },
     {
@@ -1702,7 +1706,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [17]
+            "tag": [
+                17
+            ]
         }
     },
     {
@@ -1731,7 +1737,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [4]
+            "tag": [
+                4
+            ]
         }
     },
     {
@@ -1760,7 +1768,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [22]
+            "tag": [
+                22
+            ]
         }
     },
     {
@@ -1789,7 +1799,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [11]
+            "tag": [
+                11
+            ]
         }
     },
     {
@@ -1818,7 +1830,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [5]
+            "tag": [
+                5
+            ]
         }
     },
     {
@@ -1847,7 +1861,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [10]
+            "tag": [
+                10
+            ]
         }
     },
     {
@@ -1876,7 +1892,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [18]
+            "tag": [
+                18
+            ]
         }
     },
     {
@@ -1905,7 +1923,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [9]
+            "tag": [
+                9
+            ]
         }
     },
     {
@@ -1997,8 +2017,8 @@
             "reward_type": 0,
             "attachment": [],
             "tag": [
-                5,
-                10
+                10,
+                5
             ]
         }
     },
@@ -2217,8 +2237,8 @@
             "reward_type": 0,
             "attachment": [],
             "tag": [
-                6,
-                17
+                17,
+                6
             ]
         }
     },
@@ -2248,7 +2268,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [14]
+            "tag": [
+                14
+            ]
         }
     },
     {
@@ -2277,7 +2299,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [8, 18]
+            "tag": [
+                8,
+                18
+            ]
         }
     },
     {
@@ -2306,7 +2331,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [4, 10]
+            "tag": [
+                10,
+                4
+            ]
         }
     },
     {
@@ -2335,7 +2363,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [3, 12, 20]
+            "tag": [
+                3,
+                12,
+                20
+            ]
         }
     },
     {
@@ -2364,7 +2396,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [5, 16]
+            "tag": [
+                16,
+                5
+            ]
         }
     },
     {
@@ -2393,7 +2428,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [7, 15, 22]
+            "tag": [
+                15,
+                22,
+                7
+            ]
         }
     },
     {
@@ -2422,7 +2461,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [1, 9, 21]
+            "tag": [
+                1,
+                21,
+                9
+            ]
         }
     },
     {
@@ -2451,7 +2494,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [2, 11, 19]
+            "tag": [
+                19,
+                2,
+                11
+            ]
         }
     },
     {
@@ -2480,7 +2527,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [6, 13, 23]
+            "tag": [
+                13,
+                6,
+                23
+            ]
         }
     },
     {
@@ -2509,9 +2560,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [17]
+            "tag": [
+                17
+            ]
         }
-    },    
+    },
     {
         "model": "product_management.challenge",
         "pk": 41,
@@ -2538,7 +2591,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [5]
+            "tag": [
+                5
+            ]
         }
     },
     {
@@ -2567,7 +2622,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [17, 8]
+            "tag": [
+                8,
+                17
+            ]
         }
     },
     {
@@ -2596,7 +2654,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [3]
+            "tag": [
+                3
+            ]
         }
     },
     {
@@ -2625,7 +2685,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [20, 15]
+            "tag": [
+                20,
+                15
+            ]
         }
     },
     {
@@ -2654,7 +2717,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [9]
+            "tag": [
+                9
+            ]
         }
     },
     {
@@ -2683,7 +2748,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [22, 7]
+            "tag": [
+                22,
+                7
+            ]
         }
     },
     {
@@ -2712,7 +2780,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [12]
+            "tag": [
+                12
+            ]
         }
     },
     {
@@ -2741,7 +2811,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [1]
+            "tag": [
+                1
+            ]
         }
     },
     {
@@ -2770,7 +2842,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [13, 19]
+            "tag": [
+                19,
+                13
+            ]
         }
     },
     {
@@ -2799,7 +2874,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [23, 2]
+            "tag": [
+                2,
+                23
+            ]
         }
     },
     {
@@ -2828,7 +2906,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [14]
+            "tag": [
+                14
+            ]
         }
     },
     {
@@ -2857,7 +2937,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [8]
+            "tag": [
+                8
+            ]
         }
     },
     {
@@ -2886,7 +2968,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [5]
+            "tag": [
+                5
+            ]
         }
     },
     {
@@ -2915,7 +2999,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [10]
+            "tag": [
+                10
+            ]
         }
     },
     {
@@ -2944,7 +3030,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [18]
+            "tag": [
+                18
+            ]
         }
     },
     {
@@ -2973,7 +3061,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [21, 7]
+            "tag": [
+                21,
+                7
+            ]
         }
     },
     {
@@ -3002,7 +3093,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [9]
+            "tag": [
+                9
+            ]
         }
     },
     {
@@ -3031,7 +3124,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [13, 19]
+            "tag": [
+                19,
+                13
+            ]
         }
     },
     {
@@ -3060,7 +3156,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [3, 17]
+            "tag": [
+                17,
+                3
+            ]
         }
     },
     {
@@ -3089,9 +3188,12 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [20, 11]
+            "tag": [
+                11,
+                20
+            ]
         }
-    },    
+    },
     {
         "model": "product_management.challenge",
         "pk": 61,
@@ -3118,7 +3220,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [14, 7, 18]
+            "tag": [
+                18,
+                14,
+                7
+            ]
         }
     },
     {
@@ -3147,7 +3253,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [10, 22]
+            "tag": [
+                10,
+                22
+            ]
         }
     },
     {
@@ -3176,7 +3285,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [6, 14, 19]
+            "tag": [
+                19,
+                6,
+                14
+            ]
         }
     },
     {
@@ -3205,7 +3318,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [2, 11, 23]
+            "tag": [
+                2,
+                11,
+                23
+            ]
         }
     },
     {
@@ -3234,7 +3351,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [1, 8, 15]
+            "tag": [
+                8,
+                1,
+                15
+            ]
         }
     },
     {
@@ -3263,7 +3384,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [4, 12, 20]
+            "tag": [
+                20,
+                4,
+                12
+            ]
         }
     },
     {
@@ -3292,7 +3417,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [3, 13, 21]
+            "tag": [
+                21,
+                3,
+                13
+            ]
         }
     },
     {
@@ -3321,7 +3450,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [5, 9, 16]
+            "tag": [
+                16,
+                9,
+                5
+            ]
         }
     },
     {
@@ -3350,7 +3483,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [17, 23]
+            "tag": [
+                17,
+                23
+            ]
         }
     },
     {
@@ -3379,7 +3515,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [1, 10, 22]
+            "tag": [
+                1,
+                10,
+                22
+            ]
         }
     },
     {
@@ -3503,8 +3643,8 @@
             "reward_type": 0,
             "attachment": [],
             "tag": [
-                6,
-                19
+                19,
+                6
             ]
         }
     },
@@ -3663,8 +3803,8 @@
             "reward_type": 0,
             "attachment": [],
             "tag": [
-                7,
-                18
+                18,
+                7
             ]
         }
     },
@@ -3699,7 +3839,7 @@
                 23
             ]
         }
-    },    
+    },
     {
         "model": "product_management.challenge",
         "pk": 81,
@@ -3726,7 +3866,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [14, 6]
+            "tag": [
+                14,
+                6
+            ]
         }
     },
     {
@@ -3755,7 +3898,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [8]
+            "tag": [
+                8
+            ]
         }
     },
     {
@@ -3784,7 +3929,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [10, 19]
+            "tag": [
+                10,
+                19
+            ]
         }
     },
     {
@@ -3813,7 +3961,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [4, 16]
+            "tag": [
+                16,
+                4
+            ]
         }
     },
     {
@@ -3842,7 +3993,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [7]
+            "tag": [
+                7
+            ]
         }
     },
     {
@@ -3871,7 +4024,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [3, 21]
+            "tag": [
+                3,
+                21
+            ]
         }
     },
     {
@@ -3900,7 +4056,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [9, 23]
+            "tag": [
+                9,
+                23
+            ]
         }
     },
     {
@@ -3929,7 +4088,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [5, 13]
+            "tag": [
+                13,
+                5
+            ]
         }
     },
     {
@@ -3958,7 +4120,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [12, 17]
+            "tag": [
+                17,
+                12
+            ]
         }
     },
     {
@@ -3987,7 +4152,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [2, 18]
+            "tag": [
+                2,
+                18
+            ]
         }
     },
     {
@@ -4016,7 +4184,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [14, 7]
+            "tag": [
+                14,
+                7
+            ]
         }
     },
     {
@@ -4045,7 +4216,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [9, 18, 3]
+            "tag": [
+                9,
+                18,
+                3
+            ]
         }
     },
     {
@@ -4074,7 +4249,9 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [10]
+            "tag": [
+                10
+            ]
         }
     },
     {
@@ -4103,7 +4280,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [4, 15]
+            "tag": [
+                4,
+                15
+            ]
         }
     },
     {
@@ -4132,7 +4312,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [8, 11, 23]
+            "tag": [
+                8,
+                11,
+                23
+            ]
         }
     },
     {
@@ -4161,7 +4345,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [2, 17]
+            "tag": [
+                17,
+                2
+            ]
         }
     },
     {
@@ -4190,7 +4377,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [6, 12]
+            "tag": [
+                12,
+                6
+            ]
         }
     },
     {
@@ -4219,7 +4409,11 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [16, 21, 5]
+            "tag": [
+                16,
+                5,
+                21
+            ]
         }
     },
     {
@@ -4248,7 +4442,10 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [13, 20]
+            "tag": [
+                20,
+                13
+            ]
         }
     },
     {
@@ -4277,15 +4474,17 @@
             "contribution_guide": null,
             "reward_type": 0,
             "attachment": [],
-            "tag": [19]
+            "tag": [
+                19
+            ]
         }
-    },    
+    },
     {
         "model": "product_management.bounty",
         "pk": 1,
         "fields": {
             "created_at": "2024-05-06T17:34:38.127Z",
-            "updated_at": "2024-05-06T17:34:38.222Z",
+            "updated_at": "2024-05-13T20:34:26.624Z",
             "title": "New Brush Styles",
             "challenge": 1,
             "description": "Introduce a variety of new brush styles to CloudCanvas, offering artists more creative options and enhancing their ability to express themselves through digital art.",
@@ -4293,6 +4492,7 @@
             "points": 55,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 16
             ]
@@ -4303,7 +4503,7 @@
         "pk": 2,
         "fields": {
             "created_at": "2024-05-06T17:34:38.135Z",
-            "updated_at": "2024-05-06T17:34:38.226Z",
+            "updated_at": "2024-05-13T20:34:26.618Z",
             "title": "Real-Time Collaboration",
             "challenge": 2,
             "description": "Implement real-time collaboration features in CloudCanvas, enabling multiple artists to work simultaneously on the same canvas, fostering teamwork and creativity.",
@@ -4311,6 +4511,7 @@
             "points": 30,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 20,
                 28
@@ -4322,7 +4523,7 @@
         "pk": 3,
         "fields": {
             "created_at": "2024-05-06T17:34:38.139Z",
-            "updated_at": "2024-05-06T17:34:38.231Z",
+            "updated_at": "2024-05-13T20:34:26.613Z",
             "title": "Integrated Stock Image Library",
             "challenge": 3,
             "description": "Integrate a stock image library into CloudCanvas, providing artists with access to a vast collection of high-quality images and resources to use in their artwork.",
@@ -4330,6 +4531,7 @@
             "points": 25,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 35,
                 21
@@ -4341,7 +4543,7 @@
         "pk": 4,
         "fields": {
             "created_at": "2024-05-06T17:34:38.143Z",
-            "updated_at": "2024-05-06T17:34:38.235Z",
+            "updated_at": "2024-05-13T20:34:26.607Z",
             "title": "Customizable Workspace Layouts",
             "challenge": 4,
             "description": "Allow users to customize their workspace layouts in CloudCanvas, enabling them to arrange tools, palettes, and panels according to their preferences and workflow.",
@@ -4349,6 +4551,7 @@
             "points": 40,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 32,
                 24,
@@ -4362,13 +4565,15 @@
         "pk": 5,
         "fields": {
             "created_at": "2024-05-06T17:34:38.148Z",
-            "updated_at": "2024-05-06T17:34:38.239Z",
+            "updated_at": "2024-05-13T20:34:26.602Z",
             "title": "Improved Export Options",
             "challenge": 5,
-            "description": "Enhance export options in CloudCanvas, allowing artists to export their artwork in various file formats with customizable settings, ensuring compatibility and quality.",            "skill": 119,
+            "description": "Enhance export options in CloudCanvas, allowing artists to export their artwork in various file formats with customizable settings, ensuring compatibility and quality.",
+            "skill": 119,
             "points": 75,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 17,
                 27,
@@ -4381,14 +4586,15 @@
         "pk": 6,
         "fields": {
             "created_at": "2024-05-06T17:34:38.151Z",
-            "updated_at": "2024-05-06T17:34:45.249Z",
+            "updated_at": "2024-05-13T20:34:26.596Z",
             "title": "Artwork Collaboration Challenges",
             "challenge": 6,
             "description": "Organize artwork collaboration challenges on CloudCanvas, inviting artists to collaborate on themed projects and competitions to showcase their skills and creativity.",
             "skill": 109,
             "points": 45,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 10
             ]
@@ -4399,14 +4605,15 @@
         "pk": 7,
         "fields": {
             "created_at": "2024-05-06T17:34:38.155Z",
-            "updated_at": "2024-05-06T17:34:45.253Z",
+            "updated_at": "2024-05-13T20:34:26.590Z",
             "title": "Interactive Feedback Mechanism",
             "challenge": 7,
             "description": "Implement an interactive feedback mechanism in CloudCanvas, allowing users to provide feedback on artwork through comments, annotations, and reactions.",
             "skill": 24,
             "points": 70,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 21,
                 14,
@@ -4419,14 +4626,15 @@
         "pk": 8,
         "fields": {
             "created_at": "2024-05-06T17:34:38.158Z",
-            "updated_at": "2024-05-06T17:34:45.257Z",
+            "updated_at": "2024-05-13T20:34:26.584Z",
             "title": "Enhanced Community Features",
             "challenge": 8,
             "description": "Introduce enhanced community features in CloudCanvas, including forums, galleries, and events, to foster a vibrant and supportive community of artists.",
             "skill": 31,
             "points": 60,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 1,
                 23
@@ -4438,14 +4646,15 @@
         "pk": 9,
         "fields": {
             "created_at": "2024-05-06T17:34:38.162Z",
-            "updated_at": "2024-05-06T17:34:45.260Z",
+            "updated_at": "2024-05-13T20:34:26.579Z",
             "title": "Artwork Version History",
             "challenge": 9,
             "description": "Implement version history functionality in CloudCanvas, allowing artists to track and revert changes made to their artwork over time, providing peace of mind and accountability.",
             "skill": 89,
             "points": 18,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 17,
                 35
@@ -4457,14 +4666,15 @@
         "pk": 10,
         "fields": {
             "created_at": "2024-05-06T17:34:38.166Z",
-            "updated_at": "2024-05-06T17:34:45.263Z",
+            "updated_at": "2024-05-13T20:34:26.573Z",
             "title": "Enhanced Layer Management",
             "challenge": 10,
             "description": "Improve layer management functionality in CloudCanvas, allowing artists to organize, group, and manipulate layers more efficiently while working on complex artwork.",
             "skill": 75,
             "points": 32,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 18,
                 26,
@@ -4477,7 +4687,7 @@
         "pk": 11,
         "fields": {
             "created_at": "2024-05-06T17:34:38.852Z",
-            "updated_at": "2024-05-06T17:34:38.938Z",
+            "updated_at": "2024-05-13T20:34:26.569Z",
             "title": "Quest-Based Learning Modules",
             "challenge": 11,
             "description": "Develop quest-based learning modules for EduSync, incorporating gamified elements such as challenges, rewards, and progression tracking to make learning more engaging and immersive for students.",
@@ -4485,6 +4695,7 @@
             "points": 18,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 32,
                 26,
@@ -4498,7 +4709,7 @@
         "pk": 12,
         "fields": {
             "created_at": "2024-05-06T17:34:38.856Z",
-            "updated_at": "2024-05-06T17:34:38.942Z",
+            "updated_at": "2024-05-13T20:34:26.563Z",
             "title": "Leaderboards and Achievements",
             "challenge": 12,
             "description": "Implement leaderboards and achievements within EduSync to encourage healthy competition and motivation among students, recognizing and rewarding academic progress and accomplishments.",
@@ -4506,6 +4717,7 @@
             "points": 25,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 33
             ]
@@ -4516,7 +4728,7 @@
         "pk": 13,
         "fields": {
             "created_at": "2024-05-06T17:34:38.859Z",
-            "updated_at": "2024-05-06T17:34:38.947Z",
+            "updated_at": "2024-05-13T20:34:26.558Z",
             "title": "Gamified Quiz Modules",
             "challenge": 13,
             "description": "Create gamified quiz modules for EduSync, incorporating game mechanics such as time limits, power-ups, and scoring systems to make assessments more engaging and enjoyable for students.",
@@ -4524,6 +4736,7 @@
             "points": 75,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 10
             ]
@@ -4534,7 +4747,7 @@
         "pk": 14,
         "fields": {
             "created_at": "2024-05-06T17:34:38.863Z",
-            "updated_at": "2024-05-06T17:34:38.951Z",
+            "updated_at": "2024-05-13T20:34:26.553Z",
             "title": "Interactive Storytelling Modules",
             "challenge": 14,
             "description": "Introduce interactive storytelling modules within EduSync, allowing students to participate in immersive narratives and make decisions that impact the outcome of the story, fostering critical thinking and creativity.",
@@ -4542,6 +4755,7 @@
             "points": 32,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 2
             ]
@@ -4552,7 +4766,7 @@
         "pk": 15,
         "fields": {
             "created_at": "2024-05-06T17:34:38.867Z",
-            "updated_at": "2024-05-06T17:34:38.954Z",
+            "updated_at": "2024-05-13T20:34:26.548Z",
             "title": "Virtual Learning Adventures",
             "challenge": 15,
             "description": "Introduce virtual learning adventures within EduSync, enabling students to explore simulated environments, solve puzzles, and complete quests to acquire knowledge and skills, making learning more immersive and memorable.",
@@ -4560,6 +4774,7 @@
             "points": 40,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 18,
                 27,
@@ -4573,14 +4788,15 @@
         "pk": 16,
         "fields": {
             "created_at": "2024-05-06T17:34:38.870Z",
-            "updated_at": "2024-05-06T17:34:45.266Z",
+            "updated_at": "2024-05-13T20:34:26.542Z",
             "title": "Engagement Analytics Dashboard",
             "challenge": 16,
             "description": "Develop an engagement analytics dashboard for EduSync, providing educators with insights into student participation, progress, and performance within gamified activities to facilitate data-driven decision-making and improve learning outcomes.",
             "skill": 97,
             "points": 70,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 1,
                 34
@@ -4592,17 +4808,18 @@
         "pk": 17,
         "fields": {
             "created_at": "2024-05-06T17:34:38.874Z",
-            "updated_at": "2024-05-06T17:34:45.273Z",
+            "updated_at": "2024-05-13T20:34:26.536Z",
             "title": "Peer Collaboration Challenges",
             "challenge": 17,
             "description": "Organize peer collaboration challenges within EduSync, encouraging students to work together on projects, solve problems, and share knowledge, promoting teamwork and communication skills.",
             "skill": 39,
             "points": 60,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
-                27,
                 35,
+                27,
                 5,
                 6
             ]
@@ -4613,14 +4830,15 @@
         "pk": 18,
         "fields": {
             "created_at": "2024-05-06T17:34:38.878Z",
-            "updated_at": "2024-05-06T17:34:45.277Z",
+            "updated_at": "2024-05-13T20:34:26.531Z",
             "title": "Avatar Customization Feature",
             "challenge": 18,
             "description": "Introduce an avatar customization feature within EduSync, allowing students to personalize their virtual identities with different outfits, accessories, and attributes, enhancing self-expression and engagement.",
             "skill": 91,
             "points": 55,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 32,
                 4,
@@ -4633,14 +4851,15 @@
         "pk": 19,
         "fields": {
             "created_at": "2024-05-06T17:34:38.882Z",
-            "updated_at": "2024-05-06T17:34:45.270Z",
+            "updated_at": "2024-05-13T20:34:26.525Z",
             "title": "Interactive Simulation Labs",
             "challenge": 19,
             "description": "Develop interactive simulation labs for EduSync, allowing students to conduct virtual experiments, simulations, and real-world scenarios to reinforce learning concepts, providing hands-on learning experiences.",
             "skill": 79,
             "points": 45,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 18,
                 2
@@ -4652,14 +4871,15 @@
         "pk": 20,
         "fields": {
             "created_at": "2024-05-06T17:34:38.886Z",
-            "updated_at": "2024-05-06T17:34:45.281Z",
+            "updated_at": "2024-05-13T20:34:26.519Z",
             "title": "Real-Time Progress Tracking",
             "challenge": 20,
             "description": "Implement real-time progress tracking features within EduSync, allowing students to monitor their performance and receive immediate feedback on their activities and achievements, promoting self-awareness and accountability.",
             "skill": 117,
             "points": 30,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 6
             ]
@@ -4670,7 +4890,7 @@
         "pk": 21,
         "fields": {
             "created_at": "2024-05-06T17:34:39.564Z",
-            "updated_at": "2024-05-06T17:34:39.657Z",
+            "updated_at": "2024-05-13T20:34:26.513Z",
             "title": "Teleconsultation Feature Enhancement",
             "challenge": 21,
             "description": "Launch an initiative to enhance the teleconsultation feature of HealthHub, improving video and audio quality, optimizing connection stability, and adding new functionalities such as screen sharing and file transfer. The initiative aims to provide a seamless virtual healthcare experience for both doctors and patients.",
@@ -4678,6 +4898,7 @@
             "points": 38,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 16,
                 33,
@@ -4691,7 +4912,7 @@
         "pk": 22,
         "fields": {
             "created_at": "2024-05-06T17:34:39.568Z",
-            "updated_at": "2024-05-06T17:34:39.661Z",
+            "updated_at": "2024-05-13T20:34:26.508Z",
             "title": "Virtual Appointment Scheduling",
             "challenge": 22,
             "description": "Launch an initiative to implement virtual appointment scheduling within HealthHub, allowing patients to book appointments with healthcare providers at their convenience. The initiative aims to streamline the appointment booking process and reduce wait times for patients.",
@@ -4699,9 +4920,10 @@
             "points": 63,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
-                3,
-                11
+                11,
+                3
             ]
         }
     },
@@ -4710,7 +4932,7 @@
         "pk": 23,
         "fields": {
             "created_at": "2024-05-06T17:34:39.573Z",
-            "updated_at": "2024-05-06T17:34:39.665Z",
+            "updated_at": "2024-05-13T20:34:26.503Z",
             "title": "Remote Patient Monitoring Integration",
             "challenge": 23,
             "description": "Launch an initiative to integrate remote patient monitoring devices and sensors with HealthHub, enabling doctors to remotely monitor patients' vital signs, medication adherence, and overall health status. The initiative aims to improve patient care and early detection of health issues.",
@@ -4718,6 +4940,7 @@
             "points": 41,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 16,
                 3,
@@ -4731,7 +4954,7 @@
         "pk": 24,
         "fields": {
             "created_at": "2024-05-06T17:34:39.577Z",
-            "updated_at": "2024-05-06T17:34:39.670Z",
+            "updated_at": "2024-05-13T20:34:26.497Z",
             "title": "Electronic Health Record (EHR) System",
             "challenge": 24,
             "description": "Launch an initiative to develop an electronic health record (EHR) system within HealthHub, allowing healthcare providers to access and update patient records securely and efficiently. The initiative aims to improve information sharing and continuity of care.",
@@ -4739,6 +4962,7 @@
             "points": 24,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 33,
                 19,
@@ -4752,7 +4976,7 @@
         "pk": 25,
         "fields": {
             "created_at": "2024-05-06T17:34:39.581Z",
-            "updated_at": "2024-05-06T17:34:39.674Z",
+            "updated_at": "2024-05-13T20:34:26.492Z",
             "title": "Medication Management Tools",
             "challenge": 25,
             "description": "Launch an initiative to provide medication management tools within HealthHub, including medication reminders, dosage tracking, and medication interaction alerts. The initiative aims to improve medication adherence and patient safety.",
@@ -4760,11 +4984,12 @@
             "points": 72,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
-                18,
                 33,
-                34,
-                26
+                18,
+                26,
+                34
             ]
         }
     },
@@ -4773,14 +4998,15 @@
         "pk": 26,
         "fields": {
             "created_at": "2024-05-06T17:34:39.585Z",
-            "updated_at": "2024-05-06T17:34:45.284Z",
+            "updated_at": "2024-05-13T20:34:26.486Z",
             "title": "Secure Messaging Platform",
             "challenge": 26,
             "description": "Launch an initiative to develop a secure messaging platform within HealthHub, allowing doctors and patients to communicate securely and conveniently. The initiative aims to facilitate communication for non-urgent inquiries, follow-ups, and general health-related discussions.",
             "skill": 2,
             "points": 57,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 22,
                 6
@@ -4792,14 +5018,15 @@
         "pk": 27,
         "fields": {
             "created_at": "2024-05-06T17:34:39.590Z",
-            "updated_at": "2024-05-06T17:34:45.288Z",
+            "updated_at": "2024-05-13T20:34:26.481Z",
             "title": "Telemedicine Training Program",
             "challenge": 27,
             "description": "Launch an initiative to develop a telemedicine training program for healthcare providers using HealthHub, providing comprehensive guidance on virtual consultation best practices, patient interaction skills, and technology usage. The initiative aims to ensure healthcare providers are proficient in delivering telemedicine services.",
             "skill": 39,
             "points": 19,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 2,
                 11,
@@ -4812,14 +5039,15 @@
         "pk": 28,
         "fields": {
             "created_at": "2024-05-06T17:34:39.593Z",
-            "updated_at": "2024-05-06T17:34:45.298Z",
+            "updated_at": "2024-05-13T20:34:26.476Z",
             "title": "HealthHub Mobile App Optimization",
             "challenge": 28,
             "description": "Launch an initiative to optimize the HealthHub mobile app for performance, usability, and accessibility across various devices and operating systems. The initiative aims to enhance the overall user experience for both doctors and patients.",
             "skill": 114,
             "points": 36,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 19,
                 13,
@@ -4832,14 +5060,15 @@
         "pk": 29,
         "fields": {
             "created_at": "2024-05-06T17:34:39.597Z",
-            "updated_at": "2024-05-06T17:34:45.301Z",
+            "updated_at": "2024-05-13T20:34:26.470Z",
             "title": "Integration with Laboratory and Imaging Centers",
             "challenge": 29,
             "description": "Launch an initiative to integrate HealthHub with laboratory and imaging centers, enabling seamless sharing of test results, imaging studies, and diagnostic reports between healthcare providers and patients. The initiative aims to streamline the diagnostic process and improve collaboration among healthcare stakeholders.",
             "skill": 42,
             "points": 68,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 8,
                 25,
@@ -4852,14 +5081,15 @@
         "pk": 30,
         "fields": {
             "created_at": "2024-05-06T17:34:39.602Z",
-            "updated_at": "2024-05-06T17:34:45.305Z",
+            "updated_at": "2024-05-13T20:34:26.465Z",
             "title": "Telepsychiatry Services Expansion",
             "challenge": 30,
             "description": "Launch an initiative to expand telepsychiatry services within HealthHub, connecting patients with mental health professionals for virtual consultations, therapy sessions, and medication management. The initiative aims to improve access to mental healthcare services and reduce stigma associated with seeking treatment.",
             "skill": 31,
             "points": 50,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 24,
                 6,
@@ -4872,14 +5102,15 @@
         "pk": 31,
         "fields": {
             "created_at": "2024-05-06T17:34:40.286Z",
-            "updated_at": "2024-05-06T17:34:40.379Z",
+            "updated_at": "2024-05-13T20:34:26.459Z",
             "title": "Carbon Emissions Dashboard",
             "challenge": 31,
             "description": "Launch a dashboard feature within EcoTracker that provides companies with real-time insights into their carbon emissions, allowing them to monitor and analyze their environmental impact.",
             "skill": 13,
             "points": 33,
-            "status": 2,
+            "status": 4,
             "is_active": true,
+            "claimed_by": 39,
             "expertise": [
                 2,
                 23
@@ -4891,7 +5122,7 @@
         "pk": 32,
         "fields": {
             "created_at": "2024-05-06T17:34:40.289Z",
-            "updated_at": "2024-05-06T17:34:40.383Z",
+            "updated_at": "2024-05-13T20:34:26.453Z",
             "title": "Energy Consumption Analysis",
             "challenge": 32,
             "description": "Introduce an energy consumption analysis tool in EcoTracker that enables companies to track and optimize their energy usage, identifying areas for improvement and efficiency gains.",
@@ -4899,6 +5130,7 @@
             "points": 51,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 25,
                 19,
@@ -4912,7 +5144,7 @@
         "pk": 33,
         "fields": {
             "created_at": "2024-05-06T17:34:40.293Z",
-            "updated_at": "2024-05-06T17:34:40.387Z",
+            "updated_at": "2024-05-13T20:34:26.448Z",
             "title": "Waste Management Module",
             "challenge": 33,
             "description": "Develop a waste management module within EcoTracker to help companies track their waste generation, disposal methods, and recycling efforts, facilitating waste reduction and sustainability initiatives.",
@@ -4920,6 +5152,7 @@
             "points": 48,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 19,
                 22,
@@ -4932,7 +5165,7 @@
         "pk": 34,
         "fields": {
             "created_at": "2024-05-06T17:34:40.297Z",
-            "updated_at": "2024-05-06T17:34:40.391Z",
+            "updated_at": "2024-05-13T20:34:26.443Z",
             "title": "Supply Chain Sustainability Metrics",
             "challenge": 34,
             "description": "Implement supply chain sustainability metrics in EcoTracker to assess the environmental impact of suppliers and partners, enabling companies to make informed decisions and drive sustainability across their supply chain.",
@@ -4940,6 +5173,7 @@
             "points": 27,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 35,
                 22
@@ -4951,7 +5185,7 @@
         "pk": 35,
         "fields": {
             "created_at": "2024-05-06T17:34:40.302Z",
-            "updated_at": "2024-05-06T17:34:40.395Z",
+            "updated_at": "2024-05-13T20:34:26.436Z",
             "title": "Transportation Efficiency Tracker",
             "challenge": 35,
             "description": "Create a transportation efficiency tracker in EcoTracker that allows companies to monitor and optimize their transportation operations, reducing carbon emissions associated with logistics and delivery.",
@@ -4959,6 +5193,7 @@
             "points": 22,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 12,
                 4
@@ -4970,14 +5205,15 @@
         "pk": 36,
         "fields": {
             "created_at": "2024-05-06T17:34:40.306Z",
-            "updated_at": "2024-05-06T17:34:45.308Z",
+            "updated_at": "2024-05-13T20:34:26.431Z",
             "title": "Water Conservation Analytics",
             "challenge": 36,
             "description": "Integrate water conservation analytics into EcoTracker to help companies measure and manage their water usage, identifying opportunities for conservation and responsible water management.",
             "skill": 130,
             "points": 66,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 33,
                 3
@@ -4989,14 +5225,15 @@
         "pk": 37,
         "fields": {
             "created_at": "2024-05-06T17:34:40.310Z",
-            "updated_at": "2024-05-06T17:34:45.312Z",
+            "updated_at": "2024-05-13T20:34:26.426Z",
             "title": "Renewable Energy Integration",
             "challenge": 37,
             "description": "Enable renewable energy integration within EcoTracker, allowing companies to track and incorporate renewable energy sources into their operations to reduce reliance on fossil fuels and decrease their carbon footprint.",
             "skill": 46,
             "points": 35,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 16,
                 17,
@@ -5010,14 +5247,15 @@
         "pk": 38,
         "fields": {
             "created_at": "2024-05-06T17:34:40.314Z",
-            "updated_at": "2024-05-06T17:34:45.316Z",
+            "updated_at": "2024-05-13T20:34:26.420Z",
             "title": "Carbon Offset Tracking",
             "challenge": 38,
             "description": "Introduce carbon offset tracking capabilities in EcoTracker, enabling companies to calculate their carbon emissions and invest in offset projects to mitigate their environmental impact and achieve carbon neutrality.",
             "skill": 32,
             "points": 59,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 32,
                 33,
@@ -5030,14 +5268,15 @@
         "pk": 39,
         "fields": {
             "created_at": "2024-05-06T17:34:40.319Z",
-            "updated_at": "2024-05-06T17:34:45.319Z",
+            "updated_at": "2024-05-13T20:34:26.415Z",
             "title": "Sustainability Reporting Templates",
             "challenge": 39,
             "description": "Provide pre-built sustainability reporting templates in EcoTracker to streamline the process of generating comprehensive sustainability reports for stakeholders, showcasing environmental performance and progress.",
             "skill": 102,
             "points": 22,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 11
             ]
@@ -5048,14 +5287,15 @@
         "pk": 40,
         "fields": {
             "created_at": "2024-05-06T17:34:40.323Z",
-            "updated_at": "2024-05-06T17:34:45.323Z",
+            "updated_at": "2024-05-13T20:34:26.409Z",
             "title": "Environmental Impact Benchmarking",
             "challenge": 40,
             "description": "Offer environmental impact benchmarking features in EcoTracker, allowing companies to compare their sustainability performance against industry benchmarks and best practices, driving continuous improvement.",
             "skill": 32,
             "points": 66,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 32,
                 5
@@ -5067,7 +5307,7 @@
         "pk": 41,
         "fields": {
             "created_at": "2024-05-06T17:34:41.012Z",
-            "updated_at": "2024-05-06T17:34:41.102Z",
+            "updated_at": "2024-05-13T20:34:26.403Z",
             "title": "AI-Powered Budget Optimization",
             "challenge": 41,
             "description": "Launch an initiative to implement AI-powered budget optimization features within FinanceFlow, providing users with personalized budgeting recommendations based on their spending habits, financial goals, and income sources. The initiative aims to help users optimize their spending and achieve financial wellness.",
@@ -5075,6 +5315,7 @@
             "points": 35,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 22,
                 15
@@ -5086,7 +5327,7 @@
         "pk": 42,
         "fields": {
             "created_at": "2024-05-06T17:34:41.015Z",
-            "updated_at": "2024-05-06T17:34:41.106Z",
+            "updated_at": "2024-05-13T20:34:26.398Z",
             "title": "Investment Portfolio Analysis",
             "challenge": 42,
             "description": "Launch an initiative to introduce investment portfolio analysis tools within FinanceFlow, leveraging AI algorithms to analyze users' investment portfolios, assess risk levels, and provide recommendations for diversification and optimization. The initiative aims to empower users to make informed investment decisions.",
@@ -5094,6 +5335,7 @@
             "points": 59,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 35
             ]
@@ -5104,7 +5346,7 @@
         "pk": 43,
         "fields": {
             "created_at": "2024-05-06T17:34:41.019Z",
-            "updated_at": "2024-05-06T17:34:41.109Z",
+            "updated_at": "2024-05-13T20:34:26.393Z",
             "title": "Savings Goal Tracking",
             "challenge": 43,
             "description": "Launch an initiative to enhance savings goal tracking capabilities within FinanceFlow, allowing users to set savings goals, track progress, and receive personalized recommendations on how to achieve their financial objectives. The initiative aims to encourage users to save more effectively and reach their goals faster.",
@@ -5112,6 +5354,7 @@
             "points": 44,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 18,
                 20
@@ -5123,7 +5366,7 @@
         "pk": 44,
         "fields": {
             "created_at": "2024-05-06T17:34:41.023Z",
-            "updated_at": "2024-05-06T17:34:41.113Z",
+            "updated_at": "2024-05-13T20:34:26.387Z",
             "title": "Expense Categorization with AI",
             "challenge": 44,
             "description": "Launch an initiative to implement AI-powered expense categorization functionality within FinanceFlow, automatically categorizing users' expenses based on transaction data and providing insights into spending patterns. The initiative aims to simplify expense tracking and provide users with a clearer understanding of their financial habits.",
@@ -5131,6 +5374,7 @@
             "points": 29,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 1,
                 35,
@@ -5144,7 +5388,7 @@
         "pk": 45,
         "fields": {
             "created_at": "2024-05-06T17:34:41.027Z",
-            "updated_at": "2024-05-06T17:34:41.118Z",
+            "updated_at": "2024-05-13T20:34:26.382Z",
             "title": "Automated Bill Payment Reminders",
             "challenge": 45,
             "description": "Launch an initiative to introduce automated bill payment reminders within FinanceFlow, leveraging AI algorithms to analyze users' bill payment schedules and send timely reminders to help users avoid late payments and associated fees. The initiative aims to improve users' financial management and reduce unnecessary expenses.",
@@ -5152,6 +5396,7 @@
             "points": 47,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 32,
                 33,
@@ -5165,14 +5410,15 @@
         "pk": 46,
         "fields": {
             "created_at": "2024-05-06T17:34:41.031Z",
-            "updated_at": "2024-05-06T17:34:45.326Z",
+            "updated_at": "2024-05-13T20:34:26.377Z",
             "title": "Credit Score Monitoring and Improvement Tips",
             "challenge": 46,
             "description": "Launch an initiative to integrate credit score monitoring and improvement tips within FinanceFlow, providing users with real-time updates on their credit scores and personalized recommendations on how to improve their creditworthiness. The initiative aims to help users build and maintain healthy credit profiles.",
             "skill": 56,
             "points": 31,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 25
             ]
@@ -5183,14 +5429,15 @@
         "pk": 47,
         "fields": {
             "created_at": "2024-05-06T17:34:41.035Z",
-            "updated_at": "2024-05-06T17:34:45.334Z",
+            "updated_at": "2024-05-13T20:34:26.371Z",
             "title": "Financial Education Modules",
             "challenge": 47,
             "description": "Launch an initiative to develop financial education modules within FinanceFlow, offering users access to interactive lessons, quizzes, and resources to improve their financial literacy and make more informed financial decisions. The initiative aims to empower users with the knowledge and skills needed for financial success.",
             "skill": 21,
             "points": 56,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 30
             ]
@@ -5201,14 +5448,15 @@
         "pk": 48,
         "fields": {
             "created_at": "2024-05-06T17:34:41.039Z",
-            "updated_at": "2024-05-06T17:34:45.338Z",
+            "updated_at": "2024-05-13T20:34:26.366Z",
             "title": "Retirement Planning Assistant",
             "challenge": 48,
             "description": "Launch an initiative to introduce a retirement planning assistant within FinanceFlow, utilizing AI algorithms to analyze users' retirement goals, savings, and investment portfolios to provide personalized retirement planning recommendations. The initiative aims to help users prepare for a secure and comfortable retirement.",
             "skill": 88,
             "points": 42,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 22
             ]
@@ -5219,14 +5467,15 @@
         "pk": 49,
         "fields": {
             "created_at": "2024-05-06T17:34:41.043Z",
-            "updated_at": "2024-05-06T17:34:45.342Z",
+            "updated_at": "2024-05-13T20:34:26.360Z",
             "title": "Expense Trend Analysis",
             "challenge": 49,
             "description": "Launch an initiative to implement expense trend analysis features within FinanceFlow, allowing users to visualize their spending trends over time, identify areas of overspending or underspending, and make adjustments to their budgets accordingly. The initiative aims to help users achieve greater financial control and stability.",
             "skill": 86,
             "points": 21,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 10,
                 29,
@@ -5239,14 +5488,15 @@
         "pk": 50,
         "fields": {
             "created_at": "2024-05-06T17:34:41.047Z",
-            "updated_at": "2024-05-06T17:34:45.330Z",
+            "updated_at": "2024-05-13T20:34:26.354Z",
             "title": "AI-Powered Financial Health Checkup",
             "challenge": 50,
             "description": "Launch an initiative to offer an AI-powered financial health checkup within FinanceFlow, where users can input their financial information and receive personalized assessments of their overall financial health, along with actionable recommendations for improvement. The initiative aims to help users identify areas of strength and weakness in their finances and take proactive steps towards financial well-being.",
             "skill": 10,
             "points": 75,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 26,
                 35,
@@ -5260,7 +5510,7 @@
         "pk": 51,
         "fields": {
             "created_at": "2024-05-06T17:34:41.729Z",
-            "updated_at": "2024-05-06T17:34:41.815Z",
+            "updated_at": "2024-05-13T20:34:26.350Z",
             "title": "VirtualEventPro Launch Webinar",
             "challenge": 51,
             "description": "Host a webinar to officially launch VirtualEventPro, showcasing its features and capabilities to potential users. The webinar will include live demonstrations, Q&A sessions, and special offers for early adopters.",
@@ -5268,6 +5518,7 @@
             "points": 39,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 34,
                 10
@@ -5279,7 +5530,7 @@
         "pk": 52,
         "fields": {
             "created_at": "2024-05-06T17:34:41.733Z",
-            "updated_at": "2024-05-06T17:34:41.820Z",
+            "updated_at": "2024-05-13T20:34:26.344Z",
             "title": "Interactive Virtual Workshops",
             "challenge": 52,
             "description": "Organize interactive virtual workshops on VirtualEventPro, covering topics such as event planning, live broadcasting techniques, and attendee engagement strategies. The workshops aim to educate users and help them maximize the platform's functionalities.",
@@ -5287,6 +5538,7 @@
             "points": 61,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 1,
                 12,
@@ -5300,7 +5552,7 @@
         "pk": 53,
         "fields": {
             "created_at": "2024-05-06T17:34:41.737Z",
-            "updated_at": "2024-05-06T17:34:41.823Z",
+            "updated_at": "2024-05-13T20:34:26.338Z",
             "title": "Virtual Networking Events",
             "challenge": 53,
             "description": "Facilitate virtual networking events on VirtualEventPro, allowing attendees to connect with peers, industry professionals, and potential collaborators through chat rooms, group discussions, and one-on-one video calls. The events aim to foster meaningful connections and partnerships.",
@@ -5308,6 +5560,7 @@
             "points": 26,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 34,
                 27,
@@ -5321,7 +5574,7 @@
         "pk": 54,
         "fields": {
             "created_at": "2024-05-06T17:34:41.741Z",
-            "updated_at": "2024-05-06T17:34:41.827Z",
+            "updated_at": "2024-05-13T20:34:26.332Z",
             "title": "Live Product Demos",
             "challenge": 54,
             "description": "Conduct live product demos on VirtualEventPro, giving companies the opportunity to showcase their products and services to a global audience in real-time. The demos will feature interactive elements such as polls, surveys, and live Q&A sessions.",
@@ -5329,6 +5582,7 @@
             "points": 69,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 14
             ]
@@ -5339,7 +5593,7 @@
         "pk": 55,
         "fields": {
             "created_at": "2024-05-06T17:34:41.744Z",
-            "updated_at": "2024-05-06T17:34:41.831Z",
+            "updated_at": "2024-05-13T20:34:26.327Z",
             "title": "Virtual Conferences",
             "challenge": 55,
             "description": "Host virtual conferences on VirtualEventPro, bringing together industry leaders, experts, and enthusiasts for insightful keynote presentations, panel discussions, and workshops. The conferences will offer networking opportunities and access to exclusive content.",
@@ -5347,6 +5601,7 @@
             "points": 23,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 33,
                 29
@@ -5358,14 +5613,15 @@
         "pk": 56,
         "fields": {
             "created_at": "2024-05-06T17:34:41.748Z",
-            "updated_at": "2024-05-06T17:34:45.346Z",
+            "updated_at": "2024-05-13T20:34:26.321Z",
             "title": "Educational Webinars Series",
             "challenge": 56,
             "description": "Launch an educational webinar series on VirtualEventPro, covering a wide range of topics such as digital marketing, event planning, leadership development, and more. The series aims to provide valuable insights and skills to professionals across industries.",
             "skill": 62,
             "points": 64,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 10,
                 26
@@ -5377,14 +5633,15 @@
         "pk": 57,
         "fields": {
             "created_at": "2024-05-06T17:34:41.752Z",
-            "updated_at": "2024-05-06T17:34:45.349Z",
+            "updated_at": "2024-05-13T20:34:26.317Z",
             "title": "Virtual Trade Shows",
             "challenge": 57,
             "description": "Organize virtual trade shows on VirtualEventPro, allowing exhibitors to showcase their products and services in virtual booths, interact with attendees through live chats and video calls, and generate leads through virtual networking opportunities.",
             "skill": 55,
             "points": 49,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 32,
                 16,
@@ -5398,14 +5655,15 @@
         "pk": 58,
         "fields": {
             "created_at": "2024-05-06T17:34:41.755Z",
-            "updated_at": "2024-05-06T17:34:45.353Z",
+            "updated_at": "2024-05-13T20:34:26.311Z",
             "title": "Event Analytics Workshops",
             "challenge": 58,
             "description": "Offer workshops on event analytics using VirtualEventPro, teaching users how to leverage the platform's analytics tools to measure event success, track attendee engagement, and gather valuable insights for future event planning and optimization.",
             "skill": 15,
             "points": 34,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 28
             ]
@@ -5416,14 +5674,15 @@
         "pk": 59,
         "fields": {
             "created_at": "2024-05-06T17:34:41.759Z",
-            "updated_at": "2024-05-06T17:34:45.360Z",
+            "updated_at": "2024-05-13T20:34:26.306Z",
             "title": "Virtual Career Fairs",
             "challenge": 59,
             "description": "Host virtual career fairs on VirtualEventPro, connecting job seekers with employers through virtual booths, job postings, and networking sessions. The career fairs aim to streamline the recruitment process and provide opportunities for professional growth.",
             "skill": 48,
             "points": 58,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 34,
                 21,
@@ -5437,14 +5696,15 @@
         "pk": 60,
         "fields": {
             "created_at": "2024-05-06T17:34:41.763Z",
-            "updated_at": "2024-05-06T17:34:45.357Z",
+            "updated_at": "2024-05-13T20:34:26.300Z",
             "title": "Virtual Happy Hours",
             "challenge": 60,
             "description": "Organize virtual happy hours on VirtualEventPro, allowing attendees to unwind, socialize, and network in a relaxed atmosphere. The happy hours will feature games, quizzes, and entertainment to foster camaraderie among participants.",
             "skill": 130,
             "points": 43,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 33,
                 10,
@@ -5458,7 +5718,7 @@
         "pk": 61,
         "fields": {
             "created_at": "2024-05-06T17:34:42.438Z",
-            "updated_at": "2024-05-06T17:34:42.533Z",
+            "updated_at": "2024-05-13T20:34:26.294Z",
             "title": "Enhanced Collaboration Features",
             "challenge": 61,
             "description": "Launch an initiative to enhance collaboration features on CodeCraft, enabling coders to work together more efficiently on open-source projects. This includes real-time code editing, integrated messaging, and collaborative debugging tools.",
@@ -5466,6 +5726,7 @@
             "points": 28,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 18,
                 23
@@ -5477,7 +5738,7 @@
         "pk": 62,
         "fields": {
             "created_at": "2024-05-06T17:34:42.442Z",
-            "updated_at": "2024-05-06T17:34:42.537Z",
+            "updated_at": "2024-05-13T20:34:26.288Z",
             "title": "Peer Code Review System",
             "challenge": 62,
             "description": "Implement a peer code review system on CodeCraft, allowing users to request and provide feedback on each other's code. This feature aims to improve code quality and promote knowledge sharing among the community.",
@@ -5485,6 +5746,7 @@
             "points": 62,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 25,
                 15
@@ -5496,7 +5758,7 @@
         "pk": 63,
         "fields": {
             "created_at": "2024-05-06T17:34:42.446Z",
-            "updated_at": "2024-05-06T17:34:42.542Z",
+            "updated_at": "2024-05-13T20:34:26.282Z",
             "title": "Project Management Dashboard",
             "challenge": 63,
             "description": "Develop a project management dashboard on CodeCraft, providing users with a centralized hub to track project progress, manage tasks, and coordinate team efforts. This feature enhances project organization and visibility.",
@@ -5504,6 +5766,7 @@
             "points": 25,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 8,
                 1,
@@ -5517,7 +5780,7 @@
         "pk": 64,
         "fields": {
             "created_at": "2024-05-06T17:34:42.450Z",
-            "updated_at": "2024-05-06T17:34:42.547Z",
+            "updated_at": "2024-05-13T20:34:26.277Z",
             "title": "Integrated Development Environments (IDEs)",
             "challenge": 64,
             "description": "Integrate popular development environments directly into CodeCraft, allowing users to write, test, and debug code within the platform. This streamlines the coding process and reduces the need for external tools.",
@@ -5525,6 +5788,7 @@
             "points": 71,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 28,
                 30
@@ -5536,7 +5800,7 @@
         "pk": 65,
         "fields": {
             "created_at": "2024-05-06T17:34:42.454Z",
-            "updated_at": "2024-05-06T17:34:42.551Z",
+            "updated_at": "2024-05-13T20:34:26.272Z",
             "title": "Community Forums and Discussion Boards",
             "challenge": 65,
             "description": "Launch community forums and discussion boards on CodeCraft, enabling users to ask questions, share knowledge, and engage in technical discussions. This fosters a supportive and collaborative coding community.",
@@ -5544,6 +5808,7 @@
             "points": 37,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 16,
                 18,
@@ -5557,14 +5822,15 @@
         "pk": 66,
         "fields": {
             "created_at": "2024-05-06T17:34:42.458Z",
-            "updated_at": "2024-05-06T17:34:45.371Z",
+            "updated_at": "2024-05-13T20:34:26.267Z",
             "title": "CodeCraft Mobile App Development",
             "challenge": 66,
             "description": "Initiate the development of a CodeCraft mobile app, allowing users to access the platform and collaborate on projects from their smartphones and tablets. This improves accessibility and convenience for coders on the go.",
             "skill": 16,
             "points": 65,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 24,
                 10,
@@ -5578,14 +5844,15 @@
         "pk": 67,
         "fields": {
             "created_at": "2024-05-06T17:34:42.462Z",
-            "updated_at": "2024-05-06T17:34:45.374Z",
+            "updated_at": "2024-05-13T20:34:26.261Z",
             "title": "Advanced Code Search and Discovery",
             "challenge": 67,
             "description": "Implement advanced code search and discovery functionalities on CodeCraft, enabling users to easily find relevant projects, repositories, and code snippets. This enhances project visibility and promotes knowledge sharing.",
             "skill": 76,
             "points": 30,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 18,
                 34,
@@ -5598,14 +5865,15 @@
         "pk": 68,
         "fields": {
             "created_at": "2024-05-06T17:34:42.467Z",
-            "updated_at": "2024-05-06T17:34:45.378Z",
+            "updated_at": "2024-05-13T20:34:26.256Z",
             "title": "Real-Time Pair Programming Sessions",
             "challenge": 68,
             "description": "Introduce real-time pair programming sessions on CodeCraft, allowing users to collaborate on coding tasks in real-time, share screens, and communicate via voice and video chat. This facilitates collaborative learning and problem-solving.",
             "skill": 106,
             "points": 53,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 16,
                 4,
@@ -5618,14 +5886,15 @@
         "pk": 69,
         "fields": {
             "created_at": "2024-05-06T17:34:42.471Z",
-            "updated_at": "2024-05-06T17:34:45.367Z",
+            "updated_at": "2024-05-13T20:34:26.250Z",
             "title": "Integration with Version Control Systems",
             "challenge": 69,
             "description": "Integrate CodeCraft with popular version control systems like Git and SVN, enabling seamless project management and code collaboration. This ensures version control and code synchronization across team members.",
             "skill": 21,
             "points": 46,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 1,
                 27
@@ -5637,14 +5906,15 @@
         "pk": 70,
         "fields": {
             "created_at": "2024-05-06T17:34:42.475Z",
-            "updated_at": "2024-05-06T17:34:45.363Z",
+            "updated_at": "2024-05-13T20:34:26.245Z",
             "title": "CodeCraft Coding Challenges",
             "challenge": 70,
             "description": "Launch coding challenges and competitions on CodeCraft, allowing users to test their skills, compete with peers, and earn recognition for their achievements. This fosters a culture of continuous learning and skill development.",
             "skill": 72,
             "points": 20,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 10
             ]
@@ -5655,7 +5925,7 @@
         "pk": 71,
         "fields": {
             "created_at": "2024-05-06T17:34:43.154Z",
-            "updated_at": "2024-05-06T17:34:43.244Z",
+            "updated_at": "2024-05-13T20:34:26.240Z",
             "title": "Find a Vet Near You",
             "challenge": 71,
             "description": "Discover and connect with trusted veterinary clinics and professionals in your local area through PetConnect. Ensure your pet receives the best medical care when they need it.",
@@ -5663,6 +5933,7 @@
             "points": 73,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 34,
                 19,
@@ -5675,7 +5946,7 @@
         "pk": 72,
         "fields": {
             "created_at": "2024-05-06T17:34:43.159Z",
-            "updated_at": "2024-05-06T17:34:43.248Z",
+            "updated_at": "2024-05-13T20:34:26.234Z",
             "title": "Grooming Services Available",
             "challenge": 72,
             "description": "Book grooming appointments for your furry friend with ease using PetConnect. Explore a variety of grooming services offered by experienced groomers in your neighborhood.",
@@ -5683,6 +5954,7 @@
             "points": 54,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 24,
                 17,
@@ -5696,7 +5968,7 @@
         "pk": 73,
         "fields": {
             "created_at": "2024-05-06T17:34:43.163Z",
-            "updated_at": "2024-05-06T17:34:43.252Z",
+            "updated_at": "2024-05-13T20:34:26.228Z",
             "title": "Pet Sitting Made Easy",
             "challenge": 73,
             "description": "Need someone to look after your pet while you're away? PetConnect helps you find reliable pet sitters who will care for your pet like their own. Enjoy peace of mind knowing your pet is in good hands.",
@@ -5704,6 +5976,7 @@
             "points": 74,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 20
             ]
@@ -5714,7 +5987,7 @@
         "pk": 74,
         "fields": {
             "created_at": "2024-05-06T17:34:43.167Z",
-            "updated_at": "2024-05-06T17:34:43.256Z",
+            "updated_at": "2024-05-13T20:34:26.223Z",
             "title": "Emergency Care Contacts",
             "challenge": 74,
             "description": "Access a list of emergency care contacts through PetConnect, so you're always prepared for any unexpected situation with your pet. Find nearby emergency veterinary services quickly.",
@@ -5722,6 +5995,7 @@
             "points": 52,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 3
             ]
@@ -5732,7 +6006,7 @@
         "pk": 75,
         "fields": {
             "created_at": "2024-05-06T17:34:43.171Z",
-            "updated_at": "2024-05-06T17:34:43.260Z",
+            "updated_at": "2024-05-13T20:34:26.217Z",
             "title": "Pet-Friendly Accommodations",
             "challenge": 75,
             "description": "Planning a trip with your pet? PetConnect provides information on pet-friendly accommodations, ensuring you and your furry companion have a comfortable stay wherever you go.",
@@ -5740,6 +6014,7 @@
             "points": 67,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 18,
                 11,
@@ -5753,14 +6028,15 @@
         "pk": 76,
         "fields": {
             "created_at": "2024-05-06T17:34:43.175Z",
-            "updated_at": "2024-05-06T17:34:45.385Z",
+            "updated_at": "2024-05-13T20:34:26.212Z",
             "title": "Connect with Pet Communities",
             "challenge": 76,
             "description": "Join pet communities and forums within PetConnect to connect with other pet owners, share experiences, and seek advice on pet care, training, and more.",
             "skill": 27,
             "points": 55,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 26,
                 3
@@ -5772,14 +6048,15 @@
         "pk": 77,
         "fields": {
             "created_at": "2024-05-06T17:34:43.179Z",
-            "updated_at": "2024-05-06T17:34:45.392Z",
+            "updated_at": "2024-05-13T20:34:26.207Z",
             "title": "Pet Health Records",
             "challenge": 77,
             "description": "Store and manage your pet's health records conveniently with PetConnect. Keep track of vaccinations, medical history, and appointments all in one place.",
             "skill": 117,
             "points": 32,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 4,
                 5,
@@ -5792,14 +6069,15 @@
         "pk": 78,
         "fields": {
             "created_at": "2024-05-06T17:34:43.182Z",
-            "updated_at": "2024-05-06T17:34:45.382Z",
+            "updated_at": "2024-05-13T20:34:26.201Z",
             "title": "Pet Adoption Services",
             "challenge": 78,
             "description": "Explore pet adoption services available through PetConnect and give a loving home to a pet in need. Find your perfect match among a variety of rescue animals.",
             "skill": 119,
             "points": 18,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 8,
                 33,
@@ -5813,14 +6091,15 @@
         "pk": 79,
         "fields": {
             "created_at": "2024-05-06T17:34:43.186Z",
-            "updated_at": "2024-05-06T17:34:45.389Z",
+            "updated_at": "2024-05-13T20:34:26.195Z",
             "title": "Lost and Found Alerts",
             "challenge": 79,
             "description": "Report lost pets and receive alerts from the community through PetConnect. Help reunite lost pets with their owners by staying informed and sharing information.",
             "skill": 55,
             "points": 78,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 24,
                 10,
@@ -5833,14 +6112,15 @@
         "pk": 80,
         "fields": {
             "created_at": "2024-05-06T17:34:43.189Z",
-            "updated_at": "2024-05-06T17:34:45.396Z",
+            "updated_at": "2024-05-13T20:34:26.190Z",
             "title": "Pet Training Resources",
             "challenge": 80,
             "description": "Access pet training resources and tips on PetConnect to help you train and socialize your pet effectively. From basic obedience to advanced tricks, find everything you need to raise a well-behaved pet.",
             "skill": 68,
             "points": 44,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 24
             ]
@@ -5851,7 +6131,7 @@
         "pk": 81,
         "fields": {
             "created_at": "2024-05-06T17:34:43.869Z",
-            "updated_at": "2024-05-06T17:34:43.959Z",
+            "updated_at": "2024-05-13T20:34:26.184Z",
             "title": "AI-Powered Intrusion Detection",
             "challenge": 81,
             "description": "Deploy advanced AI-driven cameras and sensors to detect and alert homeowners of potential intrusions in real-time, enhancing the security of their homes.",
@@ -5859,6 +6139,7 @@
             "points": 42,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 34,
                 28,
@@ -5871,7 +6152,7 @@
         "pk": 82,
         "fields": {
             "created_at": "2024-05-06T17:34:43.873Z",
-            "updated_at": "2024-05-06T17:34:43.964Z",
+            "updated_at": "2024-05-13T20:34:26.178Z",
             "title": "24/7 Video Surveillance",
             "challenge": 82,
             "description": "Offer continuous video surveillance capabilities using AI-powered cameras, allowing homeowners to monitor their property from anywhere, at any time.",
@@ -5879,6 +6160,7 @@
             "points": 21,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 8
             ]
@@ -5889,7 +6171,7 @@
         "pk": 83,
         "fields": {
             "created_at": "2024-05-06T17:34:43.877Z",
-            "updated_at": "2024-05-06T17:34:43.968Z",
+            "updated_at": "2024-05-13T20:34:26.172Z",
             "title": "Facial Recognition Access Control",
             "challenge": 83,
             "description": "Implement facial recognition technology to provide secure access control to the home, allowing only authorized individuals to enter.",
@@ -5897,11 +6179,12 @@
             "points": 75,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 2,
-                23,
+                31,
                 21,
-                31
+                23
             ]
         }
     },
@@ -5910,7 +6193,7 @@
         "pk": 84,
         "fields": {
             "created_at": "2024-05-06T17:34:43.882Z",
-            "updated_at": "2024-05-06T17:34:43.972Z",
+            "updated_at": "2024-05-13T20:34:26.166Z",
             "title": "Smart Motion Detection",
             "challenge": 84,
             "description": "Utilize intelligent motion detection algorithms to differentiate between normal activity and suspicious behavior, reducing false alarms and improving security responsiveness.",
@@ -5918,6 +6201,7 @@
             "points": 39,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 10,
                 2,
@@ -5930,7 +6214,7 @@
         "pk": 85,
         "fields": {
             "created_at": "2024-05-06T17:34:43.886Z",
-            "updated_at": "2024-05-06T17:34:43.976Z",
+            "updated_at": "2024-05-13T20:34:26.161Z",
             "title": "Integrated Alarm System",
             "challenge": 85,
             "description": "Integrate an alarm system with AI-driven cameras and sensors to trigger immediate alerts and notifications in case of security breaches or emergencies.",
@@ -5938,6 +6222,7 @@
             "points": 61,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 32,
                 19
@@ -5949,14 +6234,15 @@
         "pk": 86,
         "fields": {
             "created_at": "2024-05-06T17:34:43.890Z",
-            "updated_at": "2024-05-06T17:34:45.399Z",
+            "updated_at": "2024-05-13T20:34:26.156Z",
             "title": "Automated Threat Analysis",
             "challenge": 86,
             "description": "Automatically analyze security footage and sensor data using AI algorithms to identify potential threats or unusual activities, enhancing overall security effectiveness.",
             "skill": 124,
             "points": 26,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 16,
                 12,
@@ -5970,14 +6256,15 @@
         "pk": 87,
         "fields": {
             "created_at": "2024-05-06T17:34:43.894Z",
-            "updated_at": "2024-05-06T17:34:45.403Z",
+            "updated_at": "2024-05-13T20:34:26.149Z",
             "title": "Remote Monitoring and Control",
             "challenge": 87,
             "description": "Enable homeowners to remotely monitor and control their smart home security system via a mobile app, providing peace of mind and convenience.",
             "skill": 10,
             "points": 69,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 8,
                 34
@@ -5989,14 +6276,15 @@
         "pk": 88,
         "fields": {
             "created_at": "2024-05-06T17:34:43.898Z",
-            "updated_at": "2024-05-06T17:34:45.414Z",
+            "updated_at": "2024-05-13T20:34:26.142Z",
             "title": "Secure Cloud Storage",
             "challenge": 88,
             "description": "Offer secure cloud storage for surveillance footage and sensor data, ensuring data privacy and protection against physical tampering or theft.",
             "skill": 93,
             "points": 23,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 17,
                 26,
@@ -6009,14 +6297,15 @@
         "pk": 89,
         "fields": {
             "created_at": "2024-05-06T17:34:43.901Z",
-            "updated_at": "2024-05-06T17:34:45.407Z",
+            "updated_at": "2024-05-13T20:34:26.135Z",
             "title": "Emergency Response Integration",
             "challenge": 89,
             "description": "Integrate with emergency response services to enable quick and efficient dispatch of authorities in case of security breaches or emergencies, enhancing homeowner safety.",
             "skill": 68,
             "points": 64,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 35
             ]
@@ -6027,14 +6316,15 @@
         "pk": 90,
         "fields": {
             "created_at": "2024-05-06T17:34:43.905Z",
-            "updated_at": "2024-05-06T17:34:45.411Z",
+            "updated_at": "2024-05-13T20:34:26.130Z",
             "title": "Customizable Security Settings",
             "challenge": 90,
             "description": "Provide homeowners with the ability to customize security settings and preferences based on their specific needs and preferences, offering flexibility and control.",
             "skill": 57,
             "points": 49,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 1,
                 6,
@@ -6047,7 +6337,7 @@
         "pk": 91,
         "fields": {
             "created_at": "2024-05-06T17:34:44.585Z",
-            "updated_at": "2024-05-06T17:34:44.668Z",
+            "updated_at": "2024-05-13T20:34:26.124Z",
             "title": "Enhanced Gear Listings",
             "challenge": 91,
             "description": "Implement enhanced gear listings on GigGear, allowing sellers to provide detailed descriptions, images, and specifications for their musical equipment. The initiative aims to improve the shopping experience for buyers and increase sales for sellers.",
@@ -6055,6 +6345,7 @@
             "points": 34,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 1
             ]
@@ -6065,7 +6356,7 @@
         "pk": 92,
         "fields": {
             "created_at": "2024-05-06T17:34:44.588Z",
-            "updated_at": "2024-05-06T17:34:44.672Z",
+            "updated_at": "2024-05-13T20:34:26.117Z",
             "title": "Secure Payment Integration",
             "challenge": 92,
             "description": "Integrate secure payment gateways into GigGear, allowing buyers to make purchases with confidence and sellers to receive payments securely. The initiative aims to facilitate smooth and trustworthy transactions within the marketplace.",
@@ -6073,6 +6364,7 @@
             "points": 58,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 1,
                 10,
@@ -6085,7 +6377,7 @@
         "pk": 93,
         "fields": {
             "created_at": "2024-05-06T17:34:44.592Z",
-            "updated_at": "2024-05-06T17:34:44.676Z",
+            "updated_at": "2024-05-13T20:34:26.111Z",
             "title": "Rental Booking System",
             "challenge": 93,
             "description": "Develop a rental booking system on GigGear, enabling musicians to easily rent gear and equipment for short-term use. The initiative aims to provide a convenient solution for musicians who need equipment for gigs, rehearsals, or recordings.",
@@ -6093,6 +6385,7 @@
             "points": 43,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 15
             ]
@@ -6103,7 +6396,7 @@
         "pk": 94,
         "fields": {
             "created_at": "2024-05-06T17:34:44.595Z",
-            "updated_at": "2024-05-06T17:34:44.681Z",
+            "updated_at": "2024-05-13T20:34:26.106Z",
             "title": "Live Streaming Platform",
             "challenge": 94,
             "description": "Create a feature-rich live streaming platform on GigGear, allowing musicians to showcase their performances to a global audience in real-time. The initiative aims to provide a virtual stage for artists to connect with fans and expand their reach.",
@@ -6111,6 +6404,7 @@
             "points": 28,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 32,
                 3,
@@ -6124,7 +6418,7 @@
         "pk": 95,
         "fields": {
             "created_at": "2024-05-06T17:34:44.599Z",
-            "updated_at": "2024-05-06T17:34:44.685Z",
+            "updated_at": "2024-05-13T20:34:26.100Z",
             "title": "Virtual Gear Try-On",
             "challenge": 95,
             "description": "Implement a virtual gear try-on feature on GigGear, enabling users to digitally test musical instruments and equipment before making a purchase or rental decision. The initiative aims to provide an immersive shopping experience for musicians.",
@@ -6132,6 +6426,7 @@
             "points": 62,
             "status": 2,
             "is_active": true,
+            "claimed_by": null,
             "expertise": [
                 30
             ]
@@ -6142,14 +6437,15 @@
         "pk": 96,
         "fields": {
             "created_at": "2024-05-06T17:34:44.603Z",
-            "updated_at": "2024-05-06T17:34:45.425Z",
+            "updated_at": "2024-05-13T20:34:26.095Z",
             "title": "Community Marketplace",
             "challenge": 96,
             "description": "Foster a vibrant community marketplace on GigGear, where musicians can connect, collaborate, and share insights about gear, equipment, and musical experiences. The initiative aims to build a supportive ecosystem for musicians of all levels.",
             "skill": 56,
             "points": 25,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 26,
             "expertise": [
                 8,
                 35,
@@ -6162,14 +6458,15 @@
         "pk": 97,
         "fields": {
             "created_at": "2024-05-06T17:34:44.607Z",
-            "updated_at": "2024-05-06T17:34:45.436Z",
+            "updated_at": "2024-05-13T20:34:26.089Z",
             "title": "Expert Gear Reviews",
             "challenge": 97,
             "description": "Curate expert gear reviews on GigGear, providing valuable insights and recommendations to help musicians make informed decisions about their gear purchases and rentals. The initiative aims to establish GigGear as a trusted resource in the music industry.",
             "skill": 119,
             "points": 71,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 27,
             "expertise": [
                 34
             ]
@@ -6180,14 +6477,15 @@
         "pk": 98,
         "fields": {
             "created_at": "2024-05-06T17:34:44.611Z",
-            "updated_at": "2024-05-06T17:34:45.429Z",
+            "updated_at": "2024-05-13T20:34:26.083Z",
             "title": "Mobile App Development",
             "challenge": 98,
             "description": "Develop a mobile app for GigGear, allowing users to access the marketplace and live streaming platform on their smartphones and tablets. The initiative aims to provide flexibility and convenience for musicians who are on the go.",
             "skill": 55,
             "points": 63,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 28,
             "expertise": [
                 16,
                 12
@@ -6199,14 +6497,15 @@
         "pk": 99,
         "fields": {
             "created_at": "2024-05-06T17:34:44.614Z",
-            "updated_at": "2024-05-06T17:34:45.433Z",
+            "updated_at": "2024-05-13T20:34:26.078Z",
             "title": "Artist Spotlight Series",
             "challenge": 99,
             "description": "Launch an artist spotlight series on GigGear, featuring live performances and interviews with emerging and established musicians. The initiative aims to showcase talent and inspire engagement within the GigGear community.",
             "skill": 104,
             "points": 41,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 29,
             "expertise": [
                 1,
                 35
@@ -6218,14 +6517,15 @@
         "pk": 100,
         "fields": {
             "created_at": "2024-05-06T17:34:44.617Z",
-            "updated_at": "2024-05-06T17:34:45.417Z",
+            "updated_at": "2024-05-13T20:34:26.071Z",
             "title": "Gear Maintenance Resources",
             "challenge": 100,
             "description": "Provide comprehensive gear maintenance resources on GigGear, including tutorials, guides, and tips for keeping musical instruments and equipment in optimal condition. The initiative aims to prolong the lifespan of gear and enhance user satisfaction.",
             "skill": 20,
             "points": 57,
-            "status": 2,
+            "status": 5,
             "is_active": true,
+            "claimed_by": 30,
             "expertise": [
                 33,
                 27,
@@ -6862,8 +7162,8 @@
         "model": "product_management.idea",
         "pk": 49,
         "fields": {
-            "created_at": "2024-05-06T17:34:46.000Z",
-            "updated_at": "2024-05-06T17:34:46.000Z",
+            "created_at": "2024-05-06T17:34:46Z",
+            "updated_at": "2024-05-06T17:34:46Z",
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 10,
