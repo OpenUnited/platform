@@ -49,6 +49,10 @@ Run the tests:
 
 `make test`
 
+Load the fixtures (sample data):
+
+`make seed`
+
 Finally, start the server:
 
 `make run`
