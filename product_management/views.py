@@ -33,7 +33,7 @@ from .forms import (
     ChallengeForm,
     BountyForm,
     InitiativeForm,
-    CapabilityForm,
+    ProductAreaForm1,
     ProductAreaForm,
     ProductAreaAttachmentSet,
     BountyAttachmentFormSet,
@@ -812,7 +812,7 @@ class InitiativeDetailView(BaseProductDetailView, DetailView):
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
-    form_class = CapabilityForm
+    form_class = ProductAreaForm1
     template_name = "product_management/create_capability.html"
     login_url = "sign_in"
 
@@ -867,7 +867,7 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
         context = super().get_context_data(**kwargs)
 
         context["challenges"] = Challenge.objects.filter(
-            capability=self.object
+            product_area=self.object
         )
 
         return context
@@ -886,10 +886,6 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance.person = request.user.person
         instance.status = BountyClaim.Status.REQUESTED
         instance.save()
-
-        bounty = instance.bounty
-        bounty.status = Bounty.BOUNTY_STATUS_AVAILABLE
-        bounty.save()
 
         return render(
             request,
@@ -1621,6 +1617,8 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
 
         context = self.get_context_data()
         context["bounty"] = self.object.bounty
+        context["elem"] = instance
+
         template_name = self.request.POST.get("from")
         if template_name == "bounty_detail_table.html":
             return render(

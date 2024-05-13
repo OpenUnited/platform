@@ -22,10 +22,10 @@ class ProductAreaAttachmentAdmin(admin.ModelAdmin):
 
 @admin.register(product.Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
-    def capability_name(self, obj):
-        return obj.capability.name if obj.capability else "-"
+    def product_area_name(self, obj):
+        return obj.product_area.name if obj.product_area else "-"
 
-    list_display = ["pk", "title", "status", "priority", "capability_name"]
+    list_display = ["pk", "title", "status", "priority", "product_area_name"]
     search_fields = ["title"]
 
 
