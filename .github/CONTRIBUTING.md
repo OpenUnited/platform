@@ -45,9 +45,9 @@ pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=openunited.settings.development
 ```
 
-Run the tests:
+Setup the database and load fixtures / sample data:
 
-`make test`
+`make setup`
 
 Finally, start the server:
 
