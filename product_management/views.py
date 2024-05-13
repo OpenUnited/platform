@@ -744,7 +744,6 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
                     data["can_be_claimed"] = True
 
-
             data["show_actions"] = (
                 data["can_be_claimed"]
                 or data["can_be_modified"]
