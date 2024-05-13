@@ -792,8 +792,15 @@ class CreateInitiativeView(
         return super().post(request, *args, **kwargs)
 
 
-class InitiativeDetailView(BaseProductDetailView, TemplateView):
+class InitiativeDetailView(BaseProductDetailView, DetailView):
     template_name = "product_management/initiative_detail.html"
+    model = Initiative
+    context_object_name = "initiative"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        initiative = self.object
+        return context
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
