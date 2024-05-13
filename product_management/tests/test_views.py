@@ -787,9 +787,19 @@ class ProductIdeasAndBugsViewTest(BaseProductTestCase):
         actual = response.context_data
         clean_up(actual)
 
-        self.assertQuerySetEqual(
-            actual.pop("ideas"), Idea.objects.all(), ordered=False
-        )
+        ideas_with_votes = []
+        for idea in Idea.objects.filter(product=self.product):
+            num_votes = 0  # Random positive integer between 1 and 10
+            user_has_voted = False
+            ideas_with_votes.append(
+                {
+                    "idea_obj": idea,
+                    "num_votes": num_votes,
+                    "user_has_voted": user_has_voted,
+                }
+            )
+
+        self.assertQuerySetEqual(actual.pop("ideas"), ideas_with_votes)
         self.assertQuerySetEqual(
             actual.pop("bugs"), Bug.objects.all(), ordered=False
         )

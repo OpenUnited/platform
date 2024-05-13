@@ -60,6 +60,8 @@ from django.http import JsonResponse
 from .filters import ChallengeFilter
 from product_management import utils
 import uuid
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 
 class ChallengeListView(ListView):
@@ -567,10 +569,23 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = context["product"]
+        user_id = self.request.user.id
+
+        ideas_with_votes = []
+        for idea in Idea.objects.filter(product=product):
+            num_votes = len(idea.voted_users)
+            user_has_voted = user_id in idea.voted_users
+            ideas_with_votes.append(
+                {
+                    "idea_obj": idea,
+                    "num_votes": num_votes,
+                    "user_has_voted": user_has_voted,
+                }
+            )
 
         context.update(
             {
-                "ideas": Idea.objects.filter(product=product),
+                "ideas": ideas_with_votes,
                 "bugs": Bug.objects.filter(product=product),
             }
         )
@@ -1748,3 +1763,20 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
             return redirect("product_bug_detail", **kwargs)
 
         return super().post(request, *args, **kwargs)
+
+
+@login_required(login_url="sign_in")
+def cast_vote_for_idea(request, pk):
+    user_id = request.user.id
+    idea = Idea.objects.get(pk=pk)
+    user_has_voted = Idea.objects.filter(
+        id=pk, voted_users__contains=[user_id]
+    ).exists()
+
+    if user_has_voted:
+        idea.voted_users.remove(user_id)
+    else:
+        idea.voted_users.append(user_id)
+
+    idea.save()
+    return HttpResponse(str(len(idea.voted_users)))
