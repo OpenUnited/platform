@@ -14,6 +14,7 @@ from openunited.mixins import TimeStampMixin, UUIDMixin
 from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
+from django.db.models.signals import pre_save
 
 
 class Tag(TimeStampMixin):
@@ -434,6 +435,12 @@ class Bounty(TimeStampMixin):
 
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
+
+    @receiver(pre_save, sender="product_management.Bounty")
+    def _pre_save(sender, instance, **kwargs):
+
+        if instance.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+            instance.claimed_by = None
 
 
 class BountyAttachment(TimeStampMixin, AttachmentAbstract):
