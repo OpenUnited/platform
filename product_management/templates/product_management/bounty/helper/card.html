@@ -65,15 +65,10 @@
 
       </div>
     </div>
-    <button class="w-full py-4 text-sm font-semibold text-gray-900 flex gap-1 justify-center view-more">View more
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-        class="h-5 w-5 text-gray-400 fill-gray-400">
-        <path fillRule="evenodd"
-          d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
-          clipRule="evenodd" />
-      </svg>
+    <button id="view_more_{{bounty.pk}}" onclick="viewMoreFunc(event, {{bounty.pk}})" class="w-full py-4 text-sm font-semibold text-gray-900 flex gap-1 justify-center view-more">View more
+      <i id="view_more_{{bounty.pk}}_icon" class="fa fa-chevron-down"></i>
     </button>
-    <div
+    <div id="more_detail_bountry_{{bounty.pk}}"
       class="more_detail_bountry !border-t-gray-200 hidden z-10 absolute divide-y divide-gray-200 rounded-b-lg bg-white shadow-[0_20px_30px_-15px_rgba(0,0,0,0.3)] w-full transition-all ease-in duration-500 p-6">
       <div class="flex justify-between py-2">
         <div class="truncate text-sm font-medium text-gray-900">Product</div>
@@ -152,3 +147,25 @@
       {% endif %}
     </div>
   </li>
+
+  <script>
+    function viewMoreFunc(event, bountyID){
+        const viewMoreElements = document.querySelectorAll(".more_detail_bountry");
+        viewMoreElements.forEach(element => {
+          element.classList.add("hidden");
+        });
+
+
+        var viewMoreIcon = document.getElementById(`view_more_${bountyID}_icon`)
+
+        if (viewMoreIcon.classList.contains("fa-chevron-down")){
+            viewMoreIcon.classList.replace("fa-chevron-down", "fa-chevron-up")
+            document.getElementById(`more_detail_bountry_${bountyID}`).classList.remove("hidden")
+        }
+        else{
+          viewMoreIcon.classList.replace("fa-chevron-up", "fa-chevron-down")
+          document.getElementById(`more_detail_bountry_${bountyID}`).classList.add("hidden")
+        }      
+
+    }
+  </script>
