@@ -1,0 +1,41 @@
+{% if challenges|length > 0 %}
+<div class="mt-4 w-full">
+    <h2 class="mt-1 mb-4 w-full text-neutral-800 text-xl font-semibold leading-7 text-indigo-600">Challenges</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-4">
+        {% for challenge in challenges %}
+        <div class="bg-white space-y-3 p-4 rounded-lg shadow border-gray-2 border border-solid border-gray grid grid-cols-3 md:grid-cols-3 gap-4">
+            <div class="col-span-full">
+                <a class="text-indigo-900 font-bold " 
+                    href="{{ url('challenge_detail', args=(challenge.product.slug, challenge.id,)) }}">
+                    {{ challenge.title }}
+                </a>
+                <div class="mt-1 text-gray-500">
+                    {{ challenge.short_description }} 
+                </div>
+            </div>
+        
+            <div class="flex items-center space-x-2 text-sm">
+                <div class="text-sm font-medium text-black">
+                    <strong> Status </strong>
+                    <div class="text-gray-500">
+                        {{ challenge.get_status_display() }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 text-sm">
+                <div class="text-sm font-medium text-black">
+                    <strong> Bounties </strong>
+                    <div class="text-gray-500">
+                        {{ challenge.bounty_set.all()|length }}
+                        ({{ challenge.bounty_set.filter(status=2)|length }} available)
+                    </div>
+                </div>
+            </div>
+
+        
+        </div>
+        {% endfor %}
+    </div>        
+</div>    
+{% endif %}  
