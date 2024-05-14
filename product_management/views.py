@@ -800,8 +800,7 @@ class InitiativeDetailView(BaseProductDetailView, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["challenges"] = Challenge.objects.filter(
-            initiative=self.object, 
-            status=Challenge.CHALLENGE_STATUS_AVAILABLE
+            initiative=self.object, status=Challenge.CHALLENGE_STATUS_AVAILABLE
         )
 
         return context
