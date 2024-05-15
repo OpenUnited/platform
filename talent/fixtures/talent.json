@@ -1241,7 +1241,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 17,
+        "pk": 1,
         "fields": {
             "person": 2,
             "skill": 92,
@@ -1252,7 +1252,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 18,
+        "pk": 2,
         "fields": {
             "person": 3,
             "skill": 93,
@@ -1263,7 +1263,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 19,
+        "pk": 3,
         "fields": {
             "person": 39,
             "skill": 94,
@@ -1278,7 +1278,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 20,
+        "pk": 4,
         "fields": {
             "person": 40,
             "skill": 97,
@@ -1295,7 +1295,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 21,
+        "pk": 5,
         "fields": {
             "person": 39,
             "skill": 97,
@@ -1309,7 +1309,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 22,
+        "pk": 6,
         "fields": {
             "person": 1,
             "skill": 105,
@@ -1324,7 +1324,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 23,
+        "pk": 7,
         "fields": {
             "person": 39,
             "skill": 106,
@@ -1335,7 +1335,7 @@
     },
     {
         "model": "talent.personskill",
-        "pk": 24,
+        "pk": 8,
         "fields": {
             "person": 1,
             "skill": 114,
