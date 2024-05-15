@@ -7,8 +7,6 @@ This is the platform that powers OpenUnited. [Apps](https://docs.djangoproject.c
 - Commerce (Organisation, Points & Payments etc.)
 - Engagement (Notifications etc.)
 
-Each app has a services.py file that implements the "public" services interface for that app/bounded context.
-
 This repo contains the full platform including the frontend - which is "deliberately simple"*.
 We prototype and specify the target UX, as code, in the [UX Prototype repo](https://github.com/OpenUnited/ux-prototype).
 The UX Prototype repo is not for production use, we use it instead of using Figma.
