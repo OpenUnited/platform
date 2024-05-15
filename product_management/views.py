@@ -175,7 +175,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
 class BountyListView(ListView):
     model = Bounty
     context_object_name = "bounties"
-    paginate_by = 50
+    paginate_by = 51
 
     def get_template_names(self):
         if self.request.htmx:
@@ -193,7 +193,6 @@ class BountyListView(ListView):
 
         if skill := self.request.GET.get("skill"):
             filters &= Q(skill=skill)
-
         return (
             Bounty.objects.filter(filters)
             .select_related("challenge", "skill")
@@ -402,7 +401,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
             self.request.FILES or None,
             instance=product_area,
         )
-        challenges = Challenge.objects.filter(capability=product_area)
+        challenges = Challenge.objects.filter(product_area=product_area)
 
         form = ProductAreaForm(
             instance=product_area, can_modify_product=product_perm
@@ -736,7 +735,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "current_user_created_claim_request": False,
                 "actions_available": False,
                 "has_claimed": False,
-                "claimed_by": None,
+                "claimed_by": bounty.claimed_by,
                 "show_actions": False,
                 "can_be_claimed": False,
                 "can_be_modified": False,
@@ -744,18 +743,6 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 "created_bounty_claim_request": False,
                 "bounty_claim": None,
             }
-
-            last_claim = (
-                bounty.bountyclaim_set.filter(
-                    status__in=[
-                        claim_status.GRANTED,
-                        claim_status.COMPLETED,
-                        claim_status.CONTRIBUTED,
-                    ]
-                )
-                .select_related("person", "bounty")
-                .first()
-            )
 
             if person:
                 data["can_be_modified"] = ProductRoleAssignment.objects.filter(
@@ -774,7 +761,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 if (
                     bounty_claim
                     and bounty_claim.status == claim_status.REQUESTED
-                    and not last_claim
+                    and not bounty.claimed_by
                 ):
                     data["created_bounty_claim_request"] = True
                     data["bounty_claim"] = bounty_claim
@@ -782,9 +769,6 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
             else:
                 if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
                     data["can_be_claimed"] = True
-
-            if last_claim:
-                data["claimed_by"] = last_claim.person
 
             data["show_actions"] = (
                 data["can_be_claimed"]
@@ -834,8 +818,18 @@ class CreateInitiativeView(
         return super().post(request, *args, **kwargs)
 
 
-class InitiativeDetailView(BaseProductDetailView, TemplateView):
+class InitiativeDetailView(BaseProductDetailView, DetailView):
     template_name = "product_management/initiative_detail.html"
+    model = Initiative
+    context_object_name = "initiative"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["challenges"] = Challenge.objects.filter(
+            initiative=self.object, status=Challenge.CHALLENGE_STATUS_AVAILABLE
+        )
+
+        return context
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
@@ -1426,17 +1420,7 @@ class BountyDetailView(DetailView):
         challenge = bounty.challenge
         product = challenge.product
         user = self.request.user
-        last_claim = (
-            bounty.bountyclaim_set.filter(
-                status__in=[
-                    BountyClaim.Status.GRANTED,
-                    BountyClaim.Status.COMPLETED,
-                    BountyClaim.Status.CONTRIBUTED,
-                ]
-            )
-            .select_related("person", "bounty")
-            .first()
-        )
+
         can_be_modified = False
         can_be_claimed = False
         created_bounty_claim_request = False
@@ -1450,7 +1434,7 @@ class BountyDetailView(DetailView):
             if (
                 _bounty_claim
                 and _bounty_claim.status == BountyClaim.Status.REQUESTED
-                and not last_claim
+                and not bounty.claimed_by
             ):
                 created_bounty_claim_request = True
                 bounty_claim = _bounty_claim
@@ -1468,7 +1452,7 @@ class BountyDetailView(DetailView):
             {
                 "product": product,
                 "challenge": challenge,
-                "claimed_by": getattr(last_claim, "person", None),
+                "claimed_by": bounty.claimed_by,
                 "attachments": list(
                     BountyAttachment.objects.filter(bounty=bounty)
                 ),
@@ -1476,7 +1460,6 @@ class BountyDetailView(DetailView):
                 "show_actions": created_bounty_claim_request
                 or can_be_claimed
                 or can_be_modified,
-                "show_actions": True,
                 "can_be_claimed": can_be_claimed,
                 "can_be_modified": can_be_modified,
                 "is_product_admin": True,

@@ -4,17 +4,16 @@
 <div class="bg-white space-y-3 p-4  rounded-lg shadow border-gray-2 border border-solid border-gray grid grid-cols-3 md:grid-cols-3 gap-4">
     <div class="col-span-full">
         <a class="text-indigo-900 font-bold " 
-        href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}">
-        {{ bounty.title }}
-    </a>
-    <div class="mt-1 text-gray-500">{{ bounty.skill }} 
-        {% if bounty.get_expertise_as_str() %}
-            ({{bounty.get_expertise_as_str()}})
-        {% endif %}
-    
+            href="{{ url('bounty-detail', args=(challenge.product.slug, challenge.id, bounty.id,)) }}">
+            {{ bounty.title }}
+        </a>
+        <div class="mt-1 text-gray-500">{{ bounty.skill }} 
+            {% if bounty.get_expertise_as_str() %}
+                ({{bounty.get_expertise_as_str()}})
+            {% endif %}
+        
+        </div>
     </div>
-
-</div>
 
     <div class="flex items-center space-x-2 text-sm">
         <div class="text-sm font-medium text-black">

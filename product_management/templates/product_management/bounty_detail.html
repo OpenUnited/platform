@@ -44,11 +44,11 @@
                         {% include "product_management/partials/buttons/dropdown_actions.html" %}
                     {% endwith %}
                 </div>
-            {% else %}
+            {% elif bounty.claimed_by %}
                 <div>
                     <h1 class="font-medium text-gray-400">Assignee</h1>
-                    <a href="{{ data.claimed_by.get_absolute_url() }}"
-                        class="font-medium text-blue-600 hover:underline">{{ data.claimed_by }}</a>          
+                    <a href="{{ bounty.claimed_by.get_absolute_url() }}"
+                        class="font-medium text-blue-600 hover:underline">{{ bounty.claimed_by }}</a>          
                 </div>
             {% endif %}
  
