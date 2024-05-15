@@ -18,3 +18,14 @@ def get_path_from_url(url_string, strip=False):
         return parsed.path.strip("/")
 
     return parsed.path
+
+
+def serialize_other_type_tree(node):
+    """Serializer for the tree."""
+    return {
+        "id": node.pk,
+        "name": node.name,
+        "children": [
+            serialize_other_type_tree(child) for child in node.get_children
+        ],
+    }
