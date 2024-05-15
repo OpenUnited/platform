@@ -254,9 +254,8 @@ class ProductBountyListView(BaseProductDetailView, ListView):
     def get_queryset(self):
         context = self.get_context_data()
         product = context.get("product")
-        return (
-            Bounty.objects.filter(challenge__product=product)
-        )
+        return Bounty.objects.filter(challenge__product=product)
+
 
 class ProductChallengesView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_challenges.html"
