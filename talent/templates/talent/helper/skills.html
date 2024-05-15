@@ -2,13 +2,13 @@
 {{ person_skill_formset.management_form }}
 
 <div class="mt-4 pt-2">
-    <label  class="text-lg text-black/[0.85] mb-2 inline-flex font-semibold">Skills & Expertise</label>
+    <label  class="text-lg text-black/[0.85] mb-4 inline-flex font-semibold">Skills & Expertise</label>
     <div class="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-4 gap-y-6" id="person_skill_container">
         {% for person_skill_form in person_skill_formset %}
             <input type="hidden" name="skills-{{loop.index0}}-id" value="{{ person_skill_form.instance.pk }}" class="row">
             <div id="id_skills-{{ loop.index0 }}-container" class="relative bg-white border border-gray-200 p-4 rounded-md shadow-md">
                 <button onclick="deleteSkill(event, {{loop.index0}})" class="mb-2 absolute top-0.5 right-1 text-gray-500 hover:text-gray-700 focus:outline-none" id="close-btn-{{ person_skill_form.instance.pk }}">
-                    <i class="fa fa-times-circle text-red-500" aria-hidden="true"></i>
+                    <i class="fa-solid fa-trash-can text-gray-500"></i>
                 </button>
                 
                 <div class="mt-2">
