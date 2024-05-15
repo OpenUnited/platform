@@ -59,6 +59,7 @@ from django.http import JsonResponse
 
 from .filters import ChallengeFilter
 from product_management import utils
+from utility import utils as global_utils
 import uuid
 
 
@@ -205,11 +206,11 @@ class BountyListView(ListView):
             expertises = Expertise.get_roots().filter(skill=skill)
 
         context["skills"] = [
-            utils.serialize_other_type_tree(skill)
+            global_utils.serialize_other_type_tree(skill)
             for skill in Skill.get_roots()
         ]
         context["expertises"] = [
-            utils.serialize_other_type_tree(expertise)
+            global_utils.serialize_other_type_tree(expertise)
             for expertise in expertises
         ]
         context["statuses"] = [
