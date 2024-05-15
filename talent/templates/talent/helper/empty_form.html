@@ -1,0 +1,29 @@
+{% import "talent/helper/macro_fun.html" as macros_fun %}
+
+
+<input type="hidden" name="skills-{{__prefix__}}-id" id="id_skills-{{__prefix__}}-id" class="row">
+<div id="id_skills-{{__prefix__}}-container" class="relative bg-white border border-gray-200 p-4 rounded-md shadow-md">
+    <button onclick="deleteSkill(event, {{__prefix__}})" class="mb-2 absolute top-0.5 right-1 text-gray-500 hover:text-gray-700 focus:outline-none">
+        <i class="fa fa-times-circle text-red-500" aria-hidden="true"></i>
+    </button>
+    <div class="mt-4">
+        <select id="id_skills-{{__prefix__}}-skill" hx-get="{{ url('profile',args=(pk,))}}" hx-vals='{"index":"{{__prefix__}}"}'
+                name="skills-{{__prefix__}}-skill" hx-trigger="change" hx-target="#ul_expertise_{{__prefix__}}"
+                class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                {{ macros_fun.skill_filter_tree(skills, None, True) }}
+        </select>
+    </div>
+
+    <div id="id_skills{{__prefix__}}-_td_expertise" class="mt-4">
+            {% with index=__prefix__ %}
+            {% include "talent/helper/expertises.html" %}
+            {% endwith %}
+        <select class="hidden" id="id_skills-{{__prefix__}}-expertise" name="skills-{{__prefix__}}-expertise" multiple></select>
+    </div>
+    <div class="mt-4">
+        {% if empty_form.DELETE %}
+        <input type="checkbox" class="hidden" data-delete-id="" name="skills-{{__prefix__}}-DELETE" id="id_skills-{{__prefix__}}-DELETE">
+        {% endif %}
+    </div>
+</div>
+
