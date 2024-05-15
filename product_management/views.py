@@ -53,7 +53,7 @@ from .models import (
     BountyAttachment,
 )
 from commerce.models import Organisation
-from security.models import ProductRoleAssignment
+from security.models import ProductRoleAssignment, IdeaVote
 from openunited.mixins import HTMXInlineFormValidationMixin
 from django.http import JsonResponse
 
@@ -571,19 +571,30 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = context["product"]
-        user_id = self.request.user.id
 
         ideas_with_votes = []
-        for idea in Idea.objects.filter(product=product):
-            num_votes = len(idea.voted_users)
-            user_has_voted = user_id in idea.voted_users
-            ideas_with_votes.append(
-                {
-                    "idea_obj": idea,
-                    "num_votes": num_votes,
-                    "user_has_voted": user_has_voted,
-                }
-            )
+        user = self.request.user
+
+        if user.is_authenticated:
+            for idea in Idea.objects.filter(product=product):
+                num_votes = IdeaVote.objects.filter(idea=idea).count()
+                user_has_voted = IdeaVote.objects.filter(
+                    voter=user, idea=idea
+                ).exists()
+                ideas_with_votes.append(
+                    {
+                        "idea_obj": idea,
+                        "num_votes": num_votes,
+                        "user_has_voted": user_has_voted,
+                    }
+                )
+        else:
+            for idea in Idea.objects.filter(product=product):
+                ideas_with_votes.append(
+                    {
+                        "idea_obj": idea,
+                    }
+                )
 
         context.update(
             {
@@ -1798,16 +1809,13 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
 
 @login_required(login_url="sign_in")
 def cast_vote_for_idea(request, pk):
-    user_id = request.user.id
     idea = Idea.objects.get(pk=pk)
-    user_has_voted = Idea.objects.filter(
-        id=pk, voted_users__contains=[user_id]
+    user_has_voted = IdeaVote.objects.filter(
+        idea=idea, voter=request.user
     ).exists()
-
     if user_has_voted:
-        idea.voted_users.remove(user_id)
+        IdeaVote.objects.get(idea=idea, voter=request.user).delete()
     else:
-        idea.voted_users.append(user_id)
+        IdeaVote.objects.create(idea=idea, voter=request.user)
 
-    idea.save()
-    return HttpResponse(str(len(idea.voted_users)))
+    return HttpResponse(IdeaVote.objects.filter(idea=idea).count())

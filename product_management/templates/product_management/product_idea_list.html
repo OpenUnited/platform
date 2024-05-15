@@ -23,21 +23,11 @@
         <div class="flex grow items-center justify-start text-sm font-medium leading-6 text-gray-900">
             <div class="heart mr-2.5 ml-0.5">
                 <input type="checkbox" class="heart__checkbox"
-                
-         
                 {% if idea.user_has_voted %} checked {% endif %}
-
                 hx-post="{{ url('cast-vote-for-idea', args=(idea.idea_obj.pk,)) }}"
                 hx-trigger="click" 
                 hx-swap="innerHTML"
-                hx-target="#vote-count-{{idea.idea_obj.pk}}"
-                name="nn-{{ idea.idea_obj.pk }}"
-                id="ii-{{ idea.idea_obj.pk }}"
-                
-                
-                
-                />
-
+                hx-target="#vote-count-{{idea.idea_obj.pk}}"/>
                 <div class="heart__icon"></div>
             </div>
             <div class="pb-1">

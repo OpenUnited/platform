@@ -3,8 +3,11 @@ from factory.django import DjangoModelFactory
 from factory.fuzzy import FuzzyChoice
 from factory import SubFactory
 
-from product_management.tests.factories import OwnedProductFactory
-from security.models import User, ProductRoleAssignment
+from product_management.tests.factories import (
+    OwnedProductFactory,
+    ProductIdeaFactory,
+)
+from security.models import User, ProductRoleAssignment, IdeaVote
 from talent.tests.factories import PersonFactory
 
 
@@ -26,3 +29,11 @@ class ProductRoleAssignmentFactory(DjangoModelFactory):
 
     class Meta:
         model = ProductRoleAssignment
+
+
+class IdeaVoteFactory(DjangoModelFactory):
+    idea = SubFactory(ProductIdeaFactory)
+    voter = SubFactory(UserFactory)
+
+    class Meta:
+        model = IdeaVote
