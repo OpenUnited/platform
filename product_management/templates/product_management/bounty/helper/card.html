@@ -7,7 +7,8 @@
     <div class="flex w-full items-center justify-between space-x-6 p-6">
       <div class="flex-1 truncate">
         <div class="flex items-center space-x-3 justify-between">
-          <a href="{{ url('challenge_detail', args=(product.slug, challenge.pk)) }}"
+          <!-- <a href="{{ url('challenge_detail', args=(product.slug, challenge.pk)) }}" -->
+          <a href="{{ url('bounty-detail', args=(product.slug, challenge.id, bounty.id,)) }}"
             class="truncate text-sm font-medium text-gray-900">{{ bounty.title }}</a>
         </div>
         <p class="mt-1 truncate text-sm text-gray-500"> {{ bounty.description }}</p>

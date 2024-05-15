@@ -241,16 +241,22 @@ class BountyListView(ListView):
 class ProductBountyListView(BaseProductDetailView, ListView):
     model = Bounty
     context_object_name = "bounties"
-    paginate_by = 50
+    object_list = []
 
     def get_template_names(self):
-        return ["product_management/bounty/product_bounties.html"]
+        return ["product_management/product_bounties.html"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["request"] = self.request
         return context
 
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return (
+            Bounty.objects.filter(challenge__product=product)
+        )
 
 class ProductChallengesView(BaseProductDetailView, TemplateView):
     template_name = "product_management/product_challenges.html"
