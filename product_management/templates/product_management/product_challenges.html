@@ -6,8 +6,9 @@
 <div class="relative sm:rounded-lg">
     <a class="mb-6 float-right" href="{{ url('create-challenge', args=(product.slug,)) }}">
         <button type="button"
-            class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">Create
-            Challenge</button>
+            class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">
+            Create Challenge
+        </button>
     </a>
 
     {% if challenges|length > 0 %}

@@ -30,6 +30,8 @@ from .factories import (
     AttachmentFactory,
 )
 from product_management import utils
+from security.tests.factories import IdeaVoteFactory
+from security.models import IdeaVote
 
 
 class BaseTestCase(TestCase):
@@ -754,6 +756,7 @@ class ProductIdeasAndBugsViewTest(BaseProductTestCase):
     def setUp(self):
         super().setUp()
         self.url = reverse("product_ideas_bugs", args=(self.product.slug,))
+        self.person = PersonFactory()
 
     def test_get_context_data_none(self):
         response = self.client.get(self.url)
@@ -776,8 +779,9 @@ class ProductIdeasAndBugsViewTest(BaseProductTestCase):
 
         self.assertDictEqual(expected, actual)
 
-    def test_get_context_data(self):
-        [ProductIdeaFactory(product=self.product) for _ in range(0, 5)]
+    def test_get_context_data_no_auth(self):
+        ideas = [ProductIdeaFactory(product=self.product) for _ in range(0, 1)]
+        [IdeaVoteFactory(idea=ideas[0]) for _ in range(0, 1)]
         [ProductBugFactory(product=self.product) for _ in range(0, 3)]
 
         response = self.client.get(self.url)
@@ -787,9 +791,51 @@ class ProductIdeasAndBugsViewTest(BaseProductTestCase):
         actual = response.context_data
         clean_up(actual)
 
+        ideas = []
+        for idea in Idea.objects.filter(product=self.product):
+            ideas.append({"idea_obj": idea})
+
+        self.assertQuerySetEqual(actual.pop("ideas"), ideas)
         self.assertQuerySetEqual(
-            actual.pop("ideas"), Idea.objects.all(), ordered=False
+            actual.pop("bugs"), Bug.objects.all(), ordered=False
         )
+
+        expected = {
+            "product_slug": self.product.slug,
+            "product": self.product,
+        }
+
+        self.assertDictEqual(expected, actual)
+
+    def test_get_context_data_with_auth(self):
+
+        ideas = [ProductIdeaFactory(product=self.product) for _ in range(0, 5)]
+        [IdeaVoteFactory(idea=ideas[0]) for _ in range(0, 5)]
+        [ProductBugFactory(product=self.product) for _ in range(0, 3)]
+        self.client.force_login(self.person.user)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+
+        actual = response.context_data
+        clean_up(actual)
+
+        ideas = []
+        for idea in Idea.objects.filter(product=self.product):
+            idea_votes = IdeaVote.objects.filter(idea=idea).count()
+            user_has_voted = IdeaVote.objects.filter(
+                idea=idea, voter=self.person.user
+            ).exists()
+            ideas.append(
+                {
+                    "idea_obj": idea,
+                    "num_votes": idea_votes,
+                    "user_has_voted": user_has_voted,
+                }
+            )
+
+        self.assertQuerySetEqual(actual.pop("ideas"), ideas)
         self.assertQuerySetEqual(
             actual.pop("bugs"), Bug.objects.all(), ordered=False
         )

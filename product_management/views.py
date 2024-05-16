@@ -53,7 +53,7 @@ from .models import (
     BountyAttachment,
 )
 from commerce.models import Organisation
-from security.models import ProductRoleAssignment
+from security.models import ProductRoleAssignment, IdeaVote
 from openunited.mixins import HTMXInlineFormValidationMixin
 from django.http import JsonResponse
 
@@ -61,6 +61,8 @@ from .filters import ChallengeFilter
 from product_management import utils
 from utility import utils as global_utils
 import uuid
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 
 class ChallengeListView(ListView):
@@ -242,15 +244,20 @@ class BountyListView(ListView):
 class ProductBountyListView(BaseProductDetailView, ListView):
     model = Bounty
     context_object_name = "bounties"
-    paginate_by = 50
+    object_list = []
 
     def get_template_names(self):
-        return ["product_management/bounty/product_bounties.html"]
+        return ["product_management/product_bounties.html"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["request"] = self.request
         return context
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return Bounty.objects.filter(challenge__product=product)
 
 
 class ProductChallengesView(BaseProductDetailView, TemplateView):
@@ -570,9 +577,33 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
 
+        ideas_with_votes = []
+        user = self.request.user
+
+        if user.is_authenticated:
+            for idea in Idea.objects.filter(product=product):
+                num_votes = IdeaVote.objects.filter(idea=idea).count()
+                user_has_voted = IdeaVote.objects.filter(
+                    voter=user, idea=idea
+                ).exists()
+                ideas_with_votes.append(
+                    {
+                        "idea_obj": idea,
+                        "num_votes": num_votes,
+                        "user_has_voted": user_has_voted,
+                    }
+                )
+        else:
+            for idea in Idea.objects.filter(product=product):
+                ideas_with_votes.append(
+                    {
+                        "idea_obj": idea,
+                    }
+                )
+
         context.update(
             {
-                "ideas": Idea.objects.filter(product=product),
+                "ideas": ideas_with_votes,
                 "bugs": Bug.objects.filter(product=product),
             }
         )
@@ -793,8 +824,18 @@ class CreateInitiativeView(
         return super().post(request, *args, **kwargs)
 
 
-class InitiativeDetailView(BaseProductDetailView, TemplateView):
+class InitiativeDetailView(BaseProductDetailView, DetailView):
     template_name = "product_management/initiative_detail.html"
+    model = Initiative
+    context_object_name = "initiative"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["challenges"] = Challenge.objects.filter(
+            initiative=self.object, status=Challenge.CHALLENGE_STATUS_AVAILABLE
+        )
+
+        return context
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
@@ -1753,3 +1794,17 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
             return redirect("product_bug_detail", **kwargs)
 
         return super().post(request, *args, **kwargs)
+
+
+@login_required(login_url="sign_in")
+def cast_vote_for_idea(request, pk):
+    idea = Idea.objects.get(pk=pk)
+    user_has_voted = IdeaVote.objects.filter(
+        idea=idea, voter=request.user
+    ).exists()
+    if user_has_voted:
+        IdeaVote.objects.get(idea=idea, voter=request.user).delete()
+    else:
+        IdeaVote.objects.create(idea=idea, voter=request.user)
+
+    return HttpResponse(IdeaVote.objects.filter(idea=idea).count())
