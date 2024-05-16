@@ -91,10 +91,9 @@ class BlacklistedUsernames(models.Model):
         db_table = "black_listed_usernames"
 
 
-class IdeaVote(models.Model):
+class IdeaVote(TimeStampMixin):
     voter = models.ForeignKey(User, on_delete=models.CASCADE)
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
-    voted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("voter", "idea")
