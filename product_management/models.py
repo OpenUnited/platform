@@ -538,7 +538,6 @@ class Idea(TimeStampMixin):
     description = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    vote_count = models.PositiveSmallIntegerField(default=0)
 
     def get_absolute_url(self):
         return reverse("add_product_idea", kwargs={"pk": self.pk})
