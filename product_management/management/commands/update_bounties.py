@@ -20,9 +20,10 @@ class Command(BaseCommand):
                 .select_related("person", "bounty")
                 .first()
             )
-            bounty.claimed_by = last_claim.person
-            bounty.save()
-            updated_count += 1
+            if last_claim:
+                bounty.claimed_by = last_claim.person
+                bounty.save()
+                updated_count += 1
 
         self.stdout.write(
             self.style.SUCCESS(f"Updated {updated_count} bounties.")
