@@ -1,34 +1,10 @@
-import socket
-
 from openunited.settings.base import *
 
-DEBUG = True
-
+DEBUG = False
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-
-ALLOWED_HOSTS = os.environ.get(
-    "DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost"
-).split(",")
-
+ALLOWED_HOSTS += ["127.0.0.1", "localhost"]
 TEMPLATES[0]["OPTIONS"]["auto_reload"] = DEBUG
 
 # Required for django-debug-toolbar
-INSTALLED_APPS += [
-    "debug_toolbar",
-]
-MIDDLEWARE += [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
-# hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-# INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
-#     "127.0.0.1",
-#     "10.0.2.2",
-# ]
-
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_HOST = "localhost"
-EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+INSTALLED_APPS += ["debug_toolbar"]
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
