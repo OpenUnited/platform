@@ -4,7 +4,7 @@
         "pk": 1,
         "fields": {
             "created_at": "2024-05-06T17:34:35.125Z",
-            "updated_at": "2024-05-06T17:34:35.125Z",
+            "updated_at": "2024-05-15T21:22:41.927Z",
             "full_name": "Doğukan Teber",
             "preferred_name": "Doğukan",
             "user": 2,
@@ -845,7 +845,13 @@
             "preferred_name": "Pacey",
             "user": 40,
             "photo": "",
+            "headline": "",
+            "overview": "",
+            "location": null,
             "send_me_bounties": true,
+            "current_position": null,
+            "twitter_link": "",
+            "linkedin_link": null,
             "github_link": null,
             "website_link": null,
             "completed_profile": false
@@ -861,7 +867,13 @@
             "preferred_name": "Regina",
             "user": 41,
             "photo": "",
+            "headline": "",
+            "overview": "",
+            "location": null,
             "send_me_bounties": true,
+            "current_position": null,
+            "twitter_link": "",
+            "linkedin_link": null,
             "github_link": null,
             "website_link": null,
             "completed_profile": false
@@ -962,8 +974,8 @@
         "pk": 11,
         "fields": {
             "person": 11,
-            "name": "Honeybee",
-            "points": 395
+            "name": "Trusted Bee",
+            "points": 790
         }
     },
     {
@@ -971,8 +983,8 @@
         "pk": 12,
         "fields": {
             "person": 12,
-            "name": "Honeybee",
-            "points": 484
+            "name": "Trusted Bee",
+            "points": 968
         }
     },
     {
@@ -980,8 +992,8 @@
         "pk": 13,
         "fields": {
             "person": 13,
-            "name": "Honeybee",
-            "points": 476
+            "name": "Trusted Bee",
+            "points": 952
         }
     },
     {
@@ -989,8 +1001,8 @@
         "pk": 14,
         "fields": {
             "person": 14,
-            "name": "Honeybee",
-            "points": 411
+            "name": "Trusted Bee",
+            "points": 822
         }
     },
     {
@@ -999,7 +1011,7 @@
         "fields": {
             "person": 15,
             "name": "Trusted Bee",
-            "points": 506
+            "points": 1012
         }
     },
     {
@@ -1025,8 +1037,8 @@
         "pk": 18,
         "fields": {
             "person": 18,
-            "name": "Honeybee",
-            "points": 443
+            "name": "Trusted Bee",
+            "points": 886
         }
     },
     {
@@ -1034,8 +1046,8 @@
         "pk": 19,
         "fields": {
             "person": 19,
-            "name": "Honeybee",
-            "points": 461
+            "name": "Trusted Bee",
+            "points": 922
         }
     },
     {
@@ -1210,24 +1222,31 @@
         }
     },
     {
+        "model": "talent.status",
+        "pk": 39,
+        "fields": {
+            "person": 39,
+            "name": "Honeybee",
+            "points": 71
+        }
+    },
+    {
+        "model": "talent.status",
+        "pk": 40,
+        "fields": {
+            "person": 40,
+            "name": "Honeybee",
+            "points": 71
+        }
+    },
+    {
         "model": "talent.personskill",
         "pk": 1,
         "fields": {
-            "person": 11,
-            "skill": [
-                "DevOps Engineering",
-                "Test Automation"
-            ],
+            "person": 2,
+            "skill": 92,
             "expertise": [
-                "figma",
-                "ant-design",
-                "flask",
-                "java",
-                "golang",
-                "python",
-                "react",
-                "typescript",
-                "django"
+                2
             ]
         }
     },
@@ -1235,26 +1254,10 @@
         "model": "talent.personskill",
         "pk": 2,
         "fields": {
-            "person": 12,
-            "skill": [
-                "Business Analysis"
-            ],
+            "person": 3,
+            "skill": 93,
             "expertise": [
-                "adobe xd",
-                "invision",
-                "ant-design",
-                "material-design",
-                "django",
-                "flask",
-                "spring-boot",
-                "golang",
-                "python",
-                "react",
-                "redux",
-                "vue",
-                "typescript",
-                "django",
-                "cypress"
+                4
             ]
         }
     },
@@ -1262,22 +1265,14 @@
         "model": "talent.personskill",
         "pk": 3,
         "fields": {
-            "person": 13,
-            "skill": [],
+            "person": 39,
+            "skill": 94,
             "expertise": [
-                "figma",
-                "adobe xd",
-                "invision",
-                "ant-design",
-                "java",
-                "golang",
-                "python",
-                "java",
-                "react",
-                "javascript",
-                "typescript",
-                "rest",
-                "cypress"
+                6,
+                7,
+                8,
+                10,
+                11
             ]
         }
     },
@@ -1285,24 +1280,16 @@
         "model": "talent.personskill",
         "pk": 4,
         "fields": {
-            "person": 14,
-            "skill": [
-                "Test Automation"
-            ],
+            "person": 40,
+            "skill": 97,
             "expertise": [
-                "figma",
-                "interviews",
-                "figma",
-                "ant-design",
-                "flask",
-                "golang",
-                "react",
-                "redux",
-                "typescript",
-                "graphql",
-                "rest",
-                "django",
-                "cypress"
+                13,
+                14,
+                16,
+                17,
+                19,
+                20,
+                21
             ]
         }
     },
@@ -1310,25 +1297,13 @@
         "model": "talent.personskill",
         "pk": 5,
         "fields": {
-            "person": 15,
-            "skill": [
-                "DevOps Engineering"
-            ],
+            "person": 39,
+            "skill": 97,
             "expertise": [
-                "figma",
-                "interviews",
-                "adobe xd",
-                "material-design",
-                "django",
-                "flask",
-                "java",
-                "spring-boot",
-                "golang",
-                "python",
-                "javascript",
-                "graphql",
-                "rest",
-                "django"
+                16,
+                17,
+                13,
+                14
             ]
         }
     },
@@ -1336,23 +1311,14 @@
         "model": "talent.personskill",
         "pk": 6,
         "fields": {
-            "person": 16,
-            "skill": [
-                "Cloud Engineering",
-                "Backend Development"
-            ],
+            "person": 1,
+            "skill": 105,
             "expertise": [
-                "figma",
-                "adobe xd",
-                "invision",
-                "ant-design",
-                "django",
-                "java",
-                "redux",
-                "vue",
-                "rest",
-                "django",
-                "cypress"
+                23,
+                24,
+                25,
+                27,
+                28
             ]
         }
     },
@@ -1360,23 +1326,10 @@
         "model": "talent.personskill",
         "pk": 7,
         "fields": {
-            "person": 17,
-            "skill": [],
+            "person": 39,
+            "skill": 106,
             "expertise": [
-                "figma",
-                "interviews",
-                "figma",
-                "invision",
-                "material-design",
-                "flask",
-                "java",
-                "spring-boot",
-                "java",
-                "javascript",
-                "typescript",
-                "graphql",
-                "rest",
-                "cypress"
+                33
             ]
         }
     },
@@ -1384,310 +1337,10 @@
         "model": "talent.personskill",
         "pk": 8,
         "fields": {
-            "person": 18,
-            "skill": [
-                "Product Management",
-                "User Research",
-                "Full-stack Development",
-                "Test Automation"
-            ],
+            "person": 1,
+            "skill": 114,
             "expertise": [
-                "figma",
-                "interviews",
-                "invision",
-                "django",
-                "java",
-                "spring-boot",
-                "golang",
-                "react",
-                "typescript",
-                "graphql",
-                "django"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 9,
-        "fields": {
-            "person": 19,
-            "skill": [
-                "Business Analysis"
-            ],
-            "expertise": [
-                "figma",
-                "invision",
-                "ant-design",
-                "material-design",
-                "django",
-                "spring-boot",
-                "java",
-                "react",
-                "redux",
-                "vue",
-                "javascript",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 10,
-        "fields": {
-            "person": 20,
-            "skill": [],
-            "expertise": [
-                "figma",
-                "ant-design",
-                "spring-boot",
-                "redux",
-                "javascript",
-                "typescript",
-                "graphql",
-                "rest",
-                "django",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 11,
-        "fields": {
-            "person": 21,
-            "skill": [
-                "DevOps Engineering",
-                "Test Automation"
-            ],
-            "expertise": [
-                "figma",
-                "ant-design",
-                "flask",
-                "java",
-                "golang",
-                "python",
-                "react",
-                "typescript",
-                "django"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 12,
-        "fields": {
-            "person": 22,
-            "skill": [
-                "Business Analysis"
-            ],
-            "expertise": [
-                "adobe xd",
-                "invision",
-                "ant-design",
-                "material-design",
-                "django",
-                "flask",
-                "spring-boot",
-                "golang",
-                "python",
-                "react",
-                "redux",
-                "vue",
-                "typescript",
-                "django",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 13,
-        "fields": {
-            "person": 23,
-            "skill": [],
-            "expertise": [
-                "figma",
-                "adobe xd",
-                "invision",
-                "ant-design",
-                "java",
-                "golang",
-                "python",
-                "java",
-                "react",
-                "javascript",
-                "typescript",
-                "rest",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 14,
-        "fields": {
-            "person": 24,
-            "skill": [
-                "Test Automation"
-            ],
-            "expertise": [
-                "figma",
-                "interviews",
-                "figma",
-                "ant-design",
-                "flask",
-                "golang",
-                "react",
-                "redux",
-                "typescript",
-                "graphql",
-                "rest",
-                "django",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 15,
-        "fields": {
-            "person": 25,
-            "skill": [
-                "DevOps Engineering"
-            ],
-            "expertise": [
-                "figma",
-                "interviews",
-                "adobe xd",
-                "material-design",
-                "django",
-                "flask",
-                "java",
-                "spring-boot",
-                "golang",
-                "python",
-                "javascript",
-                "graphql",
-                "rest",
-                "django"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 16,
-        "fields": {
-            "person": 26,
-            "skill": [
-                "Cloud Engineering",
-                "Backend Development"
-            ],
-            "expertise": [
-                "figma",
-                "adobe xd",
-                "invision",
-                "ant-design",
-                "django",
-                "java",
-                "redux",
-                "vue",
-                "rest",
-                "django",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 17,
-        "fields": {
-            "person": 27,
-            "skill": [],
-            "expertise": [
-                "figma",
-                "interviews",
-                "figma",
-                "invision",
-                "material-design",
-                "flask",
-                "java",
-                "spring-boot",
-                "java",
-                "javascript",
-                "typescript",
-                "graphql",
-                "rest",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 18,
-        "fields": {
-            "person": 28,
-            "skill": [
-                "Product Management",
-                "User Research",
-                "Full-stack Development",
-                "Test Automation"
-            ],
-            "expertise": [
-                "figma",
-                "interviews",
-                "invision",
-                "django",
-                "java",
-                "spring-boot",
-                "golang",
-                "react",
-                "typescript",
-                "graphql",
-                "django"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 19,
-        "fields": {
-            "person": 29,
-            "skill": [
-                "Business Analysis"
-            ],
-            "expertise": [
-                "figma",
-                "invision",
-                "ant-design",
-                "material-design",
-                "django",
-                "spring-boot",
-                "java",
-                "react",
-                "redux",
-                "vue",
-                "javascript",
-                "cypress"
-            ]
-        }
-    },
-    {
-        "model": "talent.personskill",
-        "pk": 20,
-        "fields": {
-            "person": 30,
-            "skill": [],
-            "expertise": [
-                "figma",
-                "ant-design",
-                "spring-boot",
-                "redux",
-                "javascript",
-                "typescript",
-                "graphql",
-                "rest",
-                "django",
-                "cypress"
+                35
             ]
         }
     },
@@ -3139,7 +2792,8 @@
             "parent": null,
             "skill": 92,
             "selectable": false,
-            "name": "tools"
+            "name": "tools",
+            "fa_icon": ""
         }
     },
     {
@@ -3149,7 +2803,8 @@
             "parent": 1,
             "skill": 92,
             "selectable": true,
-            "name": "figma"
+            "name": "figma",
+            "fa_icon": ""
         }
     },
     {
@@ -3159,7 +2814,8 @@
             "parent": null,
             "skill": 93,
             "selectable": false,
-            "name": "activities"
+            "name": "activities",
+            "fa_icon": ""
         }
     },
     {
@@ -3169,7 +2825,8 @@
             "parent": 3,
             "skill": 93,
             "selectable": true,
-            "name": "interviews"
+            "name": "interviews",
+            "fa_icon": ""
         }
     },
     {
@@ -3179,7 +2836,8 @@
             "parent": null,
             "skill": 94,
             "selectable": false,
-            "name": "tools"
+            "name": "tools",
+            "fa_icon": ""
         }
     },
     {
@@ -3189,7 +2847,8 @@
             "parent": 5,
             "skill": 94,
             "selectable": true,
-            "name": "figma"
+            "name": "figma",
+            "fa_icon": ""
         }
     },
     {
@@ -3199,7 +2858,8 @@
             "parent": 5,
             "skill": 94,
             "selectable": true,
-            "name": "adobe xd"
+            "name": "adobe xd",
+            "fa_icon": ""
         }
     },
     {
@@ -3209,7 +2869,8 @@
             "parent": 5,
             "skill": 94,
             "selectable": true,
-            "name": "invision"
+            "name": "invision",
+            "fa_icon": ""
         }
     },
     {
@@ -3219,7 +2880,8 @@
             "parent": null,
             "skill": 94,
             "selectable": false,
-            "name": "design-systems"
+            "name": "design-systems",
+            "fa_icon": ""
         }
     },
     {
@@ -3229,7 +2891,8 @@
             "parent": 9,
             "skill": 94,
             "selectable": true,
-            "name": "ant-design"
+            "name": "ant-design",
+            "fa_icon": ""
         }
     },
     {
@@ -3239,7 +2902,8 @@
             "parent": 9,
             "skill": 94,
             "selectable": true,
-            "name": "material-design"
+            "name": "material-design",
+            "fa_icon": ""
         }
     },
     {
@@ -3249,7 +2913,8 @@
             "parent": null,
             "skill": 97,
             "selectable": false,
-            "name": "python ecosystem"
+            "name": "python ecosystem",
+            "fa_icon": ""
         }
     },
     {
@@ -3259,7 +2924,8 @@
             "parent": 12,
             "skill": 97,
             "selectable": true,
-            "name": "django"
+            "name": "django",
+            "fa_icon": ""
         }
     },
     {
@@ -3269,7 +2935,8 @@
             "parent": 12,
             "skill": 97,
             "selectable": true,
-            "name": "flask"
+            "name": "flask",
+            "fa_icon": ""
         }
     },
     {
@@ -3279,7 +2946,8 @@
             "parent": null,
             "skill": 97,
             "selectable": false,
-            "name": "java ecosystem"
+            "name": "java ecosystem",
+            "fa_icon": ""
         }
     },
     {
@@ -3289,7 +2957,8 @@
             "parent": 15,
             "skill": 97,
             "selectable": true,
-            "name": "java"
+            "name": "java",
+            "fa_icon": ""
         }
     },
     {
@@ -3299,7 +2968,8 @@
             "parent": 15,
             "skill": 97,
             "selectable": true,
-            "name": "spring-boot"
+            "name": "spring-boot",
+            "fa_icon": ""
         }
     },
     {
@@ -3309,7 +2979,8 @@
             "parent": null,
             "skill": 97,
             "selectable": false,
-            "name": "languages"
+            "name": "languages",
+            "fa_icon": ""
         }
     },
     {
@@ -3319,7 +2990,8 @@
             "parent": 18,
             "skill": 97,
             "selectable": true,
-            "name": "golang"
+            "name": "golang",
+            "fa_icon": ""
         }
     },
     {
@@ -3329,7 +3001,8 @@
             "parent": 18,
             "skill": 97,
             "selectable": true,
-            "name": "python"
+            "name": "python",
+            "fa_icon": ""
         }
     },
     {
@@ -3339,7 +3012,8 @@
             "parent": 18,
             "skill": 97,
             "selectable": true,
-            "name": "java"
+            "name": "java",
+            "fa_icon": ""
         }
     },
     {
@@ -3349,7 +3023,8 @@
             "parent": null,
             "skill": 105,
             "selectable": false,
-            "name": "libraries"
+            "name": "libraries",
+            "fa_icon": ""
         }
     },
     {
@@ -3359,7 +3034,8 @@
             "parent": 22,
             "skill": 105,
             "selectable": true,
-            "name": "react"
+            "name": "react",
+            "fa_icon": ""
         }
     },
     {
@@ -3369,7 +3045,8 @@
             "parent": 22,
             "skill": 105,
             "selectable": true,
-            "name": "redux"
+            "name": "redux",
+            "fa_icon": ""
         }
     },
     {
@@ -3379,7 +3056,8 @@
             "parent": 22,
             "skill": 105,
             "selectable": true,
-            "name": "vue"
+            "name": "vue",
+            "fa_icon": ""
         }
     },
     {
@@ -3389,7 +3067,8 @@
             "parent": null,
             "skill": 105,
             "selectable": false,
-            "name": "languages"
+            "name": "languages",
+            "fa_icon": ""
         }
     },
     {
@@ -3399,7 +3078,8 @@
             "parent": 26,
             "skill": 105,
             "selectable": true,
-            "name": "javascript"
+            "name": "javascript",
+            "fa_icon": ""
         }
     },
     {
@@ -3409,7 +3089,8 @@
             "parent": 26,
             "skill": 105,
             "selectable": true,
-            "name": "typescript"
+            "name": "typescript",
+            "fa_icon": ""
         }
     },
     {
@@ -3419,7 +3100,8 @@
             "parent": null,
             "skill": 105,
             "selectable": false,
-            "name": "technologies"
+            "name": "technologies",
+            "fa_icon": ""
         }
     },
     {
@@ -3429,7 +3111,8 @@
             "parent": 29,
             "skill": 105,
             "selectable": true,
-            "name": "graphql"
+            "name": "graphql",
+            "fa_icon": ""
         }
     },
     {
@@ -3439,7 +3122,8 @@
             "parent": 29,
             "skill": 105,
             "selectable": true,
-            "name": "rest"
+            "name": "rest",
+            "fa_icon": ""
         }
     },
     {
@@ -3449,7 +3133,8 @@
             "parent": null,
             "skill": 106,
             "selectable": false,
-            "name": "frameworks"
+            "name": "frameworks",
+            "fa_icon": ""
         }
     },
     {
@@ -3459,7 +3144,8 @@
             "parent": 32,
             "skill": 106,
             "selectable": true,
-            "name": "django"
+            "name": "django",
+            "fa_icon": ""
         }
     },
     {
@@ -3469,7 +3155,8 @@
             "parent": null,
             "skill": 114,
             "selectable": false,
-            "name": "frameworks"
+            "name": "frameworks",
+            "fa_icon": ""
         }
     },
     {
@@ -3479,7 +3166,8 @@
             "parent": 34,
             "skill": 114,
             "selectable": true,
-            "name": "cypress"
+            "name": "cypress",
+            "fa_icon": ""
         }
     },
     {
@@ -6173,7 +5861,6 @@
             "status": "Completed"
         }
     },
-
     {
         "model": "talent.bountyclaim",
         "pk": 209,
@@ -6213,7 +5900,6 @@
             "status": "Requested"
         }
     },
-
     {
         "model": "talent.bountydeliveryattempt",
         "pk": 1,

@@ -29,7 +29,7 @@ class SkillAdmin(admin.ModelAdmin):
 
 @admin.register(models.Expertise)
 class ExpertiseAdmin(admin.ModelAdmin):
-    list_display = ["pk", "name", "skill", "parent"]
+    list_display = ["pk", "name", "skill", "fa_icon", "parent"]
 
 
 @admin.register(models.Person)
@@ -39,4 +39,4 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(models.PersonSkill)
 class PersonSkillAdmin(admin.ModelAdmin):
-    list_display = ["pk", "person", "skill", "expertise"]
+    list_display = ["pk", "skill", "person"]

@@ -71,14 +71,3 @@ def serialize_tree(node):
         "has_saved": True,
         "children": [serialize_tree(child) for child in node.get_children()],
     }
-
-
-def serialize_other_type_tree(node):
-    """Serializer for the tree."""
-    return {
-        "id": node.pk,
-        "name": node.name,
-        "children": [
-            serialize_other_type_tree(child) for child in node.get_children
-        ],
-    }

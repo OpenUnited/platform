@@ -9,7 +9,7 @@
     {% include "product_management/partials/buttons/create_bounty_claim_button.html" %}
 {% endwith %}
 
-<button id="dropdownHoverButton_{{bounty.pk}}" data-dropdown-toggle="dropdownHover_{{bounty.pk}}" data-dropdown-trigger="hover" class="{% if not showDropdown %}hidden{% endif %} text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-between items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="button">
+<button id="dropdownHoverButton_{{bounty.pk}}" onclick="document.getElementById('dropdownHover_{{bounty.pk}}').classList.toggle('hidden')" data-dropdown-toggle="dropdownHover_{{bounty.pk}}" data-dropdown-trigger="hover" class="{% if not showDropdown %}hidden{% endif %} text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-between items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="button">
     <svg class="w-2.5 h-2.5 me-3 order-first" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
     </svg>
@@ -18,7 +18,7 @@
 
 
 <!-- Dropdown menu -->
-<div id="dropdownHover_{{bounty.pk}}" class="z-10 hidden bg-white divide-y divide-white rounded-lg shadow w-44 border border-gray-100">
+<div id="dropdownHover_{{bounty.pk}}" class="absolute z-10 hidden bg-white divide-y divide-white rounded-lg shadow w-44 border border-gray-100">
     <ul  id="ulDropdownMenu_{{bounty.pk}}" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton_{{bounty.pk}}">
         <li>
         {% if elem.created_bounty_claim_request %}
@@ -48,6 +48,13 @@
 </div>
 
 <script>
+    document.addEventListener('click', function(event) {
+        if (event.target.matches('#dropdownHoverButton_{{bounty.pk}}') || event.target.closest('#dropdownSearchButton_1')) {
+            var dropdown = document.getElementById('dropdownSearch_1');
+            dropdown.classList.toggle('hidden');
+        }
+    });
+
     document.addEventListener('htmx:confirm', function (event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {
             event.preventDefault()

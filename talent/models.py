@@ -14,8 +14,6 @@ from treebeard.mp_tree import MP_Node
 
 from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
-from engagement.models import Notification
-import engagement
 
 
 class Person(TimeStampMixin):
@@ -205,17 +203,10 @@ class PersonWebsite(models.Model):
 
 class PersonSkill(models.Model):
     person = models.ForeignKey(
-        Person,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        default=None,
-        related_name="skills",
+        Person, related_name="skills", on_delete=models.CASCADE
     )
-    # The below two fields contain a list of integers
-    # ie. ids of skills and expertise such as [45, 56, 87]
-    skill = models.JSONField(blank=True, null=True)
-    expertise = models.JSONField(blank=True, null=True)
+    skill = models.ForeignKey("talent.Skill", on_delete=models.CASCADE)
+    expertise = models.ManyToManyField("talent.Expertise")
 
     def __str__(self):
         return f"{self.person} - {self.skill} - {self.expertise}"
@@ -276,6 +267,7 @@ class Expertise(AncestryMixin):
     )
     selectable = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
+    fa_icon = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name

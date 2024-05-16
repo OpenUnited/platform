@@ -82,22 +82,15 @@ class ExpertiseFactory(DjangoModelFactory):
 
 class PersonSkillFactory(DjangoModelFactory):
     person = factory.SubFactory(PersonFactory)
-    skill = factory.LazyAttribute(
-        lambda _: json.dumps(
-            [
-                {"id": randint(1, 50), "name": f"skill-{i}"}
-                for i in range(0, randint(3, 10))
-            ]
-        )
-    )
-    expertise = factory.LazyAttribute(
-        lambda _: json.dumps(
-            [
-                {"id": randint(1, 50), "name": f"expertise-{i}"}
-                for i in range(0, randint(3, 10))
-            ]
-        )
-    )
+    skill = factory.SubFactory(SkillFactory)
+
+    @factory.post_generation
+    def expertise(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for expertise in extracted:
+                self.expertise.add(expertise)
 
     class Meta:
         model = PersonSkill

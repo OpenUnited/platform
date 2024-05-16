@@ -19,8 +19,8 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
-
-from utility.utils import get_path_from_url
+from utility import utils as global_utils
+from talent import utils
 from .models import (
     Person,
     Skill,
@@ -35,103 +35,94 @@ from .forms import (
     PersonProfileForm,
     FeedbackForm,
     BountyDeliveryAttemptForm,
+    PersonSkillFormSet,
 )
 from .services import FeedbackService
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = Person
-    template_name = "talent/profile.html"
     form_class = PersonProfileForm
     context_object_name = "person"
     slug_field = "username"
     slug_url_kwarg = "username"
     login_url = "sign_in"
 
+    def get_template_names(self):
+        htmx = self.request.htmx
+        if htmx and self.request.GET.get("empty_form"):
+            return ["talent/helper/empty_form.html"]
+        if self.request.htmx:
+            return ["talent/partials/partial_expertises.html"]
+        return ["talent/profile.html"]
+
     def get_queryset(self):
-        # Restrict the queryset to the currently authenticated user
         queryset = super().get_queryset()
         return queryset.filter(user__pk=self.request.user.pk)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = {}
         person = self.get_object()
 
-        if "form" not in kwargs:
-            context["form"] = self.form_class(
-                initial=person.get_initial_data()
-            )
+        expertises = []
+        context = {
+            "pk": person.pk,
+        }
+        skills = [utils.serialize_skills(skill) for skill in Skill.get_roots()]
+        if self.request.htmx:
+            index = self.request.GET.get("index")
 
-        context["pk"] = person.pk
+            if skill := self.request.GET.get(f"skills-{index}-skill"):
+                expertises = [
+                    utils.serialize_expertise(expertise)
+                    for expertise in Expertise.get_roots().filter(skill=skill)
+                ]
+                context["index"] = index
+            else:
+                context["empty_form"] = PersonSkillFormSet().empty_form
+                context["skills"] = skills
 
-        context["photo_url"] = person.get_photo_url()
+            context["expertises"] = expertises
+        else:
+            self.extract_context_data(person, context, skills)
 
+        context["person_skill_formset"] = PersonSkillFormSet(
+            self.request.POST or None,
+            self.request.FILES or None,
+            instance=person,
+        )
         return context
 
-    def _remove_picture(self, request):
-        person = self.get_object()
-        person.delete_photo()
-        context = self.get_context_data()
+    def extract_context_data(self, person, context, skills):
+        context["form"] = self.form_class(instance=person)
+        context["pk"] = person.pk
+        context["photo_url"] = person.get_photo_url()
+        context["skills"] = skills
+        context["selected_skills"] = skills
+        context["expertises"] = [
+            utils.serialize_expertise(expertise)
+            for expertise in Expertise.get_roots()
+        ]
 
-        return render(request, "talent/profile_picture.html", context)
+    def form_valid(self, form):
+        person = self.request.user.person
 
-    def get_success_url(self):
-        return reverse("profile", kwargs={"pk": self.request.user.pk})
+        form = PersonProfileForm(
+            self.request.POST, self.request.FILES, instance=person
+        )
+        context = self.get_context_data(**self.kwargs)
+        person_skill_formset = context["person_skill_formset"]
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        trigger = request.headers.get("Hx-Trigger")
-        if trigger == "remove_picture_button":
-            return self._remove_picture(request)
-
-        return super().get(request, *args, **kwargs)
-
-    def _get_skills_list(self, skill_ids: str) -> list:
-        if skill_ids:
-            json_skill_ids = json.loads(skill_ids)
-            skills_queryset = Skill.objects.filter(
-                id__in=json_skill_ids
-            ).values("id", "name")
-            return list(skills_queryset)
-
-    def _get_expertise_list(self, expertise_ids: str) -> list:
-        if expertise_ids:
-            json_expertise_ids = json.loads(expertise_ids)
-            expertise_queryset = Expertise.objects.filter(
-                id__in=json_expertise_ids
-            ).values("id", "name")
-
-            return list(expertise_queryset)
-
-    # TODO: Add a success message under the photo upload field
-    def post(self, request, *args, **kwargs):
-        person = request.user.person
-
-        form = PersonProfileForm(request.POST, request.FILES, instance=person)
-        if form.is_valid():
-            created_person_obj = form.save(commit=False)
-            created_person_obj.completed_profile = True
-            created_person_obj.save()
-
-            skill_and_expertise, _ = PersonSkill.objects.get_or_create(
-                person=person
-            )
-            skill_and_expertise.skill = self._get_skills_list(
-                request.POST.get("selected_skill_ids")
-            )
-            skill_and_expertise.expertise = self._get_expertise_list(
-                request.POST.get("selected_expertise_ids")
-            )
-            skill_and_expertise.save()
-
-            return HttpResponseRedirect(reverse("profile", args=(person.pk,)))
-
-        return super().post(request, *args, **kwargs)
+        if form.is_valid() and person_skill_formset.is_valid():
+            obj = form.save()
+            person_skill_formset.instance = obj
+            person_skill_formset.save()
+        return super().form_valid(form)
 
 
 @login_required(login_url="sign_in")
 def get_skills(request):
+    # TODO I don't think we need this
     skill_queryset = (
         Skill.objects.filter(active=True)
         .order_by("-display_boost_factor")
@@ -143,6 +134,7 @@ def get_skills(request):
 
 @login_required(login_url="sign_in")
 def get_current_skills(request):
+    # TODO I don't think we need this
     person = request.user.person
     try:
         person_skill = PersonSkill.objects.get(person=person)
@@ -155,6 +147,8 @@ def get_current_skills(request):
 
 @login_required(login_url="sign_in")
 def get_expertise(request):
+    # TODO I don't think we need this
+
     selected_skills = request.GET.get("selected_skills")
     if selected_skills:
         selected_skill_ids = json.loads(selected_skills)
@@ -190,6 +184,7 @@ def get_expertise(request):
 
 @login_required(login_url="sign_in")
 def get_current_expertise(request):
+    # TODO I don't think we need this
     person = request.user.person
     try:
         person_skill = PersonSkill.objects.get(person=person)
@@ -207,10 +202,11 @@ def get_current_expertise(request):
 
 @login_required(login_url="sign_in")
 def list_skill_and_expertise(request):
+    # TODO I don't think we need this
     # Very basic pattern matching to enable this endpoint on
     # specific URLs.
     referer_url = request.headers.get("Referer")
-    path = get_path_from_url(referer_url)
+    path = global_utils.get_path_from_url(referer_url)
     patterns = ["/profile/"]
     for pattern in patterns:
         if pattern not in path:
@@ -267,14 +263,14 @@ class TalentPortfolio(TemplateView):
         context = {
             "user": user,
             "person": person,
-            "person_linkedin_link": get_path_from_url(
+            "person_linkedin_link": global_utils.get_path_from_url(
                 person.linkedin_link, True
             ),
-            "person_twitter_link": get_path_from_url(
+            "person_twitter_link": global_utils.get_path_from_url(
                 person.twitter_link, True
             ),
             "status": person.status,
-            "expertise": person_skill.expertise if person_skill else [],
+            "person_skills": PersonSkill.objects.all().select_related("skill"),
             "bounty_claims": bounty_claims,
             "FeedbackService": FeedbackService,
             "received_feedbacks": received_feedbacks,
