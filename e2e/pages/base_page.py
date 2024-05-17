@@ -7,6 +7,3 @@ class BasePage:
     def navigate(self, url):
         self.page.goto(url)
     
-    # def go_to_page(self):
-        # self.page.goto(self.url)
-
