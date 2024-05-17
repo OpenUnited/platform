@@ -1,7 +1,7 @@
 from e2e.pages.login_page import LoginPage
 from talent.tests.factories import PersonFactory
 from security.tests.factories import UserFactory
-from e2e.base_test import PlaywrightBaseTest
+from e2e.base import PlaywrightBaseTest
 
 class TestPlaywrightTests1(PlaywrightBaseTest):
     def setUp(self):
