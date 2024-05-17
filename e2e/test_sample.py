@@ -1,39 +1,18 @@
-
-
-
-
-from playwright.sync_api import sync_playwright
 from e2e.pages.login_page import LoginPage
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from termcolor import cprint
-
-import django
-django.setup()
-
-
-
+from talent.tests.factories import PersonFactory
 from security.tests.factories import UserFactory
-import os
+from termcolor import cprint
+from .tests.base_test import PlaywrightBaseTest
 
-
-class PlaywrightTests1(StaticLiveServerTestCase):
+class TestPlaywrightTests1(PlaywrightBaseTest):
     def setUp(self):
-        os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-        self.playwright = sync_playwright().start()
-        # self.browser = self.playwright.chromium.launch(headless=False, slow_mo=1000)
-        self.browser = self.playwright.chromium.launch()
-        self.page = self.browser.new_page()
-        cprint(f'\n\n{self.live_server_url=}', "green")
+        super().setUp()
+        self.page = self.browser.new_page()  # Initialize the page attribute
         self.user_one = UserFactory.create(username="testuser", password="12345")
         self.user_one.set_password('12345')
         self.user_one.save()
         cprint(f'Created user: {self.user_one.username}, {self.user_one.password}', "green")
-        from talent.tests.factories import PersonFactory
         self.person = PersonFactory(user=self.user_one)
-
-    def tearDown(self):
-        self.browser.close()
-        self.playwright.stop()
 
     def test_login(self):
         login_page = LoginPage(self.page)
