@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
 
+
 class PlaywrightBaseTest(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
