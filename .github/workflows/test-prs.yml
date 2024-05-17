@@ -33,9 +33,7 @@ jobs:
         pip install -r requirements.txt
         playwright install
     - run: python manage.py test
-    - name: Run end to end tests
-      run: |
-        python manage.py test e2e
+    - run: python manage.py test e2e
       env:
         DJANGO_SETTINGS_MODULE: openunited.settings.development
         DJANGO_SECRET_KEY: 123456789
