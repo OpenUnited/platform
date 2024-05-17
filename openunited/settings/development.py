@@ -29,3 +29,6 @@ if AWS_STORAGE_BUCKET_NAME := os.getenv("AWS_STORAGE_BUCKET_NAME"):
     STATICFILES_STORAGE = "openunited.storage_backends.StaticStorage"
     MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_MEDIA_LOCATION}/"
     DEFAULT_FILE_STORAGE = "openunited.storage_backends.PublicMediaStorage"
+
+# When running in a DigitalOcean app, Django sits behind a proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
