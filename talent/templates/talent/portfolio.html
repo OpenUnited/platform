@@ -44,27 +44,16 @@
                 class="bg-white relative -mt-40 rounded-md border border-solid border-[#d0d7de] pt-[190px] pb-6 px-4 relative z-[1]">
                 <div class="text-2xl text-[#4b5563] font-semibold">{{ person.get_full_name() }}</div>
                 <div class="pb-4 font-light text-xl text-[#6b7280]">@{{ user.username }}</div>
+                {#
                 <div
                     class="py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full 
-            border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+                            border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
                     Contact {{ person.get_short_name() }}
                 </div>
+                #}
+
                 <div class="pb-1 font-light text-sm text-[#4b5563] font-semibold">{{ status.points }} Points Earned
                 </div>
-                <!-- <div class="mb-4 flex items-center">
-                    <a href="#" class="flex items-center text-[#656d76] transition-all hover:text-blue-400 group">
-                        <span
-                            class="w-4 h-4 flex shrink-0 items-center justify-center mr-1 text-[#4b5563] group-hover:text-blue-400 pt-0.5">
-                            <img class="w-full h-full object-contain object-center"
-                                src="/static/assets/images/contributors.svg" alt="#">
-                        </span>
-                        <strong class="text-[#4b5563] group-hover:text-blue-400 mr-1.5">536</strong> contributor
-                    </a>
-                    <div class="mx-1.5"> · </div>
-                    <a href="#" class="flex items-center text-[#656d76] transition-all hover:text-blue-400 group">
-                        <strong class="text-[#4b5563] group-hover:text-blue-400 mr-1.5">7</strong> leadership
-                    </a>
-                </div> -->
                 <div class="space-y-1.5 flex flex-col">
                     {% if person.location %}
                     <div class="flex items-center text-[#4b5563] text-sm transition-all">
