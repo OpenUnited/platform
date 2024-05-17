@@ -19,7 +19,7 @@
                     Title
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Short Desription
+                    Desription
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Status
@@ -39,7 +39,7 @@
                     {{ challenge.title }}
                 </th>
                 <td class="px-6 py-4">
-                    {{ challenge.short_description }}
+                    {{ challenge.get_short_description() }}
                 </td>
                 <td class="px-6 py-4">
                     {{ challenge.get_status_display() }}

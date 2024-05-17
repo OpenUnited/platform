@@ -44,11 +44,11 @@
                 class="bg-white relative -mt-40 rounded-md border border-solid border-[#d0d7de] pt-[190px] pb-6 px-4 relative z-[1]">
                 <div class="text-2xl text-[#4b5563] font-semibold">{{ person.get_full_name() }}</div>
                 <div class="pb-4 font-light text-xl text-[#6b7280]">@{{ user.username }}</div>
-                <div
+                <!-- <div
                     class="py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full 
             border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
                     Contact {{ person.get_short_name() }}
-                </div>
+                </div> -->
                 <div class="pb-1 font-light text-sm text-[#4b5563] font-semibold">{{ status.points }} Points Earned
                 </div>
                 <!-- <div class="mb-4 flex items-center">
@@ -242,7 +242,7 @@
                         {% endif %}
                     </div>
                     {% else %}
-                    <p class="mt-3">{{ person.get_short_name() }} did not received any feedback yet.</p>
+                    <p class="mt-3">{{ person.get_short_name() }} did not receive any feedback yet.</p>
                     {% endif %}
                     {% if can_leave_feedback %}
                     <div class="mt-9">

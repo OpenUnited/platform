@@ -353,7 +353,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
             bounty.save()
 
     def __str__(self):
-        return f"{self.bounty.challenge}: {self.person} ({self.status})"
+        return f"{self.bounty.title} ({self.bounty.challenge}): {self.person} ({self.status})"
 
 
 class Comment(MP_Node):

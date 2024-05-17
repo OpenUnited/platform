@@ -137,8 +137,10 @@ def get_current_skills(request):
     # TODO I don't think we need this
     person = request.user.person
     try:
-        person_skill = PersonSkill.objects.get(person=person)
-        skill_ids = [entry.get("id") for entry in person_skill.skill]
+        person_skills = PersonSkill.objects.filter(person=person)
+        skill_ids = []
+        for person_skill in person_skills:
+            skill_ids.append(person_skill.skill.id)
     except (ObjectDoesNotExist, AttributeError):
         skill_ids = []
 
@@ -158,10 +160,11 @@ def get_expertise(request):
 
         person = request.user.person
         try:
-            person_expertise = PersonSkill.objects.get(person=person)
-            expertise_ids = [
-                entry.get("id") for entry in person_expertise.expertise
-            ]
+            person_skills = PersonSkill.objects.filter(person=person)
+            expertise_ids = []
+            for person_skill in person_skills:
+                for expertise in person_skill.expertise.all():
+                    expertise_ids.append(expertise.id)
         except (ObjectDoesNotExist, AttributeError):
             expertise_ids = []
 
@@ -187,9 +190,15 @@ def get_current_expertise(request):
     # TODO I don't think we need this
     person = request.user.person
     try:
-        person_skill = PersonSkill.objects.get(person=person)
-        expertise_ids = [entry.get("id") for entry in person_skill.expertise]
+        person_skills = PersonSkill.objects.filter(person=person)
+        expertise_ids = []
+        for person_skill in person_skills:
+            for expertise in person_skill.expertise.all():
+                expertise_ids.append(expertise.id)
+
+        print(expertise_ids)
         expertise = Expertise.objects.filter(id__in=expertise_ids).values()
+
     except (ObjectDoesNotExist, AttributeError):
         expertise_ids = []
         expertise = []
