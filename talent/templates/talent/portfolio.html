@@ -106,14 +106,14 @@
             </div>
         </div>
         <div class="grow border border-solid border-[#d0d7de] px-4 py-5 sm:p-6 bg-white rounded-md mt-[54px]">
-            {% if request.user.person != person %}
-            <a href="{{ url('sign-up') }}">
-                <button type="button"
-                    class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
-        border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
-                    Create a Portfolio like this
-                </button>
-            </a>
+            {% if not request.user.is_authenticated %}
+                <a href="{{ url('sign-up') }}">
+                    <button type="button"
+                        class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px] 
+                                border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
+                        Create a Portfolio like this
+                    </button>
+                </a>
             {% endif %}
             <div class="flex items-center pb-2.5 mb-4 border-b border-solid border-[#d0d7de]">
                 <h2 class="text-2xl text-black/[0.85] inline-flex font-semibold">
