@@ -11,8 +11,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
-
-from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
+from django.conf import settings
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
 
 
@@ -24,7 +23,7 @@ class Person(TimeStampMixin):
     )
     products = GenericRelation("product_management.Product")
     photo = models.ImageField(
-        upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True
+        upload_to=settings.PERSON_PHOTO_UPLOAD_TO, null=True, blank=True
     )
     headline = models.TextField()
     overview = models.TextField(blank=True)
@@ -61,7 +60,11 @@ class Person(TimeStampMixin):
         return self.user.username if self.user else ""
 
     def get_photo_url(self):
-        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
+        image_url = (
+            settings.MEDIA_URL
+            + settings.PERSON_PHOTO_UPLOAD_TO
+            + "profile-empty.png"
+        )
 
         if self.photo:
             image_url = self.photo.url
