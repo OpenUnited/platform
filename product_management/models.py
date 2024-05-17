@@ -377,7 +377,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
         MAX_LEN = 90
         if len(self.description) > MAX_LEN:
             return f"{self.description[0:MAX_LEN]}..."
-        
+
         return self.description
 
 

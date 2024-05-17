@@ -195,7 +195,7 @@ def get_current_expertise(request):
         for person_skill in person_skills:
             for expertise in person_skill.expertise.all():
                 expertise_ids.append(expertise.id)
-        
+
         print(expertise_ids)
         expertise = Expertise.objects.filter(id__in=expertise_ids).values()
 
