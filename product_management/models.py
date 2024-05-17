@@ -11,7 +11,6 @@ from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
-from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
 from django.db.models.signals import pre_save
@@ -105,12 +104,11 @@ class Product(ProductMixin):
         return self.product_trees.first()
 
     def get_photo_url(self):
-        image_url = MEDIA_URL + "products/product-empty.png"
-
-        if self.photo:
-            image_url = self.photo.url
-
-        return image_url
+        return (
+            self.photo.url
+            if self.photo
+            else f"{settings.MEDIA_URL}products/product-empty.png"
+        )
 
     @staticmethod
     def check_slug_from_name(product_name: str) -> str | None:
