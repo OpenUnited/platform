@@ -52,7 +52,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         htmx = self.request.htmx
         if htmx and self.request.GET.get("empty_form"):
             return ["talent/helper/empty_form.html"]
-        if self.request.htmx:
+        if htmx:
             return ["talent/partials/partial_expertises.html"]
         return ["talent/profile.html"]
 
@@ -69,19 +69,19 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             "pk": person.pk,
         }
         skills = [utils.serialize_skills(skill) for skill in Skill.get_roots()]
+
         if self.request.htmx:
             index = self.request.GET.get("index")
-
             if skill := self.request.GET.get(f"skills-{index}-skill"):
                 expertises = [
                     utils.serialize_expertise(expertise)
                     for expertise in Expertise.get_roots().filter(skill=skill)
                 ]
-                context["index"] = index
             else:
                 context["empty_form"] = PersonSkillFormSet().empty_form
                 context["skills"] = skills
 
+            context["index"] = index
             context["expertises"] = expertises
         else:
             self.extract_context_data(person, context, skills)

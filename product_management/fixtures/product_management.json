@@ -6543,8 +6543,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 1,
-            "person": 26,
-            "vote_count": 15
+            "person": 26
         }
     },
     {
@@ -6556,8 +6555,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 1,
-            "person": 11,
-            "vote_count": 12
+            "person": 11
         }
     },
     {
@@ -6569,8 +6567,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 1,
-            "person": 24,
-            "vote_count": 10
+            "person": 24
         }
     },
     {
@@ -6582,8 +6579,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 1,
-            "person": 29,
-            "vote_count": 8
+            "person": 29
         }
     },
     {
@@ -6595,8 +6591,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 1,
-            "person": 38,
-            "vote_count": 7
+            "person": 38
         }
     },
     {
@@ -6608,8 +6603,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 2,
-            "person": 20,
-            "vote_count": 15
+            "person": 20
         }
     },
     {
@@ -6621,8 +6615,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 2,
-            "person": 32,
-            "vote_count": 12
+            "person": 32
         }
     },
     {
@@ -6634,8 +6627,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 2,
-            "person": 2,
-            "vote_count": 10
+            "person": 2
         }
     },
     {
@@ -6647,8 +6639,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 2,
-            "person": 35,
-            "vote_count": 8
+            "person": 35
         }
     },
     {
@@ -6660,8 +6651,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 2,
-            "person": 12,
-            "vote_count": 7
+            "person": 12
         }
     },
     {
@@ -6673,8 +6663,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 3,
-            "person": 30,
-            "vote_count": 15
+            "person": 30
         }
     },
     {
@@ -6686,8 +6675,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 3,
-            "person": 20,
-            "vote_count": 12
+            "person": 20
         }
     },
     {
@@ -6699,8 +6687,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 3,
-            "person": 17,
-            "vote_count": 10
+            "person": 17
         }
     },
     {
@@ -6712,8 +6699,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 3,
-            "person": 30,
-            "vote_count": 8
+            "person": 30
         }
     },
     {
@@ -6725,8 +6711,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 3,
-            "person": 9,
-            "vote_count": 7
+            "person": 9
         }
     },
     {
@@ -6738,8 +6723,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 4,
-            "person": 10,
-            "vote_count": 15
+            "person": 10
         }
     },
     {
@@ -6751,8 +6735,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 4,
-            "person": 33,
-            "vote_count": 12
+            "person": 33
         }
     },
     {
@@ -6764,8 +6747,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 4,
-            "person": 6,
-            "vote_count": 10
+            "person": 6
         }
     },
     {
@@ -6777,8 +6759,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 4,
-            "person": 17,
-            "vote_count": 8
+            "person": 17
         }
     },
     {
@@ -6790,8 +6771,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 4,
-            "person": 14,
-            "vote_count": 7
+            "person": 14
         }
     },
     {
@@ -6803,8 +6783,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 5,
-            "person": 34,
-            "vote_count": 15
+            "person": 34
         }
     },
     {
@@ -6816,8 +6795,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 5,
-            "person": 35,
-            "vote_count": 12
+            "person": 35
         }
     },
     {
@@ -6829,8 +6807,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 5,
-            "person": 36,
-            "vote_count": 10
+            "person": 36
         }
     },
     {
@@ -6842,8 +6819,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 5,
-            "person": 13,
-            "vote_count": 8
+            "person": 13
         }
     },
     {
@@ -6855,8 +6831,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 5,
-            "person": 8,
-            "vote_count": 7
+            "person": 8
         }
     },
     {
@@ -6868,8 +6843,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 6,
-            "person": 16,
-            "vote_count": 15
+            "person": 16
         }
     },
     {
@@ -6881,8 +6855,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 6,
-            "person": 2,
-            "vote_count": 12
+            "person": 2
         }
     },
     {
@@ -6894,8 +6867,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 6,
-            "person": 19,
-            "vote_count": 10
+            "person": 19
         }
     },
     {
@@ -6907,8 +6879,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 6,
-            "person": 37,
-            "vote_count": 8
+            "person": 37
         }
     },
     {
@@ -6920,8 +6891,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 6,
-            "person": 38,
-            "vote_count": 7
+            "person": 38
         }
     },
     {
@@ -6933,8 +6903,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 7,
-            "person": 30,
-            "vote_count": 15
+            "person": 30
         }
     },
     {
@@ -6946,8 +6915,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 7,
-            "person": 5,
-            "vote_count": 12
+            "person": 5
         }
     },
     {
@@ -6959,8 +6927,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 7,
-            "person": 22,
-            "vote_count": 10
+            "person": 22
         }
     },
     {
@@ -6972,8 +6939,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 7,
-            "person": 32,
-            "vote_count": 8
+            "person": 32
         }
     },
     {
@@ -6985,8 +6951,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 7,
-            "person": 1,
-            "vote_count": 7
+            "person": 1
         }
     },
     {
@@ -6998,8 +6963,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 8,
-            "person": 30,
-            "vote_count": 15
+            "person": 30
         }
     },
     {
@@ -7011,8 +6975,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 8,
-            "person": 6,
-            "vote_count": 12
+            "person": 6
         }
     },
     {
@@ -7024,8 +6987,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 8,
-            "person": 14,
-            "vote_count": 10
+            "person": 14
         }
     },
     {
@@ -7037,8 +6999,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 8,
-            "person": 26,
-            "vote_count": 8
+            "person": 26
         }
     },
     {
@@ -7050,8 +7011,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 8,
-            "person": 28,
-            "vote_count": 7
+            "person": 28
         }
     },
     {
@@ -7063,8 +7023,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 9,
-            "person": 21,
-            "vote_count": 15
+            "person": 21
         }
     },
     {
@@ -7076,8 +7035,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 9,
-            "person": 27,
-            "vote_count": 12
+            "person": 27
         }
     },
     {
@@ -7089,8 +7047,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 9,
-            "person": 4,
-            "vote_count": 10
+            "person": 4
         }
     },
     {
@@ -7102,8 +7059,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 9,
-            "person": 22,
-            "vote_count": 8
+            "person": 22
         }
     },
     {
@@ -7115,8 +7071,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 9,
-            "person": 15,
-            "vote_count": 7
+            "person": 15
         }
     },
     {
@@ -7128,8 +7083,7 @@
             "title": "Smartwatch Pro: Integrate Sleep Tracking Feature",
             "description": "Implement a sleep tracking feature in Smartwatch Pro to monitor users' sleep patterns, quality, and duration. By analyzing sleep data, users can gain insights into their sleep habits and make informed adjustments to improve their overall sleep quality and health.",
             "product": 10,
-            "person": 29,
-            "vote_count": 15
+            "person": 29
         }
     },
     {
@@ -7141,8 +7095,7 @@
             "title": "Smartwatch Pro: Develop Personalized Workout Plans",
             "description": "Create personalized workout plans within Smartwatch Pro based on users' fitness goals, preferences, and fitness levels. By providing tailored exercise routines and guidance, users can optimize their workouts for maximum effectiveness and results.",
             "product": 10,
-            "person": 36,
-            "vote_count": 12
+            "person": 36
         }
     },
     {
@@ -7154,8 +7107,7 @@
             "title": "Smartwatch Pro: Enhance Water Resistance",
             "description": "Enhance the water resistance capabilities of Smartwatch Pro to withstand water immersion at greater depths. This improvement ensures durability and reliability, allowing users to wear the smartwatch during swimming and water-related activities without concerns about water damage.",
             "product": 10,
-            "person": 11,
-            "vote_count": 10
+            "person": 11
         }
     },
     {
@@ -7167,8 +7119,7 @@
             "title": "Smartwatch Pro: Integrate Voice Assistant",
             "description": "Integrate a voice assistant feature into Smartwatch Pro, enabling users to perform tasks, access information, and control smart home devices using voice commands. This hands-free functionality enhances user convenience and accessibility, making interactions with the smartwatch more intuitive and efficient.",
             "product": 10,
-            "person": 4,
-            "vote_count": 8
+            "person": 4
         }
     },
     {
@@ -7180,8 +7131,7 @@
             "title": "Smartwatch Pro: Implement Stress Tracking",
             "description": "Implement stress tracking capabilities in Smartwatch Pro to monitor users' stress levels and provide insights into stress patterns throughout the day. By identifying stress triggers and patterns, users can take proactive steps to manage stress and improve their overall well-being.",
             "product": 10,
-            "person": 3,
-            "vote_count": 7
+            "person": 3
         }
     },
     {

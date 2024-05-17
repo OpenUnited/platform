@@ -43,8 +43,8 @@
     <div class="w-full mb-4 text-left">
         <button type="button"
             hx-get="{{ url('profile',args=(pk,))}}"
-            hx-vals='{"empty_form":"True"}'
             id="add_more_button"
+            onclick="event.preventDefault()"
             hx-target="#person_skill_container" class="bg-indigo-600 text-white py-2 px-4 rounded focus:outline-none"
             hx-swap="beforeend">Add Skills & Expertise
         </button>
@@ -59,24 +59,23 @@ function deleteSkill(event, index){
         document.getElementById(`id_skills-${index}-container`).classList.add("hidden")
     })
 }
-document.addEventListener('htmx:afterSwap', function(event) {
-    const gridContainer = document.getElementById("person_skill_container");
-    if (gridContainer) {
-        var index = gridContainer.querySelectorAll('.row').length - 1;
-        var placeholderElements = event.target.querySelectorAll('*');
 
-        placeholderElements.forEach(function(element) {
-            Array.from(element.attributes).forEach(function(attr) {
-                if (attr.value.includes('{{__prefix__}}')) {
-                    var newAttributeValue = attr.value.replace(/{{__prefix__}}/g, index);
-                    element.setAttribute(attr.name, newAttributeValue);
-                }
-            });
-        });
-        
-        var totalFormCount = document.getElementById("id_skills-TOTAL_FORMS");
-        totalFormCount.value = parseInt(totalFormCount.value) + 1;
+document.addEventListener("htmx:confirm", function(event) {
+    if (event.target.id== "add_more_button") {
+        event.preventDefault()
+        var index = document.getElementById("person_skill_container").querySelectorAll('.row').length 
+        const data = {
+            "empty_form": true,
+            "index": index,
+        };
+        event.target.setAttribute("hx-vals",  JSON.stringify(data));
+        event.detail.issueRequest()
     }
+});
+
+document.addEventListener('htmx:afterSwap', function(event) {
+    var totalFormCount = document.getElementById("id_skills-TOTAL_FORMS");
+    totalFormCount.value = parseInt(totalFormCount.value) + 1;
 });
 
 </script>
