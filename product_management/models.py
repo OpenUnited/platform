@@ -372,6 +372,14 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
         return queryset.order_by(sorted_by).all()
 
+    def get_short_description(self):
+        # return a shortened version of the description text
+        MAX_LEN = 90
+        if len(self.description) > MAX_LEN:
+            return f"{self.description[0:MAX_LEN]}..."
+        
+        return self.description
+
 
 class Bounty(TimeStampMixin):
     BOUNTY_STATUS_DRAFT = 0
@@ -432,7 +440,7 @@ class Bounty(TimeStampMixin):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
-        return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
+        return self.title
 
     @receiver(pre_save, sender="product_management.Bounty")
     def _pre_save(sender, instance, **kwargs):
