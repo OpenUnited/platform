@@ -1,10 +1,10 @@
 from e2e.pages.login_page import LoginPage
 from talent.tests.factories import PersonFactory
 from security.tests.factories import UserFactory
-from e2e.base import PlaywrightBaseTest
+from e2e.base import BaseE2ETest
 
 
-class TestPlaywrightTests1(PlaywrightBaseTest):
+class TestLogin(BaseE2ETest):
     def setUp(self):
         super().setUp()
         self.page = self.browser.new_page()

@@ -3,7 +3,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import os
 
 
-class PlaywrightBaseTest(StaticLiveServerTestCase):
+class BaseE2ETest(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
