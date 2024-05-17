@@ -3,13 +3,17 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+DEBUG = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-# Application definition
+ALLOWED_HOSTS = []
+if allowed_hosts := os.environ.get("DJANGO_ALLOWED_HOSTS"):
+    ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,6 +49,7 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 ]
+
 
 ROOT_URLCONF = "openunited.urls"
 
@@ -106,13 +111,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "openunited.wsgi.application"
 
-# When running in a DigitalOcean app, Django sits behind a proxy
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -146,8 +146,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -157,49 +155,17 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-if os.getenv("AWS_STORAGE_BUCKET_NAME"):
-    # AWS S3 Static File Configuration
-    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
-    AWS_S3_OBJECT_PARAMETERS = {
-        "CacheControl": "max-age=86400",
-    }
-    AWS_STATIC_LOCATION = "openunited-static"
-    AWS_MEDIA_LOCATION = "openunited-media"
-    AWS_QUERYSTRING_AUTH = False
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static"),
-    ]
-    STATIC_URL = "%s/%s/%s/" % (
-        AWS_S3_ENDPOINT_URL,
-        AWS_STORAGE_BUCKET_NAME,
-        AWS_STATIC_LOCATION,
-    )
-    STATICFILES_STORAGE = "openunited.storage_backends.StaticStorage"
-    MEDIA_URL = "%s/%s/%s/" % (
-        AWS_S3_ENDPOINT_URL,
-        AWS_STORAGE_BUCKET_NAME,
-        AWS_MEDIA_LOCATION,
-    )
-    DEFAULT_FILE_STORAGE = "openunited.storage_backends.PublicMediaStorage"
-else:
+
+if not os.getenv("AWS_STORAGE_BUCKET_NAME"):
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
     STATIC_URL = "static/"
-    STATICFILES_DIRS = [
-        BASE_DIR / "static",
-    ]
+    STATICFILES_DIRS = [BASE_DIR / "static"]
     MEDIA_URL = "/media/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 PERSON_PHOTO_UPLOAD_TO = "avatars/"
-
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 INTERNAL_IPS = [
@@ -267,3 +233,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://openunited.com",
     "https://demo.openunited.com",
 ]
+
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = "no-reply@openunited.com"

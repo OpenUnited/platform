@@ -18,7 +18,7 @@
                         alt="Profile Picture">
                 </div>
                 <div class="group absolute rounded-full bg-white py-0.5 px-2 right-2 bottom-10 border border-solid border-green-600 
-        inline-flex shadow-xl text-green-600 text-lg flex shrink-0 items-center justify-center cursor-pointer">
+                        inline-flex shadow-xl text-green-600 text-lg flex shrink-0 items-center justify-center cursor-pointer">
                     {{ status.name }}
                     <div
                         class="absolute hidden group-hover:block group-focus:block bottom-8 -left-[116px] sm:left-4 block w-60 p-3 bg-white border border-solid border-gray-300 shadow-md rounded-md">
@@ -122,26 +122,33 @@
             <div class="flex flex-col text-sm leading-6 text-gray-500">
                 <p>{{ person.overview }}</p>
             </div>
-            <div class="text-lg font-semibold mb-2.5 mt-6">My Skills / Expertise</div>
-            <div class="flex items-center flex-wrap">
-                {% if expertise %}
-                {% for exp in expertise %}
-                <div
-                    class="mt-1.5 mr-1.5 last:mr-0 flex items-center py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
-                    <div class="flex items-center text-xs font-semibold leading-6">
-                        <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
-                            {% set expertise_icon_path = 'images/skills/' ~ exp ~ '.svg' %}
-                            <img src="{{ static(expertise_icon_path)}}"
-                                class="w-full h-full object-contain object-center" alt="#">
-                        </span>
-                        {{ exp }}
-                    </div>
+            <div class="text-lg font-semibold mb-2.5 mt-6 border-b border-solid border-[#d0d7de]">My Skills / Expertise</div>
+            {% if person_skills %}
+            <div class="flex items-center space-x-2 text-sm">
+                <div class="text-sm font-medium text-black">
+                    {% for person_skill in person_skills %}
+                        <strong> {{person_skill.skill.name}} </strong>
+                        <div class="text-gray-500 flex flex-wrap">
+  
+                            {% for expertise in  person_skill.expertise.all()  %}
+                            <div class="inline-block mt-1.5 mr-1.5 mb-1.5 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+                                <div class="flex items-center text-xs font-semibold leading-6">
+                                        <i class="{{expertise.fa_icon}} mr-2 text-indigo-500"></i>
+                                    </span>
+                                    {{ expertise }}
+                                </div>
+                            </div>
+                        {% endfor %}  
+                        </div>
+                    {% endfor %}
+
                 </div>
-                {% endfor %}
-                {% else %}
-                <p class="text-sm italic">There are no expertise to list.</p>
-                {% endif %}
             </div>
+
+            {% else %}
+                <p class="text-sm italic">There are no expertise to list.</p>
+            {% endif %}
+
             <div class="text-lg font-semibold mb-2.5 mt-6">Open Products I contribute to</div>
 
             <div class="relative" id="portfolio-table">

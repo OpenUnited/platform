@@ -1,42 +1,13 @@
 import os
 import sentry_sdk
-
 from openunited.settings.base import *
 
-
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-
+ALLOWED_HOSTS = ["*"]
 DEBUG = False
-
-ALLOWED_HOSTS = os.environ.get(
-    "DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost"
-).split(",")
-
-TEMPLATES[0]["OPTIONS"]["auto_reload"] = DEBUG
-
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-DEFAULT_FROM_EMAIL = "no-reply@openunited.com"
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
+MIDDLEWARE += [
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -65,3 +36,25 @@ if os.environ.get("SENTRY_DSN"):
         # of transactions for performance monitoring.
         traces_sample_rate=1.0,
     )
+
+# When running in a DigitalOcean app, Django sits behind a proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+if AWS_STORAGE_BUCKET_NAME := os.getenv("AWS_STORAGE_BUCKET_NAME"):
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl": "max-age=86400",
+    }
+    AWS_STATIC_LOCATION = "openunited-static"
+    AWS_MEDIA_LOCATION = "openunited-media"
+    AWS_QUERYSTRING_AUTH = False
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "static"),
+    ]
+
+    STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_STATIC_LOCATION}/"
+    STATICFILES_STORAGE = "openunited.storage_backends.StaticStorage"
+    MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_MEDIA_LOCATION}/"
+    DEFAULT_FILE_STORAGE = "openunited.storage_backends.PublicMediaStorage"

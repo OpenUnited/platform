@@ -11,11 +11,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
-
-from openunited.settings.base import MEDIA_URL, PERSON_PHOTO_UPLOAD_TO
+from django.conf import settings
 from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
-from engagement.models import Notification
-import engagement
 
 
 class Person(TimeStampMixin):
@@ -26,7 +23,7 @@ class Person(TimeStampMixin):
     )
     products = GenericRelation("product_management.Product")
     photo = models.ImageField(
-        upload_to=PERSON_PHOTO_UPLOAD_TO, null=True, blank=True
+        upload_to=settings.PERSON_PHOTO_UPLOAD_TO, null=True, blank=True
     )
     headline = models.TextField()
     overview = models.TextField(blank=True)
@@ -63,7 +60,11 @@ class Person(TimeStampMixin):
         return self.user.username if self.user else ""
 
     def get_photo_url(self):
-        image_url = MEDIA_URL + PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
+        image_url = (
+            settings.MEDIA_URL
+            + settings.PERSON_PHOTO_UPLOAD_TO
+            + "profile-empty.png"
+        )
 
         if self.photo:
             image_url = self.photo.url
@@ -205,17 +206,10 @@ class PersonWebsite(models.Model):
 
 class PersonSkill(models.Model):
     person = models.ForeignKey(
-        Person,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        default=None,
-        related_name="skills",
+        Person, related_name="skills", on_delete=models.CASCADE
     )
-    # The below two fields contain a list of integers
-    # ie. ids of skills and expertise such as [45, 56, 87]
-    skill = models.JSONField(blank=True, null=True)
-    expertise = models.JSONField(blank=True, null=True)
+    skill = models.ForeignKey("talent.Skill", on_delete=models.CASCADE)
+    expertise = models.ManyToManyField("talent.Expertise")
 
     def __str__(self):
         return f"{self.person} - {self.skill} - {self.expertise}"
@@ -276,6 +270,7 @@ class Expertise(AncestryMixin):
     )
     selectable = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
+    fa_icon = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -350,6 +345,11 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         if instance.status in bounty_to_bounty_claim_status:
             bounty = instance.bounty
             bounty.status = bounty_to_bounty_claim_status[instance.status]
+            bounty.save()
+
+        if instance.status == sender.Status.GRANTED:
+            bounty = instance.bounty
+            bounty.claimed_by = instance.person
             bounty.save()
 
     def __str__(self):

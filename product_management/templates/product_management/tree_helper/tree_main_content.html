@@ -21,15 +21,12 @@
         event.preventDefault()
         const targetElement = event.target.closest("li");
         const ul = targetElement.querySelector("ul");
-        const icon = targetElement.querySelector("i");
-
-        if (icon.classList.contains("fa-chevron-circle-right")){
-            icon.classList.remove("fa-chevron-circle-right");
-            icon.classList.add("fa-chevron-circle-down");
+        const icon = targetElement.querySelector(".icon-arrow");
+        if (icon.getAttribute("data-icon")=="circle-chevron-down"){
+            icon.setAttribute("data-icon","circle-chevron-right");
         }
         else{
-            icon.classList.remove("fa-chevron-circle-down");
-            icon.classList.add("fa-chevron-circle-right");
+            icon.setAttribute("data-icon","circle-chevron-down");
         }
         if (ul) {
             ul.classList.toggle("hidden");

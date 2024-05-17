@@ -1,8 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
+from django.forms import inlineformset_factory
 from .models import Person, Feedback, BountyClaim, BountyDeliveryAttempt
+from talent import models as talent
 
 
 def _get_text_input_class():
@@ -22,20 +23,10 @@ def _get_choice_box_class():
 
 
 class PersonProfileForm(forms.ModelForm):
-    selected_skill_ids = forms.CharField(
-        widget=forms.HiddenInput(
-            attrs={"id": "selected-skills", "name": "selected-skills"}
-        )
-    )
-    selected_expertise_ids = forms.CharField(
-        widget=forms.HiddenInput(
-            attrs={"id": "selected-expert", "name": "selected-expert"}
-        )
-    )
-
     class Meta:
         model = Person
         fields = [
+            "id",
             "full_name",
             "preferred_name",
             "photo",
@@ -128,6 +119,24 @@ class PersonProfileForm(forms.ModelForm):
         help_texts = {
             "send_me_bounties": "Get notified when a new bounty is added."
         }
+
+
+class PersonSkillForm(forms.ModelForm):
+    id = forms.IntegerField(required=False)
+
+    class Meta:
+        model = talent.PersonSkill
+        fields = ("id", "skill", "expertise")
+
+
+PersonSkillFormSet = inlineformset_factory(
+    Person,
+    talent.PersonSkill,
+    form=PersonSkillForm,
+    extra=0,
+    can_delete=True,
+    can_delete_extra=True,
+)
 
 
 class FeedbackForm(forms.ModelForm):

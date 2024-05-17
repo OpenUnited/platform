@@ -1,0 +1,10 @@
+
+{% import "talent/helper/macro_fun.html" as macros_fun %}
+    <ul class="h-48 px-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton_{{index}}">
+        {{ macros_fun.expertise_filter_tree(expertises,[], index, 0) }}
+    </ul>
+
+    
+<script>
+    document.getElementById(`id_skills-{{index}}-expertise`).innerHTML=""
+</script>

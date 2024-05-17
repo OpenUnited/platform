@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 
-{% block media %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.css" />
-{% endblock %}
-
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-{% include 'talent/partials/profile_form.html' %}
+    <form method="POST" id="forms" enctype="multipart/form-data" action="{{ url('profile', args=(pk,)) }}">
+        {% csrf_token %}
+        <div class="flex flex-col lg:flex-row grow justify-center lg:pt-[50px] space-y-6 lg:space-y-0 lg:space-x-12">
+
+            {% include 'talent/profile_picture.html' %}
+            
+            <div class="flex flex-col grow lg:max-w-[668px] w-full">
+                {% include 'talent/helper/profile_info.html' %}
+                {% include "talent/helper/skills.html" %}
+                {% include "talent/helper/social_links.html" %}
+            </div>
+    </form>
 {% endblock %}
 
-{% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.umd.js"></script>
-<script src="{{ static('scripts/tree-select.js') }}"></script>
-{% endblock %}

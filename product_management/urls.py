@@ -267,3 +267,12 @@ urlpatterns += [
         name="challenge_detail",
     ),
 ]
+
+
+urlpatterns += [
+    path(
+        "cast-vote-for-idea/<int:pk>",
+        views.cast_vote_for_idea,
+        name="cast-vote-for-idea",
+    )
+]

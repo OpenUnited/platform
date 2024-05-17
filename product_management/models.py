@@ -11,9 +11,9 @@ from django.utils.text import slugify
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
-from openunited.settings.base import MEDIA_URL
 from product_management.mixins import ProductMixin
 from talent.models import Person, Skill, Expertise
+from django.db.models.signals import pre_save
 
 
 class Tag(TimeStampMixin):
@@ -104,12 +104,11 @@ class Product(ProductMixin):
         return self.product_trees.first()
 
     def get_photo_url(self):
-        image_url = MEDIA_URL + "products/product-empty.png"
-
-        if self.photo:
-            image_url = self.photo.url
-
-        return image_url
+        return (
+            self.photo.url
+            if self.photo
+            else f"{settings.MEDIA_URL}products/product-empty.png"
+        )
 
     @staticmethod
     def check_slug_from_name(product_name: str) -> str | None:
@@ -410,14 +409,36 @@ class Bounty(TimeStampMixin):
     )
     is_active = models.BooleanField(default=True)
 
+    claimed_by = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="bounty_claimed_by",
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         ordering = ("-created_at",)
+
+    @property
+    def has_claimed(self):
+        return self.status in [
+            self.BOUNTY_STATUS_CLAIMED,
+            self.BOUNTY_STATUS_DONE,
+            self.BOUNTY_STATUS_IN_REVIEW,
+        ]
 
     def get_expertise_as_str(self):
         return ", ".join([exp.name.title() for exp in self.expertise.all()])
 
     def __str__(self):
         return f"{self.challenge.title} - {self.skill} - {self.get_expertise_as_str()} - {self.points}"
+
+    @receiver(pre_save, sender="product_management.Bounty")
+    def _pre_save(sender, instance, **kwargs):
+
+        if instance.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+            instance.claimed_by = None
 
 
 class BountyAttachment(TimeStampMixin, AttachmentAbstract):
@@ -515,7 +536,6 @@ class Idea(TimeStampMixin):
     description = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    vote_count = models.PositiveSmallIntegerField(default=0)
 
     def get_absolute_url(self):
         return reverse("add_product_idea", kwargs={"pk": self.pk})

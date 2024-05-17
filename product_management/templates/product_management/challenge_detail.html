@@ -37,23 +37,6 @@
         </div>
 
     </div>
-
-    <div class="flex flex-col">
-        {% include 'product_management/partials/bounty_detail_table.html' %}
-    </div>
-
-    {% if challenge.attachment.exists() %}
-    <div class="mt-4">
-        {% with attachments=challenge.attachment.all() %}
-        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {% include 'product_management/partials/attachments.html' %}
-            </dd>
-        </div>
-        {% endwith %}
-    </div>
-    {% endif %}
-
     <div class="flex flex-col space-y-2.5 my-6">
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Created By:</strong>
@@ -78,21 +61,22 @@
             <strong>Priority:</strong> <span class="text-green-400 ml-1">{{ challenge.get_priority_display() }}</span>
         </div>
     </div>
-    <!-- Comments are temporarily disabled -->
-    <!--
-    <form class="flex flex-col">
-        <label for="comments" class="block text-sm font-medium leading-6 text-gray-900">Ask a question or make a
-            comment about the challenge</label>
-        <div class="mt-2">
-            <textarea id="comments" name="comments" rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-transparent sm:text-sm sm:leading-6"></textarea>
-        </div>
+    
+    <div class="flex flex-col">
+        {% include 'product_management/partials/bounty_detail_table.html' %}
+    </div>
 
-        <button type="submit"
-            class="appearance-none w-fit flex items-center justify-center mt-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all">Add
-            Comment</button>
-    </form>
-    -->
+    {% if challenge.attachment.exists() %}
+    <div class="mt-4">
+        {% with attachments=challenge.attachment.all() %}
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {% include 'product_management/partials/attachments.html' %}
+            </dd>
+        </div>
+        {% endwith %}
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}

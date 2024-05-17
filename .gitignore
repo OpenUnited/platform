@@ -92,4 +92,3 @@ db.sqlite3
 media/
 
 .vscode/
-openunited/settings/local.py
