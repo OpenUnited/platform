@@ -240,7 +240,6 @@ class TalentPortfolio(TemplateView):
         user = get_object_or_404(self.User, username=username)
         person = user.person
 
-        person_skill = person.skills.all().first()
         # todo: check the statuses
         bounty_claims = BountyClaim.objects.filter(
             Q(status=BountyClaim.Status.COMPLETED)
@@ -270,7 +269,7 @@ class TalentPortfolio(TemplateView):
                 person.twitter_link, True
             ),
             "status": person.status,
-            "person_skills": PersonSkill.objects.all().select_related("skill"),
+            "person_skills": person.skills.all().select_related("skill"),
             "bounty_claims": bounty_claims,
             "FeedbackService": FeedbackService,
             "received_feedbacks": received_feedbacks,
