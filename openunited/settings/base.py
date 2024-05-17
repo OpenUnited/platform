@@ -1,6 +1,6 @@
 import os
+import sentry_sdk
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 DEBUG = True
@@ -242,3 +242,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = "no-reply@openunited.com"
+
+if os.environ.get("SENTRY_DSN"):
+    sentry_sdk.init(
+        dsn=os.environ.get("SENTRY_DSN"),
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        traces_sample_rate=1.0,
+    )

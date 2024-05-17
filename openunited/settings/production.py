@@ -1,9 +1,7 @@
 import os
-import sentry_sdk
 from openunited.settings.base import *
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-ALLOWED_HOSTS = ["*"]
 DEBUG = False
 MIDDLEWARE += [
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -28,14 +26,6 @@ LOGGING = {
         },
     },
 }
-
-if os.environ.get("SENTRY_DSN"):
-    sentry_sdk.init(
-        dsn=os.environ.get("SENTRY_DSN"),
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        traces_sample_rate=1.0,
-    )
 
 # When running in a DigitalOcean app, Django sits behind a proxy
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
