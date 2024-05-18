@@ -120,7 +120,7 @@
                         <div class="text-gray-500 flex flex-wrap">
   
                             {% for expertise in  person_skill.expertise.all()  %}
-                            <div class="inline-block mt-1.5 mr-1.5 mb-1.5 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+                            <div class="inline-block mt-1.5 mr-1.5 mb-1.5 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
                                 <div class="flex items-center text-xs font-semibold leading-6">
                                         <i class="{{expertise.fa_icon}} mr-2 text-indigo-500"></i>
                                     </span>
@@ -248,9 +248,9 @@
                     {% for feedback in received_feedbacks %}
                     <div class="flex flex-col py-4 first:pt-0 last:pb-0">
                         <div class="grid grid-cols-6">
-                            <div class="col-span-1">
+                            <a href="{{ feedback.provider.get_absolute_url() }}" class="col-span-1">
                                 <img src="{{ feedback.provider.get_photo_url() }}" alt="Feedback Provider" class="h-12 w-12 rounded-full">
-                            </div>
+                            </a>
                             <div class="col-span-4">
                                 <h4 class="text-sm font-bold text-gray-900">{{ feedback.provider.get_full_name() }}</h4>
                                 <div class="mt-1 flex items-center">
@@ -264,9 +264,6 @@
                                     {% endfor %}
                                 </div>
                                 <p class="sr-only">{{ feedback.stars }} out of 5 stars</p>
-                            </div>
-                            <div class="ml-4 col-span-1">
-                                {% include 'talent/partials/horizontal_dropdown_dots.html' %}
                             </div>
                         </div>
 
