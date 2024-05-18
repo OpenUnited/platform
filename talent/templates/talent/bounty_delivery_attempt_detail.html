@@ -11,17 +11,19 @@
             <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Bounty delivery details</p>
         </div>
         <div class="ml-auto">
-            <form method="post">
-                {% csrf_token %}
-                <a href="{{ url('bounty-delivery-attempt-detail', args=(object.bounty_claim.bounty.challenge.product.slug, object.bounty_claim.bounty.challenge.id, object.bounty_claim.bounty.id, object.pk,)) }}">
-                    <button type="submit" name="bounty-delivery-action" value="approve-bounty-claim-delivery"
-                        class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Accept</button>
-                </a>
-                <a href="{{ url('bounty-delivery-attempt-detail', args=(object.bounty_claim.bounty.challenge.product.slug, object.bounty_claim.bounty.challenge.id, object.bounty_claim.bounty.id, object.pk,)) }}">
-                    <button type="submit" name="bounty-delivery-action" value="reject-bounty-claim-delivery"
-                        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Reject</button>
-                </a>
-            </form>
+            {% if is_product_admin %}
+                <form method="post">
+                    {% csrf_token %}
+                    <a href="{{ url('bounty-delivery-attempt-detail', args=(object.bounty_claim.bounty.challenge.product.slug, object.bounty_claim.bounty.challenge.id, object.bounty_claim.bounty.id, object.pk,)) }}">
+                        <button type="submit" name="bounty-delivery-action" value="approve-bounty-claim-delivery"
+                            class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Accept</button>
+                    </a>
+                    <a href="{{ url('bounty-delivery-attempt-detail', args=(object.bounty_claim.bounty.challenge.product.slug, object.bounty_claim.bounty.challenge.id, object.bounty_claim.bounty.id, object.pk,)) }}">
+                        <button type="submit" name="bounty-delivery-action" value="reject-bounty-claim-delivery"
+                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Reject</button>
+                    </a>
+                </form>
+            {% endif %}
         </div>
     </div>
     <div class="mt-6 border-t border-gray-100">

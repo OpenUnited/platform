@@ -235,8 +235,13 @@ class BountyListView(ListView):
                 context,
                 request=self.request,
             )
+
             return JsonResponse(
-                {"list_html": list_html, "expertise_html": expertise_html}
+                {
+                    "list_html": list_html,
+                    "expertise_html": expertise_html,
+                    "item_found_count": context["object_list"].count(),
+                }
             )
         return super().render_to_response(context, **response_kwargs)
 

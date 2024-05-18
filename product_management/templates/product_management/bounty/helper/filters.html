@@ -1,57 +1,9 @@
-    
-  {% import "product_management/bounty/helper/macros_fun.html" as macros_fun %}
-  <form hx-get="{{ url("bounties") }}" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML">
-    <div class="flex items-end">
-      <div class="mr-4">
-        <label for="id_status"
-          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">Status</label>
-        <select id="id_status" name="status" class="w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-          <option value="">All</option>
-          {% for index, value in statuses %}
-              <option value="{{index}}"> {{ value }}</option>
-          {% endfor %}
-        </select>
 
-      </div>
+  
+  {% include "product_management/bounty/helper/filters/desktop_filter.html" %}
+  {% include "product_management/bounty/helper/filters/mobile_filter.html" %}
 
-      <div class="mr-4">
-        <label for="id_skill"
-          class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">Skill</label>
-        <select id="id_skill" name="skill" onchange=""  class="w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-            <option value="">All</option>
-          {{ macros_fun.skill_expertise_filter_tree(skills) }}
 
-        </select>
-      </div>
-
-      {% with expertises=expertises %}
-        {% include "product_management/bounty/helper/expertise_filter.html" %}
-      {% endwith %}
-
-    </div>
-  </form>
-
-    <script>
-      document.addEventListener("htmx:afterRequest", function(event) {
-        console.log(event.target)
-        if (event.target.getAttribute("target_id") == "id_skill" && event.detail.successful) {
-            const responseData = JSON.parse(event.detail.xhr.response);
-            document.querySelector("#item_list_container").innerHTML = responseData.list_html;
-            document.querySelector("#expertise_container").innerHTML = responseData.expertise_html;
-            event.target.setAttribute("target_id", "none-skill")
-            event.target.setAttribute("target_id", "none-skill")
-            event.target.setAttribute("hx-vals", "");
-        }
-    });
-
-    document.getElementById("id_skill").addEventListener("change", function(event) {
-        const data = {
-            target: "skill",
-          };
-        const closestForm = event.target.closest("form")
-        closestForm.setAttribute("hx-vals", JSON.stringify(data));
-        closestForm.setAttribute("target_id", "id_skill");
-
-    });
-    </script>
       
+
+    

@@ -38,6 +38,7 @@ from .forms import (
     PersonSkillFormSet,
 )
 from .services import FeedbackService
+from security.models import ProductRoleAssignment
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
@@ -459,7 +460,7 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class BountyDeliveryAttemptDetail(DetailView):
+class BountyDeliveryAttemptDetail(LoginRequiredMixin, DetailView):
     model = BountyDeliveryAttempt
     context_object_name = "object"
     template_name = "talent/bounty_delivery_attempt_detail.html"
@@ -468,9 +469,21 @@ class BountyDeliveryAttemptDetail(DetailView):
     APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
     REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
 
+    def get_context_data(self, *args, **kwargs):
+        product = self.object.bounty_claim.bounty.challenge.product
+        data = super().get_context_data(**kwargs)
+        is_product_admin = ProductRoleAssignment.objects.filter(
+            product=product,
+            person=self.request.user.person,
+            role=ProductRoleAssignment.PRODUCT_ADMIN,
+        ).exists()
+        data["is_product_admin"] = is_product_admin
+        return data
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         value = request.POST.get(self.TRIGGER_KEY)
+
         success = False
         if value == self.APPROVE_TRIGGER_NAME:
             self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED
