@@ -15,7 +15,7 @@ def display_role(role):
 
 class ChallengeFilter(django_filters.FilterSet):
     status = django_filters.ChoiceFilter(
-        choices=Challenge.CHALLENGE_STATUS,
+        choices=Challenge.ChallengeStatus.choices,
         initial="Draft",
         empty_label="All Statuses",
         widget=forms.Select(
