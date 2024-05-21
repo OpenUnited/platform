@@ -111,7 +111,7 @@ class Product(ProductMixin):
         )
 
     @staticmethod
-    def check_slug_from_name(product_name: str) -> str | None:
+    def check_slug_from_name(product_name: str):
         """Checks if the given product name already exists. If so, it returns an error message."""
         slug = slugify(product_name)
 
@@ -133,18 +133,22 @@ class Product(ProductMixin):
 
 
 class Initiative(TimeStampMixin, UUIDMixin):
-    INITIATIVE_STATUS = (
-        (1, "Active"),
-        (2, "Completed"),
-        (3, "Draft"),
-        (4, "Cancelled"),
-    )
+    class InitiativeStatus(models.TextChoices):
+        DRAFT = "Draft"
+        ACTIVE = "Active"
+        COMPLETED = "Completed"
+        CANCELLED = "Cancelled"
+
     name = models.TextField()
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, blank=True, null=True
     )
     description = models.TextField(blank=True, null=True)
-    status = models.IntegerField(choices=INITIATIVE_STATUS, default=1)
+    status = models.CharField(
+        max_length=255,
+        choices=InitiativeStatus.choices,
+        default=InitiativeStatus.ACTIVE,
+    )
     video_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
@@ -207,21 +211,13 @@ class Initiative(TimeStampMixin, UUIDMixin):
 
 
 class Challenge(TimeStampMixin, UUIDMixin):
-    CHALLENGE_STATUS_DRAFT = 0
-    CHALLENGE_STATUS_BLOCKED = 1
-    CHALLENGE_STATUS_AVAILABLE = 2
-    CHALLENGE_STATUS_CLAIMED = 3
-    CHALLENGE_STATUS_DONE = 4
-    CHALLENGE_STATUS_IN_REVIEW = 5
+    class ChallengeStatus(models.TextChoices):
+        DRAFT = "Draft"
+        BLOCKED = "Blocked"
+        ACTIVE = "Active"
+        COMPLETED = "Completed"
+        CANCELLED = "Cancelled"
 
-    CHALLENGE_STATUS = (
-        (CHALLENGE_STATUS_DRAFT, "Draft"),
-        (CHALLENGE_STATUS_BLOCKED, "Blocked"),
-        (CHALLENGE_STATUS_AVAILABLE, "Available"),
-        (CHALLENGE_STATUS_CLAIMED, "Claimed"),
-        (CHALLENGE_STATUS_DONE, "Done"),
-        (CHALLENGE_STATUS_IN_REVIEW, "In review"),
-    )
     CHALLENGE_PRIORITY = ((0, "High"), (1, "Medium"), (2, "Low"))
 
     REWARD_TYPE = (
@@ -238,7 +234,11 @@ class Challenge(TimeStampMixin, UUIDMixin):
     title = models.TextField()
     description = models.TextField()
     short_description = models.TextField(max_length=256)
-    status = models.IntegerField(choices=CHALLENGE_STATUS, default=0)
+    status = models.CharField(
+        max_length=255,
+        choices=ChallengeStatus.choices,
+        default=ChallengeStatus.DRAFT,
+    )
     attachment = models.ManyToManyField(
         Attachment, related_name="challenge_attachements", blank=True
     )
@@ -382,21 +382,13 @@ class Challenge(TimeStampMixin, UUIDMixin):
 
 
 class Bounty(TimeStampMixin):
-    BOUNTY_STATUS_DRAFT = 0
-    BOUNTY_STATUS_BLOCKED = 1
-    BOUNTY_STATUS_AVAILABLE = 2
-    BOUNTY_STATUS_CLAIMED = 3
-    BOUNTY_STATUS_DONE = 4
-    BOUNTY_STATUS_IN_REVIEW = 5
+    class BountyStatus(models.TextChoices):
+        AVAILABLE = "Available"
+        CLAIMED = "Claimed"
+        IN_REVIEW = "In Review"
+        COMPLETED = "Completed"
+        CANCELLED = "Cancelled"
 
-    BOUNTY_STATUS = (
-        (BOUNTY_STATUS_DRAFT, "Draft"),
-        (BOUNTY_STATUS_BLOCKED, "Blocked"),
-        (BOUNTY_STATUS_AVAILABLE, "Available"),
-        (BOUNTY_STATUS_CLAIMED, "Claimed"),
-        (BOUNTY_STATUS_DONE, "Done"),
-        (BOUNTY_STATUS_IN_REVIEW, "In review"),
-    )
     title = models.CharField(max_length=400)
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     description = models.TextField()
@@ -412,8 +404,10 @@ class Bounty(TimeStampMixin):
         Expertise, related_name="bounty_expertise"
     )
     points = models.PositiveIntegerField()
-    status = models.IntegerField(
-        choices=BOUNTY_STATUS, default=BOUNTY_STATUS_AVAILABLE
+    status = models.CharField(
+        max_length=255,
+        choices=BountyStatus.choices,
+        default=BountyStatus.AVAILABLE,
     )
     is_active = models.BooleanField(default=True)
 
@@ -445,7 +439,7 @@ class Bounty(TimeStampMixin):
     @receiver(pre_save, sender="product_management.Bounty")
     def _pre_save(sender, instance, **kwargs):
 
-        if instance.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+        if instance.status == Bounty.BountyStatus.AVAILABLE:
             instance.claimed_by = None
 
 
