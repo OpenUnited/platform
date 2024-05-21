@@ -1,5 +1,4 @@
 <div>
-    {% set TASK_TYPES = ["Draft", "Blocked", "Available", "Claimed", "Done", "In Review"] %}
     {% set TASK_CLAIM_TYPES = ["Claimed", "Not Ready", "Ready", "Done"] %}
     
     {% if challenges %}
@@ -67,12 +66,12 @@
             <div class="flex gap-x-2 py-2">
             <div class="font-semibold text-gray-500">Status</div>
             <div class="text-gray-500">
-                {% if TASK_TYPES[challenge.status] == 'Claimed' %}
+                {% if challenge.status == 'Claimed' %}
                 Claimed by <a class="text-blue-400" href="#">challenge.assignedToPerson.firstName</a>
-                {% elif TASK_TYPES[challenge.status] == 'In Review' %}
+                {% elif challenge.status == 'In Review' %}
                 In Review
                 {% else %}
-                {{ TASK_TYPES[challenge.status] }}
+                {{ challenge.status }}
                 {% endif %}
             </div>
             </div>
