@@ -691,7 +691,8 @@ class ContributionAgreementForm(forms.ModelForm):
                 attrs={
                     "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
                     "placeholder": "Agreement content",
-                    "cols": 80, "rows": 50
+                    "cols": 80,
+                    "rows": 50,
                 }
             ),
             "effective_date": forms.DateInput(

@@ -1770,7 +1770,8 @@ class CreateContributionAgreementView(
             print("Saved form.....")
 
             messages.success(
-                request, _("The contribution agreement is successfully created!")
+                request,
+                _("The contribution agreement is successfully created!"),
             )
             self.success_url = reverse(
                 "contribution-agreement-detail",
@@ -1792,9 +1793,14 @@ class ContributionAgreementView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs.get("product_slug")
-        context.update({"product": Product.objects.get(slug=slug), "pk": self.object.pk,})
+        context.update(
+            {
+                "product": Product.objects.get(slug=slug),
+                "pk": self.object.pk,
+            }
+        )
         return context
-    
+
 
 class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
     login_url = "sign_in"

@@ -582,4 +582,3 @@ class ContributionAgreement(TimeStampMixin):
 
     def __str__(self):
         return f"Contribution agreement - {self.id} ({self.product})"
-
