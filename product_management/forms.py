@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
+from tinymce.widgets import TinyMCE
 
 from openunited.forms import MultipleFileField
 from commerce.models import Organisation
@@ -20,6 +21,7 @@ from .models import (
     ProductArea,
     ProductAreaAttachment,
     BountyAttachment,
+    ContributionAgreement,
 )
 from django import forms
 from django.forms import inlineformset_factory
@@ -652,6 +654,51 @@ class ProductAreaForm1(forms.ModelForm):
                 attrs={
                     "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
                     "placeholder": "Describe your initiative in detail",
+                }
+            ),
+        }
+
+
+class ContributionAgreementForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        empty_label="Select a product",
+        queryset=Product.objects.all(),
+        widget=forms.Select(
+            attrs={
+                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+            }
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.slug = kwargs.pop("slug", None)
+        super().__init__(*args, **kwargs)
+
+        if self.slug:
+            queryset = Product.objects.filter(slug=self.slug)
+            self.fields["product"].queryset = Product.objects.filter(
+                slug=self.slug
+            )
+            self.fields["product"].initial = queryset.first()
+
+    class Meta:
+        model = ContributionAgreement
+        fields = "__all__"
+        exclude = ["created_by"]
+
+        widgets = {
+            "content": TinyMCE(
+                attrs={
+                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Agreement content",
+                    "cols": 80, "rows": 50
+                }
+            ),
+            "effective_date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "placeholder": "Select effective date",
                 }
             ),
         }

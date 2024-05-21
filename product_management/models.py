@@ -565,3 +565,21 @@ class Bug(TimeStampMixin):
 
     def __str__(self):
         return f"{self.person} - {self.title}"
+
+
+class ContributionAgreement(TimeStampMixin):
+    product = models.ForeignKey(
+        "product_management.Product",
+        related_name="product_contribution_agreements",
+        on_delete=models.CASCADE,
+    )
+    content = models.TextField()
+    effective_date = models.DateField()
+    created_by = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"Contribution agreement - {self.id} ({self.product})"
+
