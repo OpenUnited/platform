@@ -8,6 +8,12 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ["slug", "name"]
 
 
+@admin.register(product.Initiative)
+class InitiativeAdmin(admin.ModelAdmin):
+    list_display = ["product", "status"]
+    search_fields = ["product__name", "status"]
+
+
 @admin.register(product.ProductArea)
 class ProductAreaAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "video_link", "path"]
