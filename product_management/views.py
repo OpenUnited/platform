@@ -88,20 +88,13 @@ class ChallengeListView(ListView):
 
         return context
 
-    def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-
-        return response
-
     def get_queryset(self):
         queryset = super().get_queryset()
-
         custom_order = Case(
-            When(status=self.model.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
-            When(status=self.model.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
-            When(status=self.model.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
-            When(status=self.model.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
-            When(status=self.model.CHALLENGE_STATUS_DONE, then=Value(4)),
+            When(status=Challenge.ChallengeStatus.ACTIVE, then=Value(0)),
+            When(status=Challenge.ChallengeStatus.BLOCKED, then=Value(1)),
+            When(status=Challenge.ChallengeStatus.COMPLETED, then=Value(2)),
+            When(status=Challenge.ChallengeStatus.CANCELLED, then=Value(3)),
         )
         queryset = queryset.annotate(custom_order=custom_order).order_by(
             "custom_order", "-id"
@@ -119,11 +112,6 @@ class ProductListView(ListView):
     queryset = Product.objects.filter(is_private=False).order_by("created_at")
     template_name = "product_management/products.html"
     paginate_by = 8
-
-    def get(self, request, *args, **kwargs):
-        response = super().get(request, *args, **kwargs)
-
-        return response
 
 
 # TODO: give a better name to this view, ideally make it a mixin
@@ -153,7 +141,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
         challenges = Challenge.objects.filter(
-            product=product, status=Challenge.CHALLENGE_STATUS_AVAILABLE
+            product=product, status=Challenge.ChallengeStatus.ACTIVE
         )
         product_role_assignments = ProductRoleAssignment.objects.filter(
             Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
@@ -215,10 +203,6 @@ class BountyListView(ListView):
             global_utils.serialize_other_type_tree(expertise)
             for expertise in expertises
         ]
-        context["statuses"] = [
-            status for status in Bounty.BOUNTY_STATUS if status[0] != 0
-        ]
-
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -273,21 +257,15 @@ class ProductChallengesView(BaseProductDetailView, TemplateView):
         product = context["product"]
         challenges = Challenge.objects.filter(product=product)
         custom_order = Case(
-            When(status=Challenge.CHALLENGE_STATUS_AVAILABLE, then=Value(0)),
-            When(status=Challenge.CHALLENGE_STATUS_CLAIMED, then=Value(1)),
-            When(status=Challenge.CHALLENGE_STATUS_IN_REVIEW, then=Value(2)),
-            When(status=Challenge.CHALLENGE_STATUS_BLOCKED, then=Value(3)),
-            When(status=Challenge.CHALLENGE_STATUS_DONE, then=Value(4)),
+            When(status=Challenge.ChallengeStatus.ACTIVE, then=Value(0)),
+            When(status=Challenge.ChallengeStatus.BLOCKED, then=Value(1)),
+            When(status=Challenge.ChallengeStatus.COMPLETED, then=Value(2)),
+            When(status=Challenge.ChallengeStatus.CANCELLED, then=Value(3)),
         )
         challenges = challenges.annotate(custom_order=custom_order).order_by(
             "custom_order"
         )
-        context.update(
-            {
-                "challenges": challenges,
-            }
-        )
-
+        context["challenges"] = challenges
         return context
 
 
@@ -304,7 +282,7 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
             total_points=Sum(
                 "challenge__bounty__points",
                 filter=models.Q(
-                    challenge__bounty__status=Bounty.BOUNTY_STATUS_AVAILABLE
+                    challenge__bounty__status=Bounty.BountyStatus.AVAILABLE
                 )
                 & models.Q(challenge__bounty__is_active=True),
             )
@@ -766,7 +744,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     person=person
                 ).first()
 
-                if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+                if bounty.status == Bounty.BountyStatus.AVAILABLE:
                     data["can_be_claimed"] = not bounty_claim
 
                 if (
@@ -778,7 +756,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     data["bounty_claim"] = bounty_claim
 
             else:
-                if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+                if bounty.status == Bounty.BountyStatus.AVAILABLE:
                     data["can_be_claimed"] = True
 
             data["show_actions"] = (
@@ -786,7 +764,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                 or data["can_be_modified"]
                 or data["created_bounty_claim_request"]
             )
-            data["status"] = Bounty.BOUNTY_STATUS[bounty.status][1]
+            data["status"] = bounty.status
             extra_data.append(data)
 
         context["bounty_data"] = extra_data
@@ -1450,7 +1428,7 @@ class BountyDetailView(DetailView):
                 created_bounty_claim_request = True
                 bounty_claim = _bounty_claim
 
-            if bounty.status == Bounty.BOUNTY_STATUS_AVAILABLE:
+            if bounty.status == Bounty.BountyStatus.AVAILABLE:
                 can_be_claimed = not _bounty_claim
 
             can_be_modified = ProductRoleAssignment.objects.filter(
