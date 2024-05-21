@@ -31,7 +31,9 @@ django-js-asset==2.2.0
 django-lifecycle==1.2.3
 django-model-utils==4.5.1
 django-storages==1.14.2
+django-tinymce==4.0.0
 django-treebeard==4.7
+exceptiongroup==1.2.1
 factory-boy==3.3.0
 Faker==19.2.0
 fastapi==0.101.0
@@ -90,6 +92,7 @@ social-auth-core==4.5.4
 sqlparse==0.5.0
 starkbank-ecdsa==2.2.0
 starlette==0.27.0
+tomli==2.0.1
 typing_extensions==4.11.0
 tzdata==2024.1
 urllib3==2.0.7
