@@ -32,7 +32,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         playwright install
-    - run: python manage.py test
+    - run: pytest .
       env:
         DJANGO_SETTINGS_MODULE: openunited.settings.development
         DJANGO_SECRET_KEY: 123456789
