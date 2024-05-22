@@ -1,5 +1,4 @@
 from typing import Any, Dict
-from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -277,11 +276,9 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        product = context["product"]
-        initiatives = Initiative.objects.filter(product=product)
-
-        # Query to calculate total points for each Initiative, considering only active Bounties with status "Available"
-        initiatives = initiatives.annotate(
+        initiatives = Initiative.objects.filter(
+            product=context["product"]
+        ).annotate(
             total_points=Sum(
                 "challenge__bounty__points",
                 filter=models.Q(
@@ -290,24 +287,7 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
                 & models.Q(challenge__bounty__is_active=True),
             )
         )
-
-        context.update(
-            {
-                "initiatives": initiatives,
-            }
-        )
-
-        return context
-
-
-class ProductTreeView(BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_tree.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context.update({"capabilities": ProductArea.get_root_nodes()})
-
+        context["initiatives"] = initiatives
         return context
 
 
@@ -543,16 +523,6 @@ def update_node(request, pk):
             {"message:": "The node has deleted successfully"}, status=204
         )
 
-    return render(request, template_name, context)
-
-
-def add_tree_node(request, pk):
-    template_name = "product_management/tree_helper/partial_update_node.html"
-    product_area = ProductArea.objects.get(pk=pk)
-
-    context = {
-        "product_area": product_area,
-    }
     return render(request, template_name, context)
 
 
@@ -860,11 +830,7 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
             return redirect(
                 reverse(
                     "product_tree",
-                    args=(
-                        kwargs.get(
-                            "product_slug",
-                        ),
-                    ),
+                    args=(kwargs.get("product_slug"),),
                 )
             )
 
@@ -1085,6 +1051,7 @@ class UpdateChallengeView(
         form = self.form_class(
             request.POST, request.FILES, instance=self.object
         )
+
         if form.is_valid():
             instance = form.save()
             if request.FILES:
@@ -1104,7 +1071,6 @@ class UpdateChallengeView(
                 ),
             )
             return redirect(self.success_url)
-
         return super().post(request, *args, **kwargs)
 
 
@@ -1530,6 +1496,7 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, CreateView):
 
             return redirect(self.success_url)
 
+        print(form.errors)
         return super().post(request, *args, **kwargs)
 
 
