@@ -17,13 +17,13 @@ def update_bounty_delivery_status(sender, instance, created, **kwargs):
         action_mapping = {
             BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED: {
                 "bounty_claim_status": BountyClaim.Status.COMPLETED,
-                "bounty_status": Bounty.BOUNTY_STATUS_DONE,
-                "challenge_status": Challenge.CHALLENGE_STATUS_DONE,
+                "bounty_status": Bounty.BountyStatus.COMPLETED,
+                "challenge_status": Challenge.ChallengeStatus.choices,
             },
             BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED: {
                 "bounty_claim_status": BountyClaim.Status.FAILED,
-                "bounty_status": Bounty.BOUNTY_STATUS_AVAILABLE,
-                "challenge_status": Challenge.CHALLENGE_STATUS_AVAILABLE,
+                "bounty_status": Bounty.BountyStatus.AVAILABLE,
+                "challenge_status": Challenge.ChallengeStatus.ACTIVE,
             },
         }
 

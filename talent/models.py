@@ -333,13 +333,13 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
             instance.person.status.add_points(instance.bounty.points)
 
         bounty_to_bounty_claim_status = {
-            sender.Status.REQUESTED: Bounty.BOUNTY_STATUS_AVAILABLE,
-            sender.Status.CANCELLED: Bounty.BOUNTY_STATUS_AVAILABLE,
-            sender.Status.FAILED: Bounty.BOUNTY_STATUS_AVAILABLE,
-            sender.Status.REJECTED: Bounty.BOUNTY_STATUS_AVAILABLE,
-            sender.Status.GRANTED: Bounty.BOUNTY_STATUS_CLAIMED,
-            sender.Status.COMPLETED: Bounty.BOUNTY_STATUS_DONE,
-            sender.Status.CONTRIBUTED: Bounty.BOUNTY_STATUS_IN_REVIEW,
+            sender.Status.REQUESTED: Bounty.BountyStatus.AVAILABLE,
+            sender.Status.CANCELLED: Bounty.BountyStatus.AVAILABLE,
+            sender.Status.FAILED: Bounty.BountyStatus.AVAILABLE,
+            sender.Status.REJECTED: Bounty.BountyStatus.AVAILABLE,
+            sender.Status.GRANTED: Bounty.BountyStatus.CLAIMED,
+            sender.Status.COMPLETED: Bounty.BountyStatus.COMPLETED,
+            sender.Status.CONTRIBUTED: Bounty.BountyStatus.IN_REVIEW,
         }
 
         if instance.status in bounty_to_bounty_claim_status:

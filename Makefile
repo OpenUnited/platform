@@ -4,6 +4,8 @@ help:
 	@echo "help               -- Print this help showing all commands.         "                     
 	@echo "run                -- run the django development server             "
 	@echo "test               -- run all tests                                 "
+	@echo "cov                -- run all tests with coverage                   "
+	@echo "cov_html           -- run all tests with html coverage              "
 	@echo "migrate            -- prepare migrations and migrate                "
 	@echo "admin              -- Created superuser and it prompt for password  "
 	@echo "seed               -- Seed or load data from each app		 	   "
@@ -43,7 +45,7 @@ admin:
 	$(MANAGE) createsuperuser --username=admin --email=admin@gmail.com
 	
 test:
-	$(MANAGE) test
+	pytest .
 
 tailwindcss:
 	tailwindcss -o ./static/styles/tailwind.css --minify
@@ -55,3 +57,9 @@ format_fixtures:
 	jsonformat	product_management/fixtures/product_management.json 
 	jsonformat	security/fixtures/security.json 
 	jsonformat	talent/fixtures/talent.json
+
+cov:
+	pytest --cov
+
+cov_html:
+	pytest --cov  --cov-report html --cov-fail-under=50
