@@ -127,6 +127,31 @@ urlpatterns += [
         views.DashboardReviewWorkView.as_view(),
         name="dashboard-review-work",
     ),
+    path(
+        "dashboard/product/<str:product_slug>/contribution-agreements",
+        views.DashboardContributionAgreementView.as_view(),
+        name="dashboard-contribution-agreements",
+    ),
+]
+
+
+# URL patterns for contribution agreement views
+urlpatterns += [
+    path(
+        "<str:product_slug>/contribution-agreement/<int:pk>",
+        views.ContributionAgreementView.as_view(),
+        name="contribution-agreement-detail",
+    ),
+    path(
+        "<str:product_slug>/contribution-agreement/create/",
+        views.CreateContributionAgreementView.as_view(),
+        name="create-contribution-agreement",
+    ),
+    # path(
+    #     "<str:product_slug>/contribution-agreement/update/<int:pk>",
+    #     views.UpdateContributionAgreementView.as_view(),
+    #     name="update-contribution-agreement",
+    # ),
 ]
 
 

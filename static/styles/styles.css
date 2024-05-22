@@ -414,3 +414,11 @@ input[autocomplete=one-time-code] {
   width: 100px;
   height:100px;
 }
+
+.htmx-request.htmx-indicator {
+  display: flex;
+}
+
+.htmx-indicator, .htmx-request.htmx-indicator + .manage-product-content {
+  display: none;
+}

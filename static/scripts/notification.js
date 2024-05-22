@@ -92,7 +92,7 @@ function claimConfirm(event, termConditionUrl){
 
       <div class="w-full px-3">
           <input id="term_checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  focus:ring-2" required>
-          <label for="term_checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I accept the <a href="${termConditionUrl}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">terms and conditions</a>.</label>
+          <label for="term_checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I have read and agree to the <a href="${termConditionUrl}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">Contribution Agreement</a>.</label>
       </div>
   </form>
 `, function () {
