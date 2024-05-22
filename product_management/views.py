@@ -192,6 +192,7 @@ class BountyListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["statuses"] = Bounty.BountyStatus.choices
 
         expertises = []
         if skill := self.request.GET.get("skill"):
