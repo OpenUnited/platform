@@ -618,7 +618,7 @@
             "name": "ArtCollab Beta Testing",
             "product": 1,
             "description": "Launch an initiative to conduct beta testing for ArtCollab, a collaborative digital art platform, inviting artists to participate and provide feedback on usability, features, and overall experience. The initiative aims to refine the platform before its official launch.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/artcollab-beta-testing"
         }
     },
@@ -632,7 +632,7 @@
             "name": "ArtCollab Community Spotlight",
             "product": 1,
             "description": "Launch an initiative to showcase the artworks created by the ArtCollab community, highlighting talented artists and their contributions to the platform. The initiative aims to foster a sense of community and appreciation among users.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/artcollab-community-spotlight"
         }
     },
@@ -646,7 +646,7 @@
             "name": "ArtCollab Artist Workshops",
             "product": 1,
             "description": "Launch an initiative to host virtual artist workshops on ArtCollab, featuring renowned artists who will share their techniques, tips, and insights with the community. The initiative aims to inspire and educate artists of all skill levels.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/artcollab-artist-workshops"
         }
     },
@@ -660,7 +660,7 @@
             "name": "ArtCollab Creative Challenges",
             "product": 1,
             "description": "Launch an initiative to organize creative challenges on ArtCollab, encouraging artists to explore new themes, styles, and mediums. The initiative aims to spark creativity and innovation within the community.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/artcollab-creative-challenges"
         }
     },
@@ -674,7 +674,7 @@
             "name": "ArtCollab Feature Enhancement",
             "product": 1,
             "description": "Launch an initiative to enhance features and functionalities on ArtCollab based on user feedback and platform usage data. The initiative aims to improve the overall user experience and expand the capabilities of the platform.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/artcollab-feature-enhancement"
         }
     },
@@ -688,7 +688,7 @@
             "name": "Quest-Based Learning Modules",
             "product": 2,
             "description": "Launch an initiative to develop quest-based learning modules for the interactive learning management system, incorporating gamified elements such as challenges, rewards, and progression tracking. The initiative aims to make learning more engaging and immersive for students.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/quest-based-learning-modules"
         }
     },
@@ -702,7 +702,7 @@
             "name": "Leaderboards and Achievements",
             "product": 2,
             "description": "Launch an initiative to implement leaderboards and achievements within the interactive learning management system, encouraging healthy competition and motivation among students. The initiative aims to recognize and reward academic progress and accomplishments.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/leaderboards-and-achievements"
         }
     },
@@ -716,7 +716,7 @@
             "name": "Gamified Quiz Modules",
             "product": 2,
             "description": "Launch an initiative to develop gamified quiz modules for the interactive learning management system, incorporating game mechanics such as time limits, power-ups, and scoring systems to make assessments more engaging and enjoyable for students.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/gamified-quiz-modules"
         }
     },
@@ -730,7 +730,7 @@
             "name": "Interactive Storytelling Modules",
             "product": 2,
             "description": "Launch an initiative to create interactive storytelling modules for the interactive learning management system, allowing students to participate in immersive narratives and make decisions that impact the outcome of the story. The initiative aims to foster critical thinking and creativity.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/interactive-storytelling-modules"
         }
     },
@@ -744,7 +744,7 @@
             "name": "Virtual Learning Adventures",
             "product": 2,
             "description": "Launch an initiative to introduce virtual learning adventures within the interactive learning management system, enabling students to explore simulated environments, solve puzzles, and complete quests to acquire knowledge and skills. The initiative aims to make learning more immersive and memorable.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/virtual-learning-adventures"
         }
     },
@@ -758,7 +758,7 @@
             "name": "Appointment Scheduling System",
             "product": 3,
             "description": "Launch an initiative to implement an appointment scheduling system within the telemedicine app, allowing patients to book appointments with healthcare providers at their convenience. The initiative aims to streamline the scheduling process and improve accessibility to healthcare services.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/appointment-scheduling-system"
         }
     },
@@ -772,7 +772,7 @@
             "name": "Virtual Consultation Platform",
             "product": 3,
             "description": "Launch an initiative to develop a virtual consultation platform within the telemedicine app, enabling patients to consult with healthcare providers remotely via video calls or chat. The initiative aims to increase accessibility to healthcare services and reduce the need for in-person visits.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/virtual-consultation-platform"
         }
     },
@@ -786,7 +786,7 @@
             "name": "Electronic Health Records Integration",
             "product": 3,
             "description": "Launch an initiative to integrate electronic health records (EHR) functionality within the telemedicine app, allowing healthcare providers to access and manage patient records seamlessly during virtual consultations. The initiative aims to enhance efficiency and accuracy in patient care.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/ehr-integration"
         }
     },
@@ -800,7 +800,7 @@
             "name": "Medication Management Tools",
             "product": 3,
             "description": "Launch an initiative to implement medication management tools within the telemedicine app, allowing patients to track their medication usage, set reminders for doses, and receive information about drug interactions and side effects. The initiative aims to improve medication adherence and patient safety.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/medication-management-tools"
         }
     },
@@ -814,7 +814,7 @@
             "name": "Remote Monitoring Solutions",
             "product": 3,
             "description": "Launch an initiative to develop remote monitoring solutions within the telemedicine app, enabling healthcare providers to remotely monitor patients' vital signs, symptoms, and health metrics. The initiative aims to facilitate proactive healthcare interventions and improve patient outcomes.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/remote-monitoring-solutions"
         }
     },
@@ -828,7 +828,7 @@
             "name": "Carbon Emission Dashboard",
             "product": 4,
             "description": "Launch an initiative to develop a carbon emission dashboard for the sustainability tracking tool, providing companies with insights into their carbon footprint, emissions trends, and environmental impact. The initiative aims to facilitate informed decision-making and sustainability efforts.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/carbon-emission-dashboard"
         }
     },
@@ -842,7 +842,7 @@
             "name": "Sustainability Reporting Templates",
             "product": 4,
             "description": "Launch an initiative to develop sustainability reporting templates for the sustainability tracking tool, enabling companies to generate standardized reports on their sustainability performance, progress, and goals. The initiative aims to streamline reporting processes and enhance transparency.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/sustainability-reporting-templates"
         }
     },
@@ -856,7 +856,7 @@
             "name": "Carbon Footprint Calculator",
             "product": 4,
             "description": "Launch an initiative to develop a carbon footprint calculator as part of the sustainability tracking tool, allowing companies to quantify their greenhouse gas emissions across various scopes and activities. The initiative aims to empower companies to identify emission hotspots and prioritize mitigation strategies.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/carbon-footprint-calculator"
         }
     },
@@ -870,7 +870,7 @@
             "name": "Supply Chain Sustainability Assessment",
             "product": 4,
             "description": "Launch an initiative to conduct supply chain sustainability assessments using the sustainability tracking tool, evaluating suppliers' environmental practices, social responsibility, and ethical standards. The initiative aims to promote sustainable sourcing and procurement practices.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/supply-chain-sustainability-assessment"
         }
     },
@@ -884,7 +884,7 @@
             "name": "Environmental Impact Analytics",
             "product": 4,
             "description": "Launch an initiative to develop environmental impact analytics features within the sustainability tracking tool, enabling companies to analyze the environmental consequences of their business operations and identify opportunities for improvement. The initiative aims to drive continuous environmental performance optimization.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/environmental-impact-analytics"
         }
     },
@@ -898,7 +898,7 @@
             "name": "Customized Budgeting AI",
             "product": 5,
             "description": "Launch an initiative to implement AI-driven customized budgeting features within the personal finance application, providing users with tailored budget plans based on their spending habits, income, and financial goals. The initiative aims to help users achieve better financial management and control.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/customized-budgeting-ai"
         }
     },
@@ -912,7 +912,7 @@
             "name": "AI-Powered Investment Insights",
             "product": 5,
             "description": "Launch an initiative to integrate AI-powered investment insights into the personal finance application, offering users personalized investment recommendations, portfolio optimization strategies, and risk assessments. The initiative aims to empower users to make informed investment decisions.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/ai-powered-investment-insights"
         }
     },
@@ -926,7 +926,7 @@
             "name": "Savings Goal AI Assistance",
             "product": 5,
             "description": "Launch an initiative to introduce AI assistance for setting and achieving savings goals within the personal finance application, providing users with personalized savings plans, progress tracking, and motivational reminders. The initiative aims to encourage users to build healthy saving habits.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/savings-goal-ai-assistance"
         }
     },
@@ -940,7 +940,7 @@
             "name": "AI-Powered Expense Analysis",
             "product": 5,
             "description": "Launch an initiative to implement AI-powered expense analysis features within the personal finance application, automatically categorizing expenses, identifying spending patterns, and providing insights to help users optimize their spending habits. The initiative aims to promote financial awareness and control.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/ai-powered-expense-analysis"
         }
     },
@@ -954,7 +954,7 @@
             "name": "AI-Enhanced Financial Planning",
             "product": 5,
             "description": "Launch an initiative to enhance financial planning capabilities with AI assistance within the personal finance application, offering users personalized financial advice, goal prioritization, and long-term planning strategies. The initiative aims to empower users to take control of their financial future.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/ai-enhanced-financial-planning"
         }
     },
@@ -968,7 +968,7 @@
             "name": "Virtual Event Platform Development",
             "product": 6,
             "description": "Launch an initiative to develop a comprehensive platform for hosting virtual events, featuring tools for live broadcasting, attendee interaction, and event analytics. The initiative aims to provide event organizers with a seamless and engaging virtual event experience.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/virtual-event-platform-development"
         }
     },
@@ -982,7 +982,7 @@
             "name": "Interactive Event Networking Features",
             "product": 6,
             "description": "Launch an initiative to integrate interactive networking features into the virtual event platform, allowing attendees to connect with each other, join group discussions, and exchange contact information. The initiative aims to facilitate meaningful connections and collaboration.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/interactive-event-networking-features"
         }
     },
@@ -996,7 +996,7 @@
             "name": "Live Broadcasting Integration",
             "product": 6,
             "description": "Launch an initiative to integrate live broadcasting capabilities into the virtual event platform, allowing organizers to stream keynote speeches, panel discussions, and presentations in real-time. The initiative aims to enhance the engagement and reach of virtual events.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/live-broadcasting-integration"
         }
     },
@@ -1010,7 +1010,7 @@
             "name": "Audience Engagement Tools",
             "product": 6,
             "description": "Launch an initiative to develop audience engagement tools for the virtual event platform, such as polls, Q&A sessions, and interactive quizzes, to keep attendees actively involved and interested throughout the event. The initiative aims to maximize participant interaction and satisfaction.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/audience-engagement-tools"
         }
     },
@@ -1024,7 +1024,7 @@
             "name": "Comprehensive Event Analytics",
             "product": 6,
             "description": "Launch an initiative to implement comprehensive event analytics features within the virtual event platform, providing organizers with valuable insights into attendee behavior, session popularity, and overall event success metrics. The initiative aims to support data-driven decision-making and future event planning.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/comprehensive-event-analytics"
         }
     },
@@ -1038,7 +1038,7 @@
             "name": "Real-Time Collaborative Coding Sessions",
             "product": 7,
             "description": "Launch an initiative to introduce real-time collaborative coding sessions on the online platform, allowing coders to work together on open-source projects in a synchronous manner. The initiative aims to facilitate teamwork and knowledge sharing among developers.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/real-time-collaborative-coding-sessions"
         }
     },
@@ -1052,7 +1052,7 @@
             "name": "Peer Code Reviews Integration",
             "product": 7,
             "description": "Launch an initiative to integrate peer code reviews functionality into the online platform, allowing developers to provide feedback and suggestions on each other's code. The initiative aims to improve code quality and foster a culture of constructive criticism.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/peer-code-reviews-integration"
         }
     },
@@ -1066,7 +1066,7 @@
             "name": "Project Collaboration Spaces",
             "product": 7,
             "description": "Launch an initiative to create project collaboration spaces within the online platform, enabling developers to organize and manage their open-source projects effectively. The initiative aims to provide a centralized hub for project documentation, discussions, and task tracking.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/project-collaboration-spaces"
         }
     },
@@ -1080,7 +1080,7 @@
             "name": "Code Contribution Leaderboards",
             "product": 7,
             "description": "Launch an initiative to introduce code contribution leaderboards on the online platform, recognizing and celebrating the contributions of developers to open-source projects. The initiative aims to incentivize active participation and foster a sense of community.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/code-contribution-leaderboards"
         }
     },
@@ -1094,7 +1094,7 @@
             "name": "Learning Paths for Contributors",
             "product": 7,
             "description": "Launch an initiative to develop learning paths for contributors on the online platform, offering curated resources and tutorials to help developers enhance their skills and contribute effectively to open-source projects. The initiative aims to support continuous learning and professional development.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/learning-paths-for-contributors"
         }
     },
@@ -1108,7 +1108,7 @@
             "name": "PetConnect Mobile App Development",
             "product": 8,
             "description": "Launch an initiative to develop the PetConnect mobile app, connecting pet owners with services such as veterinary care, grooming, and pet sitting within their local area. The app aims to provide convenience and accessibility for pet owners to care for their pets' needs.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/petconnect-mobile-app"
         }
     },
@@ -1122,7 +1122,7 @@
             "name": "PetConnect Service Integration",
             "product": 8,
             "description": "Launch an initiative to integrate additional pet services into the PetConnect mobile app, expanding its functionality to include features such as pet training, adoption services, and pet supply delivery. The initiative aims to make PetConnect a comprehensive platform for all pet-related needs.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/petconnect-service-integration"
         }
     },
@@ -1136,7 +1136,7 @@
             "name": "PetConnect User Experience Enhancement",
             "product": 8,
             "description": "Launch an initiative to enhance the user experience of the PetConnect mobile app, optimizing navigation, streamlining processes, and improving overall usability. The initiative aims to provide a seamless and intuitive experience for pet owners.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/petconnect-user-experience-enhancement"
         }
     },
@@ -1150,7 +1150,7 @@
             "name": "PetConnect Community Building",
             "product": 8,
             "description": "Launch an initiative to build a community around the PetConnect mobile app, fostering engagement, interaction, and knowledge sharing among pet owners. The initiative aims to create a supportive and informative environment for pet enthusiasts.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/petconnect-community-building"
         }
     },
@@ -1164,7 +1164,7 @@
             "name": "PetConnect Marketing Campaign",
             "product": 8,
             "description": "Launch an initiative to create a marketing campaign for the PetConnect mobile app, raising awareness, attracting users, and promoting its features and benefits. The initiative aims to drive adoption and usage of PetConnect among pet owners.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/petconnect-marketing-campaign"
         }
     },
@@ -1178,7 +1178,7 @@
             "name": "AI-Powered Intrusion Detection",
             "product": 9,
             "description": "Launch an initiative to implement AI-powered intrusion detection capabilities within the smart home security system, enabling the system to analyze camera footage and sensor data to detect and alert users of potential security threats or unauthorized access to their property.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/ai-powered-intrusion-detection"
         }
     },
@@ -1192,7 +1192,7 @@
             "name": "Facial Recognition Access Control",
             "product": 9,
             "description": "Launch an initiative to integrate facial recognition technology into the smart home security system, allowing users to create personalized access profiles for family members and authorized individuals. The system will grant or deny access based on recognized faces, enhancing security and convenience.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/facial-recognition-access-control"
         }
     },
@@ -1206,7 +1206,7 @@
             "name": "Behavioral Analysis Security Alerts",
             "product": 9,
             "description": "Launch an initiative to implement behavioral analysis algorithms within the smart home security system, enabling it to recognize unusual patterns or behaviors and generate security alerts. The system will learn and adapt to the user's routines over time, enhancing its ability to detect potential threats.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/behavioral-analysis-security-alerts"
         }
     },
@@ -1220,7 +1220,7 @@
             "name": "Intelligent Activity Recognition",
             "product": 9,
             "description": "Launch an initiative to deploy intelligent activity recognition algorithms within the smart home security system, enabling it to differentiate between normal activities and potential security threats. The system will provide customized alerts and notifications based on detected activities, enhancing user awareness and responsiveness.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/intelligent-activity-recognition"
         }
     },
@@ -1234,7 +1234,7 @@
             "name": "Real-Time Alert Monitoring",
             "product": 9,
             "description": "Launch an initiative to develop a real-time alert monitoring system for the smart home security system, allowing users to receive instant notifications on their mobile devices or via email whenever a security event is detected. The system will provide detailed alerts with accompanying video footage or sensor data for quick response and action.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/real-time-alert-monitoring"
         }
     },
@@ -1248,7 +1248,7 @@
             "name": "Virtual Gear Expo",
             "product": 10,
             "description": "Launch an initiative to host a virtual gear expo within the marketplace, showcasing a wide range of musical instruments, equipment, and gear available for purchase, sale, or rent. The initiative aims to provide musicians with a convenient and immersive shopping experience.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/virtual-gear-expo"
         }
     },
@@ -1262,7 +1262,7 @@
             "name": "Live Gear Demonstrations",
             "product": 10,
             "description": "Launch an initiative to organize live gear demonstrations on the platform, featuring musicians and product experts showcasing the capabilities and features of various gear and equipment available for sale or rent. The initiative aims to provide users with valuable insights and recommendations.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/live-gear-demonstrations"
         }
     },
@@ -1276,7 +1276,7 @@
             "name": "Rent-to-Own Program",
             "product": 10,
             "description": "Launch an initiative to introduce a rent-to-own program for musical gear and equipment within the marketplace, allowing musicians to rent items with the option to purchase them later. The initiative aims to provide flexibility and affordability to musicians.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/rent-to-own-program"
         }
     },
@@ -1290,7 +1290,7 @@
             "name": "Live Jam Sessions",
             "product": 10,
             "description": "Launch an initiative to organize live jam sessions on the platform, allowing musicians to collaborate and perform together in real-time through the integrated live streaming feature. The initiative aims to foster creativity and community among musicians.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/live-jam-sessions"
         }
     },
@@ -1304,7 +1304,7 @@
             "name": "Exclusive Artist Performances",
             "product": 10,
             "description": "Launch an initiative to feature exclusive live performances by renowned artists on the platform, providing users with unique and engaging content. The initiative aims to attract and retain users while promoting talented musicians.",
-            "status": 1,
+            "status": "Active",
             "video_url": "https://www.youtube.com/embed/exclusive-artist-performances"
         }
     },
@@ -1320,7 +1320,7 @@
             "title": "Community Art Collaboration Challenge",
             "description": "Launch a challenge for the CloudCanvas community to collaborate on creating a large-scale artwork. Participants will contribute their unique artistic styles to a shared canvas, resulting in a collective masterpiece.",
             "short_description": "Collaborative challenge for community artwork creation.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1351,7 +1351,7 @@
             "title": "Artist Showcase Challenge",
             "description": "Launch a challenge for CloudCanvas artists to showcase their individual artworks and portfolios. Participants will have the opportunity to gain exposure and connect with potential collaborators and clients.",
             "short_description": "Challenge for artists to showcase their portfolios.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1382,7 +1382,7 @@
             "title": "Themed Art Contest",
             "description": "Launch a themed art contest on CloudCanvas, where artists can submit artworks based on a specific theme or topic. Winners will be selected based on creativity, originality, and adherence to the theme.",
             "short_description": "Contest for themed artworks.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1413,7 +1413,7 @@
             "title": "Art Collaboration Jam",
             "description": "Organize an Art Collaboration Jam event on CloudCanvas, where artists can join live sessions to create artworks together in real-time. The event aims to foster creativity, collaboration, and community spirit.",
             "short_description": "Live event for collaborative art creation.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1444,7 +1444,7 @@
             "title": "Artwork Remix Challenge",
             "description": "Launch a challenge for artists to remix and reimagine existing artworks on CloudCanvas. Participants can create new interpretations, mashups, or variations of selected artworks to showcase their creativity and innovation.",
             "short_description": "Challenge for remixing existing artworks.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1475,7 +1475,7 @@
             "title": "Digital Art Workshop Series",
             "description": "Host a series of digital art workshops on CloudCanvas, covering various techniques, styles, and software tools. The workshops aim to provide artists with new skills and inspiration to enhance their creative practice.",
             "short_description": "Workshop series for digital art techniques.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1506,7 +1506,7 @@
             "title": "Monthly Art Jam Sessions",
             "description": "Organize monthly Art Jam sessions on CloudCanvas, where artists can come together to create artworks based on a given theme or prompt. The sessions aim to provide a supportive and collaborative environment for artistic expression.",
             "short_description": "Monthly sessions for collaborative art creation.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1537,7 +1537,7 @@
             "title": "Art Collaboration Showcase",
             "description": "Curate an Art Collaboration Showcase on CloudCanvas, featuring collaborative artworks created by artists from diverse backgrounds and styles. The showcase aims to celebrate the power of collaboration and creativity.",
             "short_description": "Showcase for collaborative artworks.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1568,7 +1568,7 @@
             "title": "Digital Art Collaboration Workshop",
             "description": "Organize a workshop on CloudCanvas focused on digital art collaboration techniques, tools, and best practices. Participants will learn how to effectively collaborate with other artists to create impactful artworks.",
             "short_description": "Workshop on digital art collaboration.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1599,7 +1599,7 @@
             "title": "Art Collaboration Competition",
             "description": "Host a competition on CloudCanvas where artists form teams to compete in creating collaborative artworks within a set time frame. The competition aims to promote teamwork, creativity, and friendly rivalry.",
             "short_description": "Competition for collaborative art creation.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1630,7 +1630,7 @@
             "title": "Interactive Quiz Competition",
             "description": "Launch an interactive quiz competition on EduSync to test students' knowledge across various subjects and topics. Participants can earn points and rewards based on their performance.",
             "short_description": "Engage students with an interactive quiz competition.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1661,7 +1661,7 @@
             "title": "Virtual Reality Field Trip",
             "description": "Organize a virtual reality field trip on EduSync, allowing students to explore historical sites, natural wonders, and cultural landmarks from the comfort of their classrooms.",
             "short_description": "Experience virtual reality field trips.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1692,7 +1692,7 @@
             "title": "Role-Playing Scenario Workshop",
             "description": "Host a role-playing scenario workshop on EduSync, where students can assume different roles and engage in simulated real-life situations to develop problem-solving and decision-making skills.",
             "short_description": "Participate in role-playing scenario workshops.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1723,7 +1723,7 @@
             "title": "Storytelling Competition",
             "description": "Organize a storytelling competition on EduSync, where students can showcase their creativity and narrative skills by crafting and presenting original stories on various themes.",
             "short_description": "Participate in a storytelling competition.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1754,7 +1754,7 @@
             "title": "Artistic Expression Showcase",
             "description": "Host an artistic expression showcase on EduSync, inviting students to submit their artwork, poetry, music, or other creative works for display and recognition.",
             "short_description": "Showcase artistic expressions on EduSync.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1785,7 +1785,7 @@
             "title": "Problem-Solving Quest",
             "description": "Launch a problem-solving quest on EduSync, where students must work collaboratively to solve complex challenges and puzzles within a specified time frame.",
             "short_description": "Embark on a problem-solving quest on EduSync.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1816,7 +1816,7 @@
             "title": "Science Fair Competition",
             "description": "Organize a science fair competition on EduSync, allowing students to showcase their scientific experiments, research projects, and innovations to a wider audience.",
             "short_description": "Participate in a science fair competition.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1847,7 +1847,7 @@
             "title": "Mathematics Olympiad",
             "description": "Host a mathematics olympiad on EduSync, challenging students to demonstrate their mathematical prowess and problem-solving abilities in a competitive environment.",
             "short_description": "Participate in a mathematics olympiad on EduSync.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1878,7 +1878,7 @@
             "title": "Debate Tournament",
             "description": "Organize a debate tournament on EduSync, where students can engage in structured debates on various topics to improve their critical thinking, communication, and persuasion skills.",
             "short_description": "Participate in a debate tournament on EduSync.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1909,7 +1909,7 @@
             "title": "Coding Competition",
             "description": "Host a coding competition on EduSync, challenging students to solve coding problems, algorithms, and puzzles to showcase their programming skills and logical thinking abilities.",
             "short_description": "Participate in a coding competition on EduSync.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1940,7 +1940,7 @@
             "title": "Teleconsultation Integration",
             "description": "Integrate teleconsultation functionality into HealthHub, allowing patients to schedule virtual appointments with healthcare providers and conduct remote consultations from the comfort of their homes.",
             "short_description": "Integrate teleconsultation functionality into HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -1971,7 +1971,7 @@
             "title": "Electronic Health Records Integration",
             "description": "Implement electronic health records (EHR) integration within HealthHub, enabling seamless access to patient medical history and records for healthcare providers during virtual consultations.",
             "short_description": "Implement EHR integration within HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2002,7 +2002,7 @@
             "title": "HealthHub Mobile App Development",
             "description": "Develop a mobile application for HealthHub, providing patients and healthcare providers with convenient access to virtual healthcare services, appointment scheduling, and patient management tools on their smartphones.",
             "short_description": "Develop a mobile app for HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2034,7 +2034,7 @@
             "title": "Virtual Prescription Renewal",
             "description": "Implement virtual prescription renewal functionality within HealthHub, allowing patients to request prescription refills and receive digital prescriptions from healthcare providers through the app.",
             "short_description": "Implement virtual prescription renewal in HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2065,7 +2065,7 @@
             "title": "HealthHub Telemedicine Training",
             "description": "Provide comprehensive training sessions for healthcare providers on how to effectively use HealthHub for virtual consultations, patient management, and accessing telemedicine tools.",
             "short_description": "Provide training for healthcare providers on HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2096,7 +2096,7 @@
             "title": "Patient Feedback Mechanism",
             "description": "Implement a patient feedback mechanism within HealthHub, allowing users to rate their virtual healthcare experience and provide comments or suggestions for improvement.",
             "short_description": "Implement patient feedback mechanism in HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2128,7 +2128,7 @@
             "title": "Remote Monitoring Integration",
             "description": "Integrate remote patient monitoring devices with HealthHub, allowing healthcare providers to remotely track patients' vital signs, symptoms, and health metrics for proactive care management.",
             "short_description": "Integrate remote monitoring devices with HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2160,7 +2160,7 @@
             "title": "HealthHub User Interface Redesign",
             "description": "Redesign the user interface of HealthHub to improve usability, accessibility, and user experience for both healthcare providers and patients accessing virtual healthcare services through the app.",
             "short_description": "Redesign HealthHub user interface.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2191,7 +2191,7 @@
             "title": "HealthHub Secure Messaging Feature",
             "description": "Develop a secure messaging feature within HealthHub, allowing healthcare providers and patients to communicate securely and exchange medical information, test results, and treatment plans.",
             "short_description": "Develop secure messaging feature in HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2222,7 +2222,7 @@
             "title": "HealthHub Virtual Waiting Room",
             "description": "Create a virtual waiting room feature within HealthHub, allowing patients to join a queue and wait for their turn during virtual appointments, improving appointment management and patient flow.",
             "short_description": "Create virtual waiting room feature in HealthHub.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2254,7 +2254,7 @@
             "title": "Carbon Emission Reduction Challenge",
             "description": "Launch a challenge to encourage companies to reduce their carbon emissions by implementing sustainable practices and initiatives. Companies will compete to achieve the highest reduction in carbon footprint over a specified period.",
             "short_description": "Encourage companies to reduce carbon emissions.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2285,7 +2285,7 @@
             "title": "Energy Efficiency Optimization Challenge",
             "description": "Launch a challenge to help companies optimize their energy efficiency and reduce their environmental impact. Companies will implement energy-saving measures and technologies to decrease energy consumption.",
             "short_description": "Help companies optimize energy efficiency.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2317,7 +2317,7 @@
             "title": "Waste Reduction Challenge",
             "description": "Launch a challenge to help companies minimize waste generation and promote recycling and reuse practices. Companies will develop strategies to reduce waste production and implement recycling programs.",
             "short_description": "Minimize waste generation and promote recycling.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2349,7 +2349,7 @@
             "title": "Sustainable Transportation Challenge",
             "description": "Launch a challenge to encourage companies to adopt sustainable transportation solutions and reduce their reliance on fossil fuels. Companies will implement strategies to promote carpooling, biking, public transit, and electric vehicles.",
             "short_description": "Promote sustainable transportation solutions.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2382,7 +2382,7 @@
             "title": "Water Conservation Challenge",
             "description": "Launch a challenge to help companies reduce water consumption and promote water conservation practices. Companies will implement water-saving technologies and strategies to minimize water usage.",
             "short_description": "Promote water conservation practices.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2414,7 +2414,7 @@
             "title": "Renewable Energy Adoption Challenge",
             "description": "Launch a challenge to encourage companies to transition to renewable energy sources and reduce their reliance on non-renewable fuels. Companies will explore solar, wind, hydro, and other renewable energy options.",
             "short_description": "Encourage adoption of renewable energy sources.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2447,7 +2447,7 @@
             "title": "Sustainable Packaging Challenge",
             "description": "Launch a challenge to help companies reduce packaging waste and promote the use of sustainable packaging materials. Companies will design eco-friendly packaging solutions and minimize single-use plastics.",
             "short_description": "Promote sustainable packaging solutions.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2480,7 +2480,7 @@
             "title": "Biodiversity Conservation Challenge",
             "description": "Launch a challenge to encourage companies to preserve biodiversity and protect natural habitats. Companies will implement conservation efforts and support initiatives to safeguard wildlife and ecosystems.",
             "short_description": "Preserve biodiversity and protect natural habitats.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2513,7 +2513,7 @@
             "title": "Community Engagement Challenge",
             "description": "Launch a challenge to encourage companies to engage with local communities and support sustainable development projects. Companies will collaborate with community organizations and implement initiatives to address social and environmental issues.",
             "short_description": "Engage with local communities and support sustainable development.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2546,7 +2546,7 @@
             "title": "Circular Economy Innovation Challenge",
             "description": "Launch a challenge to promote circular economy principles and encourage companies to adopt sustainable business practices. Companies will develop innovative solutions to reduce waste and promote resource efficiency.",
             "short_description": "Promote circular economy principles and sustainable business practices.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2577,7 +2577,7 @@
             "title": "AI-Powered Budgeting Feature",
             "description": "Launch an AI-powered budgeting feature within FinanceFlow, leveraging machine learning algorithms to analyze user spending habits and provide personalized budgeting recommendations. The feature aims to help users better manage their finances and achieve their financial goals.",
             "short_description": "Launch an AI-powered budgeting feature within FinanceFlow to provide personalized budgeting recommendations.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2608,7 +2608,7 @@
             "title": "Investment Portfolio Optimization",
             "description": "Launch an investment portfolio optimization feature within FinanceFlow, utilizing AI algorithms to analyze user investment preferences, risk tolerance, and financial goals to offer personalized investment strategies. The feature aims to help users maximize returns and minimize risk.",
             "short_description": "Launch an investment portfolio optimization feature within FinanceFlow to offer personalized investment strategies.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2640,7 +2640,7 @@
             "title": "Savings Goal Predictor",
             "description": "Launch a savings goal predictor feature within FinanceFlow, utilizing AI algorithms to analyze user income, expenses, and financial behavior to predict achievable savings goals. The feature aims to motivate users to save more effectively and reach their financial objectives.",
             "short_description": "Launch a savings goal predictor feature within FinanceFlow to predict achievable savings goals.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2671,7 +2671,7 @@
             "title": "Expense Tracker Enhancement",
             "description": "Launch an enhancement to the expense tracking feature within FinanceFlow, integrating AI capabilities to automatically categorize expenses, identify spending patterns, and provide insights for better financial management. The enhancement aims to streamline expense tracking and improve user awareness of their spending habits.",
             "short_description": "Enhance the expense tracking feature within FinanceFlow to streamline expense management.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2703,7 +2703,7 @@
             "title": "Automated Investment Recommendations",
             "description": "Launch an automated investment recommendations feature within FinanceFlow, leveraging AI algorithms to analyze market trends, user preferences, and risk profiles to suggest personalized investment opportunities. The feature aims to simplify investment decision-making and optimize portfolio performance.",
             "short_description": "Launch automated investment recommendations within FinanceFlow to optimize portfolio performance.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2734,7 +2734,7 @@
             "title": "AI-Powered Debt Management",
             "description": "Launch an AI-powered debt management feature within FinanceFlow, analyzing user debt obligations, income levels, and spending patterns to offer personalized debt repayment strategies. The feature aims to help users eliminate debt faster and achieve financial freedom.",
             "short_description": "Launch an AI-powered debt management feature within FinanceFlow to offer personalized debt repayment strategies.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2766,7 +2766,7 @@
             "title": "AI-Powered Financial Planning",
             "description": "Launch an AI-powered financial planning feature within FinanceFlow, analyzing user financial goals, income sources, and expenses to create personalized financial plans. The feature aims to empower users with actionable insights to achieve long-term financial success.",
             "short_description": "Launch an AI-powered financial planning feature within FinanceFlow to create personalized financial plans.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2797,7 +2797,7 @@
             "title": "AI-Powered Investment Advisory",
             "description": "Launch an AI-powered investment advisory feature within FinanceFlow, providing users with personalized investment recommendations based on their risk tolerance, financial goals, and market trends. The feature aims to assist users in making informed investment decisions.",
             "short_description": "Launch an AI-powered investment advisory feature within FinanceFlow to provide personalized investment recommendations.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2828,7 +2828,7 @@
             "title": "AI-Driven Retirement Planning",
             "description": "Launch an AI-driven retirement planning feature within FinanceFlow, analyzing user retirement goals, income sources, and investment preferences to provide personalized retirement savings strategies. The feature aims to help users plan for a financially secure retirement.",
             "short_description": "Launch an AI-driven retirement planning feature within FinanceFlow to provide personalized retirement savings strategies.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2860,7 +2860,7 @@
             "title": "AI-Powered Tax Optimization",
             "description": "Launch an AI-powered tax optimization feature within FinanceFlow, analyzing user financial data and tax regulations to provide personalized tax-saving strategies. The feature aims to help users minimize tax liabilities and maximize tax refunds.",
             "short_description": "Launch an AI-powered tax optimization feature within FinanceFlow to provide personalized tax-saving strategies.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2892,7 +2892,7 @@
             "title": "Virtual Event Branding Challenge",
             "description": "Launch a challenge to design branding elements for VirtualEventPro, including logos, color schemes, and visual assets. The challenge aims to create a cohesive and visually appealing brand identity for the platform.",
             "short_description": "Design branding elements for VirtualEventPro.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2923,7 +2923,7 @@
             "title": "Interactive Networking Feature Development",
             "description": "Launch a challenge to develop an interactive networking feature for VirtualEventPro, allowing attendees to connect with each other based on shared interests and preferences. The challenge aims to enhance attendee engagement and networking opportunities.",
             "short_description": "Develop interactive networking feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2954,7 +2954,7 @@
             "title": "Attendee Feedback Collection Challenge",
             "description": "Launch a challenge to collect feedback from VirtualEventPro attendees, seeking insights into their experience, satisfaction levels, and suggestions for improvement. The challenge aims to gather valuable data for enhancing future events.",
             "short_description": "Collect attendee feedback.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -2985,7 +2985,7 @@
             "title": "Live Polling Feature Integration Challenge",
             "description": "Launch a challenge to integrate a live polling feature into VirtualEventPro, allowing presenters to engage attendees with real-time polls and surveys during virtual events. The challenge aims to enhance audience participation and interaction.",
             "short_description": "Integrate live polling feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3016,7 +3016,7 @@
             "title": "Virtual Event Analytics Dashboard Challenge",
             "description": "Launch a challenge to develop a comprehensive analytics dashboard for VirtualEventPro, providing event organizers with insights into attendee engagement, content performance, and overall event success metrics. The challenge aims to facilitate data-driven decision-making and event optimization.",
             "short_description": "Develop analytics dashboard.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3047,7 +3047,7 @@
             "title": "Gamification Module Development Challenge",
             "description": "Launch a challenge to develop gamification modules for VirtualEventPro, incorporating game mechanics such as points, badges, and leaderboards to incentivize attendee engagement and participation. The challenge aims to make virtual events more interactive and enjoyable.",
             "short_description": "Develop gamification modules.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3079,7 +3079,7 @@
             "title": "Virtual Event Platform Integration Challenge",
             "description": "Launch a challenge to integrate VirtualEventPro with popular third-party platforms and services, such as ticketing systems, streaming platforms, and CRM software. The challenge aims to enhance the functionality and accessibility of the virtual event platform.",
             "short_description": "Integrate with third-party platforms.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3110,7 +3110,7 @@
             "title": "Virtual Event Security Enhancement Challenge",
             "description": "Launch a challenge to enhance the security features of VirtualEventPro, implementing measures such as encryption, access controls, and monitoring tools to safeguard attendee data and prevent unauthorized access. The challenge aims to ensure the privacy and integrity of virtual events.",
             "short_description": "Enhance security features.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3142,7 +3142,7 @@
             "title": "Virtual Event Content Creation Challenge",
             "description": "Launch a challenge to crowdsource content creation for VirtualEventPro, inviting participants to submit presentations, workshops, and other educational materials for upcoming virtual events. The challenge aims to curate high-quality content that meets the diverse interests and needs of attendees.",
             "short_description": "Crowdsource event content.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3174,7 +3174,7 @@
             "title": "Virtual Event Accessibility Improvement Challenge",
             "description": "Launch a challenge to improve the accessibility features of VirtualEventPro, ensuring that the platform is inclusive and accessible to users with disabilities. The challenge aims to identify and address barriers to participation in virtual events.",
             "short_description": "Improve platform accessibility.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3206,7 +3206,7 @@
             "title": "Enhance Code Collaboration Features",
             "description": "Launch an initiative to enhance code collaboration features on CodeCraft, introducing real-time editing, inline commenting, and version control integration. The initiative aims to improve the efficiency and effectiveness of collaborative coding.",
             "short_description": "Enhance code collaboration features.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3239,7 +3239,7 @@
             "title": "Implement Real-Time Code Reviews",
             "description": "Launch an initiative to implement real-time code reviews on CodeCraft, allowing developers to provide feedback and suggestions as code is being written. The initiative aims to promote code quality and collaboration.",
             "short_description": "Implement real-time code reviews.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3271,7 +3271,7 @@
             "title": "Introduce Gamification Elements",
             "description": "Launch an initiative to introduce gamification elements on CodeCraft, such as achievements, badges, and leaderboards, to incentivize participation and engagement among users. The initiative aims to make coding more fun and motivating.",
             "short_description": "Introduce gamification elements.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3304,7 +3304,7 @@
             "title": "Expand Project Collaboration Tools",
             "description": "Launch an initiative to expand project collaboration tools on CodeCraft, including task boards, project wikis, and team communication channels. The initiative aims to facilitate seamless collaboration among developers working on open-source projects.",
             "short_description": "Expand project collaboration tools.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3337,7 +3337,7 @@
             "title": "Improve Code Discovery and Exploration",
             "description": "Launch an initiative to improve code discovery and exploration features on CodeCraft, including advanced search capabilities, code navigation tools, and project categorization. The initiative aims to help developers find and contribute to relevant open-source projects more effectively.",
             "short_description": "Improve code discovery and exploration.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3370,7 +3370,7 @@
             "title": "Enhance Community Engagement Features",
             "description": "Launch an initiative to enhance community engagement features on CodeCraft, including discussion forums, user profiles, and project showcases. The initiative aims to foster a vibrant and supportive community of developers.",
             "short_description": "Enhance community engagement features.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3403,7 +3403,7 @@
             "title": "Implement Code Quality Metrics",
             "description": "Launch an initiative to implement code quality metrics on CodeCraft, including code coverage, code complexity, and code duplication analysis. The initiative aims to help developers assess and improve the quality of their code contributions.",
             "short_description": "Implement code quality metrics.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3436,7 +3436,7 @@
             "title": "Optimize Performance and Scalability",
             "description": "Launch an initiative to optimize the performance and scalability of CodeCraft, including improvements in server response times, database query optimizations, and load testing. The initiative aims to ensure a smooth and responsive experience for users.",
             "short_description": "Optimize performance and scalability.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3469,7 +3469,7 @@
             "title": "Enhance Security Measures",
             "description": "Launch an initiative to enhance security measures on CodeCraft, including data encryption, authentication mechanisms, and vulnerability assessments. The initiative aims to protect user data and ensure a secure coding environment.",
             "short_description": "Enhance security measures.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3501,7 +3501,7 @@
             "title": "Enhance User Experience Design",
             "description": "Launch an initiative to enhance the user experience design of CodeCraft, including improvements in navigation, layout, and accessibility. The initiative aims to provide a more intuitive and enjoyable coding environment for users.",
             "short_description": "Enhance user experience design.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3534,7 +3534,7 @@
             "title": "Pet Service Finder Integration",
             "description": "Integrate a pet service finder feature into PetConnect, allowing users to easily locate nearby veterinary clinics, grooming salons, and pet sitters within their local area.",
             "short_description": "Integrate pet service finder feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3565,7 +3565,7 @@
             "title": "Pet Sitter Rating System",
             "description": "Implement a rating system for pet sitters on PetConnect, allowing users to rate and review their experiences with different pet sitting services.",
             "short_description": "Implement pet sitter rating system.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3597,7 +3597,7 @@
             "title": "Pet Emergency Alert System",
             "description": "Develop a pet emergency alert system for PetConnect, allowing users to quickly notify nearby veterinary clinics and pet emergency services in case of a pet emergency.",
             "short_description": "Develop pet emergency alert system.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3628,7 +3628,7 @@
             "title": "Pet Grooming Scheduler",
             "description": "Introduce a pet grooming scheduler feature into PetConnect, enabling users to schedule grooming appointments for their pets with nearby grooming salons.",
             "short_description": "Introduce pet grooming scheduler feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3660,7 +3660,7 @@
             "title": "Pet Health Tracker",
             "description": "Implement a pet health tracker feature in PetConnect, allowing users to keep track of their pet's health records, vaccinations, and medical history.",
             "short_description": "Implement pet health tracker feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3692,7 +3692,7 @@
             "title": "Pet Insurance Integration",
             "description": "Integrate pet insurance options into PetConnect, allowing users to explore and purchase pet insurance plans for their pets directly through the app.",
             "short_description": "Integrate pet insurance options.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3724,7 +3724,7 @@
             "title": "Pet Adoption Portal",
             "description": "Develop a pet adoption portal within PetConnect, allowing users to browse and adopt pets from local animal shelters and rescue organizations.",
             "short_description": "Develop pet adoption portal.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3756,7 +3756,7 @@
             "title": "Pet Social Network Integration",
             "description": "Integrate a pet social network feature into PetConnect, allowing users to connect and interact with other pet owners, share photos, and exchange pet-related tips and advice.",
             "short_description": "Integrate pet social network feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3788,7 +3788,7 @@
             "title": "Pet Activity Tracker",
             "description": "Develop a pet activity tracker feature for PetConnect, allowing users to monitor their pet's daily activity levels, exercise routines, and overall health.",
             "short_description": "Develop pet activity tracker feature.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3820,7 +3820,7 @@
             "title": "Pet Microchip Registry",
             "description": "Establish a pet microchip registry within PetConnect, allowing users to register their pet's microchip information and access a centralized database for lost and found pet notifications.",
             "short_description": "Establish pet microchip registry.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3852,7 +3852,7 @@
             "title": "AI-driven Intrusion Detection",
             "description": "Implement AI-driven intrusion detection algorithms to analyze video feeds and sensor data, providing real-time alerts for potential security breaches in the monitored area.",
             "short_description": "Implement AI-driven intrusion detection algorithms.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3884,7 +3884,7 @@
             "title": "Facial Recognition Access Control",
             "description": "Integrate facial recognition technology into SecureHome to allow authorized individuals seamless access to the premises while alerting for unrecognized faces.",
             "short_description": "Integrate facial recognition technology for access control.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3915,7 +3915,7 @@
             "title": "Smart Motion-Activated Lighting",
             "description": "Develop smart lighting systems that are triggered by motion sensors, enhancing security by illuminating dark areas and deterring potential intruders.",
             "short_description": "Develop motion-activated lighting systems.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3947,7 +3947,7 @@
             "title": "AI-Powered Fire Detection",
             "description": "Utilize AI algorithms to detect signs of fire or smoke within the monitored area, providing early warnings and reducing the risk of property damage and harm.",
             "short_description": "Implement AI-powered fire detection algorithms.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -3979,7 +3979,7 @@
             "title": "Tamper-Proof Sensor Network",
             "description": "Develop a tamper-proof sensor network for SecureHome, ensuring that any attempt to disable or tamper with the sensors triggers an immediate alert to the homeowner or security personnel.",
             "short_description": "Develop tamper-proof sensor network.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4010,7 +4010,7 @@
             "title": "Enhanced Privacy Controls",
             "description": "Implement enhanced privacy controls for SecureHome users, allowing them to customize camera and sensor settings to ensure privacy while maintaining security.",
             "short_description": "Implement enhanced privacy controls for users.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4042,7 +4042,7 @@
             "title": "Mobile App Remote Monitoring",
             "description": "Develop a mobile application for SecureHome that allows users to remotely monitor their home security system, receive alerts, and control connected devices from anywhere.",
             "short_description": "Develop mobile app for remote monitoring.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4074,7 +4074,7 @@
             "title": "Emergency Response Integration",
             "description": "Integrate SecureHome with emergency response systems to enable automatic alerts to authorities in case of security breaches or emergencies, ensuring rapid assistance.",
             "short_description": "Integrate with emergency response systems.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4106,7 +4106,7 @@
             "title": "Battery Backup System",
             "description": "Design a battery backup system for SecureHome to ensure continuous operation during power outages, maintaining security and surveillance capabilities.",
             "short_description": "Design battery backup system for continuous operation.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4138,7 +4138,7 @@
             "title": "SecureHome API Integration",
             "description": "Develop an API for SecureHome to enable integration with third-party smart home devices and platforms, expanding compatibility and functionality.",
             "short_description": "Develop API for integration with third-party devices.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4170,7 +4170,7 @@
             "title": "Gear Auction Event",
             "description": "Organize a gear auction event on GigGear where musicians can bid for new and used equipment. The event aims to provide an exciting opportunity for musicians to acquire quality gear at competitive prices.",
             "short_description": "Organize a gear auction event on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4202,7 +4202,7 @@
             "title": "Live Gear Showcase",
             "description": "Launch a live gear showcase feature on GigGear, allowing sellers to demonstrate their equipment in real-time through live streaming. The feature aims to provide buyers with an immersive shopping experience.",
             "short_description": "Launch a live gear showcase feature on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4235,7 +4235,7 @@
             "title": "Rent-to-Own Program",
             "description": "Introduce a rent-to-own program on GigGear, allowing musicians to rent equipment with the option to purchase it later. The program aims to make high-quality gear more accessible to musicians.",
             "short_description": "Introduce a rent-to-own program on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4266,7 +4266,7 @@
             "title": "Gear Repair Services",
             "description": "Integrate a gear repair services section on GigGear, offering maintenance and repair services for musical equipment. The service aims to extend the lifespan of gear and provide convenient solutions for musicians.",
             "short_description": "Integrate gear repair services on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4298,7 +4298,7 @@
             "title": "Virtual Jam Sessions",
             "description": "Organize virtual jam sessions on GigGear, allowing musicians to connect and play music together in real-time through live streaming. The sessions aim to foster collaboration and creativity among musicians.",
             "short_description": "Organize virtual jam sessions on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4331,7 +4331,7 @@
             "title": "Custom Gear Requests",
             "description": "Implement a feature for custom gear requests on GigGear, allowing musicians to request personalized equipment tailored to their specific needs. The feature aims to provide customized solutions for musicians.",
             "short_description": "Implement custom gear requests feature on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4363,7 +4363,7 @@
             "title": "Gear Maintenance Tutorials",
             "description": "Create gear maintenance tutorial videos on GigGear, providing musicians with step-by-step guides for cleaning, repairing, and maintaining their equipment. The tutorials aim to empower musicians with essential skills.",
             "short_description": "Create gear maintenance tutorial videos on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4395,7 +4395,7 @@
             "title": "Gear Rental Reviews",
             "description": "Introduce a gear rental review system on GigGear, allowing users to rate and review their rental experiences. The system aims to provide valuable feedback for both renters and sellers.",
             "short_description": "Introduce gear rental review system on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4428,7 +4428,7 @@
             "title": "Live Streaming Tutorial Series",
             "description": "Launch a live streaming tutorial series on GigGear, providing musicians with insights and tips for optimizing their live performances. The series aims to help musicians enhance their online presence.",
             "short_description": "Launch live streaming tutorial series on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4460,7 +4460,7 @@
             "title": "Gear Financing Options",
             "description": "Introduce gear financing options on GigGear, allowing musicians to purchase equipment through installment plans. The options aim to make high-quality gear more affordable and accessible.",
             "short_description": "Introduce gear financing options on GigGear.",
-            "status": 2,
+            "status": "Active",
             "blocked": false,
             "featured": true,
             "priority": 0,
@@ -4490,7 +4490,7 @@
             "description": "Introduce a variety of new brush styles to CloudCanvas, offering artists more creative options and enhancing their ability to express themselves through digital art.",
             "skill": 52,
             "points": 55,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4509,7 +4509,7 @@
             "description": "Implement real-time collaboration features in CloudCanvas, enabling multiple artists to work simultaneously on the same canvas, fostering teamwork and creativity.",
             "skill": 107,
             "points": 30,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4529,7 +4529,7 @@
             "description": "Integrate a stock image library into CloudCanvas, providing artists with access to a vast collection of high-quality images and resources to use in their artwork.",
             "skill": 129,
             "points": 25,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4549,7 +4549,7 @@
             "description": "Allow users to customize their workspace layouts in CloudCanvas, enabling them to arrange tools, palettes, and panels according to their preferences and workflow.",
             "skill": 24,
             "points": 40,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4571,7 +4571,7 @@
             "description": "Enhance export options in CloudCanvas, allowing artists to export their artwork in various file formats with customizable settings, ensuring compatibility and quality.",
             "skill": 119,
             "points": 75,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4592,7 +4592,7 @@
             "description": "Organize artwork collaboration challenges on CloudCanvas, inviting artists to collaborate on themed projects and competitions to showcase their skills and creativity.",
             "skill": 109,
             "points": 45,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -4611,7 +4611,7 @@
             "description": "Implement an interactive feedback mechanism in CloudCanvas, allowing users to provide feedback on artwork through comments, annotations, and reactions.",
             "skill": 24,
             "points": 70,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -4632,7 +4632,7 @@
             "description": "Introduce enhanced community features in CloudCanvas, including forums, galleries, and events, to foster a vibrant and supportive community of artists.",
             "skill": 31,
             "points": 60,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -4652,7 +4652,7 @@
             "description": "Implement version history functionality in CloudCanvas, allowing artists to track and revert changes made to their artwork over time, providing peace of mind and accountability.",
             "skill": 89,
             "points": 18,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -4672,7 +4672,7 @@
             "description": "Improve layer management functionality in CloudCanvas, allowing artists to organize, group, and manipulate layers more efficiently while working on complex artwork.",
             "skill": 75,
             "points": 32,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -4693,7 +4693,7 @@
             "description": "Develop quest-based learning modules for EduSync, incorporating gamified elements such as challenges, rewards, and progression tracking to make learning more engaging and immersive for students.",
             "skill": 89,
             "points": 18,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4715,7 +4715,7 @@
             "description": "Implement leaderboards and achievements within EduSync to encourage healthy competition and motivation among students, recognizing and rewarding academic progress and accomplishments.",
             "skill": 37,
             "points": 25,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4734,7 +4734,7 @@
             "description": "Create gamified quiz modules for EduSync, incorporating game mechanics such as time limits, power-ups, and scoring systems to make assessments more engaging and enjoyable for students.",
             "skill": 66,
             "points": 75,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4753,7 +4753,7 @@
             "description": "Introduce interactive storytelling modules within EduSync, allowing students to participate in immersive narratives and make decisions that impact the outcome of the story, fostering critical thinking and creativity.",
             "skill": 114,
             "points": 32,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4772,7 +4772,7 @@
             "description": "Introduce virtual learning adventures within EduSync, enabling students to explore simulated environments, solve puzzles, and complete quests to acquire knowledge and skills, making learning more immersive and memorable.",
             "skill": 126,
             "points": 40,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4794,7 +4794,7 @@
             "description": "Develop an engagement analytics dashboard for EduSync, providing educators with insights into student participation, progress, and performance within gamified activities to facilitate data-driven decision-making and improve learning outcomes.",
             "skill": 97,
             "points": 70,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -4814,7 +4814,7 @@
             "description": "Organize peer collaboration challenges within EduSync, encouraging students to work together on projects, solve problems, and share knowledge, promoting teamwork and communication skills.",
             "skill": 39,
             "points": 60,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -4836,7 +4836,7 @@
             "description": "Introduce an avatar customization feature within EduSync, allowing students to personalize their virtual identities with different outfits, accessories, and attributes, enhancing self-expression and engagement.",
             "skill": 91,
             "points": 55,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -4857,7 +4857,7 @@
             "description": "Develop interactive simulation labs for EduSync, allowing students to conduct virtual experiments, simulations, and real-world scenarios to reinforce learning concepts, providing hands-on learning experiences.",
             "skill": 79,
             "points": 45,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -4877,7 +4877,7 @@
             "description": "Implement real-time progress tracking features within EduSync, allowing students to monitor their performance and receive immediate feedback on their activities and achievements, promoting self-awareness and accountability.",
             "skill": 117,
             "points": 30,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -4896,7 +4896,7 @@
             "description": "Launch an initiative to enhance the teleconsultation feature of HealthHub, improving video and audio quality, optimizing connection stability, and adding new functionalities such as screen sharing and file transfer. The initiative aims to provide a seamless virtual healthcare experience for both doctors and patients.",
             "skill": 114,
             "points": 38,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4918,7 +4918,7 @@
             "description": "Launch an initiative to implement virtual appointment scheduling within HealthHub, allowing patients to book appointments with healthcare providers at their convenience. The initiative aims to streamline the appointment booking process and reduce wait times for patients.",
             "skill": 86,
             "points": 63,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4938,7 +4938,7 @@
             "description": "Launch an initiative to integrate remote patient monitoring devices and sensors with HealthHub, enabling doctors to remotely monitor patients' vital signs, medication adherence, and overall health status. The initiative aims to improve patient care and early detection of health issues.",
             "skill": 121,
             "points": 41,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4960,7 +4960,7 @@
             "description": "Launch an initiative to develop an electronic health record (EHR) system within HealthHub, allowing healthcare providers to access and update patient records securely and efficiently. The initiative aims to improve information sharing and continuity of care.",
             "skill": 120,
             "points": 24,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -4982,7 +4982,7 @@
             "description": "Launch an initiative to provide medication management tools within HealthHub, including medication reminders, dosage tracking, and medication interaction alerts. The initiative aims to improve medication adherence and patient safety.",
             "skill": 72,
             "points": 72,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5004,7 +5004,7 @@
             "description": "Launch an initiative to develop a secure messaging platform within HealthHub, allowing doctors and patients to communicate securely and conveniently. The initiative aims to facilitate communication for non-urgent inquiries, follow-ups, and general health-related discussions.",
             "skill": 2,
             "points": 57,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -5024,7 +5024,7 @@
             "description": "Launch an initiative to develop a telemedicine training program for healthcare providers using HealthHub, providing comprehensive guidance on virtual consultation best practices, patient interaction skills, and technology usage. The initiative aims to ensure healthcare providers are proficient in delivering telemedicine services.",
             "skill": 39,
             "points": 19,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -5045,7 +5045,7 @@
             "description": "Launch an initiative to optimize the HealthHub mobile app for performance, usability, and accessibility across various devices and operating systems. The initiative aims to enhance the overall user experience for both doctors and patients.",
             "skill": 114,
             "points": 36,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -5066,7 +5066,7 @@
             "description": "Launch an initiative to integrate HealthHub with laboratory and imaging centers, enabling seamless sharing of test results, imaging studies, and diagnostic reports between healthcare providers and patients. The initiative aims to streamline the diagnostic process and improve collaboration among healthcare stakeholders.",
             "skill": 42,
             "points": 68,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -5087,7 +5087,7 @@
             "description": "Launch an initiative to expand telepsychiatry services within HealthHub, connecting patients with mental health professionals for virtual consultations, therapy sessions, and medication management. The initiative aims to improve access to mental healthcare services and reduce stigma associated with seeking treatment.",
             "skill": 31,
             "points": 50,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -5108,7 +5108,7 @@
             "description": "Launch a dashboard feature within EcoTracker that provides companies with real-time insights into their carbon emissions, allowing them to monitor and analyze their environmental impact.",
             "skill": 13,
             "points": 33,
-            "status": 4,
+            "status": "Completed",
             "is_active": true,
             "claimed_by": 39,
             "expertise": [
@@ -5128,7 +5128,7 @@
             "description": "Introduce an energy consumption analysis tool in EcoTracker that enables companies to track and optimize their energy usage, identifying areas for improvement and efficiency gains.",
             "skill": 63,
             "points": 51,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5150,7 +5150,7 @@
             "description": "Develop a waste management module within EcoTracker to help companies track their waste generation, disposal methods, and recycling efforts, facilitating waste reduction and sustainability initiatives.",
             "skill": 69,
             "points": 48,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5171,7 +5171,7 @@
             "description": "Implement supply chain sustainability metrics in EcoTracker to assess the environmental impact of suppliers and partners, enabling companies to make informed decisions and drive sustainability across their supply chain.",
             "skill": 6,
             "points": 27,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5191,7 +5191,7 @@
             "description": "Create a transportation efficiency tracker in EcoTracker that allows companies to monitor and optimize their transportation operations, reducing carbon emissions associated with logistics and delivery.",
             "skill": 54,
             "points": 22,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5211,7 +5211,7 @@
             "description": "Integrate water conservation analytics into EcoTracker to help companies measure and manage their water usage, identifying opportunities for conservation and responsible water management.",
             "skill": 130,
             "points": 66,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -5231,7 +5231,7 @@
             "description": "Enable renewable energy integration within EcoTracker, allowing companies to track and incorporate renewable energy sources into their operations to reduce reliance on fossil fuels and decrease their carbon footprint.",
             "skill": 46,
             "points": 35,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -5253,7 +5253,7 @@
             "description": "Introduce carbon offset tracking capabilities in EcoTracker, enabling companies to calculate their carbon emissions and invest in offset projects to mitigate their environmental impact and achieve carbon neutrality.",
             "skill": 32,
             "points": 59,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -5274,7 +5274,7 @@
             "description": "Provide pre-built sustainability reporting templates in EcoTracker to streamline the process of generating comprehensive sustainability reports for stakeholders, showcasing environmental performance and progress.",
             "skill": 102,
             "points": 22,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -5293,7 +5293,7 @@
             "description": "Offer environmental impact benchmarking features in EcoTracker, allowing companies to compare their sustainability performance against industry benchmarks and best practices, driving continuous improvement.",
             "skill": 32,
             "points": 66,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -5313,7 +5313,7 @@
             "description": "Launch an initiative to implement AI-powered budget optimization features within FinanceFlow, providing users with personalized budgeting recommendations based on their spending habits, financial goals, and income sources. The initiative aims to help users optimize their spending and achieve financial wellness.",
             "skill": 58,
             "points": 35,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5333,7 +5333,7 @@
             "description": "Launch an initiative to introduce investment portfolio analysis tools within FinanceFlow, leveraging AI algorithms to analyze users' investment portfolios, assess risk levels, and provide recommendations for diversification and optimization. The initiative aims to empower users to make informed investment decisions.",
             "skill": 109,
             "points": 59,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5352,7 +5352,7 @@
             "description": "Launch an initiative to enhance savings goal tracking capabilities within FinanceFlow, allowing users to set savings goals, track progress, and receive personalized recommendations on how to achieve their financial objectives. The initiative aims to encourage users to save more effectively and reach their goals faster.",
             "skill": 2,
             "points": 44,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5372,7 +5372,7 @@
             "description": "Launch an initiative to implement AI-powered expense categorization functionality within FinanceFlow, automatically categorizing users' expenses based on transaction data and providing insights into spending patterns. The initiative aims to simplify expense tracking and provide users with a clearer understanding of their financial habits.",
             "skill": 119,
             "points": 29,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5394,7 +5394,7 @@
             "description": "Launch an initiative to introduce automated bill payment reminders within FinanceFlow, leveraging AI algorithms to analyze users' bill payment schedules and send timely reminders to help users avoid late payments and associated fees. The initiative aims to improve users' financial management and reduce unnecessary expenses.",
             "skill": 30,
             "points": 47,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5416,7 +5416,7 @@
             "description": "Launch an initiative to integrate credit score monitoring and improvement tips within FinanceFlow, providing users with real-time updates on their credit scores and personalized recommendations on how to improve their creditworthiness. The initiative aims to help users build and maintain healthy credit profiles.",
             "skill": 56,
             "points": 31,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -5435,7 +5435,7 @@
             "description": "Launch an initiative to develop financial education modules within FinanceFlow, offering users access to interactive lessons, quizzes, and resources to improve their financial literacy and make more informed financial decisions. The initiative aims to empower users with the knowledge and skills needed for financial success.",
             "skill": 21,
             "points": 56,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -5454,7 +5454,7 @@
             "description": "Launch an initiative to introduce a retirement planning assistant within FinanceFlow, utilizing AI algorithms to analyze users' retirement goals, savings, and investment portfolios to provide personalized retirement planning recommendations. The initiative aims to help users prepare for a secure and comfortable retirement.",
             "skill": 88,
             "points": 42,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -5473,7 +5473,7 @@
             "description": "Launch an initiative to implement expense trend analysis features within FinanceFlow, allowing users to visualize their spending trends over time, identify areas of overspending or underspending, and make adjustments to their budgets accordingly. The initiative aims to help users achieve greater financial control and stability.",
             "skill": 86,
             "points": 21,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -5494,7 +5494,7 @@
             "description": "Launch an initiative to offer an AI-powered financial health checkup within FinanceFlow, where users can input their financial information and receive personalized assessments of their overall financial health, along with actionable recommendations for improvement. The initiative aims to help users identify areas of strength and weakness in their finances and take proactive steps towards financial well-being.",
             "skill": 10,
             "points": 75,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -5516,7 +5516,7 @@
             "description": "Host a webinar to officially launch VirtualEventPro, showcasing its features and capabilities to potential users. The webinar will include live demonstrations, Q&A sessions, and special offers for early adopters.",
             "skill": 3,
             "points": 39,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5536,7 +5536,7 @@
             "description": "Organize interactive virtual workshops on VirtualEventPro, covering topics such as event planning, live broadcasting techniques, and attendee engagement strategies. The workshops aim to educate users and help them maximize the platform's functionalities.",
             "skill": 117,
             "points": 61,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5558,7 +5558,7 @@
             "description": "Facilitate virtual networking events on VirtualEventPro, allowing attendees to connect with peers, industry professionals, and potential collaborators through chat rooms, group discussions, and one-on-one video calls. The events aim to foster meaningful connections and partnerships.",
             "skill": 19,
             "points": 26,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5580,7 +5580,7 @@
             "description": "Conduct live product demos on VirtualEventPro, giving companies the opportunity to showcase their products and services to a global audience in real-time. The demos will feature interactive elements such as polls, surveys, and live Q&A sessions.",
             "skill": 114,
             "points": 69,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5599,7 +5599,7 @@
             "description": "Host virtual conferences on VirtualEventPro, bringing together industry leaders, experts, and enthusiasts for insightful keynote presentations, panel discussions, and workshops. The conferences will offer networking opportunities and access to exclusive content.",
             "skill": 128,
             "points": 23,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5619,7 +5619,7 @@
             "description": "Launch an educational webinar series on VirtualEventPro, covering a wide range of topics such as digital marketing, event planning, leadership development, and more. The series aims to provide valuable insights and skills to professionals across industries.",
             "skill": 62,
             "points": 64,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -5639,7 +5639,7 @@
             "description": "Organize virtual trade shows on VirtualEventPro, allowing exhibitors to showcase their products and services in virtual booths, interact with attendees through live chats and video calls, and generate leads through virtual networking opportunities.",
             "skill": 55,
             "points": 49,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -5661,7 +5661,7 @@
             "description": "Offer workshops on event analytics using VirtualEventPro, teaching users how to leverage the platform's analytics tools to measure event success, track attendee engagement, and gather valuable insights for future event planning and optimization.",
             "skill": 15,
             "points": 34,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -5680,7 +5680,7 @@
             "description": "Host virtual career fairs on VirtualEventPro, connecting job seekers with employers through virtual booths, job postings, and networking sessions. The career fairs aim to streamline the recruitment process and provide opportunities for professional growth.",
             "skill": 48,
             "points": 58,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -5702,7 +5702,7 @@
             "description": "Organize virtual happy hours on VirtualEventPro, allowing attendees to unwind, socialize, and network in a relaxed atmosphere. The happy hours will feature games, quizzes, and entertainment to foster camaraderie among participants.",
             "skill": 130,
             "points": 43,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -5724,7 +5724,7 @@
             "description": "Launch an initiative to enhance collaboration features on CodeCraft, enabling coders to work together more efficiently on open-source projects. This includes real-time code editing, integrated messaging, and collaborative debugging tools.",
             "skill": 65,
             "points": 28,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5744,7 +5744,7 @@
             "description": "Implement a peer code review system on CodeCraft, allowing users to request and provide feedback on each other's code. This feature aims to improve code quality and promote knowledge sharing among the community.",
             "skill": 68,
             "points": 62,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5764,7 +5764,7 @@
             "description": "Develop a project management dashboard on CodeCraft, providing users with a centralized hub to track project progress, manage tasks, and coordinate team efforts. This feature enhances project organization and visibility.",
             "skill": 89,
             "points": 25,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5786,7 +5786,7 @@
             "description": "Integrate popular development environments directly into CodeCraft, allowing users to write, test, and debug code within the platform. This streamlines the coding process and reduces the need for external tools.",
             "skill": 22,
             "points": 71,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5806,7 +5806,7 @@
             "description": "Launch community forums and discussion boards on CodeCraft, enabling users to ask questions, share knowledge, and engage in technical discussions. This fosters a supportive and collaborative coding community.",
             "skill": 100,
             "points": 37,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5828,7 +5828,7 @@
             "description": "Initiate the development of a CodeCraft mobile app, allowing users to access the platform and collaborate on projects from their smartphones and tablets. This improves accessibility and convenience for coders on the go.",
             "skill": 16,
             "points": 65,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -5850,7 +5850,7 @@
             "description": "Implement advanced code search and discovery functionalities on CodeCraft, enabling users to easily find relevant projects, repositories, and code snippets. This enhances project visibility and promotes knowledge sharing.",
             "skill": 76,
             "points": 30,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -5871,7 +5871,7 @@
             "description": "Introduce real-time pair programming sessions on CodeCraft, allowing users to collaborate on coding tasks in real-time, share screens, and communicate via voice and video chat. This facilitates collaborative learning and problem-solving.",
             "skill": 106,
             "points": 53,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -5892,7 +5892,7 @@
             "description": "Integrate CodeCraft with popular version control systems like Git and SVN, enabling seamless project management and code collaboration. This ensures version control and code synchronization across team members.",
             "skill": 21,
             "points": 46,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -5912,7 +5912,7 @@
             "description": "Launch coding challenges and competitions on CodeCraft, allowing users to test their skills, compete with peers, and earn recognition for their achievements. This fosters a culture of continuous learning and skill development.",
             "skill": 72,
             "points": 20,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -5931,7 +5931,7 @@
             "description": "Discover and connect with trusted veterinary clinics and professionals in your local area through PetConnect. Ensure your pet receives the best medical care when they need it.",
             "skill": 81,
             "points": 73,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5952,7 +5952,7 @@
             "description": "Book grooming appointments for your furry friend with ease using PetConnect. Explore a variety of grooming services offered by experienced groomers in your neighborhood.",
             "skill": 95,
             "points": 54,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5974,7 +5974,7 @@
             "description": "Need someone to look after your pet while you're away? PetConnect helps you find reliable pet sitters who will care for your pet like their own. Enjoy peace of mind knowing your pet is in good hands.",
             "skill": 54,
             "points": 74,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -5993,7 +5993,7 @@
             "description": "Access a list of emergency care contacts through PetConnect, so you're always prepared for any unexpected situation with your pet. Find nearby emergency veterinary services quickly.",
             "skill": 113,
             "points": 52,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6012,7 +6012,7 @@
             "description": "Planning a trip with your pet? PetConnect provides information on pet-friendly accommodations, ensuring you and your furry companion have a comfortable stay wherever you go.",
             "skill": 58,
             "points": 67,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6034,7 +6034,7 @@
             "description": "Join pet communities and forums within PetConnect to connect with other pet owners, share experiences, and seek advice on pet care, training, and more.",
             "skill": 27,
             "points": 55,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -6054,7 +6054,7 @@
             "description": "Store and manage your pet's health records conveniently with PetConnect. Keep track of vaccinations, medical history, and appointments all in one place.",
             "skill": 117,
             "points": 32,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -6075,7 +6075,7 @@
             "description": "Explore pet adoption services available through PetConnect and give a loving home to a pet in need. Find your perfect match among a variety of rescue animals.",
             "skill": 119,
             "points": 18,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -6097,7 +6097,7 @@
             "description": "Report lost pets and receive alerts from the community through PetConnect. Help reunite lost pets with their owners by staying informed and sharing information.",
             "skill": 55,
             "points": 78,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -6118,7 +6118,7 @@
             "description": "Access pet training resources and tips on PetConnect to help you train and socialize your pet effectively. From basic obedience to advanced tricks, find everything you need to raise a well-behaved pet.",
             "skill": 68,
             "points": 44,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -6137,7 +6137,7 @@
             "description": "Deploy advanced AI-driven cameras and sensors to detect and alert homeowners of potential intrusions in real-time, enhancing the security of their homes.",
             "skill": 77,
             "points": 42,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6158,7 +6158,7 @@
             "description": "Offer continuous video surveillance capabilities using AI-powered cameras, allowing homeowners to monitor their property from anywhere, at any time.",
             "skill": 26,
             "points": 21,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6177,7 +6177,7 @@
             "description": "Implement facial recognition technology to provide secure access control to the home, allowing only authorized individuals to enter.",
             "skill": 3,
             "points": 75,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6199,7 +6199,7 @@
             "description": "Utilize intelligent motion detection algorithms to differentiate between normal activity and suspicious behavior, reducing false alarms and improving security responsiveness.",
             "skill": 109,
             "points": 39,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6220,7 +6220,7 @@
             "description": "Integrate an alarm system with AI-driven cameras and sensors to trigger immediate alerts and notifications in case of security breaches or emergencies.",
             "skill": 90,
             "points": 61,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6240,7 +6240,7 @@
             "description": "Automatically analyze security footage and sensor data using AI algorithms to identify potential threats or unusual activities, enhancing overall security effectiveness.",
             "skill": 124,
             "points": 26,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -6262,7 +6262,7 @@
             "description": "Enable homeowners to remotely monitor and control their smart home security system via a mobile app, providing peace of mind and convenience.",
             "skill": 10,
             "points": 69,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -6282,7 +6282,7 @@
             "description": "Offer secure cloud storage for surveillance footage and sensor data, ensuring data privacy and protection against physical tampering or theft.",
             "skill": 93,
             "points": 23,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -6303,7 +6303,7 @@
             "description": "Integrate with emergency response services to enable quick and efficient dispatch of authorities in case of security breaches or emergencies, enhancing homeowner safety.",
             "skill": 68,
             "points": 64,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -6322,7 +6322,7 @@
             "description": "Provide homeowners with the ability to customize security settings and preferences based on their specific needs and preferences, offering flexibility and control.",
             "skill": 57,
             "points": 49,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
@@ -6343,7 +6343,7 @@
             "description": "Implement enhanced gear listings on GigGear, allowing sellers to provide detailed descriptions, images, and specifications for their musical equipment. The initiative aims to improve the shopping experience for buyers and increase sales for sellers.",
             "skill": 100,
             "points": 34,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6362,7 +6362,7 @@
             "description": "Integrate secure payment gateways into GigGear, allowing buyers to make purchases with confidence and sellers to receive payments securely. The initiative aims to facilitate smooth and trustworthy transactions within the marketplace.",
             "skill": 37,
             "points": 58,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6383,7 +6383,7 @@
             "description": "Develop a rental booking system on GigGear, enabling musicians to easily rent gear and equipment for short-term use. The initiative aims to provide a convenient solution for musicians who need equipment for gigs, rehearsals, or recordings.",
             "skill": 20,
             "points": 43,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6402,7 +6402,7 @@
             "description": "Create a feature-rich live streaming platform on GigGear, allowing musicians to showcase their performances to a global audience in real-time. The initiative aims to provide a virtual stage for artists to connect with fans and expand their reach.",
             "skill": 2,
             "points": 28,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6424,7 +6424,7 @@
             "description": "Implement a virtual gear try-on feature on GigGear, enabling users to digitally test musical instruments and equipment before making a purchase or rental decision. The initiative aims to provide an immersive shopping experience for musicians.",
             "skill": 38,
             "points": 62,
-            "status": 2,
+            "status": "Available",
             "is_active": true,
             "claimed_by": null,
             "expertise": [
@@ -6443,7 +6443,7 @@
             "description": "Foster a vibrant community marketplace on GigGear, where musicians can connect, collaborate, and share insights about gear, equipment, and musical experiences. The initiative aims to build a supportive ecosystem for musicians of all levels.",
             "skill": 56,
             "points": 25,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 26,
             "expertise": [
@@ -6464,7 +6464,7 @@
             "description": "Curate expert gear reviews on GigGear, providing valuable insights and recommendations to help musicians make informed decisions about their gear purchases and rentals. The initiative aims to establish GigGear as a trusted resource in the music industry.",
             "skill": 119,
             "points": 71,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 27,
             "expertise": [
@@ -6483,7 +6483,7 @@
             "description": "Develop a mobile app for GigGear, allowing users to access the marketplace and live streaming platform on their smartphones and tablets. The initiative aims to provide flexibility and convenience for musicians who are on the go.",
             "skill": 55,
             "points": 63,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 28,
             "expertise": [
@@ -6503,7 +6503,7 @@
             "description": "Launch an artist spotlight series on GigGear, featuring live performances and interviews with emerging and established musicians. The initiative aims to showcase talent and inspire engagement within the GigGear community.",
             "skill": 104,
             "points": 41,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 29,
             "expertise": [
@@ -6523,7 +6523,7 @@
             "description": "Provide comprehensive gear maintenance resources on GigGear, including tutorials, guides, and tips for keeping musical instruments and equipment in optimal condition. The initiative aims to prolong the lifespan of gear and enhance user satisfaction.",
             "skill": 20,
             "points": 57,
-            "status": 5,
+            "status": "In Review",
             "is_active": true,
             "claimed_by": 30,
             "expertise": [
