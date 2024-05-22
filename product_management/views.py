@@ -173,7 +173,7 @@ class BountyListView(ListView):
         return ["product_management/bounty/list.html"]
 
     def get_queryset(self):
-        filters = Q()
+        filters = ~Q(challenge__status=Challenge.ChallengeStatus.DRAFT)
 
         if expertise := self.request.GET.get("expertise"):
             filters &= Q(expertise=expertise)
@@ -248,7 +248,9 @@ class ProductBountyListView(BaseProductDetailView, ListView):
     def get_queryset(self):
         context = self.get_context_data()
         product = context.get("product")
-        return Bounty.objects.filter(challenge__product=product)
+        return Bounty.objects.filter(challenge__product=product).exclude(
+            challenge__status=Challenge.ChallengeStatus.DRAFT
+        )
 
 
 class ProductChallengesView(BaseProductDetailView, TemplateView):
