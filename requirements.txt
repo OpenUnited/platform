@@ -10,6 +10,7 @@ django-filter==23.5
 django-formtools==2.4.1
 django-jinja==2.10.2
 django-storages==1.14.2
+django-tinymce==4.0.0
 django-treebeard==4.7
 fastapi==0.101.0
 gunicorn==21.1.0

@@ -37,6 +37,7 @@ from .forms import (
     ProductAreaForm,
     ProductAreaAttachmentSet,
     BountyAttachmentFormSet,
+    ContributionAgreementForm,
 )
 from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
@@ -51,6 +52,7 @@ from .models import (
     Expertise,
     Attachment,
     BountyAttachment,
+    ContributionAgreement,
 )
 from commerce.models import Organisation
 from security.models import ProductRoleAssignment, IdeaVote
@@ -1695,6 +1697,87 @@ class DashboardReviewWorkView(LoginRequiredMixin, ListView):
     )
     template_name = "product_management/dashboard/review_work.html"
     login_url = "sign_in"
+
+
+class DashboardContributionAgreementView(LoginRequiredMixin, ListView):
+    model = ContributionAgreement
+    context_object_name = "contribution_agreements"
+    login_url = "sign_in"
+    template_name = "product_management/dashboard/contribution_agreements.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
+    def get_queryset(self):
+        product_slug = self.kwargs.get("product_slug")
+        queryset = ContributionAgreement.objects.filter(
+            product__slug=product_slug
+        ).order_by("-created_at")
+        return queryset
+
+
+class CreateContributionAgreementView(
+    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
+):
+    model = ContributionAgreement
+    form_class = ContributionAgreementForm
+    template_name = "product_management/create_contribution_agreement.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        product_slug = self.kwargs.get("product_slug", None)
+        if product_slug:
+            kwargs.update(
+                initial={"product": Product.objects.get(slug=product_slug)}
+            )
+
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.created_by = request.user.person
+            instance.save()
+
+            print("Saved form.....")
+
+            messages.success(
+                request,
+                _("The contribution agreement is successfully created!"),
+            )
+            self.success_url = reverse(
+                "contribution-agreement-detail",
+                args=(
+                    instance.product.slug,
+                    instance.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class ContributionAgreementView(DetailView):
+    model = ContributionAgreement
+    template_name = "product_management/contribution_agreement_detail.html"
+    context_object_name = "contribution_agreement"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("product_slug")
+        context.update(
+            {
+                "product": Product.objects.get(slug=slug),
+                "pk": self.object.pk,
+            }
+        )
+        return context
 
 
 class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
