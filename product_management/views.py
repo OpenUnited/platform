@@ -58,53 +58,11 @@ from security.models import ProductRoleAssignment, IdeaVote
 from openunited.mixins import HTMXInlineFormValidationMixin
 from django.http import JsonResponse
 
-from .filters import ChallengeFilter
 from product_management import utils
 from utility import utils as global_utils
 import uuid
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-
-
-class ChallengeListView(ListView):
-    model = Challenge
-    context_object_name = "challenges"
-    template_name = "product_management/challenges.html"
-    paginate_by = 8
-    filterset_class = ChallengeFilter
-
-    def get_template_names(self):
-        if self.request.htmx:
-            return [
-                "product_management/partials/challenge_filter_partial.html"
-            ]
-        return super().get_template_names()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["request"] = self.request
-        context["filter"] = self.filterset_class(
-            self.request.GET, queryset=self.get_queryset()
-        )
-
-        return context
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        custom_order = Case(
-            When(status=Challenge.ChallengeStatus.ACTIVE, then=Value(0)),
-            When(status=Challenge.ChallengeStatus.BLOCKED, then=Value(1)),
-            When(status=Challenge.ChallengeStatus.COMPLETED, then=Value(2)),
-            When(status=Challenge.ChallengeStatus.CANCELLED, then=Value(3)),
-        )
-        queryset = queryset.annotate(custom_order=custom_order).order_by(
-            "custom_order", "-id"
-        )
-
-        challenge_filter = self.filterset_class(
-            self.request.GET, queryset=queryset
-        )
-        return challenge_filter.qs
 
 
 class ProductListView(ListView):
