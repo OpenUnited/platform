@@ -191,7 +191,7 @@ class BountyListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["statuses"] = Bounty.BountyStatus.choices
+        context["BountyStatus"] = Bounty.BountyStatus
 
         expertises = []
         if skill := self.request.GET.get("skill"):
@@ -683,6 +683,7 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["BountyStatus"] = Bounty.BountyStatus
         challenge = self.object
         bounties = challenge.bounty_set.all()
         claim_status = BountyClaim.Status
