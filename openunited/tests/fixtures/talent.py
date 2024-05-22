@@ -25,28 +25,19 @@ def skill():
 @pytest.fixture
 def expertise_list(skill):
     return baker.make(
-        "talent.Expertise",
-        skill=skill,
-        _fill_optional=True,
+        "talent.Expertise", skill=skill, _quantity=10, _fill_optional=True
     )
 
 
 @pytest.fixture
 def expertise(skill):
-    return baker.make(
-        "talent.Expertise",
-        skill=skill,
-        _fill_optional=True,
-    )
+    return baker.make("talent.Expertise", skill=skill, _fill_optional=True)
 
 
 @pytest.fixture
 def bounty_claims(bounty, user):
     return baker.make(
-        "talent.BountyClaim",
-        bounty=bounty,
-        person=user,
-        _quantity=10,
+        "talent.BountyClaim", bounty=bounty, person=user, _quantity=10
     )
 
 
@@ -58,9 +49,7 @@ def bounty_claim(bounty, user):
 @pytest.fixture
 def feedback(users):
     return baker.make(
-        "talent.BountyClaim",
-        recipient=users[0],
-        provider=users[0],
+        "talent.BountyClaim", recipient=users[0], provider=users[0]
     )
 
 
