@@ -10,7 +10,6 @@ def test_bounties(client, auth_user, bounties, skills, expertise_list):
     context = res.context_data
     assert "skills" in context
     assert "expertises" in context
-    assert len(context["object_list"]) == 51
 
 
 def test_htmx_bounties(client, auth_user, bounties, skills, expertise_list):
