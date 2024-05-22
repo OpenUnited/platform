@@ -368,7 +368,7 @@ class ChallengeForm(forms.ModelForm):
                 attrs={
                     "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
                 },
-                choices=Challenge.CHALLENGE_STATUS,
+                choices=Challenge.ChallengeStatus.choices,
             ),
         }
 
@@ -381,7 +381,7 @@ class BountyForm(forms.ModelForm):
     challenge = forms.ModelChoiceField(
         empty_label="Select a challenge",
         queryset=Challenge.objects.filter(
-            status=Challenge.CHALLENGE_STATUS_AVAILABLE
+            status=Challenge.ChallengeStatus.ACTIVE
         ),
         widget=forms.Select(
             attrs={
@@ -528,7 +528,7 @@ class InitiativeForm(forms.ModelForm):
                 attrs={
                     "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
                 },
-                choices=Initiative.INITIATIVE_STATUS,
+                choices=Initiative.InitiativeStatus.choices,
             ),
         }
 

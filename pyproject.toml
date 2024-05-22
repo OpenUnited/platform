@@ -35,3 +35,8 @@ env = "GH_TOKEN"
 line-length = 79
 target-version = ['py38','py39','py310','py311']
 include = '\.pyi?$'
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "openunited.settings.test"
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]

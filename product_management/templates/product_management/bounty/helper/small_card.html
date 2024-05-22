@@ -39,7 +39,7 @@
             <div class="text-gray-500">
                 {% set claimed_by = elem.claimed_by %}
 
-                {% if elem.bounty.status == 2 %}
+                {% if elem.bounty.status == BountyStatus.AVAILABLE %}
                     Unclaimed
                 {% elif claimed_by %}
                 <div class="flex items-center text-xs text-black/[0.85]">

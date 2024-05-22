@@ -253,8 +253,8 @@ class TalentPortfolio(TemplateView):
         # todo: check the statuses
         bounty_claims = BountyClaim.objects.filter(
             Q(status=BountyClaim.Status.COMPLETED)
-            | Q(bounty__challenge__status=Challenge.CHALLENGE_STATUS_DONE)
-            | Q(bounty__status=Bounty.BOUNTY_STATUS_CLAIMED),
+            | Q(bounty__challenge__status=Challenge.ChallengeStatus.COMPLETED)
+            | Q(bounty__status=Bounty.BountyStatus.CLAIMED),
             person=person,
         ).select_related("bounty__challenge", "bounty__challenge__product")
 
