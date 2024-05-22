@@ -1,12 +1,17 @@
 import pytest, random
 from model_bakery import baker
-from product_management.models import Product
+from product_management.models import Product, Initiative
 from django.apps import apps
 
 
 @pytest.fixture(autouse=True)
 def enable_db_access_for_all_tests(db):
     print("Enable database access for all tests")
+
+
+@pytest.fixture
+def organisation():
+    return baker.make("commerce.Organisation")
 
 
 @pytest.fixture
@@ -59,13 +64,13 @@ def owned_product(user, content_type, random_string):
 
 
 @pytest.fixture
-def productAreas():
+def product_areas():
     return baker.make("product_management.ProductArea", _quantity=10)
 
 
 @pytest.fixture
-def productArea():
-    return baker.make("product_management.ProductArea")
+def product_area():
+    return baker.make("product_management.ProductArea", _fill_optional=True)
 
 
 @pytest.fixture
@@ -88,19 +93,19 @@ def challenge(owned_product, user):
 
 
 @pytest.fixture
-def product_initiatives(owned_product):
+def product_initiatives(product):
     return baker.make(
         "product_management.Initiative",
-        product=owned_product,
+        product=product,
         _quantity=10,
     )
 
 
 @pytest.fixture
-def product_initiatives(owned_product):
+def product_initiative(owned_product):
     return baker.make(
         "product_management.Initiative",
-        product=owned_product,
+        product=product,
     )
 
 
@@ -159,6 +164,11 @@ def product_bug(owned_product, user):
     )
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def video_link():
+    return "https://www.youtube.com/embed/HlgG395PQWw"
+
+
+@pytest.fixture
+def embed_video_link():
     return "https://www.youtube.com/embed/HlgG395PQWw"
