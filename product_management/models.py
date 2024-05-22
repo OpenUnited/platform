@@ -425,9 +425,9 @@ class Bounty(TimeStampMixin):
     @property
     def has_claimed(self):
         return self.status in [
-            self.BOUNTY_STATUS_CLAIMED,
-            self.BOUNTY_STATUS_DONE,
-            self.BOUNTY_STATUS_IN_REVIEW,
+            self.BountyStatus.COMPLETED,
+            self.BountyStatus.IN_REVIEW,
+            self.BountyStatus.CLAIMED,
         ]
 
     def get_expertise_as_str(self):
