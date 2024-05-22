@@ -164,6 +164,14 @@ services:
 
   `make test`
 
+- Run tests with coverage
+
+  `make cov`
+
+- Run tests with HTML coverage
+
+  `make cov_html`
+
 - Run migrations and migrate
 
   `make migrate`
