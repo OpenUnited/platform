@@ -1,5 +1,5 @@
 exclude: 'docs|node_modules|migrations|.git|.tox'
-default_stages: [commit]
+default_stages: [commit, push]
 fail_fast: true
 
 repos:
@@ -9,7 +9,6 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
