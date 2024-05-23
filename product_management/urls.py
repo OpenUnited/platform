@@ -12,6 +12,9 @@ from . import views
 # URL patterns for challenge and product list views
 urlpatterns = [
     path(
+        "challenges/", views.redirect_challenge_to_bounties, name="challenges"
+    ),
+    path(
         "<str:product_slug>/challenge/create/",
         views.CreateChallengeView.as_view(),
         name="create-challenge",
@@ -175,9 +178,6 @@ urlpatterns += [
         "<str:product_slug>/challenges",
         views.ProductChallengesView.as_view(),
         name="product_challenges",
-    ),
-    path(
-        "challenges/", views.redirect_challenge_to_bounties, name="challenges"
     ),
     path("bounties", views.BountyListView.as_view(), name="bounties"),
     path(
