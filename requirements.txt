@@ -27,12 +27,14 @@ django_htmx==1.17.3
 social-auth-app-django==5.4.1
 django-model-utils==4.5.1
 django_lifecycle==1.2.3
-black==24.4.2
 jsonformat==0.0.11
 platformdirs==4.2.1
 
-# Test dependencies. 
+# Test dependencies.
 playwright==1.43.0
 pytest-django==4.8.0
 model_bakery==1.18.0
 pytest-cov==5.0.0
+
+# Pre-commit hook
+pre-commit==3.7.1
