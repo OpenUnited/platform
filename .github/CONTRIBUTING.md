@@ -199,3 +199,11 @@ services:
 - Format the fixtures located in each app.
 
   `make format_fixtures`
+
+### Pre-commit installation
+
+- Install pre-commit hook
+  
+  `pre-commit install`
+
+  Result: `pre-commit installed at .git/hooks/pre-commit`
