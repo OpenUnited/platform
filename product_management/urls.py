@@ -177,10 +177,9 @@ urlpatterns += [
         name="product_challenges",
     ),
     path(
-        "bounties",
-        views.BountyListView.as_view(),
-        name="bounties",
+        "challenges/", views.redirect_challenge_to_bounties, name="challenges"
     ),
+    path("bounties", views.BountyListView.as_view(), name="bounties"),
     path(
         "<str:product_slug>/bounties",
         views.ProductBountyListView.as_view(),

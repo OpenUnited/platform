@@ -120,6 +120,10 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         return context
 
 
+def redirect_challenge_to_bounties(request):
+    return redirect(reverse("bounties"))
+
+
 class BountyListView(ListView):
     model = Bounty
     context_object_name = "bounties"
