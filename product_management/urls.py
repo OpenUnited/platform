@@ -11,7 +11,6 @@ from . import views
 
 # URL patterns for challenge and product list views
 urlpatterns = [
-    path("challenges/", views.ChallengeListView.as_view(), name="challenges"),
     path(
         "<str:product_slug>/challenge/create/",
         views.CreateChallengeView.as_view(),

@@ -165,12 +165,12 @@ class Initiative(TimeStampMixin, UUIDMixin):
 
     def get_available_challenges_count(self):
         return self.challenge_set.filter(
-            status=Challenge.CHALLENGE_STATUS_AVAILABLE
+            status=Challenge.ChallengeStatus.ACTIVE
         ).count()
 
     def get_completed_challenges_count(self):
         return self.challenge_set.filter(
-            status=Challenge.CHALLENGE_STATUS_DONE
+            status=Challenge.ChallengeStatus.COMPLETED
         ).count()
 
     def get_challenge_tags(self):
