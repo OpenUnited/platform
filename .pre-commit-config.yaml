@@ -27,6 +27,8 @@ repos:
     rev: 23.3.0
     hooks:
       - id: black
+        args: ['--line-length=119']
+
   - repo: local
     hooks:
       - id: check-django-migrations
