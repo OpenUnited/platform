@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from product_management import models as product
 
 
@@ -18,12 +19,13 @@ class InitiativeAdmin(admin.ModelAdmin):
 class ProductAreaAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "video_link", "path"]
     search_fields = ["name", "video_link"]
+    filter_horizontal = ("attachments",)
 
 
-@admin.register(product.ProductAreaAttachment)
-class ProductAreaAttachmentAdmin(admin.ModelAdmin):
-    list_display = ["pk", "file"]
-    search_fields = ["pk", "file"]
+@admin.register(product.FileAttachment)
+class AttachmentAdmin(admin.ModelAdmin):
+    list_display = ["pk", "file", "title", "description"]
+    search_fields = ["pk", "title"]
 
 
 @admin.register(product.Challenge)

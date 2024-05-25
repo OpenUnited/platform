@@ -1,13 +1,10 @@
-from django_lifecycle import (
-    LifecycleModelMixin,
-    hook,
-    BEFORE_CREATE,
-    BEFORE_SAVE,
-)
 from django.db import models
 from django.urls import reverse
-from openunited.mixins import TimeStampMixin, UUIDMixin
 from django.utils.text import slugify
+
+from django_lifecycle import BEFORE_CREATE, BEFORE_SAVE, LifecycleModelMixin, hook
+
+from openunited.mixins import TimeStampMixin, UUIDMixin
 
 
 class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
@@ -37,3 +34,46 @@ class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
 
     def __str__(self):
         return self.name
+
+
+class AttachmentMixin:
+    attachment_model = None
+    attachment_formset_class = None
+
+    def get_attachment_model(self):
+        from product_management.models import FileAttachment
+
+        return FileAttachment
+
+    def get_attachment_formset_class(self):
+        from product_management.forms import AttachmentFormSet
+
+        return AttachmentFormSet
+
+    def get_attachment_queryset(self):
+        return self.object.attachments.all()
+
+    def get_attachment_formset(self):
+        return self.get_attachment_formset_class()(
+            self.request.POST or None,
+            self.request.FILES or None,
+            queryset=self.get_attachment_queryset(),
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["attachment_formset"] = self.get_attachment_formset()
+        return context
+
+    def form_save(self, form):
+        context = self.get_context_data()
+        attachment_formset = context["attachment_formset"]
+        print(attachment_formset.errors)
+        if not form.is_valid() or not attachment_formset.is_valid():
+            return self.form_invalid(form)
+
+        response = super().form_valid(form)
+        if attachments := attachment_formset.save():
+            for attachment in attachments:
+                self.object.attachments.add(attachment)
+        return response

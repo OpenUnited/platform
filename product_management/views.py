@@ -1,68 +1,55 @@
+import uuid
 from typing import Any, Dict
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import redirect, HttpResponse, get_object_or_404
-from django.urls import reverse, reverse_lazy
-from django.db import models
-from django.db.models import Q, Sum, Case, Value, When
-from django.shortcuts import get_object_or_404, HttpResponseRedirect
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.utils.translation import gettext_lazy as _
-from django.shortcuts import render
-from django.contrib.contenttypes.models import ContentType
+
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import BadRequest, PermissionDenied
+from django.db import models
+from django.db.models import Case, Q, Sum, Value, When
+from django.http import HttpRequest, JsonResponse
+from django.shortcuts import HttpResponse, HttpResponseRedirect, get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import (
-    ListView,
-    TemplateView,
-    RedirectView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-    DetailView,
-)
-from django.views import View
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, RedirectView, TemplateView, UpdateView
+
+from commerce.models import Organisation
+from openunited.mixins import HTMXInlineFormValidationMixin
+from product_management import mixins, utils
+from security.models import IdeaVote, ProductRoleAssignment
+from talent.models import BountyClaim, BountyDeliveryAttempt
+from utility import utils as global_utils
 
 from .forms import (
-    BountyClaimForm,
-    IdeaForm,
-    BugForm,
-    ProductForm,
-    OrganisationForm,
-    ChallengeForm,
-    BountyForm,
-    InitiativeForm,
-    ProductAreaForm1,
-    ProductAreaForm,
-    ProductAreaAttachmentSet,
     BountyAttachmentFormSet,
+    BountyClaimForm,
+    BountyForm,
+    BugForm,
+    ChallengeForm,
     ContributionAgreementForm,
+    IdeaForm,
+    InitiativeForm,
+    OrganisationForm,
+    ProductAreaForm,
+    ProductAreaForm1,
+    ProductForm,
 )
-from talent.models import BountyClaim, BountyDeliveryAttempt
 from .models import (
-    Challenge,
-    Product,
-    Initiative,
-    Bounty,
-    ProductArea,
-    Idea,
-    Bug,
-    Skill,
-    Expertise,
     Attachment,
+    Bounty,
     BountyAttachment,
+    Bug,
+    Challenge,
     ContributionAgreement,
+    Expertise,
+    Idea,
+    Initiative,
+    Product,
+    ProductArea,
+    Skill,
 )
-from commerce.models import Organisation
-from security.models import ProductRoleAssignment, IdeaVote
-from openunited.mixins import HTMXInlineFormValidationMixin
-from django.http import JsonResponse
-
-from product_management import utils
-from utility import utils as global_utils
-import uuid
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
 
 
 class ProductListView(ListView):
@@ -77,9 +64,7 @@ class ProductListView(ListView):
 class BaseProductDetailView:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(
-            Product, slug=self.kwargs.get("product_slug", None)
-        )
+        product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
         context["product"] = product
         context["product_slug"] = product.slug
         return context
@@ -99,24 +84,18 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = context["product"]
-        challenges = Challenge.objects.filter(
-            product=product, status=Challenge.ChallengeStatus.ACTIVE
-        )
+        challenges = Challenge.objects.filter(product=product, status=Challenge.ChallengeStatus.ACTIVE)
         product_role_assignments = ProductRoleAssignment.objects.filter(
             Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
         )
         if self.request.user.is_authenticated:
-            context["can_modify_product"] = product_role_assignments.filter(
-                person=self.request.user.person
-            ).exists()
+            context["can_modify_product"] = product_role_assignments.filter(person=self.request.user.person).exists()
 
         else:
             context["can_modify_product"] = False
 
         context["challenges"] = challenges
-        context["tree_data"] = [
-            utils.serialize_tree(node) for node in ProductArea.get_root_nodes()
-        ]
+        context["tree_data"] = [utils.serialize_tree(node) for node in ProductArea.get_root_nodes()]
         return context
 
 
@@ -145,11 +124,7 @@ class BountyListView(ListView):
 
         if skill := self.request.GET.get("skill"):
             filters &= Q(skill=skill)
-        return (
-            Bounty.objects.filter(filters)
-            .select_related("challenge", "skill")
-            .prefetch_related("expertise")
-        )
+        return Bounty.objects.filter(filters).select_related("challenge", "skill").prefetch_related("expertise")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -159,14 +134,8 @@ class BountyListView(ListView):
         if skill := self.request.GET.get("skill"):
             expertises = Expertise.get_roots().filter(skill=skill)
 
-        context["skills"] = [
-            global_utils.serialize_other_type_tree(skill)
-            for skill in Skill.get_roots()
-        ]
-        context["expertises"] = [
-            global_utils.serialize_other_type_tree(expertise)
-            for expertise in expertises
-        ]
+        context["skills"] = [global_utils.serialize_other_type_tree(skill) for skill in Skill.get_roots()]
+        context["expertises"] = [global_utils.serialize_other_type_tree(expertise) for expertise in expertises]
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -228,9 +197,7 @@ class ProductChallengesView(BaseProductDetailView, TemplateView):
             When(status=Challenge.ChallengeStatus.COMPLETED, then=Value(2)),
             When(status=Challenge.ChallengeStatus.CANCELLED, then=Value(3)),
         )
-        challenges = challenges.annotate(custom_order=custom_order).order_by(
-            "custom_order"
-        )
+        challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
         context["challenges"] = challenges
         return context
 
@@ -240,14 +207,10 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        initiatives = Initiative.objects.filter(
-            product=context["product"]
-        ).annotate(
+        initiatives = Initiative.objects.filter(product=context["product"]).annotate(
             total_points=Sum(
                 "challenge__bounty__points",
-                filter=models.Q(
-                    challenge__bounty__status=Bounty.BountyStatus.AVAILABLE
-                )
+                filter=models.Q(challenge__bounty__status=Bounty.BountyStatus.AVAILABLE)
                 & models.Q(challenge__bounty__is_active=True),
             )
         )
@@ -267,9 +230,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = utils.has_product_modify_permission(
-            self.request.user, context["product"]
-        )
+        context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
         return context
 
     # @utils.modify_permission_required
@@ -313,7 +274,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         return render(request, self.get_template_names(), context)
 
 
-class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
+class ProductAreaDetailUpdateView(BaseProductDetailView, mixins.AttachmentMixin, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = ProductAreaForm
@@ -321,54 +282,36 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
         product_area = self.get_object()
-        return reverse(
-            "product_area_update", args=(product_slug, product_area.pk)
-        )
+        return reverse("product_area_update", args=(product_slug, product_area.pk))
+
+    def get_template_names(self):
+        request = self.request
+        if request.htmx:
+            return "product_management/tree_helper/update_node_partial.html"
+        else:
+            return super().get_template_names()
 
     def get_context_data(self, **kwargs):
         product = Product.objects.get(slug=self.kwargs.get("product_slug"))
-        product_perm = utils.has_product_modify_permission(
-            self.request.user, product
-        )
+        product_perm = utils.has_product_modify_permission(self.request.user, product)
         product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
-
-        attachment_formset = ProductAreaAttachmentSet(
-            self.request.POST or None,
-            self.request.FILES or None,
-            instance=product_area,
-        )
         challenges = Challenge.objects.filter(product_area=product_area)
 
-        form = ProductAreaForm(
-            instance=product_area, can_modify_product=product_perm
+        form = ProductAreaForm(instance=product_area, can_modify_product=product_perm)
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "product": product,
+                "product_slug": product.slug,
+                "can_modify_product": product_perm,
+                "form": form,
+                "challenges": challenges,
+                "product_area": product_area,
+                "margin_left": int(self.request.GET.get("margin_left", 0)) + 4,
+                "depth": int(self.request.GET.get("depth", 0)),
+            }
         )
-        return {
-            "product": product,
-            "product_slug": product.slug,
-            "can_modify_product": product_perm,
-            "form": form,
-            "attachment_formset": attachment_formset,
-            "challenges": challenges,
-            "product_area": product_area,
-        }
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
-        context["depth"] = int(request.GET.get("depth", 0))
-
-        if request.htmx and request.GET.get("is_attachment", False):
-            template_name = (
-                "product_management/product_area_detail_helper/empty_form.html"
-            )
-        elif request.htmx:
-            template_name = (
-                "product_management/tree_helper/update_node_partial.html"
-            )
-        else:
-            template_name = "product_management/product_area_detail.html"
-
-        return render(request, template_name, context)
+        return context
 
     def form_valid(self, form):
         request = self.request
@@ -393,36 +336,22 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, UpdateView):
 
             context["parent_id"] = int(request.POST.get("parent_id", 0))
             context["depth"] = int(request.POST.get("depth", 0))
-            context["descendants"] = utils.serialize_tree(product_area)[
-                "children"
-            ]
+            context["descendants"] = utils.serialize_tree(product_area)["children"]
             context["product"] = product
-            template_name = (
-                "product_management/tree_helper/add_node_partial.html"
-            )
+            template_name = "product_management/tree_helper/add_node_partial.html"
             return render(request, template_name, context)
         else:
-            attachment_formset = context["attachment_formset"]
-            if form.is_valid() and attachment_formset.is_valid():
-                obj = form.save()
-                attachment_formset.instance = obj
-                attachment_formset.save()
-
-            return super().form_valid(form)
+            return super().form_save(form)
 
 
 class ProductAreaDetailDeleteView(View):
     def delete(self, request, *args, **kwargs):
         product_area = ProductArea.objects.get(pk=kwargs.get("pk"))
         if product_area.numchild > 0:
-            return JsonResponse(
-                {"error": "Unable to delete a node with a child."}, status=400
-            )
+            return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
 
         product_area.delete()
-        return JsonResponse(
-            {"message": "The node has been deleted successfully"}, status=204
-        )
+        return JsonResponse({"message": "The node has been deleted successfully"}, status=204)
 
 
 class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
@@ -430,13 +359,9 @@ class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = utils.has_product_modify_permission(
-            self.request.user, context["product"]
-        )
+        context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
         capability_root_trees = ProductArea.get_root_nodes()
-        context["tree_data"] = [
-            utils.serialize_tree(node) for node in capability_root_trees
-        ]
+        context["tree_data"] = [utils.serialize_tree(node) for node in capability_root_trees]
 
         return context
 
@@ -473,19 +398,13 @@ def update_node(request, pk):
     elif request.method == "GET":
         context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
         context["depth"] = int(request.GET.get("depth", 0))
-        template_name = (
-            "product_management/tree_helper/update_node_partial.html"
-        )
+        template_name = "product_management/tree_helper/update_node_partial.html"
 
     elif request.method == "DELETE":
         if product_area.numchild > 0:
-            return JsonResponse(
-                {"error": "Unable to delete a node with a child."}, status=400
-            )
+            return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
         ProductArea.objects.filter(pk=pk).delete()
-        return JsonResponse(
-            {"message:": "The node has deleted successfully"}, status=204
-        )
+        return JsonResponse({"message:": "The node has deleted successfully"}, status=204)
 
     return render(request, template_name, context)
 
@@ -503,9 +422,7 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         if user.is_authenticated:
             for idea in Idea.objects.filter(product=product):
                 num_votes = IdeaVote.objects.filter(idea=idea).count()
-                user_has_voted = IdeaVote.objects.filter(
-                    voter=user, idea=idea
-                ).exists()
+                user_has_voted = IdeaVote.objects.filter(voter=user, idea=idea).exists()
                 ideas_with_votes.append(
                     {
                         "idea_obj": idea,
@@ -586,18 +503,14 @@ class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     model = Idea
     form_class = IdeaForm
 
-    def get(
-        self, request: HttpRequest, *args: str, **kwargs: Any
-    ) -> HttpResponse:
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         idea_pk = kwargs.get("pk")
         idea = Idea.objects.get(pk=idea_pk)
-        form = IdeaForm(request.GET, instance=idea)
+        IdeaForm(request.GET, instance=idea)
 
         return super().get(request, *args, **kwargs)
 
-    def post(
-        self, request: HttpRequest, *args: str, **kwargs: Any
-    ) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         idea_pk = kwargs.get("pk")
         idea = Idea.objects.get(pk=idea_pk)
 
@@ -620,9 +533,7 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
 
         context.update(
             {
-                "product_people": ProductRoleAssignment.objects.filter(
-                    product=product
-                ),
+                "product_people": ProductRoleAssignment.objects.filter(product=product),
             }
         )
 
@@ -678,18 +589,12 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     role=ProductRoleAssignment.PRODUCT_ADMIN,
                 ).exists()
 
-                bounty_claim = bounty.bountyclaim_set.filter(
-                    person=person
-                ).first()
+                bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
 
                 if bounty.status == Bounty.BountyStatus.AVAILABLE:
                     data["can_be_claimed"] = not bounty_claim
 
-                if (
-                    bounty_claim
-                    and bounty_claim.status == claim_status.REQUESTED
-                    and not bounty.claimed_by
-                ):
+                if bounty_claim and bounty_claim.status == claim_status.REQUESTED and not bounty.claimed_by:
                     data["created_bounty_claim_request"] = True
                     data["bounty_claim"] = bounty_claim
 
@@ -698,23 +603,17 @@ class ChallengeDetailView(BaseProductDetailView, DetailView):
                     data["can_be_claimed"] = True
 
             data["show_actions"] = (
-                data["can_be_claimed"]
-                or data["can_be_modified"]
-                or data["created_bounty_claim_request"]
+                data["can_be_claimed"] or data["can_be_modified"] or data["created_bounty_claim_request"]
             )
             data["status"] = bounty.status
             extra_data.append(data)
 
         context["bounty_data"] = extra_data
-        context["does_have_permission"] = utils.has_product_modify_permission(
-            user, context.get("product")
-        )
+        context["does_have_permission"] = utils.has_product_modify_permission(user, context.get("product"))
         return context
 
 
-class CreateInitiativeView(
-    LoginRequiredMixin, BaseProductDetailView, CreateView
-):
+class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
     form_class = InitiativeForm
     template_name = "product_management/create_initiative.html"
     login_url = "sign_in"
@@ -782,14 +681,10 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
                 root = ProductArea.add_root(name=name, description=description)
                 root.product.add(product)
             elif creation_method == "2":
-                sibling = ProductArea.add_sibling(
-                    name=name, description=description
-                )
+                sibling = ProductArea.add_sibling(name=name, description=description)
                 sibling.product.add(product)
             elif creation_method == "3":
-                sibling = capability.add_child(
-                    name=name, description=description
-                )
+                sibling = capability.add_child(name=name, description=description)
                 capability.add_child(sibling)
 
             return redirect(
@@ -810,9 +705,7 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["challenges"] = Challenge.objects.filter(
-            product_area=self.object
-        )
+        context["challenges"] = Challenge.objects.filter(product_area=self.object)
 
         return context
 
@@ -864,9 +757,7 @@ class CreateProductView(LoginRequiredMixin, CreateView):
                 product=instance,
                 role=ProductRoleAssignment.PRODUCT_ADMIN,
             )
-            self.success_url = reverse(
-                "product_summary", args=(instance.slug,)
-            )
+            self.success_url = reverse("product_summary", args=(instance.slug,))
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -882,21 +773,13 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
         self.object = self.get_object()
 
         # case when owner is the user
-        if (
-            self.object.content_type_id
-            == ContentType.objects.get_for_model(self.request.user.person).id
-        ):
+        if self.object.content_type_id == ContentType.objects.get_for_model(self.request.user.person).id:
             initial_make_me_owner = self.object.object_id == request.user.id
             initial = {"make_me_owner": initial_make_me_owner}
 
         # case when owner is an organisation
-        if (
-            self.object.content_type_id
-            == ContentType.objects.get_for_model(Organisation).id
-        ):
-            initial_organisation = Organisation.objects.filter(
-                id=self.object.object_id
-            ).first()
+        if self.object.content_type_id == ContentType.objects.get_for_model(Organisation).id:
+            initial_organisation = Organisation.objects.filter(id=self.object.object_id).first()
             initial = {"organisation": initial_organisation}
 
         form = self.form_class(instance=self.object, initial=initial)
@@ -908,22 +791,16 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(
-            request.POST, request.FILES, instance=self.object, request=request
-        )
+        form = self.form_class(request.POST, request.FILES, instance=self.object, request=request)
         if form.is_valid():
             instance = form.save()
-            self.success_url = reverse(
-                "product_summary", args=(instance.slug,)
-            )
+            self.success_url = reverse("product_summary", args=(instance.slug,))
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
 
 
-class CreateOrganisationView(
-    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
-):
+class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
     model = Organisation
     form_class = OrganisationForm
     template_name = "product_management/create_organisation.html"
@@ -943,9 +820,7 @@ class CreateOrganisationView(
         return super().post(request, *args, **kwargs)
 
 
-class CreateChallengeView(
-    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
-):
+class CreateChallengeView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
@@ -955,9 +830,7 @@ class CreateChallengeView(
         kwargs = super().get_form_kwargs(*args, **kwargs)
         product_slug = self.kwargs.get("product_slug", None)
         if product_slug:
-            kwargs.update(
-                initial={"product": Product.objects.get(slug=product_slug)}
-            )
+            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
 
         return kwargs
 
@@ -970,13 +843,9 @@ class CreateChallengeView(
 
             if request.FILES:
                 for file in request.FILES.getlist("attachments"):
-                    instance.attachment.add(
-                        Attachment.objects.create(file=file)
-                    )
+                    instance.attachment.add(Attachment.objects.create(file=file))
 
-            messages.success(
-                request, _("The challenge is successfully created!")
-            )
+            messages.success(request, _("The challenge is successfully created!"))
             self.success_url = reverse(
                 "challenge_detail",
                 args=(
@@ -989,9 +858,7 @@ class CreateChallengeView(
         return super().post(request, *args, **kwargs)
 
 
-class UpdateChallengeView(
-    LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView
-):
+class UpdateChallengeView(LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/update_challenge.html"
@@ -1001,9 +868,7 @@ class UpdateChallengeView(
         kwargs = super().get_form_kwargs(*args, **kwargs)
         product_slug = self.kwargs.get("product_slug", None)
         if product_slug:
-            kwargs.update(
-                initial={"product": Product.objects.get(slug=product_slug)}
-            )
+            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
 
         return kwargs
 
@@ -1013,20 +878,14 @@ class UpdateChallengeView(
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = self.form_class(
-            request.POST, request.FILES, instance=self.object
-        )
+        form = self.form_class(request.POST, request.FILES, instance=self.object)
 
         if form.is_valid():
             instance = form.save()
             if request.FILES:
                 for file in request.FILES.getlist("attachments"):
-                    instance.attachment.add(
-                        Attachment.objects.create(file=file)
-                    )
-            messages.success(
-                request, _("The challenge is successfully updated!")
-            )
+                    instance.attachment.add(Attachment.objects.create(file=file))
+            messages.success(request, _("The challenge is successfully updated!"))
 
             self.success_url = reverse(
                 "challenge_detail",
@@ -1048,19 +907,12 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         challenge_obj = self.get_object()
         person = request.user.person
-        if (
-            challenge_obj.can_delete_challenge(person)
-            or challenge_obj.created_by == person
-        ):
+        if challenge_obj.can_delete_challenge(person) or challenge_obj.created_by == person:
             Challenge.objects.get(pk=challenge_obj.pk).delete()
-            messages.success(
-                request, _("The challenge is successfully deleted!")
-            )
+            messages.success(request, _("The challenge is successfully deleted!"))
             return redirect(self.success_url)
         else:
-            messages.error(
-                request, _("You do not have rights to remove this challenge.")
-            )
+            messages.error(request, _("You do not have rights to remove this challenge."))
 
             return redirect(
                 reverse(
@@ -1081,9 +933,7 @@ class DashboardBaseView(LoginRequiredMixin):
 
         person = self.request.user.person
         photo_url = person.get_photo_url()
-        product_queryset = Product.objects.filter(
-            content_type__model="person", object_id=person.id
-        )
+        product_queryset = Product.objects.filter(content_type__model="person", object_id=person.id)
         context.update(
             {
                 "person": person,
@@ -1101,16 +951,12 @@ class DashboardView(DashboardBaseView, TemplateView):
         context = super().get_context_data(**kwargs)
 
         person = context.get("person")
-        active_bounty_claims = BountyClaim.objects.filter(
-            person=person, status=BountyClaim.Status.GRANTED
+        active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
+        product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
+            role=ProductRoleAssignment.CONTRIBUTOR
         )
-        product_roles_queryset = ProductRoleAssignment.objects.filter(
-            person=person
-        ).exclude(role=ProductRoleAssignment.CONTRIBUTOR)
 
-        product_ids = product_roles_queryset.values_list(
-            "product_id", flat=True
-        )
+        product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
         context.update(
             {
@@ -1128,15 +974,11 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         context = super().get_context_data(**kwargs)
 
         person = context.get("person")
-        active_bounty_claims = BountyClaim.objects.filter(
-            person=person, status=BountyClaim.Status.GRANTED
+        active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
+        product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
+            role=ProductRoleAssignment.CONTRIBUTOR
         )
-        product_roles_queryset = ProductRoleAssignment.objects.filter(
-            person=person
-        ).exclude(role=ProductRoleAssignment.CONTRIBUTOR)
-        product_ids = product_roles_queryset.values_list(
-            "product_id", flat=True
-        )
+        product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
         context.update(
             {
@@ -1193,13 +1035,7 @@ class DashboardProductDetailView(DashboardBaseView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "challenges": Challenge.objects.filter(
-                    product=self.object
-                ).order_by("-created_at")
-            }
-        )
+        context.update({"challenges": Challenge.objects.filter(product=self.object).order_by("-created_at")})
         return context
 
 
@@ -1218,9 +1054,7 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        queryset = Challenge.objects.filter(
-            product__slug=product_slug
-        ).order_by("-created_at")
+        queryset = Challenge.objects.filter(product__slug=product_slug).order_by("-created_at")
         return queryset
 
 
@@ -1258,9 +1092,7 @@ class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
         # Handle search
         query_parameter = request.GET.get("search-challenge")
         if query_parameter:
-            queryset = Challenge.objects.filter(
-                title__icontains=query_parameter
-            )
+            queryset = Challenge.objects.filter(title__icontains=query_parameter)
 
         context.update({"challenges": queryset})
 
@@ -1323,9 +1155,7 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         # Handle search
         query_parameter = request.GET.get("search-bounty")
         if query_parameter:
-            queryset = Bounty.objects.filter(
-                challenge__title__icontains=query_parameter
-            )
+            queryset = Bounty.objects.filter(challenge__title__icontains=query_parameter)
 
         context.update({"bounties": queryset})
 
@@ -1350,15 +1180,9 @@ class BountyDetailView(DetailView):
         bounty_claim = None
         if user.is_authenticated:
             person = user.person
-            _bounty_claim = bounty.bountyclaim_set.filter(
-                person=person
-            ).first()
+            _bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
 
-            if (
-                _bounty_claim
-                and _bounty_claim.status == BountyClaim.Status.REQUESTED
-                and not bounty.claimed_by
-            ):
+            if _bounty_claim and _bounty_claim.status == BountyClaim.Status.REQUESTED and not bounty.claimed_by:
                 created_bounty_claim_request = True
                 bounty_claim = _bounty_claim
 
@@ -1376,13 +1200,9 @@ class BountyDetailView(DetailView):
                 "product": product,
                 "challenge": challenge,
                 "claimed_by": bounty.claimed_by,
-                "attachments": list(
-                    BountyAttachment.objects.filter(bounty=bounty)
-                ),
+                "attachments": list(BountyAttachment.objects.filter(bounty=bounty)),
                 "bounty_claim": bounty_claim,
-                "show_actions": created_bounty_claim_request
-                or can_be_claimed
-                or can_be_modified,
+                "show_actions": created_bounty_claim_request or can_be_claimed or can_be_modified,
                 "can_be_claimed": can_be_claimed,
                 "can_be_modified": can_be_modified,
                 "is_product_admin": True,
@@ -1412,26 +1232,18 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, CreateView):
             self.request.POST or None,
             self.request.FILES or None,
         )
-        context["challenge"] = Challenge.objects.get(
-            pk=self.kwargs.get("challenge_id")
-        )
+        context["challenge"] = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
 
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["challenge_queryset"] = Challenge.objects.filter(
-            pk=self.kwargs.get("challenge_id")
-        )
+        kwargs["challenge_queryset"] = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
         return kwargs
 
     def post(self, request, *args, **kwargs):
-        challenge_queryset = Challenge.objects.filter(
-            pk=self.kwargs.get("challenge_id")
-        )
-        form = self.form_class(
-            request.POST, challenge_queryset=challenge_queryset
-        )
+        challenge_queryset = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
+        form = self.form_class(request.POST, challenge_queryset=challenge_queryset)
         if form.is_valid():
             instance = form.save(commit=False)
             challenge = form.cleaned_data.get("challenge")
@@ -1447,11 +1259,7 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, CreateView):
                 attachment_formset.instance = instance
                 attachment_formset.save()
 
-            instance.expertise.add(
-                *Expertise.objects.filter(
-                    id__in=form.cleaned_data.get("selected_expertise_ids")
-                )
-            )
+            instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("selected_expertise_ids")))
             instance.save()
 
             self.success_url = reverse(
@@ -1487,16 +1295,12 @@ class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["challenge_queryset"] = Challenge.objects.filter(
-            pk=self.kwargs.get("challenge_id")
-        )
+        kwargs["challenge_queryset"] = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
         return kwargs
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        challenge_queryset = Challenge.objects.filter(
-            pk=self.kwargs.get("challenge_id")
-        )
+        challenge_queryset = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
         form = self.form_class(
             request.POST,
             instance=self.object,
@@ -1519,11 +1323,7 @@ class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, UpdateView):
             attachment_formset.instance = instance
             attachment_formset.save()
 
-        instance.expertise.add(
-            *Expertise.objects.filter(
-                id__in=form.cleaned_data.get("selected_expertise_ids")
-            )
-        )
+        instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("selected_expertise_ids")))
         instance.save()
 
         self.success_url = reverse(
@@ -1561,15 +1361,11 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
         if instance.status == BountyClaim.Status.REQUESTED:
             instance.status = BountyClaim.Status.CANCELLED
             instance.save()
-            messages.success(
-                request, _("The bounty claim is successfully deleted.")
-            )
+            messages.success(request, _("The bounty claim is successfully deleted."))
         else:
             messages.error(
                 request,
-                _(
-                    "Only the active claims can be deleted. The bounty claim did not deleted."
-                ),
+                _("Only the active claims can be deleted. The bounty claim did not deleted."),
             )
 
         return redirect(self.success_url)
@@ -1604,9 +1400,7 @@ def bounty_claim_actions(request, pk):
 
         # If one claim is accepted for a particular challenge, the other claims automatically fails.
         challenge = instance.bounty.challenge
-        _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(
-            status=BountyClaim.Status.REJECTED
-        )
+        _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(status=BountyClaim.Status.REJECTED)
     elif action_type == "reject":
         instance.status = BountyClaim.Status.REJECTED
     else:
@@ -1625,9 +1419,7 @@ def bounty_claim_actions(request, pk):
 class DashboardReviewWorkView(LoginRequiredMixin, ListView):
     model = BountyDeliveryAttempt
     context_object_name = "bounty_deliveries"
-    queryset = BountyDeliveryAttempt.objects.filter(
-        kind=BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
-    )
+    queryset = BountyDeliveryAttempt.objects.filter(kind=BountyDeliveryAttempt.SUBMISSION_TYPE_NEW)
     template_name = "product_management/dashboard/review_work.html"
     login_url = "sign_in"
 
@@ -1646,15 +1438,11 @@ class DashboardContributionAgreementView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        queryset = ContributionAgreement.objects.filter(
-            product__slug=product_slug
-        ).order_by("-created_at")
+        queryset = ContributionAgreement.objects.filter(product__slug=product_slug).order_by("-created_at")
         return queryset
 
 
-class CreateContributionAgreementView(
-    LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView
-):
+class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
     model = ContributionAgreement
     form_class = ContributionAgreementForm
     template_name = "product_management/create_contribution_agreement.html"
@@ -1664,9 +1452,7 @@ class CreateContributionAgreementView(
         kwargs = super().get_form_kwargs(*args, **kwargs)
         product_slug = self.kwargs.get("product_slug", None)
         if product_slug:
-            kwargs.update(
-                initial={"product": Product.objects.get(slug=product_slug)}
-            )
+            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
 
         return kwargs
 
@@ -1752,8 +1538,7 @@ class ProductBugDetail(BaseProductDetailView, DetailView):
         if self.request.user.is_authenticated:
             context.update(
                 {
-                    "actions_available": self.object.person
-                    == self.request.user.person,
+                    "actions_available": self.object.person == self.request.user.person,
                 }
             )
         else:
@@ -1768,9 +1553,7 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     model = Bug
     form_class = BugForm
 
-    def get(
-        self, request: HttpRequest, *args: str, **kwargs: Any
-    ) -> HttpResponse:
+    def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         bug_pk = kwargs.get("pk")
         bug = Bug.objects.get(pk=bug_pk)
 
@@ -1779,9 +1562,7 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
 
         return super().get(request, *args, **kwargs)
 
-    def post(
-        self, request: HttpRequest, *args: str, **kwargs: Any
-    ) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         bug_pk = kwargs.get("pk")
         bug = Bug.objects.get(pk=bug_pk)
 
@@ -1798,9 +1579,7 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
 @login_required(login_url="sign_in")
 def cast_vote_for_idea(request, pk):
     idea = Idea.objects.get(pk=pk)
-    user_has_voted = IdeaVote.objects.filter(
-        idea=idea, voter=request.user
-    ).exists()
+    user_has_voted = IdeaVote.objects.filter(idea=idea, voter=request.user).exists()
     if user_has_voted:
         IdeaVote.objects.get(idea=idea, voter=request.user).delete()
     else:

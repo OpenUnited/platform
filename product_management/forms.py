@@ -1,30 +1,31 @@
 import json
 from datetime import date
+
 from django import forms
-from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
-from django.urls import reverse_lazy
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.forms import inlineformset_factory, modelformset_factory
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+
 from tinymce.widgets import TinyMCE
 
-from openunited.forms import MultipleFileField
 from commerce.models import Organisation
+from openunited.forms import MultipleFileField
 from talent.models import BountyClaim, Person
+
 from .models import (
-    Idea,
-    Bug,
-    Product,
-    Challenge,
     Bounty,
-    Initiative,
-    ProductArea,
-    ProductAreaAttachment,
     BountyAttachment,
+    Bug,
+    Challenge,
     ContributionAgreement,
+    FileAttachment,
+    Idea,
+    Initiative,
+    Product,
+    ProductArea,
 )
-from django import forms
-from django.forms import inlineformset_factory
 
 
 class DateInput(forms.DateInput):
@@ -32,9 +33,7 @@ class DateInput(forms.DateInput):
 
 
 class BountyClaimForm(forms.ModelForm):
-    are_terms_accepted = forms.BooleanField(
-        label=_("I accept the terms and conditions")
-    )
+    are_terms_accepted = forms.BooleanField(label=_("I accept the terms and conditions"))
 
     class Meta:
         model = BountyClaim
@@ -51,9 +50,7 @@ class BountyClaimForm(forms.ModelForm):
         finish_date = self.cleaned_data.get("expected_finish_date")
 
         if finish_date < date.today():
-            raise ValidationError(
-                _("Expected finish date cannot be earlier than today")
-            )
+            raise ValidationError(_("Expected finish date cannot be earlier than today"))
 
         return finish_date
 
@@ -65,13 +62,19 @@ class IdeaForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Write the title of your idea",
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Describe your idea in detail",
                 }
             ),
@@ -85,13 +88,19 @@ class BugForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Write the title of the bug",
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Describe the bug in detail",
                 }
             ),
@@ -109,7 +118,10 @@ class ProductForm(forms.ModelForm):
         label="Organisations",
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                ),
             }
         ),
     )
@@ -162,14 +174,10 @@ class ProductForm(forms.ModelForm):
             return cleaned_data
 
         if make_me_owner:
-            cleaned_data["content_type"] = ContentType.objects.get_for_model(
-                self.request.user.person
-            )
+            cleaned_data["content_type"] = ContentType.objects.get_for_model(self.request.user.person)
             cleaned_data["object_id"] = self.request.user.id
         else:
-            cleaned_data["content_type"] = ContentType.objects.get_for_model(
-                organisation
-            )
+            cleaned_data["content_type"] = ContentType.objects.get_for_model(organisation)
             cleaned_data["object_id"] = organisation.id
 
         return cleaned_data
@@ -183,7 +191,11 @@ class ProductForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                     "autocomplete": "none",
                     "hx-post": reverse_lazy("create-product"),
                     "hx-trigger": "input delay:100ms",
@@ -194,28 +206,48 @@ class ProductForm(forms.ModelForm):
             ),
             "short_description": forms.TextInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                 }
             ),
             "full_description": forms.Textarea(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                 }
             ),
             "website": forms.URLInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                 }
             ),
             "detail_url": forms.URLInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                     "placeholder": "",
                 }
             ),
             "video_url": forms.URLInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                     "placeholder": "",
                 }
             ),
@@ -226,7 +258,10 @@ class ProductForm(forms.ModelForm):
             ),
             "photo": forms.FileInput(
                 attrs={
-                    "class": "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50",
+                    "class": (
+                        "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1"
+                        " ring-inset ring-gray-300 hover:bg-gray-50"
+                    ),
                 }
             ),
             "attachment": forms.FileInput(
@@ -259,7 +294,11 @@ class OrganisationForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                     "hx-post": reverse_lazy("create-organisation"),
                     "hx-trigger": "input",
                     "hx-target": "#organisation-name-errors",
@@ -269,7 +308,11 @@ class OrganisationForm(forms.ModelForm):
             ),
             "username": forms.TextInput(
                 attrs={
-                    "class": "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
+                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        " sm:text-sm sm:leading-6"
+                    ),
                     "hx-post": reverse_lazy("create-organisation"),
                     "hx-trigger": "input",
                     "hx-target": "#organisation-username-errors",
@@ -279,7 +322,10 @@ class OrganisationForm(forms.ModelForm):
             ),
             "photo": forms.FileInput(
                 attrs={
-                    "class": "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50",
+                    "class": (
+                        "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1"
+                        " ring-inset ring-gray-300 hover:bg-gray-50"
+                    ),
                 }
             ),
         }
@@ -296,9 +342,7 @@ class OrganisationForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get("username")
 
-        if Organisation.objects.filter(
-            username=username
-        ) or Person.objects.filter(user__username=username):
+        if Organisation.objects.filter(username=username) or Person.objects.filter(user__username=username):
             raise ValidationError(_("This username is already taken."))
 
         return username
@@ -310,7 +354,10 @@ class ChallengeForm(forms.ModelForm):
         queryset=Product.objects.all(),
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                ),
             }
         ),
     )
@@ -326,9 +373,7 @@ class ChallengeForm(forms.ModelForm):
             product = initial.get("product", None)
             if product:
                 self.fields["product"].empty_label = None
-                self.fields["product"].queryset = Product.objects.filter(
-                    id=product.id
-                )
+                self.fields["product"].queryset = Product.objects.filter(id=product.id)
                 self.fields["product"].initial = product
 
     class Meta:
@@ -345,12 +390,19 @@ class ChallengeForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                        " sm:leading-6"
+                    )
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "pt-2 px-2 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-2 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                 }
             ),
             "reward_type": forms.RadioSelect(
@@ -360,13 +412,19 @@ class ChallengeForm(forms.ModelForm):
             ),
             "priority": forms.Select(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    ),
                 },
                 choices=Challenge.CHALLENGE_PRIORITY,
             ),
             "status": forms.Select(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    ),
                 },
                 choices=Challenge.ChallengeStatus.choices,
             ),
@@ -380,24 +438,21 @@ class ChallengeForm(forms.ModelForm):
 class BountyForm(forms.ModelForm):
     challenge = forms.ModelChoiceField(
         empty_label="Select a challenge",
-        queryset=Challenge.objects.filter(
-            status=Challenge.ChallengeStatus.ACTIVE
-        ),
+        queryset=Challenge.objects.filter(status=Challenge.ChallengeStatus.ACTIVE),
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                ),
             }
         ),
     )
     selected_skill_ids = forms.CharField(
-        widget=forms.HiddenInput(
-            attrs={"id": "selected-skills", "name": "selected-skills"}
-        )
+        widget=forms.HiddenInput(attrs={"id": "selected-skills", "name": "selected-skills"})
     )
     selected_expertise_ids = forms.CharField(
-        widget=forms.HiddenInput(
-            attrs={"id": "selected-expert", "name": "selected-expert"}
-        )
+        widget=forms.HiddenInput(attrs={"id": "selected-expert", "name": "selected-expert"})
     )
 
     def __init__(self, *args, **kwargs):
@@ -430,24 +485,39 @@ class BountyForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                        " sm:leading-6"
+                    ),
                     "placeholder": "Enter the title here ...",
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                        " sm:leading-6"
+                    ),
                     "placeholder": "Describe the bounty",
                 }
             ),
             "points": forms.NumberInput(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                        " sm:leading-6"
+                    )
                 }
             ),
             "status": forms.Select(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    ),
                 }
             ),
             "is_active": forms.CheckboxInput(
@@ -457,9 +527,7 @@ class BountyForm(forms.ModelForm):
             ),
         }
 
-        help_texts = {
-            "is_active": "Display this bounty under the challenge that is created for."
-        }
+        help_texts = {"is_active": "Display this bounty under the challenge that is created for."}
 
         labels = {
             "is_active": "Is Active",
@@ -490,7 +558,10 @@ class InitiativeForm(forms.ModelForm):
         queryset=Product.objects.all(),
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                ),
             }
         ),
     )
@@ -501,9 +572,7 @@ class InitiativeForm(forms.ModelForm):
 
         if self.slug:
             queryset = Product.objects.filter(slug=self.slug)
-            self.fields["product"].queryset = Product.objects.filter(
-                slug=self.slug
-            )
+            self.fields["product"].queryset = Product.objects.filter(slug=self.slug)
             self.fields["product"].initial = queryset.first()
 
     class Meta:
@@ -514,19 +583,28 @@ class InitiativeForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Initiative Name",
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Describe your initiative in detail",
                 }
             ),
             "status": forms.Select(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    ),
                 },
                 choices=Initiative.InitiativeStatus.choices,
             ),
@@ -547,61 +625,67 @@ class ProductAreaForm(forms.ModelForm):
 
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "Enter name here"}),
-            "video_link": forms.TextInput(
-                attrs={"placeholder": "Enter video link here"}
-            ),
-            "video_name": forms.TextInput(
-                attrs={"placeholder": "Enter video video_name here"}
-            ),
-            "video_duration": forms.TextInput(
-                attrs={"placeholder": "Enter video video_name here, E.x 7:20"}
-            ),
-            "description": forms.Textarea(
-                attrs={"placeholder": "Enter description here", "columns": 2}
-            ),
+            "video_link": forms.TextInput(attrs={"placeholder": "Enter video link here"}),
+            "video_name": forms.TextInput(attrs={"placeholder": "Enter video video_name here"}),
+            "video_duration": forms.TextInput(attrs={"placeholder": "Enter video video_name here, E.x 7:20"}),
+            "description": forms.Textarea(attrs={"placeholder": "Enter description here", "columns": 2}),
         }
 
     def __init__(self, *args, **kwargs):
         can_modify_product = kwargs.pop("can_modify_product", False)
         super(ProductAreaForm, self).__init__(*args, **kwargs)
 
-        class_names = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        for _, field in self.fields.items():
+        class_names = (
+            "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
+            " focus:shadow-outline"
+        )
+        for key, field in self.fields.items():
             field.widget.attrs.update({"class": class_names})
             field.widget.attrs["readonly"] = not can_modify_product
 
 
-class ProductAreaAttachmentForm(forms.ModelForm):
-    id = forms.IntegerField(required=False)
-
+class FileAttachmentForm(forms.ModelForm):
     class Meta:
-        model = ProductAreaAttachment
-        fields = "__all__"
+        model = FileAttachment
+        fields = ("file", "title", "description")
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Title..."}),
+            "file": forms.ClearableFileInput(
+                attrs={
+                    "accept": ".pdf,.PNG,.GIF,.JPG,.JPEG",
+                    "class": (
+                        "shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none w-4/5"
+                        " py-2 px-3"
+                    ),
+                }
+            ),
+            "title": forms.TextInput(
+                attrs={
+                    "class": (
+                        "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight"
+                        " focus:outline-none focus:shadow-outline"
+                    ),
+                    "placeholder": "Title..",
+                }
+            ),
             "description": forms.Textarea(
                 attrs={
-                    "placeholder": "Description...",
+                    "class": (
+                        "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight"
+                        " focus:outline-none focus:shadow-outline"
+                    ),
                     "rows": 2,
+                    "cols": 40,
+                    "placeholder": "Description..",
                 }
             ),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(ProductAreaAttachmentForm, self).__init__(*args, **kwargs)
-        class_names = "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 
-        for _, field in self.fields.items():
-            field.widget.attrs.update({"class": class_names})
-
-
-ProductAreaAttachmentSet = inlineformset_factory(
-    ProductArea,
-    ProductAreaAttachment,
-    form=ProductAreaAttachmentForm,
+AttachmentFormSet = modelformset_factory(
+    FileAttachment,
+    form=FileAttachmentForm,
     extra=0,
     can_delete=True,
-    can_delete_extra=True,
 )
 
 
@@ -614,7 +698,10 @@ class ProductAreaForm1(forms.ModelForm):
         queryset=ProductArea.objects.all(),
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                ),
             }
         ),
         help_text="If you want to create a root product area, you can left this field empty.",
@@ -646,13 +733,19 @@ class ProductAreaForm1(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Initiative Name",
                 }
             ),
             "description": forms.Textarea(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Describe your initiative in detail",
                 }
             ),
@@ -665,7 +758,10 @@ class ContributionAgreementForm(forms.ModelForm):
         queryset=Product.objects.all(),
         widget=forms.Select(
             attrs={
-                "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6",
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                )
             }
         ),
     )
@@ -676,9 +772,7 @@ class ContributionAgreementForm(forms.ModelForm):
 
         if self.slug:
             queryset = Product.objects.filter(slug=self.slug)
-            self.fields["product"].queryset = Product.objects.filter(
-                slug=self.slug
-            )
+            self.fields["product"].queryset = Product.objects.filter(slug=self.slug)
             self.fields["product"].initial = queryset.first()
 
     class Meta:
@@ -689,7 +783,10 @@ class ContributionAgreementForm(forms.ModelForm):
         widgets = {
             "content": TinyMCE(
                 attrs={
-                    "class": "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Agreement content",
                     "cols": 80,
                     "rows": 50,
@@ -698,7 +795,10 @@ class ContributionAgreementForm(forms.ModelForm):
             "effective_date": forms.DateInput(
                 attrs={
                     "type": "date",
-                    "class": "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm",
+                    "class": (
+                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
                     "placeholder": "Select effective date",
                 }
             ),

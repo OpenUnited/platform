@@ -1,19 +1,20 @@
 import uuid
+
 from django.conf import settings
-from django.db import models
-from django.urls import reverse
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from model_utils import FieldTracker
+from django.db import models
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+from django.urls import reverse
 from django.utils.text import slugify
+
+from model_utils import FieldTracker
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from product_management.mixins import ProductMixin
-from talent.models import Person, Skill, Expertise
-from django.db.models.signals import pre_save
+from talent.models import Expertise, Person, Skill
 
 
 class Tag(TimeStampMixin):
@@ -35,9 +36,7 @@ class ProductTree(models.Model):
 
 class ProductArea(MP_Node):
     name = models.CharField(max_length=255)
-    description = models.TextField(
-        max_length=1000, blank=True, null=True, default=""
-    )
+    description = models.TextField(max_length=1000, blank=True, null=True, default="")
     video_link = models.URLField(max_length=255, blank=True, null=True)
     video_name = models.CharField(max_length=255, blank=True, null=True)
     video_duration = models.CharField(max_length=255, blank=True, null=True)
@@ -54,6 +53,7 @@ class ProductArea(MP_Node):
         null=True,
         editable=False,
     )
+    attachments = models.ManyToManyField("product_management.FileAttachment", null=True)
 
     def __str__(self):
         return self.name
@@ -66,6 +66,15 @@ class Attachment(models.Model):
         return self.file.name
 
 
+class FileAttachment(models.Model):
+    file = models.FileField(upload_to="attachments")
+    title = models.CharField(max_length=300, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.file.name}"
+
+
 class AttachmentAbstract(models.Model):
     file = models.FileField(upload_to="attachments")
     title = models.CharField(max_length=300, blank=True, null=True)
@@ -75,19 +84,8 @@ class AttachmentAbstract(models.Model):
         abstract = True
 
 
-class ProductAreaAttachment(AttachmentAbstract):
-    product_area = models.ForeignKey(
-        ProductArea, related_name="attachments", on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return self.product_area.name
-
-
 class Product(ProductMixin):
-    attachment = models.ManyToManyField(
-        Attachment, related_name="product_attachments", blank=True
-    )
+    attachment = models.ManyToManyField(Attachment, related_name="product_attachments", blank=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -104,11 +102,7 @@ class Product(ProductMixin):
         return self.product_trees.first()
 
     def get_photo_url(self):
-        return (
-            self.photo.url
-            if self.photo
-            else f"{settings.MEDIA_URL}products/product-empty.png"
-        )
+        return self.photo.url if self.photo else f"{settings.MEDIA_URL}products/product-empty.png"
 
     @staticmethod
     def check_slug_from_name(product_name: str):
@@ -123,9 +117,7 @@ class Product(ProductMixin):
         # convert the given URL to an embed
         from .services import ProductService
 
-        self.video_url = ProductService.convert_youtube_link_to_embed(
-            self.video_url
-        )
+        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -140,9 +132,7 @@ class Initiative(TimeStampMixin, UUIDMixin):
         CANCELLED = "Cancelled"
 
     name = models.TextField()
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, blank=True, null=True
-    )
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=255,
@@ -158,27 +148,17 @@ class Initiative(TimeStampMixin, UUIDMixin):
         # TODO: move the below method to a utility class
         from .services import ProductService
 
-        self.video_url = ProductService.convert_youtube_link_to_embed(
-            self.video_url
-        )
+        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
         super(Initiative, self).save(*args, **kwargs)
 
     def get_available_challenges_count(self):
-        return self.challenge_set.filter(
-            status=Challenge.ChallengeStatus.ACTIVE
-        ).count()
+        return self.challenge_set.filter(status=Challenge.ChallengeStatus.ACTIVE).count()
 
     def get_completed_challenges_count(self):
-        return self.challenge_set.filter(
-            status=Challenge.ChallengeStatus.COMPLETED
-        ).count()
+        return self.challenge_set.filter(status=Challenge.ChallengeStatus.COMPLETED).count()
 
     def get_challenge_tags(self):
-        return (
-            Challenge.objects.filter(task_tags__initiative=self)
-            .distinct("id")
-            .all()
-        )
+        return Challenge.objects.filter(task_tags__initiative=self).distinct("id").all()
 
     @staticmethod
     def get_filtered_data(input_data, filter_data=None, exclude_data=None):
@@ -225,12 +205,8 @@ class Challenge(TimeStampMixin, UUIDMixin):
         (1, "Non-liquid Points"),
     )
 
-    initiative = models.ForeignKey(
-        Initiative, on_delete=models.SET_NULL, blank=True, null=True
-    )
-    product_area = models.ForeignKey(
-        ProductArea, on_delete=models.SET_NULL, blank=True, null=True
-    )
+    initiative = models.ForeignKey(Initiative, on_delete=models.SET_NULL, blank=True, null=True)
+    product_area = models.ForeignKey(ProductArea, on_delete=models.SET_NULL, blank=True, null=True)
     title = models.TextField()
     description = models.TextField()
     short_description = models.TextField(max_length=256)
@@ -239,12 +215,8 @@ class Challenge(TimeStampMixin, UUIDMixin):
         choices=ChallengeStatus.choices,
         default=ChallengeStatus.DRAFT,
     )
-    attachment = models.ManyToManyField(
-        Attachment, related_name="challenge_attachements", blank=True
-    )
-    tag = models.ManyToManyField(
-        Tag, related_name="challenge_tags", blank=True
-    )
+    attachment = models.ManyToManyField(Attachment, related_name="challenge_attachements", blank=True)
+    tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     priority = models.IntegerField(choices=CHALLENGE_PRIORITY, default=1)
@@ -305,14 +277,9 @@ class Challenge(TimeStampMixin, UUIDMixin):
             return False
 
         try:
-            product_role_assignment = ProductRoleAssignment.objects.get(
-                person=person, product=product
-            )
+            product_role_assignment = ProductRoleAssignment.objects.get(person=person, product=product)
 
-            if (
-                product_role_assignment.role
-                == ProductRoleAssignment.CONTRIBUTOR
-            ):
+            if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
                 return False
 
         except ProductRoleAssignment.DoesNotExist:
@@ -400,9 +367,7 @@ class Bounty(TimeStampMixin):
         null=True,
         default=None,
     )
-    expertise = models.ManyToManyField(
-        Expertise, related_name="bounty_expertise"
-    )
+    expertise = models.ManyToManyField(Expertise, related_name="bounty_expertise")
     points = models.PositiveIntegerField()
     status = models.CharField(
         max_length=255,
@@ -438,24 +403,17 @@ class Bounty(TimeStampMixin):
 
     @receiver(pre_save, sender="product_management.Bounty")
     def _pre_save(sender, instance, **kwargs):
-
         if instance.status == Bounty.BountyStatus.AVAILABLE:
             instance.claimed_by = None
 
 
 class BountyAttachment(TimeStampMixin, AttachmentAbstract):
-    bounty = models.ForeignKey(
-        Bounty, related_name="bounties", on_delete=models.CASCADE
-    )
+    bounty = models.ForeignKey(Bounty, related_name="bounties", on_delete=models.CASCADE)
 
 
 class ChallengeDependency(models.Model):
-    preceding_challenge = models.ForeignKey(
-        to=Challenge, on_delete=models.CASCADE
-    )
-    subsequent_challenge = models.ForeignKey(
-        to=Challenge, on_delete=models.CASCADE, related_name="Challenge"
-    )
+    preceding_challenge = models.ForeignKey(to=Challenge, on_delete=models.CASCADE)
+    subsequent_challenge = models.ForeignKey(to=Challenge, on_delete=models.CASCADE, related_name="Challenge")
 
     class Meta:
         db_table = "product_management_challenge_dependencies"
@@ -471,17 +429,9 @@ def save_product_task(sender, instance, created, **kwargs):
     if created:
         challenge = instance.challenge
         last_product_challenge = (
-            Challenge.objects.filter(
-                productchallenge__product=instance.product
-            )
-            .order_by("-published_id")
-            .first()
+            Challenge.objects.filter(productchallenge__product=instance.product).order_by("-published_id").first()
         )
-        challenge.published_id = (
-            last_product_challenge.published_id + 1
-            if last_product_challenge
-            else 1
-        )
+        challenge.published_id = last_product_challenge.published_id + 1 if last_product_challenge else 1
         challenge.save()
 
 
@@ -498,9 +448,7 @@ class ContributorAgreement(models.Model):
 
 
 class ContributorAgreementAcceptance(models.Model):
-    agreement = models.ForeignKey(
-        to=ContributorAgreement, on_delete=models.CASCADE
-    )
+    agreement = models.ForeignKey(to=ContributorAgreement, on_delete=models.CASCADE)
     person = models.ForeignKey(
         to="talent.Person",
         on_delete=models.CASCADE,
@@ -553,9 +501,7 @@ class Bug(TimeStampMixin):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
-        return reverse(
-            "add_product_bug", kwargs={"product_slug": self.product.slug}
-        )
+        return reverse("add_product_bug", kwargs={"product_slug": self.product.slug})
 
     def __str__(self):
         return f"{self.person} - {self.title}"
