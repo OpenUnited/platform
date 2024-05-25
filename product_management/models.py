@@ -53,7 +53,7 @@ class ProductArea(MP_Node):
         null=True,
         editable=False,
     )
-    attachments = models.ManyToManyField("product_management.FileAttachment", null=True)
+    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
 
     def __str__(self):
         return self.name
