@@ -3,13 +3,13 @@
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         {% for field in form %}
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2">{{field.label}} 
+                <label class="block text-gray-700 text-sm font-bold mb-2">{{field.label}}
                     {% if field.field.required %}
                         <span style="color: red;" class="required">*</span>
                     {% endif %}
                 </label>
 
-            
+
                 {{field}}
                 {% if field.help_text %}
                     <small style="color: grey">{{ field.help_text }}</small>
@@ -20,110 +20,9 @@
             </div>
         {% endfor %}
     </div>
+    {% with show_title=True, show_description=True %}
+        {% include "attachments.html" %}
+    {% endwith %}
 
-    {{ attachment_formset.management_form }}
-    <div class="bg-white shadow-md rounded overflow-x-auto px-2">
-        <table class="min-w-full bg-white">
-            <thead class="bg-gray-200 text-gray-700 uppercase text-xs leading-normal">
-                <tr>
-                    <th class="py-3 px-6 text-left">File Attachments <span style="color: red;" class="required">*</span></th>
-                    <th class="py-3 px-6 text-left">Title</th>
-                    <th class="py-3 px-6 text-left">Description</th>
-                    <th class="py-3 px-1 text-left"></th>
-                </tr>
-            </thead>
-
-            <tbody id="tbody-container" class="text-gray-600 text-sm font-light">
-                {% for attachment_form in attachment_formset %}
-                    {% set outer_index = loop.index0 %}
-                    <tr id="attachment-{{ attachment_form.instance.pk }}" class="border-b border-gray-200">
-                        
-                        {% for attachment_field in  attachment_form %}
-                                {% if  attachment_field.is_hidden %}
-                                    {{ attachment_field }}
-                                {% elif attachment_field.name == "DELETE" %}
-                                    <td class="py-3  text-left">
-                                        <input type="checkbox" class="hidden" data-delete-id="" name="attachments-{{ outer_index }}-DELETE" id="id_attachments-{{ outer_index }}-DELETE">
-                                        <button type="button"  class="bg-red-700 text-white py-1 px-2 rounded-full" onclick="checkCheckbox({{ outer_index }})">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-
-                                    
-                                    
-                                {% elif attachment_field.name == "file" %}
-                                    <td class="py-2 w-2/5">
-                                        <a class="hover:underline" href="{{ attachment_form.instance.file.url }}">{{ attachment_form.instance.file.name }}</a>
-                                    </td>
-                                {% else %}
-                                    <td class="py-2">
-                                            {{ attachment_field }}
-                                    </td>
-                                {% endif %}
-                                
-                        {% endfor %}
-                            
-                        </td>
-                    </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
-        <br>
-        <div class="w-full py-3 px-6 text-right">
-            <button hx-get="{{ url('product_area_update', args=(product_slug, form.instance.pk,)) }}" 
-                    hx-target="#tbody-container"
-                    class="bg-gray-700 text-white py-2 px-4 rounded focus:outline-none"
-                    hx-swap="beforeend"
-                    hx-vals='{"is_attachment":"{{ True }}" }'
-                    >
-                Add Attachment
-            </button>
-        </div>
-    </div>
     <button type="submit" class="w-full bg-gray-700 text-white py-2 mt-3 px-4 rounded focus:outline-none focus:bg-gray-600">Save</button>
 </form>
-
-
-<script>
-    function checkCheckbox(index) {
-        var checkboxId = `id_attachments-${index}-DELETE`;
-        var checkbox = document.getElementById(checkboxId);
-        checkbox.closest('tr').style.display = "none";
-        checkbox.checked = true;
-    }
-
-    document.addEventListener("click", function(event){
-        const tbodyContainer = document.getElementById("tbody-container")
-        const anchorTags = tbodyContainer.querySelectorAll("a");
-        anchorTags.forEach(function(anchorTag) {
-            anchorTag.setAttribute("target", "_blank");
-        });
-    })
-    
-    function checkCheckbox(index) {
-        var checkboxId = `id_attachments-${index}-DELETE`;
-        var checkbox = document.getElementById(checkboxId);
-        checkbox.closest('tr').style.display="none";
-        checkbox.checked = true;
-    }
-    
-    document.addEventListener('htmx:afterSwap', function(event) {
-        const tbodyContainer = document.getElementById("tbody-container")
-        if (tbodyContainer) {
-            // Get the index of the last form
-            var index = tbodyContainer.querySelectorAll('tr').length - 1;
-            var placeholderElements = event.target.querySelectorAll('[id^="id_attachments"]');
-            placeholderElements.forEach(function(element) {
-                element.name = element.name.replace('{{ index }}', index);
-                element.id = element.id.replace('{{ index }}', index);
-            });
-            var total_form_count = document.getElementById("id_attachments-TOTAL_FORMS")
-            total_form_count.value = parseInt(total_form_count.value) + 1
-        }
-    });
-    
-    function removeClosestRow(button) {
-        button.closest("tr").remove()
-      }
-</script>

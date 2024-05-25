@@ -1,0 +1,82 @@
+{% include "partials/attachment.html" %}
+
+{{ attachment_formset.management_form }}
+<div class="bg-white shadow-md rounded overflow-x-auto px-2">
+    <table class="min-w-full bg-white">
+        <thead class="bg-gray-200 text-gray-700 uppercase text-xs leading-normal">
+            <tr>
+                <th class="py-3 px-6 text-left">File Attachments <span style="color: red;" class="required">*</span></th>
+                {% if show_title %}
+                    <th class="py-3 px-6 text-left">Title</th>
+                {% endif %}
+                {% if show_description %}
+                    <th class="py-3 px-6 text-left">Description</th>
+                {% endif %}
+
+                <th class="py-3 px-1 text-left"></th>
+            </tr>
+        </thead>
+
+        <tbody id="tbody-container" class="text-gray-600 text-sm font-light">
+            {% for attachment_form in attachment_formset %}
+                <tr id="attachment-{{ attachment_form.instance.pk }}" class="border-b border-gray-200">
+                    {{attachment_form.id}}
+                    {% if  attachment_form.instance.file %}
+                        <td class="py-2 w-2/5">
+                            <a class="hover:underline" target="_blank" href="{{ attachment_form.instance.file.url }}">{{ attachment_form.instance.file }}</a>
+                        </td>
+                    {% else %}
+                        <td class="py-2">{{attachment_form.file}}</td>
+                    {% endif %}
+
+                    {% if show_title %}<td class="py-2">{{attachment_form.title}}</td>{% endif %}
+
+                    {% if show_description %} <td class="py-2">{{attachment_form.description}}</td>{% endif %}
+
+                    <td class="py-3  text-left">
+                        <input type="checkbox" class="hidden" data-delete-id="" name="form-{{ loop.index0 }}-DELETE" id="id_form-{{ loop.index0 }}-DELETE">
+                        <button type="button"  class="bg-red-700 text-white py-1 px-2 rounded-full" onclick="checkCheckbox({{ loop.index0 }})">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <br>
+    <div class="w-full py-3 px-6 text-right">
+        <button id="add_more_attachment" type="button" class="bg-gray-700 text-white py-2 px-4 rounded focus:outline-none">
+            Add Attachment
+        </button>
+    </div>
+</div>
+
+
+<script>
+    function checkCheckbox(index) {
+        var checkbox = document.getElementById(`id_form-${index}-DELETE`);
+        checkbox.closest('tr').style.display="none";
+        checkbox.checked = true;
+    }
+
+    function replaceAttachmentPrefix(script, prefix) {
+        return script.innerHTML.replace(/__attachment_prefix__/g, prefix);
+    }
+
+    document.getElementById("add_more_attachment").addEventListener('click', function(event) {
+        const tbodyContainer = document.getElementById("tbody-container")
+        const index = tbodyContainer.querySelectorAll('tr').length - 1;
+        const emptyAttachmentScript = document.getElementById("empty_attachment_script");
+
+        var innerHTML = replaceAttachmentPrefix(emptyAttachmentScript, index + 1);
+        tbodyContainer.insertAdjacentHTML('beforeend', innerHTML);
+
+        var total_form_count = document.getElementById("id_form-TOTAL_FORMS")
+        total_form_count.value = parseInt(total_form_count.value) + 1
+    });
+
+    function removeClosestRow(button) {
+        button.closest("tr").remove()
+      }
+</script>
