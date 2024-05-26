@@ -1,6 +1,6 @@
 {{ attachment_formset.management_form }}
 
-{% if not ready_only %}
+{% if not read_only %}
     <div id="drop-area" class="border-dashed border-2 border-gray-300 rounded-md p-4 text-center">
         <label for="attachments-input" class="cursor-pointer">
             <span class="text-gray-500">Drag and drop files here or</span>
@@ -21,12 +21,14 @@
                <a href="{{ attachment_form.instance.file.url }}" target="_blank" class="truncate font-medium text-indigo-500">{{ attachment_form.instance.file.name }}</a>
             </div>
         </div>
-        <div class="ml-4 flex-shrink-0">
-            <input type="checkbox" class="hidden"  name="form-{{loop.index0}}-DELETE" id="id_form-{{loop.index0}}-DELETE">
-            <button type="button" onclick="checkCheckbox({{ loop.index0 }})" class="font-medium text-indigo-600 hover:text-indigo-500">
-                <i class="fa fa-trash" aria-hidden="true"></i>
-            </button>
-        </div>
+        {% if not read_only %}
+            <div class="ml-4 flex-shrink-0">
+                <input type="checkbox" class="hidden"  name="form-{{loop.index0}}-DELETE" id="id_form-{{loop.index0}}-DELETE">
+                <button type="button" onclick="checkCheckbox({{ loop.index0 }})" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
