@@ -42,4 +42,4 @@ class BountyAdmin(admin.ModelAdmin):
     list_display = ["pk", "title", "status"]
     list_filter = ["is_active", "status"]
     search_fields = ["title"]
-    filter_horizontal = ["expertise"]
+    filter_horizontal = ["expertise", "attachments"]

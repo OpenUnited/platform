@@ -17,6 +17,20 @@ from product_management.mixins import ProductMixin
 from talent.models import Expertise, Person, Skill
 
 
+class FileAttachment(models.Model):
+    file = models.FileField(upload_to="attachments")
+
+    def __str__(self):
+        return f"{self.file.name}"
+
+
+class AttachmentAbstract(models.Model):
+    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
+
+    class Meta:
+        abstract = True
+
+
 class Tag(TimeStampMixin):
     name = models.CharField(max_length=128)
 
@@ -34,7 +48,7 @@ class ProductTree(models.Model):
     )
 
 
-class ProductArea(MP_Node):
+class ProductArea(MP_Node, AttachmentAbstract):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, blank=True, null=True, default="")
     video_link = models.URLField(max_length=255, blank=True, null=True)
@@ -53,7 +67,6 @@ class ProductArea(MP_Node):
         null=True,
         editable=False,
     )
-    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
 
     def __str__(self):
         return self.name
@@ -66,24 +79,7 @@ class Attachment(models.Model):
         return self.file.name
 
 
-class FileAttachment(models.Model):
-    file = models.FileField(upload_to="attachments")
-
-    def __str__(self):
-        return f"{self.file.name}"
-
-
-class AttachmentAbstract(models.Model):
-    file = models.FileField(upload_to="attachments")
-    title = models.CharField(max_length=300, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-
-    class Meta:
-        abstract = True
-
-
-class Product(ProductMixin):
-    attachment = models.ManyToManyField(Attachment, related_name="product_attachments", blank=True)
+class Product(ProductMixin, AttachmentAbstract):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -110,13 +106,11 @@ class Product(ProductMixin):
         if Product.objects.filter(slug=slug):
             return f"The name {product_name} is not available currently. Please pick something different."
 
-    def save(self, *args, **kwargs):
-        # We show the preview of the video in ProductListing. Therefore, we have to
-        # convert the given URL to an embed
+    @receiver(pre_save, sender="product_management.Product")
+    def _pre_save(sender, instance, **kwargs):
         from .services import ProductService
 
-        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
-        super(Product, self).save(*args, **kwargs)
+        instance.video_url = ProductService.convert_youtube_link_to_embed(instance.video_url)
 
     def __str__(self):
         return self.name
@@ -188,7 +182,7 @@ class Initiative(TimeStampMixin, UUIDMixin):
         return queryset.distinct("id").all()
 
 
-class Challenge(TimeStampMixin, UUIDMixin):
+class Challenge(TimeStampMixin, UUIDMixin, AttachmentAbstract):
     class ChallengeStatus(models.TextChoices):
         DRAFT = "Draft"
         BLOCKED = "Blocked"
@@ -250,7 +244,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         on_delete=models.SET_NULL,
     )
     reward_type = models.IntegerField(choices=REWARD_TYPE, default=1)
-    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
 
     class Meta:
         verbose_name_plural = "Challenges"
@@ -346,7 +339,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
         return self.description
 
 
-class Bounty(TimeStampMixin):
+class Bounty(TimeStampMixin, AttachmentAbstract):
     class BountyStatus(models.TextChoices):
         AVAILABLE = "Available"
         CLAIMED = "Claimed"
@@ -403,10 +396,6 @@ class Bounty(TimeStampMixin):
     def _pre_save(sender, instance, **kwargs):
         if instance.status == Bounty.BountyStatus.AVAILABLE:
             instance.claimed_by = None
-
-
-class BountyAttachment(TimeStampMixin, AttachmentAbstract):
-    bounty = models.ForeignKey(Bounty, related_name="bounties", on_delete=models.CASCADE)
 
 
 class ChallengeDependency(models.Model):

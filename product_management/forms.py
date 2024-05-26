@@ -4,7 +4,7 @@ from datetime import date
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import modelformset_factory
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -12,10 +12,10 @@ from tinymce.widgets import TinyMCE
 
 from commerce.models import Organisation
 from talent.models import BountyClaim, Person
+from utility import utils as global_utils
 
 from .models import (
     Bounty,
-    BountyAttachment,
     Bug,
     Challenge,
     ContributionAgreement,
@@ -142,13 +142,11 @@ class ProductForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get("name")
-
         # skip slug validation if name is not changed in update view
         if self.instance and self.instance.name == name:
             return name
 
-        error = Product.check_slug_from_name(name)
-        if error:
+        if error := Product.check_slug_from_name(name):
             raise ValidationError(error)
 
         return name
@@ -190,11 +188,7 @@ class ProductForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(
                 attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
-                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        " sm:text-sm sm:leading-6"
-                    ),
+                    "class": global_utils.text_field_class_names,
                     "autocomplete": "none",
                     "hx-post": reverse_lazy("create-product"),
                     "hx-trigger": "input delay:100ms",
@@ -203,50 +197,26 @@ class ProductForm(forms.ModelForm):
                     "hx-swap": "innerHTML",
                 }
             ),
-            "short_description": forms.TextInput(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
-                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        " sm:text-sm sm:leading-6"
-                    ),
-                }
-            ),
+            "short_description": forms.TextInput(attrs={"class": global_utils.text_field_class_names}),
             "full_description": forms.Textarea(
                 attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
-                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        " sm:text-sm sm:leading-6"
-                    ),
+                    "class": global_utils.text_field_class_names,
                 }
             ),
             "website": forms.URLInput(
                 attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
-                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        " sm:text-sm sm:leading-6"
-                    ),
+                    "class": global_utils.text_field_class_names,
                 }
             ),
             "detail_url": forms.URLInput(
                 attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
-                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        " sm:text-sm sm:leading-6"
-                    ),
+                    "class": global_utils.text_field_class_names,
                     "placeholder": "",
                 }
             ),
             "video_url": forms.URLInput(
                 attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset"
-                        " ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        " sm:text-sm sm:leading-6"
-                    ),
+                    "class": global_utils.text_field_class_names,
                     "placeholder": "",
                 }
             ),
@@ -257,15 +227,7 @@ class ProductForm(forms.ModelForm):
             ),
             "photo": forms.FileInput(
                 attrs={
-                    "class": (
-                        "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1"
-                        " ring-inset ring-gray-300 hover:bg-gray-50"
-                    ),
-                }
-            ),
-            "attachment": forms.FileInput(
-                attrs={
-                    "class": "",
+                    "class": global_utils.text_field_class_names,
                 }
             ),
         }
@@ -413,15 +375,6 @@ class BountyForm(forms.ModelForm):
         widget=forms.HiddenInput(attrs={"id": "selected-expert", "name": "selected-expert"})
     )
 
-    def __init__(self, *args, **kwargs):
-        self._challenge_queryset = kwargs.pop("challenge_queryset", None)
-        super().__init__(*args, **kwargs)
-
-        if self._challenge_queryset:
-            self.fields["challenge"].queryset = self._challenge_queryset
-            self.fields["challenge"].initial = self._challenge_queryset.first()
-            self.fields["challenge"].empty_label = None
-
     def clean_selected_skill_ids(self):
         skill_id = self.cleaned_data.get("selected_skill_ids")
         skill_id = json.loads(skill_id)
@@ -441,73 +394,34 @@ class BountyForm(forms.ModelForm):
         fields = ["title", "description", "points", "status", "is_active"]
 
         widgets = {
-            "title": forms.TextInput(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        " sm:leading-6"
-                    ),
-                    "placeholder": "Enter the title here ...",
-                }
-            ),
-            "description": forms.Textarea(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        " sm:leading-6"
-                    ),
-                    "placeholder": "Describe the bounty",
-                }
-            ),
-            "points": forms.NumberInput(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        " sm:leading-6"
-                    )
-                }
-            ),
-            "status": forms.Select(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                    ),
-                }
-            ),
-            "is_active": forms.CheckboxInput(
-                attrs={
-                    "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
-                }
-            ),
+            "points": forms.NumberInput(attrs={"class": global_utils.text_field_class_names}),
+            "status": forms.Select(attrs={"class": global_utils.text_field_class_names}),
         }
-
         help_texts = {"is_active": "Display this bounty under the challenge that is created for."}
-
         labels = {
             "is_active": "Is Active",
         }
 
+    def __init__(self, *args, **kwargs):
+        self._challenge_queryset = kwargs.pop("challenge_queryset", None)
+        super().__init__(*args, **kwargs)
 
-class BountyAttachmentForm(forms.ModelForm):
-    id = forms.IntegerField(required=False)
+        if self._challenge_queryset:
+            self.fields["challenge"].queryset = self._challenge_queryset
+            self.fields["challenge"].initial = self._challenge_queryset.first()
+            self.fields["challenge"].empty_label = None
 
-    class Meta:
-        model = BountyAttachment
-        fields = ("id", "file")
+        for key, field in self.fields.items():
+            attributes = {
+                "class": global_utils.text_field_class_names,
+                "placeholder": global_utils.placeholder(key),
+            }
+            if key in ["description"]:
+                attributes["cols"] = 40
+                attributes["rows"] = 2
 
-
-BountyAttachmentFormSet = inlineformset_factory(
-    Bounty,
-    BountyAttachment,
-    form=BountyAttachmentForm,
-    extra=0,
-    can_delete=True,
-    can_delete_extra=True,
-)
+            if key not in ["status", "points"]:
+                field.widget.attrs.update(**attributes)
 
 
 class InitiativeForm(forms.ModelForm):
