@@ -1,82 +1,115 @@
-{% include "partials/attachment.html" %}
-
 {{ attachment_formset.management_form }}
-<div class="bg-white shadow-md rounded overflow-x-auto px-2">
-    <table class="min-w-full bg-white">
-        <thead class="bg-gray-200 text-gray-700 uppercase text-xs leading-normal">
-            <tr>
-                <th class="py-3 px-6 text-left">File Attachments <span style="color: red;" class="required">*</span></th>
-                {% if show_title %}
-                    <th class="py-3 px-6 text-left">Title</th>
-                {% endif %}
-                {% if show_description %}
-                    <th class="py-3 px-6 text-left">Description</th>
-                {% endif %}
 
-                <th class="py-3 px-1 text-left"></th>
-            </tr>
-        </thead>
-
-        <tbody id="tbody-container" class="text-gray-600 text-sm font-light">
-            {% for attachment_form in attachment_formset %}
-                <tr id="attachment-{{ attachment_form.instance.pk }}" class="border-b border-gray-200">
-                    {{attachment_form.id}}
-                    {% if  attachment_form.instance.file %}
-                        <td class="py-2 w-2/5">
-                            <a class="hover:underline" target="_blank" href="{{ attachment_form.instance.file.url }}">{{ attachment_form.instance.file }}</a>
-                        </td>
-                    {% else %}
-                        <td class="py-2">{{attachment_form.file}}</td>
-                    {% endif %}
-
-                    {% if show_title %}<td class="py-2">{{attachment_form.title}}</td>{% endif %}
-
-                    {% if show_description %} <td class="py-2">{{attachment_form.description}}</td>{% endif %}
-
-                    <td class="py-3  text-left">
-                        <input type="checkbox" class="hidden" data-delete-id="" name="form-{{ loop.index0 }}-DELETE" id="id_form-{{ loop.index0 }}-DELETE">
-                        <button type="button"  class="bg-red-700 text-white py-1 px-2 rounded-full" onclick="checkCheckbox({{ loop.index0 }})">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </button>
-                    </td>
-                </tr>
-            {% endfor %}
-
-        </tbody>
-    </table>
-    <br>
-    <div class="w-full py-3 px-6 text-right">
-        <button id="add_more_attachment" type="button" class="bg-gray-700 text-white py-2 px-4 rounded focus:outline-none">
-            Add Attachment
-        </button>
+{% if not ready_only %}
+    <div id="drop-area" class="border-dashed border-2 border-gray-300 rounded-md p-4 text-center">
+        <label for="attachments-input" class="cursor-pointer">
+            <span class="text-gray-500">Drag and drop files here or</span>
+            <br>
+            <span class="text-indigo-600 font-medium">Click to select files</span>
+        </label>
+        <input type="file" class="hidden" name="attachments[]" multiple id="attachments-input" accept=".pdf,.PNG,.GIF,.JPG,.JPEG">
     </div>
-</div>
+{% endif %}
 
+<ul role="list" class="mt-2 divide-y divide-gray-100 rounded-md border border-gray-200" id="attachments-list">
+    {% for attachment_form in attachment_formset %}
+    <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+        {{ attachment_form.id }}
+        <div class="flex w-0 flex-1 items-center">
+            <i class="fa fa-paperclip"></i>
+            <div class="ml-4 flex min-w-0 flex-1 gap-2">
+               <a href="{{ attachment_form.instance.file.url }}" target="_blank" class="truncate font-medium text-indigo-500">{{ attachment_form.instance.file.name }}</a>
+            </div>
+        </div>
+        <div class="ml-4 flex-shrink-0">
+            <input type="checkbox" class="hidden"  name="form-{{loop.index0}}-DELETE" id="id_form-{{loop.index0}}-DELETE">
+            <button type="button" onclick="checkCheckbox({{ loop.index0 }})" class="font-medium text-indigo-600 hover:text-indigo-500">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
 
 <script>
-    function checkCheckbox(index) {
-        var checkbox = document.getElementById(`id_form-${index}-DELETE`);
-        checkbox.closest('tr').style.display="none";
-        checkbox.checked = true;
-    }
+    const dropArea = document.getElementById('drop-area');
+    const attachmentsInput = document.getElementById('attachments-input');
+    const attachmentsList = document.getElementById('attachments-list');
+    const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+    let totalForms = parseInt(totalFormsInput.value);
 
-    function replaceAttachmentPrefix(script, prefix) {
-        return script.innerHTML.replace(/__attachment_prefix__/g, prefix);
-    }
-
-    document.getElementById("add_more_attachment").addEventListener('click', function(event) {
-        const tbodyContainer = document.getElementById("tbody-container")
-        const index = tbodyContainer.querySelectorAll('tr').length - 1;
-        const emptyAttachmentScript = document.getElementById("empty_attachment_script");
-
-        var innerHTML = replaceAttachmentPrefix(emptyAttachmentScript, index + 1);
-        tbodyContainer.insertAdjacentHTML('beforeend', innerHTML);
-
-        var total_form_count = document.getElementById("id_form-TOTAL_FORMS")
-        total_form_count.value = parseInt(total_form_count.value) + 1
+    dropArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropArea.classList.add('border-blue-500');
     });
 
-    function removeClosestRow(button) {
-        button.closest("tr").remove()
-      }
+    dropArea.addEventListener('dragleave', function() {
+        dropArea.classList.remove('border-blue-500');
+    });
+
+    dropArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropArea.classList.remove('border-blue-500');
+
+        const files = e.dataTransfer.files;
+
+        addFilesToList(files);
+    });
+
+    attachmentsInput.addEventListener('change', function() {
+        const files = this.files;
+
+        addFilesToList(files);
+    });
+
+    function addFilesToList(files) {
+        var formIndex = totalForms - 1
+        for (let i = 0; i < files.length; i++) {
+            formIndex++
+            const file = files[i];
+            const listItem = document.createElement('li');
+            listItem.className = 'flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6';
+
+            var inputFileElement = document.createElement('input');
+            inputFileElement.type = 'file';
+            inputFileElement.name = `form-${formIndex}-file`;
+            inputFileElement.id = `id_form-${formIndex}-file`;
+            inputFileElement.className = 'hidden';
+            inputFileElement.onclick = `checkCheckbox(${formIndex})`;
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+
+            // Assign the files to the input element
+            inputFileElement.files = dataTransfer.files;
+
+
+            listItem.innerHTML = `
+                <div class="flex w-0 flex-1 items-center">
+                    <i class="fa fa-paperclip"></i>
+                    <div class="ml-4 flex min-w-0 flex-1 gap-2">
+                        <a href="${URL.createObjectURL(file)}" target="_blank" class="truncate font-medium text-indigo-500">${file.name}</a>
+
+                    </div>
+                </div>
+                <div class="ml-4 flex-shrink-0">
+                    <input type="checkbox" class="hidden"  name="form-${formIndex}-DELETE" id="id_form-${formIndex}-DELETE">
+                    <button type="button" onclick="checkCheckbox(${formIndex})" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </div>
+            `;
+
+            listItem.appendChild(inputFileElement);
+            attachmentsList.appendChild(listItem);
+
+            totalFormsInput.value = ++totalForms;
+        }
+    }
+
+    function checkCheckbox(index) {
+        var checkbox = document.getElementById(`id_form-${index}-DELETE`);
+        checkbox.closest('li').classList.add("hidden");
+        checkbox.checked = true;
+    }
 </script>
