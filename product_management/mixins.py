@@ -51,7 +51,10 @@ class AttachmentMixin:
         return AttachmentFormSet
 
     def get_attachment_queryset(self):
-        return self.object.attachments.all()
+        if self.object:
+            return self.object.attachments.all()
+        else:
+            return self.get_attachment_model().objects.none()
 
     def get_attachment_formset(self):
         return self.get_attachment_formset_class()(
@@ -68,7 +71,6 @@ class AttachmentMixin:
     def form_save(self, form):
         context = self.get_context_data()
         attachment_formset = context["attachment_formset"]
-        print(attachment_formset.errors)
         if not form.is_valid() or not attachment_formset.is_valid():
             return self.form_invalid(form)
 

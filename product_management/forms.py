@@ -11,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.widgets import TinyMCE
 
 from commerce.models import Organisation
-from openunited.forms import MultipleFileField
 from talent.models import BountyClaim, Person
 
 from .models import (
@@ -349,32 +348,32 @@ class OrganisationForm(forms.ModelForm):
 
 
 class ChallengeForm(forms.ModelForm):
+    class_names = (
+        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+    )
     product = forms.ModelChoiceField(
         empty_label="Select a product",
         queryset=Product.objects.all(),
-        widget=forms.Select(
-            attrs={
-                "class": (
-                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                ),
-            }
-        ),
-    )
-    attachments = MultipleFileField(
-        help_text="To select multiple files, hold 'Shift' key for Windows, 'Command' for MacOS",
-        required=False,
+        widget=forms.Select(attrs={"class": class_names}),
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        initial = kwargs.get("initial", None)
-        if initial:
-            product = initial.get("product", None)
-            if product:
-                self.fields["product"].empty_label = None
-                self.fields["product"].queryset = Product.objects.filter(id=product.id)
-                self.fields["product"].initial = product
+        if product := kwargs.get("product", None):
+            self.fields["product"].empty_label = None
+            self.fields["product"].queryset = Product.objects.filter(id=product.id)
+            self.fields["product"].initial = product
+
+        self.fields["reward_type"].help_text = "Liquid points can be redeemed for money, Non-Liquid points cannot."
+
+        for key, field in self.fields.items():
+            attributes = {"class": self.class_names}
+            if key in ["title", "description"]:
+                attributes["cols"] = 40
+                attributes["rows"] = 2
+            if key != "reward_type":
+                field.widget.attrs.update(**attributes)
 
     class Meta:
         model = Challenge
@@ -388,50 +387,9 @@ class ChallengeForm(forms.ModelForm):
         ]
 
         widgets = {
-            "title": forms.TextInput(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-                        " sm:leading-6"
-                    )
-                }
-            ),
-            "description": forms.Textarea(
-                attrs={
-                    "class": (
-                        "pt-2 px-2 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
-                        " focus:outline-none rounded-sm"
-                    ),
-                }
-            ),
             "reward_type": forms.RadioSelect(
-                attrs={
-                    "class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600",
-                }
+                attrs={"class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"}
             ),
-            "priority": forms.Select(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                    ),
-                },
-                choices=Challenge.CHALLENGE_PRIORITY,
-            ),
-            "status": forms.Select(
-                attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                    ),
-                },
-                choices=Challenge.ChallengeStatus.choices,
-            ),
-        }
-
-        help_texts = {
-            "reward_type": "Liquid points can be redeemed for money, Non-Liquid points cannot.",
         }
 
 
@@ -644,46 +602,9 @@ class ProductAreaForm(forms.ModelForm):
             field.widget.attrs["readonly"] = not can_modify_product
 
 
-class FileAttachmentForm(forms.ModelForm):
-    class Meta:
-        model = FileAttachment
-        fields = ("file", "title", "description")
-        widgets = {
-            "file": forms.ClearableFileInput(
-                attrs={
-                    "accept": ".pdf,.PNG,.GIF,.JPG,.JPEG",
-                    "class": (
-                        "shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none w-4/5"
-                        " py-2 px-3"
-                    ),
-                }
-            ),
-            "title": forms.TextInput(
-                attrs={
-                    "class": (
-                        "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight"
-                        " focus:outline-none focus:shadow-outline"
-                    ),
-                    "placeholder": "Title..",
-                }
-            ),
-            "description": forms.Textarea(
-                attrs={
-                    "class": (
-                        "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight"
-                        " focus:outline-none focus:shadow-outline"
-                    ),
-                    "rows": 2,
-                    "cols": 40,
-                    "placeholder": "Description..",
-                }
-            ),
-        }
-
-
 AttachmentFormSet = modelformset_factory(
     FileAttachment,
-    form=FileAttachmentForm,
+    fields=("file",),
     extra=0,
     can_delete=True,
 )

@@ -24,8 +24,7 @@ class ProductAreaAdmin(admin.ModelAdmin):
 
 @admin.register(product.FileAttachment)
 class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ["pk", "file", "title", "description"]
-    search_fields = ["pk", "title"]
+    list_display = ["pk", "file"]
 
 
 @admin.register(product.Challenge)
@@ -35,6 +34,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
     list_display = ["pk", "title", "status", "priority", "product_area_name"]
     search_fields = ["title"]
+    filter_horizontal = ["attachments"]
 
 
 @admin.register(product.Bounty)

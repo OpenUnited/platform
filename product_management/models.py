@@ -68,8 +68,6 @@ class Attachment(models.Model):
 
 class FileAttachment(models.Model):
     file = models.FileField(upload_to="attachments")
-    title = models.CharField(max_length=300, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.file.name}"
@@ -215,7 +213,6 @@ class Challenge(TimeStampMixin, UUIDMixin):
         choices=ChallengeStatus.choices,
         default=ChallengeStatus.DRAFT,
     )
-    attachment = models.ManyToManyField(Attachment, related_name="challenge_attachements", blank=True)
     tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
@@ -253,6 +250,7 @@ class Challenge(TimeStampMixin, UUIDMixin):
         on_delete=models.SET_NULL,
     )
     reward_type = models.IntegerField(choices=REWARD_TYPE, default=1)
+    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
 
     class Meta:
         verbose_name_plural = "Challenges"

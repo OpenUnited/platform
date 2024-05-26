@@ -37,7 +37,6 @@ from .forms import (
     ProductForm,
 )
 from .models import (
-    Attachment,
     Bounty,
     BountyAttachment,
     Bug,
@@ -551,7 +550,7 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
-class ChallengeDetailView(BaseProductDetailView, DetailView):
+class ChallengeDetailView(BaseProductDetailView, mixins.AttachmentMixin, DetailView):
     model = Challenge
     context_object_name = "challenge"
     template_name = "product_management/challenge_detail.html"
@@ -820,82 +819,36 @@ class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, 
         return super().post(request, *args, **kwargs)
 
 
-class CreateChallengeView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
+class CreateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInlineFormValidationMixin, CreateView):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-        product_slug = self.kwargs.get("product_slug", None)
-        if product_slug:
-            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        # context["product"] = self.object.product
+        return context
 
-        return kwargs
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.created_by = request.user.person
-            instance.save()
-
-            if request.FILES:
-                for file in request.FILES.getlist("attachments"):
-                    instance.attachment.add(Attachment.objects.create(file=file))
-
-            messages.success(request, _("The challenge is successfully created!"))
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    instance.product.slug,
-                    instance.id,
-                ),
-            )
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user.person
+        return super().form_save(form)
 
 
-class UpdateChallengeView(LoginRequiredMixin, HTMXInlineFormValidationMixin, UpdateView):
+class UpdateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInlineFormValidationMixin, UpdateView):
     model = Challenge
     form_class = ChallengeForm
     template_name = "product_management/update_challenge.html"
     login_url = "sign_in"
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-        product_slug = self.kwargs.get("product_slug", None)
-        if product_slug:
-            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["product"] = self.object.product
+        return context
 
-        return kwargs
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, request.FILES, instance=self.object)
-
-        if form.is_valid():
-            instance = form.save()
-            if request.FILES:
-                for file in request.FILES.getlist("attachments"):
-                    instance.attachment.add(Attachment.objects.create(file=file))
-            messages.success(request, _("The challenge is successfully updated!"))
-
-            self.success_url = reverse(
-                "challenge_detail",
-                args=(
-                    instance.product.slug,
-                    instance.id,
-                ),
-            )
-            return redirect(self.success_url)
-        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user.person
+        return super().form_save(form)
 
 
 class DeleteChallengeView(LoginRequiredMixin, DeleteView):
