@@ -1,6 +1,12 @@
 {{ attachment_formset.management_form }}
 
-{% if not read_only %}
+{% if  read_only is not defined or read_only==False  %}
+    {% set can_write=True %}
+{% else %}
+    {% set can_write=False %}
+{% endif %}
+
+{% if can_write %}
     <div id="drop-area" class="border-dashed border-2 border-gray-300 rounded-md p-4 text-center">
         <label for="attachments-input" class="cursor-pointer">
             <span class="text-gray-500">Drag and drop files here or</span>
@@ -21,7 +27,7 @@
                <a href="{{ attachment_form.instance.file.url }}" target="_blank" class="truncate font-medium text-indigo-500">{{ attachment_form.instance.file.name }}</a>
             </div>
         </div>
-        {% if not read_only %}
+        {% if can_write %}
             <div class="ml-4 flex-shrink-0">
                 <input type="checkbox" class="hidden"  name="form-{{loop.index0}}-DELETE" id="id_form-{{loop.index0}}-DELETE">
                 <button type="button" onclick="checkCheckbox({{ loop.index0 }})" class="font-medium text-indigo-600 hover:text-indigo-500">
@@ -85,7 +91,6 @@
             // Assign the files to the input element
             inputFileElement.files = dataTransfer.files;
 
-
             listItem.innerHTML = `
                 <div class="flex w-0 flex-1 items-center">
                     <i class="fa fa-paperclip"></i>
@@ -94,12 +99,15 @@
 
                     </div>
                 </div>
-                <div class="ml-4 flex-shrink-0">
-                    <input type="checkbox" class="hidden"  name="form-${formIndex}-DELETE" id="id_form-${formIndex}-DELETE">
-                    <button type="button" onclick="checkCheckbox(${formIndex})" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                    </button>
-                </div>
+
+                {% if can_write  %}
+                    <div class="ml-4 flex-shrink-0">
+                        <input type="checkbox" class="hidden"  name="form-${formIndex}-DELETE" id="id_form-${formIndex}-DELETE">
+                        <button type="button" onclick="checkCheckbox(${formIndex})" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                {% endif %}
             `;
 
             listItem.appendChild(inputFileElement);
