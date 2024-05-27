@@ -40,3 +40,9 @@ class PersonAdmin(admin.ModelAdmin):
 @admin.register(models.PersonSkill)
 class PersonSkillAdmin(admin.ModelAdmin):
     list_display = ["pk", "skill", "person"]
+
+
+@admin.register(models.BountyDeliveryAttempt)
+class BountyDeliveryAttemptAdmin(admin.ModelAdmin):
+    list_display = ["pk", "kind", "bounty_claim", "person", "is_canceled", "delivery_message"]
+    list_filter = ["is_canceled", "kind"]
