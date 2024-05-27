@@ -1,30 +1,27 @@
 import os
 from datetime import date
+
+from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.urls import reverse
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.contenttypes.fields import GenericRelation
-from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
-from django.conf import settings
-from openunited.mixins import TimeStampMixin, UUIDMixin, AncestryMixin
+
+from openunited.mixins import AncestryMixin, TimeStampMixin, UUIDMixin
 
 
 class Person(TimeStampMixin):
     full_name = models.CharField(max_length=256)
     preferred_name = models.CharField(max_length=128)
-    user = models.OneToOneField(
-        "security.User", on_delete=models.CASCADE, related_name="person"
-    )
+    user = models.OneToOneField("security.User", on_delete=models.CASCADE, related_name="person")
     products = GenericRelation("product_management.Product")
-    photo = models.ImageField(
-        upload_to=settings.PERSON_PHOTO_UPLOAD_TO, null=True, blank=True
-    )
+    photo = models.ImageField(upload_to=settings.PERSON_PHOTO_UPLOAD_TO, null=True, blank=True)
     headline = models.TextField()
     overview = models.TextField(blank=True)
     location = models.TextField(max_length=128, null=True, blank=True)
@@ -60,11 +57,7 @@ class Person(TimeStampMixin):
         return self.user.username if self.user else ""
 
     def get_photo_url(self):
-        image_url = (
-            settings.MEDIA_URL
-            + settings.PERSON_PHOTO_UPLOAD_TO
-            + "profile-empty.png"
-        )
+        image_url = settings.MEDIA_URL + settings.PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
 
         if self.photo:
             image_url = self.photo.url
@@ -122,25 +115,15 @@ class Status(models.Model):
     }
 
     STATUS_PRIVILEGES_MAPPING = {
-        DRONE: _(
-            "Earn points by completing bounties, submitting Ideas & Bugs"
-        ),
-        HONEYBEE: _(
-            "Earn payment for payment-eligible bounties on openunited.com"
-        ),
+        DRONE: _("Earn points by completing bounties, submitting Ideas & Bugs"),
+        HONEYBEE: _("Earn payment for payment-eligible bounties on openunited.com"),
         TRUSTED_BEE: _("Early Access to claim top tasks"),
-        QUEEN_BEE: _(
-            "A grant of 1000 points for your own open product on OpenUnited"
-        ),
+        QUEEN_BEE: _("A grant of 1000 points for your own open product on OpenUnited"),
         BEEKEEPER: _("Invite new products to openunited.com and grant points"),
     }
 
-    person = models.OneToOneField(
-        Person, on_delete=models.CASCADE, related_name="status"
-    )
-    name = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=DRONE
-    )
+    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name="status")
+    name = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRONE)
     points = models.PositiveIntegerField(default=0)
 
     def get_status_from_points(self, provided_points=None):
@@ -205,9 +188,7 @@ class PersonWebsite(models.Model):
 
 
 class PersonSkill(models.Model):
-    person = models.ForeignKey(
-        Person, related_name="skills", on_delete=models.CASCADE
-    )
+    person = models.ForeignKey(Person, related_name="skills", on_delete=models.CASCADE)
     skill = models.ForeignKey("talent.Skill", on_delete=models.CASCADE)
     expertise = models.ManyToManyField("talent.Expertise")
 
@@ -246,9 +227,7 @@ class Skill(AncestryMixin):
 
     @staticmethod
     def get_active_skill_list(active=True):
-        return Skill.objects.filter(active=active, parent=None).values(
-            "id", "name"
-        )
+        return Skill.objects.filter(active=active, parent=None).values("id", "name")
 
 
 class Expertise(AncestryMixin):
@@ -306,12 +285,8 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         COMPLETED = "Completed"
         FAILED = "Failed"
 
-    bounty = models.ForeignKey(
-        "product_management.Bounty", on_delete=models.CASCADE
-    )
-    person = models.ForeignKey(
-        Person, on_delete=models.CASCADE, blank=True, null=True
-    )
+    bounty = models.ForeignKey("product_management.Bounty", on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
     expected_finish_date = models.DateField(default=date.today)
     status = models.CharField(choices=Status.choices, default=Status.REQUESTED)
 
@@ -357,9 +332,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
 
 
 class Comment(MP_Node):
-    person = models.ForeignKey(
-        Person, on_delete=models.CASCADE, blank=True, null=True
-    )
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
     text = models.TextField(max_length=1000)
 
     class Meta:
@@ -386,17 +359,12 @@ class CapabilityComment(Comment):
 
 
 class BountyDeliveryAttempt(TimeStampMixin):
-    SUBMISSION_TYPE_NEW = 0
-    SUBMISSION_TYPE_APPROVED = 1
-    SUBMISSION_TYPE_REJECTED = 2
+    class SubmissionType(models.TextChoices):
+        NEW = "New"
+        APPROVED = "Approved"
+        REJECTED = "Rejected"
 
-    SUBMISSION_TYPES = (
-        (SUBMISSION_TYPE_NEW, "New"),
-        (SUBMISSION_TYPE_APPROVED, "Approved"),
-        (SUBMISSION_TYPE_REJECTED, "Rejected"),
-    )
-
-    kind = models.IntegerField(choices=SUBMISSION_TYPES, default=0)
+    kind = models.CharField(choices=SubmissionType.choices, default=SubmissionType.NEW)
     bounty_claim = models.ForeignKey(
         BountyClaim,
         on_delete=models.CASCADE,
@@ -405,9 +373,7 @@ class BountyDeliveryAttempt(TimeStampMixin):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     is_canceled = models.BooleanField(default=False)
     delivery_message = models.CharField(max_length=2000, default=None)
-    attachment = models.FileField(
-        "bounty_delivery_attempts/", blank=True, null=True
-    )
+    attachment = models.FileField("bounty_delivery_attempts/", blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse(
@@ -426,13 +392,9 @@ class BountyDeliveryAttempt(TimeStampMixin):
 
 class Feedback(models.Model):
     # Person who recevies the feedback
-    recipient = models.ForeignKey(
-        Person, on_delete=models.CASCADE, related_name="feedback_recipient"
-    )
+    recipient = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="feedback_recipient")
     # Person who sends the feedback
-    provider = models.ForeignKey(
-        Person, on_delete=models.CASCADE, related_name="feedback_provider"
-    )
+    provider = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="feedback_provider")
     message = models.TextField()
     stars = models.PositiveSmallIntegerField(
         default=1,
@@ -444,9 +406,7 @@ class Feedback(models.Model):
 
     def save(self, *args, **kwargs):
         if self.recipient == self.provider:
-            raise ValidationError(
-                _("The recipient and the provider cannot be the same.")
-            )
+            raise ValidationError(_("The recipient and the provider cannot be the same."))
 
         super().save(*args, **kwargs)
 
