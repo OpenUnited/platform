@@ -7,7 +7,7 @@ HIGH = "High"
 MEDIUM = "Medium"
 LOW = "Low"
 
-json_file = "product_management/fixtures/product_management.json"
+json_file = "talent/fixtures/talent.json"
 
 with open(json_file, "r") as file:
     initiatives_to_update = json.load(file)
@@ -85,6 +85,20 @@ for data in initiatives_to_update:
 
         if new_status2:
             data["fields"]["status"] = new_status2
+
+    elif data["model"] == "talent.bountydeliveryattempt":
+        kind = fields["kind"]
+        new_kind = ""
+        if kind == 0:
+            new_kind = "New"
+        elif kind == 1:
+            new_kind = "Approved"
+        elif kind == 2:
+            new_kind = "Rejected"
+
+        if new_kind:
+            data["fields"]["kind"] = new_kind
+
     updated_initiatives.append(data)
 
 with open(json_file, "w") as file:

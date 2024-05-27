@@ -1,44 +1,27 @@
 import json
-from typing import Any
-from django.shortcuts import render, HttpResponse
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from django.http import (
-    Http404,
-    HttpResponse,
-    JsonResponse,
-    HttpResponseRedirect,
-)
+
 from django.contrib import messages
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
+from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.shortcuts import HttpResponse, get_object_or_404
+from django.urls import reverse, reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse, reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import gettext_lazy as _
-from utility import utils as global_utils
-from talent import utils
-from .models import (
-    Person,
-    Skill,
-    Expertise,
-    PersonSkill,
-    BountyClaim,
-    Feedback,
-    BountyDeliveryAttempt,
-)
-from product_management.models import Product, Challenge, Bounty
-from .forms import (
-    PersonProfileForm,
-    FeedbackForm,
-    BountyDeliveryAttemptForm,
-    PersonSkillFormSet,
-)
-from .services import FeedbackService
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
+from product_management.models import Bounty, Challenge, Product
 from security.models import ProductRoleAssignment
+from talent import utils
+from utility import utils as global_utils
+
+from .forms import BountyDeliveryAttemptForm, FeedbackForm, PersonProfileForm, PersonSkillFormSet
+from .models import BountyClaim, BountyDeliveryAttempt, Expertise, Feedback, Person, PersonSkill, Skill
+from .services import FeedbackService
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
@@ -75,8 +58,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             index = self.request.GET.get("index")
             if skill := self.request.GET.get(f"skills-{index}-skill"):
                 expertises = [
-                    utils.serialize_expertise(expertise)
-                    for expertise in Expertise.get_roots().filter(skill=skill)
+                    utils.serialize_expertise(expertise) for expertise in Expertise.get_roots().filter(skill=skill)
                 ]
             else:
                 context["empty_form"] = PersonSkillFormSet().empty_form
@@ -100,17 +82,12 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         context["photo_url"] = person.get_photo_url()
         context["skills"] = skills
         context["selected_skills"] = skills
-        context["expertises"] = [
-            utils.serialize_expertise(expertise)
-            for expertise in Expertise.get_roots()
-        ]
+        context["expertises"] = [utils.serialize_expertise(expertise) for expertise in Expertise.get_roots()]
 
     def form_valid(self, form):
         person = self.request.user.person
 
-        form = PersonProfileForm(
-            self.request.POST, self.request.FILES, instance=person
-        )
+        form = PersonProfileForm(self.request.POST, self.request.FILES, instance=person)
         context = self.get_context_data(**self.kwargs)
         person_skill_formset = context["person_skill_formset"]
 
@@ -124,11 +101,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 @login_required(login_url="sign_in")
 def get_skills(request):
     # TODO I don't think we need this
-    skill_queryset = (
-        Skill.objects.filter(active=True)
-        .order_by("-display_boost_factor")
-        .values()
-    )
+    skill_queryset = Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
     skills = list(skill_queryset)
     return JsonResponse(skills, safe=False)
 
@@ -155,9 +128,7 @@ def get_expertise(request):
     selected_skills = request.GET.get("selected_skills")
     if selected_skills:
         selected_skill_ids = json.loads(selected_skills)
-        expertise_queryset = Expertise.objects.filter(
-            skill_id__in=selected_skill_ids
-        ).values()
+        expertise_queryset = Expertise.objects.filter(skill_id__in=selected_skill_ids).values()
 
         person = request.user.person
         try:
@@ -272,12 +243,8 @@ class TalentPortfolio(TemplateView):
         context = {
             "user": user,
             "person": person,
-            "person_linkedin_link": global_utils.get_path_from_url(
-                person.linkedin_link, True
-            ),
-            "person_twitter_link": global_utils.get_path_from_url(
-                person.twitter_link, True
-            ),
+            "person_linkedin_link": global_utils.get_path_from_url(person.linkedin_link, True),
+            "person_twitter_link": global_utils.get_path_from_url(person.twitter_link, True),
             "status": person.status,
             "person_skills": person.skills.all().select_related("skill"),
             "bounty_claims": bounty_claims,
@@ -300,9 +267,7 @@ class CreateFeedbackView(LoginRequiredMixin, CreateView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse(
-            "portfolio", args=(self.object.recipient.get_username(),)
-        )
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
 
     def _get_recipient_from_url(self):
         recipient_username = self.request.headers.get("Referer").split("/")[-1]
@@ -344,9 +309,7 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse(
-            "portfolio", args=(self.object.recipient.get_username(),)
-        )
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -369,9 +332,7 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
         form = self.form_class(request.POST, instance=self.object)
         if form.is_valid():
             form.save()
-            messages.success(
-                self.request, _("Feedback is successfully updated!")
-            )
+            messages.success(self.request, _("Feedback is successfully updated!"))
             return HttpResponseRedirect(self.get_success_url())
 
         return super().post(request, *args, **kwargs)
@@ -384,9 +345,7 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse(
-            "portfolio", args=(self.object.recipient.get_username(),)
-        )
+        return reverse("portfolio", args=(self.object.recipient.get_username(),))
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -396,9 +355,7 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
 
         try:
             Feedback.objects.get(pk=self.object.pk).delete()
-            messages.success(
-                self.request, _("Feedback is successfully deleted!")
-            )
+            messages.success(self.request, _("Feedback is successfully deleted!"))
             return HttpResponseRedirect(self.get_success_url())
         except ObjectDoesNotExist:
             return super().post(request, *args, **kwargs)
@@ -448,7 +405,7 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.person = request.user.person
-            instance.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_NEW
+            instance.kind = BountyDeliveryAttempt.SubmissionType.NEW
             instance.save()
 
             bounty_claim = instance.bounty_claim
@@ -486,10 +443,10 @@ class BountyDeliveryAttemptDetail(LoginRequiredMixin, DetailView):
 
         success = False
         if value == self.APPROVE_TRIGGER_NAME:
-            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED
+            self.object.kind = BountyDeliveryAttempt.SubmissionType.APPROVED
             success = True
         elif value == self.REJECT_TRIGGER_NAME:
-            self.object.kind = BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED
+            self.object.kind = BountyDeliveryAttempt.SubmissionType.REJECTED
             success = True
 
         if success:
