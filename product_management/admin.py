@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from product_management import models as product
 
 
@@ -18,12 +19,12 @@ class InitiativeAdmin(admin.ModelAdmin):
 class ProductAreaAdmin(admin.ModelAdmin):
     list_display = ["pk", "name", "video_link", "path"]
     search_fields = ["name", "video_link"]
+    filter_horizontal = ("attachments",)
 
 
-@admin.register(product.ProductAreaAttachment)
-class ProductAreaAttachmentAdmin(admin.ModelAdmin):
+@admin.register(product.FileAttachment)
+class AttachmentAdmin(admin.ModelAdmin):
     list_display = ["pk", "file"]
-    search_fields = ["pk", "file"]
 
 
 @admin.register(product.Challenge)
@@ -33,6 +34,7 @@ class ChallengeAdmin(admin.ModelAdmin):
 
     list_display = ["pk", "title", "status", "priority", "product_area_name"]
     search_fields = ["title"]
+    filter_horizontal = ["attachments"]
 
 
 @admin.register(product.Bounty)
@@ -40,4 +42,4 @@ class BountyAdmin(admin.ModelAdmin):
     list_display = ["pk", "title", "status"]
     list_filter = ["is_active", "status"]
     search_fields = ["title"]
-    filter_horizontal = ["expertise"]
+    filter_horizontal = ["expertise", "attachments"]

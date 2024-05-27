@@ -32,7 +32,9 @@ ignore_token_for_push = false
 env = "GH_TOKEN"
 
 [tool.black]
-line-length = 79
+line-length = 119
+fast = true
+experimental-string-processing = true
 target-version = ['py38','py39','py310','py311']
 include = '\.pyi?$'
 

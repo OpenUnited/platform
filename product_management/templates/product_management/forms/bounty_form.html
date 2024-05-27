@@ -22,15 +22,13 @@
                     {% endif %}
                 </div>
 
-                <div class="col-span-4">
+                <div class="col-span-full">
                     <label for="{{ form.title.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.title.label }}</label>
-                    <div class="mt-2">
                         {{ form.title }}
-                    </div>
                 </div>
 
-                <div class="col-span-4">
+                <div class="col-span-full">
                     <label for="{{ form.challenge.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.challenge.label }}</label>
                     <div class="mt-2">
@@ -96,7 +94,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-4">
+                <div class="col-span-full">
                     <label for="{{ form.status.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.status.label }}</label>
                     <div class="mt-2">
@@ -120,7 +118,8 @@
                 </div>
 
                 <div class="col-span-full">
-                    {% include "product_management/forms/bounty_attachments.html" %}
+                    {% include "attachments.html" %}
+
                 </div>
             </div>
         </div>

@@ -1,0 +1,125 @@
+{{ attachment_formset.management_form }}
+
+{% if  read_only is not defined or read_only==False  %}
+    {% set can_write=True %}
+{% else %}
+    {% set can_write=False %}
+{% endif %}
+
+{% if can_write %}
+    <div id="drop-area" class="border-dashed border-2 border-gray-300 rounded-md p-4 text-center">
+        <label for="attachments-input" class="cursor-pointer">
+            <span class="text-gray-500">Drag and drop files here or</span>
+            <br>
+            <span class="text-indigo-600 font-medium">Click to select files</span>
+        </label>
+        <input type="file" class="hidden" name="attachments[]" multiple id="attachments-input" accept=".pdf,.PNG,.GIF,.JPG,.JPEG">
+    </div>
+{% endif %}
+
+<ul role="list" class="mt-2 divide-y divide-gray-100 rounded-md border border-gray-200" id="attachments-list">
+    {% for attachment_form in attachment_formset %}
+    <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+        {{ attachment_form.id }}
+        <div class="flex w-0 flex-1 items-center">
+            <i class="fa fa-paperclip"></i>
+            <div class="ml-4 flex min-w-0 flex-1 gap-2">
+               <a href="{{ attachment_form.instance.file.url }}" target="_blank" class="truncate font-medium text-indigo-500">{{ attachment_form.instance.file.name }}</a>
+            </div>
+        </div>
+        {% if can_write %}
+            <div class="ml-4 flex-shrink-0">
+                <input type="checkbox" class="hidden"  name="form-{{loop.index0}}-DELETE" id="id_form-{{loop.index0}}-DELETE">
+                <button type="button" onclick="checkCheckbox({{ loop.index0 }})" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+<script>
+    const dropArea = document.getElementById('drop-area');
+    const attachmentsInput = document.getElementById('attachments-input');
+    const attachmentsList = document.getElementById('attachments-list');
+    const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+    let totalForms = parseInt(totalFormsInput.value);
+
+    dropArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropArea.classList.add('border-blue-500');
+    });
+
+    dropArea.addEventListener('dragleave', function() {
+        dropArea.classList.remove('border-blue-500');
+    });
+
+    dropArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropArea.classList.remove('border-blue-500');
+
+        const files = e.dataTransfer.files;
+
+        addFilesToList(files);
+    });
+
+    attachmentsInput.addEventListener('change', function() {
+        const files = this.files;
+
+        addFilesToList(files);
+    });
+
+    function addFilesToList(files) {
+        var formIndex = totalForms - 1
+        for (let i = 0; i < files.length; i++) {
+            formIndex++
+            const file = files[i];
+            const listItem = document.createElement('li');
+            listItem.className = 'flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6';
+
+            var inputFileElement = document.createElement('input');
+            inputFileElement.type = 'file';
+            inputFileElement.name = `form-${formIndex}-file`;
+            inputFileElement.id = `id_form-${formIndex}-file`;
+            inputFileElement.className = 'hidden';
+            inputFileElement.onclick = `checkCheckbox(${formIndex})`;
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+
+            // Assign the files to the input element
+            inputFileElement.files = dataTransfer.files;
+
+            listItem.innerHTML = `
+                <div class="flex w-0 flex-1 items-center">
+                    <i class="fa fa-paperclip"></i>
+                    <div class="ml-4 flex min-w-0 flex-1 gap-2">
+                        <a href="${URL.createObjectURL(file)}" target="_blank" class="truncate font-medium text-indigo-500">${file.name}</a>
+
+                    </div>
+                </div>
+
+                {% if can_write  %}
+                    <div class="ml-4 flex-shrink-0">
+                        <input type="checkbox" class="hidden"  name="form-${formIndex}-DELETE" id="id_form-${formIndex}-DELETE">
+                        <button type="button" onclick="checkCheckbox(${formIndex})" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            `;
+
+            listItem.appendChild(inputFileElement);
+            attachmentsList.appendChild(listItem);
+
+            totalFormsInput.value = ++totalForms;
+        }
+    }
+
+    function checkCheckbox(index) {
+        var checkbox = document.getElementById(`id_form-${index}-DELETE`);
+        checkbox.closest('li').classList.add("hidden");
+        checkbox.checked = true;
+    }
+</script>

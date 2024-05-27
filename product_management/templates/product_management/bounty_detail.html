@@ -25,15 +25,17 @@
             {{ bounty.description }}
         </p>
 
-        {% if attachments %}
-        {% with attachments=attachments %}
+
+
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {% include 'product_management/partials/attachments.html' %}
+                <strong>Attachments</strong>
+                {% with read_only=True %}
+                    {% include "attachments.html" %}
+                {% endwith %}
             </dd>
         </div>
-        {% endwith %}
-        {% endif %}
+
     </div>
     <div class="md:col-span-1 lg:col-span-1 sm:col-span-full text-sm">
         <div class="text-sm grid grid-cols-1 gap-4">
@@ -48,11 +50,11 @@
                 <div>
                     <h1 class="font-medium text-gray-400">Assignee</h1>
                     <a href="{{ bounty.claimed_by.get_absolute_url() }}"
-                        class="font-medium text-blue-600 hover:underline">{{ bounty.claimed_by }}</a>          
+                        class="font-medium text-blue-600 hover:underline">{{ bounty.claimed_by }}</a>
                 </div>
             {% endif %}
- 
-   
+
+
             <div>
                 <h1 class="font-medium text-gray-400">Status</h1>
                 <p>{{ bounty.get_status_display() }}</p>
@@ -73,7 +75,7 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>        
+            </div>
 
             <div>
                 <h1 class="font-medium text-gray-400">Skill</h1>
@@ -85,6 +87,7 @@
                 <h1 class="font-medium text-gray-400">Points</h1>
                 <p class="my-2">{{ bounty.points }}</p>
             </div>
+
         </div>
     </div>
 </div>
