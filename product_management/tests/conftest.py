@@ -24,8 +24,12 @@ def product_area_data():
 
 
 @pytest.fixture
-def challenge_data(product):
-    attachment_formset = AttachmentFormSet(queryset=FileAttachment.objects.none())
+def attachment_formset():
+    return AttachmentFormSet(queryset=FileAttachment.objects.none())
+
+
+@pytest.fixture
+def challenge_data(product, attachment_formset):
     return {
         "title": "Aliquam viverra",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -39,8 +43,7 @@ def challenge_data(product):
 
 
 @pytest.fixture
-def challenge_update_data():
-    attachment_formset = AttachmentFormSet(queryset=FileAttachment.objects.none())
+def challenge_update_data(attachment_formset):
     return {
         "title": "Aliquam viverra",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -63,11 +66,12 @@ def initiative_data(product):
 
 
 @pytest.fixture
-def bounty_data(challenge, skill, expertise_list):
+def bounty_data(challenge, attachment_formset, skill, expertise_list):
     return {
         "title": "Suspendisse dapibus porttitor laoreet.",
         "description": " Fusce laoreet lectus in nisl efficitur fermentum. ",
         "status": Bounty.BountyStatus.AVAILABLE,
         "challenge": challenge.pk,
         "points": 10,
+        "attachment_formset": attachment_formset,
     }
