@@ -71,6 +71,10 @@ class AttachmentMixin:
     def form_save(self, form):
         context = self.get_context_data()
         attachment_formset = context["attachment_formset"]
+
+        if len(attachment_formset.errors) == 0:
+            return super().form_valid(form)
+
         if not form.is_valid() or not attachment_formset.is_valid():
             return self.form_invalid(form)
 
