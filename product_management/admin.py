@@ -32,7 +32,7 @@ class ChallengeAdmin(admin.ModelAdmin):
     def product_area_name(self, obj):
         return obj.product_area.name if obj.product_area else "-"
 
-    list_display = ["pk", "title", "status", "priority", "product_area_name"]
+    list_display = ["pk", "title", "status", "priority", "priority", "product_area_name"]
     search_fields = ["title"]
     filter_horizontal = ["attachments"]
 
