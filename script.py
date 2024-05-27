@@ -32,8 +32,6 @@ for data in initiatives_to_update:
         if new_status3:
             data["fields"]["status"] = new_status3
 
-        updated_initiatives.append(data)
-
     elif data["model"] == "product_management.challenge":
         status = fields["status"]
         new_status1 = ""
@@ -73,8 +71,6 @@ for data in initiatives_to_update:
         if new_reward_type:
             data["fields"]["reward_type"] = new_reward_type
 
-        updated_initiatives.append(data)
-
     elif data["model"] == "product_management.bounty":
         status = fields["status"]
         new_status2 = ""
@@ -89,11 +85,7 @@ for data in initiatives_to_update:
 
         if new_status2:
             data["fields"]["status"] = new_status2
-        updated_initiatives.append(data)
-
-    else:
-        updated_initiatives.append(data)
-
+    updated_initiatives.append(data)
 
 with open(json_file, "w") as file:
     json.dump(updated_initiatives, file, indent=4)
