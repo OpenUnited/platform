@@ -5906,7 +5906,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:38.769Z",
             "updated_at": "2024-05-06T17:34:38.773Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 6,
             "person": 16,
             "is_canceled": false,
@@ -5920,7 +5920,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:38.776Z",
             "updated_at": "2024-05-06T17:34:38.778Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 7,
             "person": 17,
             "is_canceled": false,
@@ -5934,7 +5934,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:38.781Z",
             "updated_at": "2024-05-06T17:34:38.782Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 8,
             "person": 18,
             "is_canceled": false,
@@ -5948,7 +5948,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:38.793Z",
             "updated_at": "2024-05-06T17:34:38.794Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 9,
             "person": 19,
             "is_canceled": false,
@@ -5962,7 +5962,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:38.805Z",
             "updated_at": "2024-05-06T17:34:38.805Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 10,
             "person": 20,
             "is_canceled": false,
@@ -5976,7 +5976,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:39.482Z",
             "updated_at": "2024-05-06T17:34:39.485Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 26,
             "person": 16,
             "is_canceled": false,
@@ -5990,7 +5990,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:39.488Z",
             "updated_at": "2024-05-06T17:34:39.489Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 27,
             "person": 17,
             "is_canceled": false,
@@ -6004,7 +6004,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:39.494Z",
             "updated_at": "2024-05-06T17:34:39.496Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 28,
             "person": 18,
             "is_canceled": false,
@@ -6018,7 +6018,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:39.506Z",
             "updated_at": "2024-05-06T17:34:39.508Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 29,
             "person": 19,
             "is_canceled": false,
@@ -6032,7 +6032,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:39.518Z",
             "updated_at": "2024-05-06T17:34:39.518Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 30,
             "person": 20,
             "is_canceled": false,
@@ -6046,7 +6046,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.200Z",
             "updated_at": "2024-05-06T17:34:40.203Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 46,
             "person": 16,
             "is_canceled": false,
@@ -6060,7 +6060,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.206Z",
             "updated_at": "2024-05-06T17:34:40.208Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 47,
             "person": 17,
             "is_canceled": false,
@@ -6074,7 +6074,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.212Z",
             "updated_at": "2024-05-06T17:34:40.213Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 48,
             "person": 18,
             "is_canceled": false,
@@ -6088,7 +6088,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.224Z",
             "updated_at": "2024-05-06T17:34:40.225Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 49,
             "person": 19,
             "is_canceled": false,
@@ -6102,7 +6102,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.237Z",
             "updated_at": "2024-05-06T17:34:40.237Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 50,
             "person": 20,
             "is_canceled": false,
@@ -6116,7 +6116,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.924Z",
             "updated_at": "2024-05-06T17:34:40.927Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 66,
             "person": 16,
             "is_canceled": false,
@@ -6130,7 +6130,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.931Z",
             "updated_at": "2024-05-06T17:34:40.932Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 67,
             "person": 17,
             "is_canceled": false,
@@ -6144,7 +6144,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.936Z",
             "updated_at": "2024-05-06T17:34:40.938Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 68,
             "person": 18,
             "is_canceled": false,
@@ -6158,7 +6158,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.949Z",
             "updated_at": "2024-05-06T17:34:40.950Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 69,
             "person": 19,
             "is_canceled": false,
@@ -6172,7 +6172,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:40.961Z",
             "updated_at": "2024-05-06T17:34:40.961Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 70,
             "person": 20,
             "is_canceled": false,
@@ -6186,7 +6186,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:41.649Z",
             "updated_at": "2024-05-06T17:34:41.652Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 86,
             "person": 16,
             "is_canceled": false,
@@ -6200,7 +6200,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:41.655Z",
             "updated_at": "2024-05-06T17:34:41.656Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 87,
             "person": 17,
             "is_canceled": false,
@@ -6214,7 +6214,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:41.659Z",
             "updated_at": "2024-05-06T17:34:41.660Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 88,
             "person": 18,
             "is_canceled": false,
@@ -6228,7 +6228,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:41.670Z",
             "updated_at": "2024-05-06T17:34:41.671Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 89,
             "person": 19,
             "is_canceled": false,
@@ -6242,7 +6242,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:41.681Z",
             "updated_at": "2024-05-06T17:34:41.681Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 90,
             "person": 20,
             "is_canceled": false,
@@ -6256,7 +6256,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:42.354Z",
             "updated_at": "2024-05-06T17:34:42.357Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 106,
             "person": 16,
             "is_canceled": false,
@@ -6270,7 +6270,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:42.361Z",
             "updated_at": "2024-05-06T17:34:42.362Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 107,
             "person": 17,
             "is_canceled": false,
@@ -6284,7 +6284,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:42.365Z",
             "updated_at": "2024-05-06T17:34:42.366Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 108,
             "person": 18,
             "is_canceled": false,
@@ -6298,7 +6298,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:42.377Z",
             "updated_at": "2024-05-06T17:34:42.378Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 109,
             "person": 19,
             "is_canceled": false,
@@ -6312,7 +6312,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:42.389Z",
             "updated_at": "2024-05-06T17:34:42.389Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 110,
             "person": 20,
             "is_canceled": false,
@@ -6326,7 +6326,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.080Z",
             "updated_at": "2024-05-06T17:34:43.081Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 126,
             "person": 16,
             "is_canceled": false,
@@ -6340,7 +6340,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.084Z",
             "updated_at": "2024-05-06T17:34:43.086Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 127,
             "person": 17,
             "is_canceled": false,
@@ -6354,7 +6354,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.089Z",
             "updated_at": "2024-05-06T17:34:43.090Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 128,
             "person": 18,
             "is_canceled": false,
@@ -6368,7 +6368,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.100Z",
             "updated_at": "2024-05-06T17:34:43.102Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 129,
             "person": 19,
             "is_canceled": false,
@@ -6382,7 +6382,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.109Z",
             "updated_at": "2024-05-06T17:34:43.109Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 130,
             "person": 20,
             "is_canceled": false,
@@ -6396,7 +6396,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.784Z",
             "updated_at": "2024-05-06T17:34:43.787Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 146,
             "person": 16,
             "is_canceled": false,
@@ -6410,7 +6410,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.790Z",
             "updated_at": "2024-05-06T17:34:43.791Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 147,
             "person": 17,
             "is_canceled": false,
@@ -6424,7 +6424,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.794Z",
             "updated_at": "2024-05-06T17:34:43.795Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 148,
             "person": 18,
             "is_canceled": false,
@@ -6438,7 +6438,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.806Z",
             "updated_at": "2024-05-06T17:34:43.807Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 149,
             "person": 19,
             "is_canceled": false,
@@ -6452,7 +6452,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:43.818Z",
             "updated_at": "2024-05-06T17:34:43.818Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 150,
             "person": 20,
             "is_canceled": false,
@@ -6466,7 +6466,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:44.503Z",
             "updated_at": "2024-05-06T17:34:44.506Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 166,
             "person": 16,
             "is_canceled": false,
@@ -6480,7 +6480,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:44.510Z",
             "updated_at": "2024-05-06T17:34:44.511Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 167,
             "person": 17,
             "is_canceled": false,
@@ -6494,7 +6494,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:44.514Z",
             "updated_at": "2024-05-06T17:34:44.515Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 168,
             "person": 18,
             "is_canceled": false,
@@ -6508,7 +6508,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:44.527Z",
             "updated_at": "2024-05-06T17:34:44.528Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 169,
             "person": 19,
             "is_canceled": false,
@@ -6522,7 +6522,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:44.538Z",
             "updated_at": "2024-05-06T17:34:44.538Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 170,
             "person": 20,
             "is_canceled": false,
@@ -6536,7 +6536,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:45.213Z",
             "updated_at": "2024-05-06T17:34:45.215Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 186,
             "person": 16,
             "is_canceled": false,
@@ -6550,7 +6550,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:45.217Z",
             "updated_at": "2024-05-06T17:34:45.218Z",
-            "kind": 0,
+            "kind": "New",
             "bounty_claim": 187,
             "person": 17,
             "is_canceled": false,
@@ -6564,7 +6564,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:45.221Z",
             "updated_at": "2024-05-06T17:34:45.221Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 188,
             "person": 18,
             "is_canceled": false,
@@ -6578,7 +6578,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:45.230Z",
             "updated_at": "2024-05-06T17:34:45.231Z",
-            "kind": 1,
+            "kind": "Approved",
             "bounty_claim": 189,
             "person": 19,
             "is_canceled": false,
@@ -6592,7 +6592,7 @@
         "fields": {
             "created_at": "2024-05-06T17:34:45.241Z",
             "updated_at": "2024-05-06T17:34:45.241Z",
-            "kind": 2,
+            "kind": "Rejected",
             "bounty_claim": 190,
             "person": 20,
             "is_canceled": false,
