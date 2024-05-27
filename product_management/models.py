@@ -190,12 +190,14 @@ class Challenge(TimeStampMixin, UUIDMixin, AttachmentAbstract):
         COMPLETED = "Completed"
         CANCELLED = "Cancelled"
 
-    CHALLENGE_PRIORITY = ((0, "High"), (1, "Medium"), (2, "Low"))
+    class RewardType(models.TextChoices):
+        LIQUID_POINTS = "Liquid Points"
+        NON_LIQUID_POINTS = "Non-liquid Points"
 
-    REWARD_TYPE = (
-        (0, "Liquid Points"),
-        (1, "Non-liquid Points"),
-    )
+    class ChallengePriority(models.TextChoices):
+        HIGH = "High"
+        MEDIUM = "Medium"
+        LOW = "Low"
 
     initiative = models.ForeignKey(Initiative, on_delete=models.SET_NULL, blank=True, null=True)
     product_area = models.ForeignKey(ProductArea, on_delete=models.SET_NULL, blank=True, null=True)
@@ -210,7 +212,11 @@ class Challenge(TimeStampMixin, UUIDMixin, AttachmentAbstract):
     tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
-    priority = models.IntegerField(choices=CHALLENGE_PRIORITY, default=1)
+    priority = models.CharField(
+        max_length=50,
+        choices=ChallengePriority.choices,
+        default=ChallengePriority.HIGH,
+    )
     published_id = models.IntegerField(default=0, blank=True, editable=False)
     auto_approve_task_claims = models.BooleanField(default=True)
     created_by = models.ForeignKey(
@@ -243,7 +249,11 @@ class Challenge(TimeStampMixin, UUIDMixin, AttachmentAbstract):
         blank=True,
         on_delete=models.SET_NULL,
     )
-    reward_type = models.IntegerField(choices=REWARD_TYPE, default=1)
+    reward_type = models.CharField(
+        max_length=50,
+        choices=RewardType.choices,
+        default=RewardType.NON_LIQUID_POINTS,
+    )
 
     class Meta:
         verbose_name_plural = "Challenges"
