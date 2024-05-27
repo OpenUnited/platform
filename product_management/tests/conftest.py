@@ -35,9 +35,9 @@ def challenge_data(product, attachment_formset):
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         "short_description": "Fusce sed arcu vitae",
         "product": product.pk,
-        "reward_type": 1,
         "status": Challenge.ChallengeStatus.ACTIVE,
-        "priority": 1,
+        "priority": Challenge.ChallengePriority.HIGH,
+        "reward_type": Challenge.RewardType.LIQUID_POINTS,
         "attachment_formset": attachment_formset,
     }
 
@@ -48,9 +48,9 @@ def challenge_update_data(attachment_formset):
         "title": "Aliquam viverra",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         "short_description": "Fusce sed arcu vitae",
-        "reward_type": 1,
         "status": Challenge.ChallengeStatus.ACTIVE,
-        "priority": 1,
+        "priority": Challenge.ChallengePriority.HIGH,
+        "reward_type": Challenge.RewardType.LIQUID_POINTS,
         "attachment_formset": attachment_formset,
     }
 
