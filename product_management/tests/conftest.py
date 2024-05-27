@@ -1,5 +1,6 @@
 from openunited.tests.conftest import *
-from product_management.models import Challenge, Bounty
+from product_management.forms import AttachmentFormSet
+from product_management.models import Bounty, Challenge, FileAttachment
 
 
 @pytest.fixture
@@ -24,6 +25,7 @@ def product_area_data():
 
 @pytest.fixture
 def challenge_data(product):
+    attachment_formset = AttachmentFormSet(queryset=FileAttachment.objects.none())
     return {
         "title": "Aliquam viverra",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -32,11 +34,13 @@ def challenge_data(product):
         "reward_type": 1,
         "status": Challenge.ChallengeStatus.ACTIVE,
         "priority": 1,
+        "attachment_formset": attachment_formset,
     }
 
 
 @pytest.fixture
 def challenge_update_data():
+    attachment_formset = AttachmentFormSet(queryset=FileAttachment.objects.none())
     return {
         "title": "Aliquam viverra",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -44,6 +48,7 @@ def challenge_update_data():
         "reward_type": 1,
         "status": Challenge.ChallengeStatus.ACTIVE,
         "priority": 1,
+        "attachment_formset": attachment_formset,
     }
 
 

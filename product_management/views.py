@@ -776,9 +776,6 @@ class UpdateProductView(LoginRequiredMixin, mixins.AttachmentMixin, UpdateView):
     def form_valid(self, form):
         return super().form_save(form)
 
-    def form_invalid(self, form):
-        print(form.errors)
-
 
 class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
     model = Organisation
@@ -806,10 +803,8 @@ class CreateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInline
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        # context["product"] = self.object.product
-        return context
+    def get_success_url(self):
+        return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user.person
@@ -821,6 +816,9 @@ class UpdateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInline
     form_class = ChallengeForm
     template_name = "product_management/update_challenge.html"
     login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
