@@ -1,5 +1,3 @@
-{% set TASK_TYPES = ["Draft", "Blocked", "Available", "Claimed", "Done", "In Review"] %}
-{% set CHALLENGE_PRIORITY = ["High", "Medium", "Low"] %}
 {% set product = bounty.challenge.product %}
 {% set challenge = bounty.challenge %}
 
@@ -7,12 +5,11 @@
     <div class="flex w-full items-center justify-between space-x-6 p-6">
       <div class="flex-1 truncate">
         <div class="flex items-center space-x-3 justify-between">
-          <!-- <a href="{{ url('challenge_detail', args=(product.slug, challenge.pk)) }}" -->
           <a href="{{ url('bounty-detail', args=(product.slug, challenge.id, bounty.id,)) }}"
             class="truncate text-sm font-medium text-gray-900">{{ bounty.title }}</a>
         </div>
         <p class="mt-1 truncate text-sm text-gray-500"> {{ bounty.description }}</p>
-        <p class="mt-1 truncate text-sm text-gray-500 mt-2"> {{ bounty.skill }} 
+        <p class="mt-1 truncate text-sm text-gray-500 mt-2"> {{ bounty.skill }}
           {% if bounty.get_expertise_as_str() %}
             ({{bounty.get_expertise_as_str()}})
           {% endif %}
@@ -25,10 +22,10 @@
             {{ bounty.status }}
         {% endif %}
       </div>
-        
+
       </div>
     </div>
-    
+
     <div>
       <div class="-mt-px flex divide-x divide-gray-200">
         <div class="flex w-0 flex-1">
@@ -37,7 +34,7 @@
             {{bounty.points}} Points
           </span>
         </div>
-        
+
         {% if  bounty.status=="Available" %}
             <div class="-ml-px flex w-0 flex-1">
               <a href="{{ url('challenge_detail', args=(product.slug, challenge.pk))}}"
@@ -120,7 +117,7 @@
       <div class="flex justify-between py-2">
         <div class="truncate text-sm font-medium text-gray-900">Priority</div>
         <div class="text-gray-500 text-sm">
-          {{ CHALLENGE_PRIORITY[challenge.priority] }}
+          {{ challenge.priority }}
         </div>
       </div>
       {% if challenge.category %}
@@ -163,7 +160,7 @@
         else{
           viewMoreIcon.classList.replace("fa-chevron-up", "fa-chevron-down")
           document.getElementById(`more_detail_bountry_${bountyID}`).classList.add("hidden")
-        }      
+        }
 
     }
   </script>
