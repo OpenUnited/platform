@@ -411,8 +411,10 @@ class BountyDeliveryAttemptDetail(LoginRequiredMixin, mixins.AttachmentMixin, De
         self.object = self.get_object()
 
         if value == APPROVE_TRIGGER_NAME:
-            self.get_object().kind = BountyDeliveryAttempt.SubmissionType.APPROVED
+            self.object.kind = BountyDeliveryAttempt.SubmissionType.APPROVED
+            self.object.save()
         elif value == REJECT_TRIGGER_NAME:
             self.object.kind = BountyDeliveryAttempt.SubmissionType.REJECTED
+            self.object.save()
 
         return HttpResponseRedirect(reverse("dashboard"))
