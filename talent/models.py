@@ -174,20 +174,6 @@ class Status(models.Model):
         return f"{self.name} - {self.points}"
 
 
-class PersonWebsite(models.Model):
-    WebsiteType = ((0, "Personal"), (1, "Company"))
-    website = models.CharField(max_length=200)
-    type = models.IntegerField(choices=WebsiteType)
-    person = models.ForeignKey(
-        Person,
-        blank=True,
-        null=True,
-        default=None,
-        on_delete=models.CASCADE,
-        related_name="websites",
-    )
-
-
 class PersonSkill(models.Model):
     person = models.ForeignKey(Person, related_name="skills", on_delete=models.CASCADE)
     skill = models.ForeignKey("talent.Skill", on_delete=models.CASCADE)
