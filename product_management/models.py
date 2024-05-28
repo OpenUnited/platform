@@ -71,13 +71,6 @@ class ProductArea(MP_Node, AttachmentAbstract):
         return self.name
 
 
-class Attachment(models.Model):
-    file = models.FileField(upload_to="attachments")
-
-    def __str__(self):
-        return self.file.name
-
-
 class Product(ProductMixin, AttachmentAbstract):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
