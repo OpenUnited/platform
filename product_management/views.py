@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import BadRequest, PermissionDenied
 from django.db import models
-from django.db.models import Case, Q, Sum, Value, When
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -59,7 +58,7 @@ class ProductSummaryView(BaseProductDetailView, TemplateView):
         product = context["product"]
         challenges = Challenge.objects.filter(product=product, status=Challenge.ChallengeStatus.ACTIVE)
         product_role_assignments = ProductRoleAssignment.objects.filter(
-            Q(product=product) & ~Q(role=ProductRoleAssignment.CONTRIBUTOR)
+            models.Q(product=product) & ~models.Q(role=ProductRoleAssignment.CONTRIBUTOR)
         )
         if self.request.user.is_authenticated:
             context["can_modify_product"] = product_role_assignments.filter(person=self.request.user.person).exists()
@@ -87,16 +86,16 @@ class BountyListView(ListView):
         return ["product_management/bounty/list.html"]
 
     def get_queryset(self):
-        filters = ~Q(challenge__status=Challenge.ChallengeStatus.DRAFT)
+        filters = ~models.Q(challenge__status=Challenge.ChallengeStatus.DRAFT)
 
         if expertise := self.request.GET.get("expertise"):
-            filters &= Q(expertise=expertise)
+            filters &= models.Q(expertise=expertise)
 
         if status := self.request.GET.get("status"):
-            filters &= Q(status=status)
+            filters &= models.Q(status=status)
 
         if skill := self.request.GET.get("skill"):
-            filters &= Q(skill=skill)
+            filters &= models.Q(skill=skill)
         return Bounty.objects.filter(filters).select_related("challenge", "skill").prefetch_related("expertise")
 
     def get_context_data(self, **kwargs):
@@ -164,11 +163,11 @@ class ProductChallengesView(BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
         challenges = Challenge.objects.filter(product=product)
-        custom_order = Case(
-            When(status=Challenge.ChallengeStatus.ACTIVE, then=Value(0)),
-            When(status=Challenge.ChallengeStatus.BLOCKED, then=Value(1)),
-            When(status=Challenge.ChallengeStatus.COMPLETED, then=Value(2)),
-            When(status=Challenge.ChallengeStatus.CANCELLED, then=Value(3)),
+        custom_order = models.Case(
+            models.When(status=Challenge.ChallengeStatus.ACTIVE, then=models.Value(0)),
+            models.When(status=Challenge.ChallengeStatus.BLOCKED, then=models.Value(1)),
+            models.When(status=Challenge.ChallengeStatus.COMPLETED, then=models.Value(2)),
+            models.When(status=Challenge.ChallengeStatus.CANCELLED, then=models.Value(3)),
         )
         challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
         context["challenges"] = challenges
@@ -181,7 +180,7 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         initiatives = Initiative.objects.filter(product=context["product"]).annotate(
-            total_points=Sum(
+            total_points=models.Sum(
                 "challenge__bounty__points",
                 filter=models.Q(challenge__bounty__status=Bounty.BountyStatus.AVAILABLE)
                 & models.Q(challenge__bounty__is_active=True),
@@ -296,25 +295,24 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, mixins.AttachmentMixin,
         has_dropped = bool(request.POST.get("has_dropped", False))
         parent_id = request.POST.get("parent_id")
 
-        if request.htmx:
-            if not has_cancelled and has_dropped and parent_id:
-                parent = ProductArea.objects.get(pk=parent_id)
-                product_area.move(parent, "last-child")
-                return JsonResponse({})
-
-            if not has_cancelled and form.is_valid():
-                product_area.name = form.cleaned_data["name"]
-                product_area.description = form.cleaned_data["description"]
-                product_area.save()
-
-            context["parent_id"] = int(request.POST.get("parent_id", 0))
-            context["depth"] = int(request.POST.get("depth", 0))
-            context["descendants"] = utils.serialize_tree(product_area)["children"]
-            context["product"] = product
-            template_name = "product_management/tree_helper/add_node_partial.html"
-            return render(request, template_name, context)
-        else:
+        if not request.htmx:
             return super().form_save(form)
+        if not has_cancelled and has_dropped and parent_id:
+            parent = ProductArea.objects.get(pk=parent_id)
+            product_area.move(parent, "last-child")
+            return JsonResponse({})
+
+        if not has_cancelled and form.is_valid():
+            product_area.name = form.cleaned_data["name"]
+            product_area.description = form.cleaned_data["description"]
+            product_area.save()
+
+        context["parent_id"] = int(request.POST.get("parent_id", 0))
+        context["depth"] = int(request.POST.get("depth", 0))
+        context["descendants"] = utils.serialize_tree(product_area)["children"]
+        context["product"] = product
+        template_name = "product_management/tree_helper/add_node_partial.html"
+        return render(request, template_name, context)
 
 
 class ProductAreaDetailDeleteView(View):
@@ -923,14 +921,13 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         person = self.request.user.person
-        queryset = BountyClaim.objects.filter(
+        return BountyClaim.objects.filter(
             person=person,
             status__in=[
                 BountyClaim.Status.GRANTED,
                 BountyClaim.Status.REQUESTED,
             ],
         )
-        return queryset
 
 
 class DashboardProductDetailView(DashboardBaseView, DetailView):
@@ -962,8 +959,7 @@ class DashboardProductChallengesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        queryset = Challenge.objects.filter(product__slug=product_slug).order_by("-created_at")
-        return queryset
+        return Challenge.objects.filter(product__slug=product_slug).order_by("-created_at")
 
 
 class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
@@ -983,23 +979,19 @@ class DashboardProductChallengeFilterView(LoginRequiredMixin, TemplateView):
         product = context.get("product")
         queryset = Challenge.objects.filter(product=product)
 
-        # Handle sort filter
-        query_parameter = request.GET.get("q")
-        if query_parameter:
+        if query_parameter := request.GET.get("q"):
             for q in query_parameter.split(" "):
                 q = q.split(":")
                 key = q[0]
-                value = q[1]
-
                 if key == "sort":
+                    value = q[1]
+
                     if value == "created-asc":
                         queryset = queryset.order_by("created_at")
-                    if value == "created-desc":
+                    elif value == "created-desc":
                         queryset = queryset.order_by("-created_at")
 
-        # Handle search
-        query_parameter = request.GET.get("search-challenge")
-        if query_parameter:
+        if query_parameter := request.GET.get("search-challenge"):
             queryset = Challenge.objects.filter(title__icontains=query_parameter)
 
         context.update({"challenges": queryset})
@@ -1022,11 +1014,10 @@ class DashboardProductBountiesView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=product_slug)
-        queryset = BountyClaim.objects.filter(
+        return BountyClaim.objects.filter(
             bounty__challenge__product=product,
             status=BountyClaim.Status.REQUESTED,
         )
-        return queryset
 
 
 class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
@@ -1046,23 +1037,19 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         product = context.get("product")
         queryset = Bounty.objects.filter(challenge__product=product)
 
-        # Handle sort filter
-        query_parameter = request.GET.get("q")
-        if query_parameter:
+        if query_parameter := request.GET.get("q"):
             for q in query_parameter.split(" "):
                 q = q.split(":")
                 key = q[0]
-                value = q[1]
-
                 if key == "sort":
+                    value = q[1]
+
                     if value == "points-asc":
                         queryset = queryset.order_by("points")
-                    if value == "points-desc":
+                    elif value == "points-desc":
                         queryset = queryset.order_by("-points")
 
-        # Handle search
-        query_parameter = request.GET.get("search-bounty")
-        if query_parameter:
+        if query_parameter := request.GET.get("search-bounty"):
             queryset = Bounty.objects.filter(challenge__title__icontains=query_parameter)
 
         context.update({"bounties": queryset})
@@ -1267,8 +1254,7 @@ class DashboardContributionAgreementView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        queryset = ContributionAgreement.objects.filter(product__slug=product_slug).order_by("-created_at")
-        return queryset
+        return ContributionAgreement.objects.filter(product__slug=product_slug).order_by("-created_at")
 
 
 class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
@@ -1279,8 +1265,7 @@ class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidati
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
-        product_slug = self.kwargs.get("product_slug", None)
-        if product_slug:
+        if product_slug := self.kwargs.get("product_slug", None):
             kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
 
         return kwargs
@@ -1408,8 +1393,7 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
 @login_required(login_url="sign_in")
 def cast_vote_for_idea(request, pk):
     idea = Idea.objects.get(pk=pk)
-    user_has_voted = IdeaVote.objects.filter(idea=idea, voter=request.user).exists()
-    if user_has_voted:
+    if IdeaVote.objects.filter(idea=idea, voter=request.user).exists():
         IdeaVote.objects.get(idea=idea, voter=request.user).delete()
     else:
         IdeaVote.objects.create(idea=idea, voter=request.user)
