@@ -2,7 +2,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from product_management.models import Bounty, Challenge
-from .models import Person, Status, BountyClaim, BountyDeliveryAttempt
+
+from .models import BountyClaim, BountyDeliveryAttempt, Person, Status
 
 
 @receiver(post_save, sender=Person)
@@ -15,12 +16,12 @@ def create_status_for_person(sender, instance, created, **kwargs):
 def update_bounty_delivery_status(sender, instance, created, **kwargs):
     if not created:
         action_mapping = {
-            BountyDeliveryAttempt.SUBMISSION_TYPE_APPROVED: {
+            BountyDeliveryAttempt.SubmissionType.APPROVED: {
                 "bounty_claim_status": BountyClaim.Status.COMPLETED,
                 "bounty_status": Bounty.BountyStatus.COMPLETED,
                 "challenge_status": Challenge.ChallengeStatus.choices,
             },
-            BountyDeliveryAttempt.SUBMISSION_TYPE_REJECTED: {
+            BountyDeliveryAttempt.SubmissionType.REJECTED: {
                 "bounty_claim_status": BountyClaim.Status.FAILED,
                 "bounty_status": Bounty.BountyStatus.AVAILABLE,
                 "challenge_status": Challenge.ChallengeStatus.ACTIVE,
@@ -36,7 +37,5 @@ def update_bounty_delivery_status(sender, instance, created, **kwargs):
             instance.bounty_claim.bounty.status = actions["bounty_status"]
             instance.bounty_claim.bounty.save()
 
-            instance.bounty_claim.bounty.challenge.status = actions[
-                "challenge_status"
-            ]
+            instance.bounty_claim.bounty.challenge.status = actions["challenge_status"]
             instance.bounty_claim.bounty.challenge.save()

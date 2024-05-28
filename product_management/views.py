@@ -19,7 +19,7 @@ from commerce.models import Organisation
 from openunited.mixins import HTMXInlineFormValidationMixin
 from product_management import mixins, utils
 from security.models import IdeaVote, ProductRoleAssignment
-from talent.models import BountyClaim, BountyDeliveryAttempt
+from talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
 from utility import utils as global_utils
 
 from .forms import (
@@ -35,18 +35,7 @@ from .forms import (
     ProductAreaForm1,
     ProductForm,
 )
-from .models import (
-    Bounty,
-    Bug,
-    Challenge,
-    ContributionAgreement,
-    Expertise,
-    Idea,
-    Initiative,
-    Product,
-    ProductArea,
-    Skill,
-)
+from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
 
 
 class ProductListView(ListView):

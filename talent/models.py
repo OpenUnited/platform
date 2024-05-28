@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import AncestryMixin, TimeStampMixin, UUIDMixin
+from product_management.models import AttachmentAbstract
 
 
 class Person(TimeStampMixin):
@@ -358,7 +359,7 @@ class CapabilityComment(Comment):
     pass
 
 
-class BountyDeliveryAttempt(TimeStampMixin):
+class BountyDeliveryAttempt(TimeStampMixin, AttachmentAbstract):
     class SubmissionType(models.TextChoices):
         NEW = "New"
         APPROVED = "Approved"
@@ -373,7 +374,9 @@ class BountyDeliveryAttempt(TimeStampMixin):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     is_canceled = models.BooleanField(default=False)
     delivery_message = models.CharField(max_length=2000, default=None)
-    attachment = models.FileField("bounty_delivery_attempts/", blank=True, null=True)
+
+    class Meta:
+        ordering = ("-created_at",)
 
     def get_absolute_url(self):
         return reverse(

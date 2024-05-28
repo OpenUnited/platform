@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +14,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from product_management.models import Bounty, Challenge, Product
+from product_management import mixins
+from product_management.models import Bounty, Challenge
 from security.models import ProductRoleAssignment
 from talent import utils
 from utility import utils as global_utils
@@ -361,7 +362,7 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
             return super().post(request, *args, **kwargs)
 
 
-class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
+class CreateBountyDeliveryAttemptView(LoginRequiredMixin, mixins.AttachmentMixin, CreateView):
     model = BountyDeliveryAttempt
     form_class = BountyDeliveryAttemptForm
     success_url = reverse_lazy("dashboard")
@@ -371,60 +372,24 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["request"] = self.request
-
         return kwargs
 
-    # todo: find a better way to check if the page exists
-    def get(self, request, *args, **kwargs):
-        product_slug = kwargs.get("product_slug")
-        challenge_id = kwargs.get("challenge_id")
-        bounty_id = kwargs.get("bounty_id")
+    def form_valid(self, form):
+        form.instance.person = self.request.user.person
+        form.instance.kind = BountyDeliveryAttempt.SubmissionType.NEW
+        response = super().form_save(form)
 
-        product = get_object_or_404(
-            Product,
-            slug=product_slug,
-        )
-
-        challenge = get_object_or_404(
-            Challenge,
-            id=challenge_id,
-        )
-
-        bounty = get_object_or_404(
-            Bounty,
-            id=bounty_id,
-        )
-
-        if product != challenge.product or challenge != bounty.challenge:
-            raise Http404("No matches the given query.")
-
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES, request=request)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.person = request.user.person
-            instance.kind = BountyDeliveryAttempt.SubmissionType.NEW
-            instance.save()
-
-            bounty_claim = instance.bounty_claim
-            bounty_claim.status = BountyClaim.Status.CONTRIBUTED
-            bounty_claim.save()
-
-            return HttpResponseRedirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
+        bounty_claim = form.instance.bounty_claim
+        bounty_claim.status = BountyClaim.Status.CONTRIBUTED
+        bounty_claim.save()
+        return response
 
 
-class BountyDeliveryAttemptDetail(LoginRequiredMixin, DetailView):
+class BountyDeliveryAttemptDetail(LoginRequiredMixin, mixins.AttachmentMixin, DetailView):
     model = BountyDeliveryAttempt
     context_object_name = "object"
     template_name = "talent/bounty_delivery_attempt_detail.html"
-
-    TRIGGER_KEY = "bounty-delivery-action"
-    APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
-    REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
+    success_url = reverse_lazy("dashboard")
 
     def get_context_data(self, *args, **kwargs):
         product = self.object.bounty_claim.bounty.challenge.product
@@ -438,19 +403,16 @@ class BountyDeliveryAttemptDetail(LoginRequiredMixin, DetailView):
         return data
 
     def post(self, request, *args, **kwargs):
+        # TODO This is not best way and need to improve it. we need to move this to UpdateView
+        TRIGGER_KEY = "bounty-delivery-action"
+        APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
+        REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
+        value = self.request.POST.get(TRIGGER_KEY)
         self.object = self.get_object()
-        value = request.POST.get(self.TRIGGER_KEY)
 
-        success = False
-        if value == self.APPROVE_TRIGGER_NAME:
-            self.object.kind = BountyDeliveryAttempt.SubmissionType.APPROVED
-            success = True
-        elif value == self.REJECT_TRIGGER_NAME:
+        if value == APPROVE_TRIGGER_NAME:
+            self.get_object().kind = BountyDeliveryAttempt.SubmissionType.APPROVED
+        elif value == REJECT_TRIGGER_NAME:
             self.object.kind = BountyDeliveryAttempt.SubmissionType.REJECTED
-            success = True
 
-        if success:
-            self.object.save()
-            return HttpResponseRedirect(reverse("dashboard"))
-
-        return super().post(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse("dashboard"))
