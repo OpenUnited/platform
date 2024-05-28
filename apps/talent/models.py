@@ -13,8 +13,8 @@ from django.utils.translation import gettext_lazy as _
 
 from treebeard.mp_tree import MP_Node
 
+from apps.common.models import AttachmentAbstract
 from apps.openunited.mixins import AncestryMixin, TimeStampMixin, UUIDMixin
-from apps.product_management.models import AttachmentAbstract
 
 
 class Person(TimeStampMixin):

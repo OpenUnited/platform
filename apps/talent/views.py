@@ -14,7 +14,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from apps.product_management import mixins
+from apps.common import mixins
 from apps.product_management.models import Bounty, Challenge
 from apps.security.models import ProductRoleAssignment
 from apps.talent import utils

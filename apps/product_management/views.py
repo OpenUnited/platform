@@ -15,8 +15,9 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, RedirectView, TemplateView, UpdateView
 
 from apps.commerce.models import Organisation
+from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
-from apps.product_management import forms, mixins, utils
+from apps.product_management import forms, utils
 from apps.security.models import IdeaVote, ProductRoleAssignment
 from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
 from apps.utility import utils as global_utils
@@ -246,7 +247,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         return render(request, self.get_template_names(), context)
 
 
-class ProductAreaDetailUpdateView(BaseProductDetailView, mixins.AttachmentMixin, UpdateView):
+class ProductAreaDetailUpdateView(BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = forms.ProductAreaForm
@@ -522,7 +523,7 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
-class ChallengeDetailView(BaseProductDetailView, mixins.AttachmentMixin, DetailView):
+class ChallengeDetailView(BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
     model = Challenge
     context_object_name = "challenge"
     template_name = "product_management/challenge_detail.html"
@@ -702,7 +703,7 @@ class BountyClaimView(LoginRequiredMixin, View):
         )
 
 
-class CreateProductView(LoginRequiredMixin, mixins.AttachmentMixin, CreateView):
+class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, CreateView):
     model = Product
     form_class = forms.ProductForm
     template_name = "product_management/create_product.html"
@@ -722,7 +723,7 @@ class CreateProductView(LoginRequiredMixin, mixins.AttachmentMixin, CreateView):
         return response
 
 
-class UpdateProductView(LoginRequiredMixin, mixins.AttachmentMixin, UpdateView):
+class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
     model = Product
     form_class = forms.ProductForm
     template_name = "product_management/update_product.html"
@@ -771,7 +772,9 @@ class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, 
         return super().post(request, *args, **kwargs)
 
 
-class CreateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInlineFormValidationMixin, CreateView):
+class CreateChallengeView(
+    LoginRequiredMixin, common_mixins.AttachmentMixin, HTMXInlineFormValidationMixin, CreateView
+):
     model = Challenge
     form_class = forms.ChallengeForm
     template_name = "product_management/create_challenge.html"
@@ -785,7 +788,9 @@ class CreateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInline
         return super().form_save(form)
 
 
-class UpdateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInlineFormValidationMixin, UpdateView):
+class UpdateChallengeView(
+    LoginRequiredMixin, common_mixins.AttachmentMixin, HTMXInlineFormValidationMixin, UpdateView
+):
     model = Challenge
     form_class = forms.ChallengeForm
     template_name = "product_management/update_challenge.html"
@@ -1057,7 +1062,7 @@ class DashboardProductBountyFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class BountyDetailView(mixins.AttachmentMixin, DetailView):
+class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
     model = Bounty
     template_name = "product_management/bounty_detail.html"
 
@@ -1107,7 +1112,7 @@ class BountyDetailView(mixins.AttachmentMixin, DetailView):
         return {"data": data, "attachment_formset": data["attachment_formset"]}
 
 
-class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, mixins.AttachmentMixin, CreateView):
+class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.AttachmentMixin, CreateView):
     model = Bounty
     form_class = forms.BountyForm
     template_name = "product_management/create_bounty.html"
@@ -1133,7 +1138,7 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, mixins.Attachm
         return response
 
 
-class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, mixins.AttachmentMixin, UpdateView):
+class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     model = Bounty
     form_class = forms.BountyForm
     template_name = "product_management/update_bounty.html"

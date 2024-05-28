@@ -1,6 +1,7 @@
+from apps.common.forms import AttachmentFormSet
+from apps.common.models import FileAttachment
 from apps.openunited.tests.conftest import *
-from apps.product_management.forms import AttachmentFormSet
-from apps.product_management.models import Bounty, Challenge, FileAttachment
+from apps.product_management.models import Bounty, Challenge
 
 
 @pytest.fixture

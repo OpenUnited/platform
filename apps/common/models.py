@@ -9,7 +9,7 @@ class FileAttachment(models.Model):
 
 
 class AttachmentAbstract(models.Model):
-    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
+    attachments = models.ManyToManyField("common.FileAttachment", blank=True)
 
     class Meta:
         abstract = True

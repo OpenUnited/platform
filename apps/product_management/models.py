@@ -12,22 +12,9 @@ from django.utils.text import slugify
 from model_utils import FieldTracker
 from treebeard.mp_tree import MP_Node
 
+from apps.common import models as common
 from apps.openunited.mixins import TimeStampMixin, UUIDMixin
 from apps.product_management.mixins import ProductMixin
-
-
-class FileAttachment(models.Model):
-    file = models.FileField(upload_to="attachments")
-
-    def __str__(self):
-        return f"{self.file.name}"
-
-
-class AttachmentAbstract(models.Model):
-    attachments = models.ManyToManyField("product_management.FileAttachment", blank=True)
-
-    class Meta:
-        abstract = True
 
 
 class Tag(TimeStampMixin):
@@ -47,7 +34,7 @@ class ProductTree(models.Model):
     )
 
 
-class ProductArea(MP_Node, AttachmentAbstract):
+class ProductArea(MP_Node, common.AttachmentAbstract):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, blank=True, null=True, default="")
     video_link = models.URLField(max_length=255, blank=True, null=True)
@@ -71,7 +58,7 @@ class ProductArea(MP_Node, AttachmentAbstract):
         return self.name
 
 
-class Product(ProductMixin, AttachmentAbstract):
+class Product(ProductMixin, common.AttachmentAbstract):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -174,7 +161,7 @@ class Initiative(TimeStampMixin, UUIDMixin):
         return queryset.distinct("id").all()
 
 
-class Challenge(TimeStampMixin, UUIDMixin, AttachmentAbstract):
+class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
     class ChallengeStatus(models.TextChoices):
         DRAFT = "Draft"
         BLOCKED = "Blocked"
@@ -341,7 +328,7 @@ class Challenge(TimeStampMixin, UUIDMixin, AttachmentAbstract):
         return self.description
 
 
-class Bounty(TimeStampMixin, AttachmentAbstract):
+class Bounty(TimeStampMixin, common.AttachmentAbstract):
     class BountyStatus(models.TextChoices):
         AVAILABLE = "Available"
         CLAIMED = "Claimed"

@@ -22,11 +22,6 @@ class ProductAreaAdmin(admin.ModelAdmin):
     filter_horizontal = ("attachments",)
 
 
-@admin.register(product.FileAttachment)
-class AttachmentAdmin(admin.ModelAdmin):
-    list_display = ["pk", "file"]
-
-
 @admin.register(product.Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
     def product_area_name(self, obj):

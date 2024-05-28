@@ -4,7 +4,6 @@ from datetime import date
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.forms import modelformset_factory
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -14,17 +13,7 @@ from apps.commerce.models import Organisation
 from apps.talent.models import BountyClaim, Person
 from apps.utility import utils as global_utils
 
-from .models import (
-    Bounty,
-    Bug,
-    Challenge,
-    ContributionAgreement,
-    FileAttachment,
-    Idea,
-    Initiative,
-    Product,
-    ProductArea,
-)
+from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
 
 
 class DateInput(forms.DateInput):
@@ -514,14 +503,6 @@ class ProductAreaForm(forms.ModelForm):
         for key, field in self.fields.items():
             field.widget.attrs.update({"class": class_names})
             field.widget.attrs["readonly"] = not can_modify_product
-
-
-AttachmentFormSet = modelformset_factory(
-    FileAttachment,
-    fields=("file",),
-    extra=0,
-    can_delete=True,
-)
 
 
 class ProductAreaForm1(forms.ModelForm):
