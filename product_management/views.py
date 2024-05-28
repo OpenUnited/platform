@@ -17,24 +17,11 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, R
 
 from commerce.models import Organisation
 from openunited.mixins import HTMXInlineFormValidationMixin
-from product_management import mixins, utils
+from product_management import forms, mixins, utils
 from security.models import IdeaVote, ProductRoleAssignment
 from talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
 from utility import utils as global_utils
 
-from .forms import (
-    BountyClaimForm,
-    BountyForm,
-    BugForm,
-    ChallengeForm,
-    ContributionAgreementForm,
-    IdeaForm,
-    InitiativeForm,
-    OrganisationForm,
-    ProductAreaForm,
-    ProductAreaForm1,
-    ProductForm,
-)
 from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
 
 
@@ -206,7 +193,7 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
 
 class ProductAreaCreateView(BaseProductDetailView, CreateView):
     model = ProductArea
-    form_class = ProductAreaForm
+    form_class = forms.ProductAreaForm
     template_name = "product_management/tree_helper/create_node_partial.html"
 
     def get_template_names(self):
@@ -221,7 +208,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 
     # @utils.modify_permission_required
     def post(self, request, **kwargs):
-        form = ProductAreaForm(request.POST)
+        form = forms.ProductAreaForm(request.POST)
         if not form.is_valid():
             return render(request, self.get_template_names(), form.errors)
         context = {
@@ -263,7 +250,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
 class ProductAreaDetailUpdateView(BaseProductDetailView, mixins.AttachmentMixin, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
-    form_class = ProductAreaForm
+    form_class = forms.ProductAreaForm
 
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
@@ -283,7 +270,7 @@ class ProductAreaDetailUpdateView(BaseProductDetailView, mixins.AttachmentMixin,
         product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
         challenges = Challenge.objects.filter(product_area=product_area)
 
-        form = ProductAreaForm(instance=product_area, can_modify_product=product_perm)
+        form = forms.ProductAreaForm(instance=product_area, can_modify_product=product_perm)
         context = super().get_context_data(**kwargs)
         context.update(
             {
@@ -360,7 +347,7 @@ def update_node(request, pk):
         "node": product_area,
     }
     if request.method == "POST":
-        form = ProductAreaForm(request.POST)
+        form = forms.ProductAreaForm(request.POST)
         has_cancelled = bool(request.POST.get("cancelled", False))
         has_dropped = bool(request.POST.get("has_dropped", False))
 
@@ -464,10 +451,10 @@ class ProductBugListView(BaseProductDetailView, ListView):
 class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
     login_url = "sign_in"
     template_name = "product_management/add_product_idea.html"
-    form_class = IdeaForm
+    form_class = forms.IdeaForm
 
     def post(self, request, *args, **kwargs):
-        form = IdeaForm(request.POST)
+        form = forms.IdeaForm(request.POST)
 
         if form.is_valid():
             person = self.request.user.person
@@ -487,12 +474,12 @@ class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     login_url = "sign_in"
     template_name = "product_management/update_product_idea.html"
     model = Idea
-    form_class = IdeaForm
+    form_class = forms.IdeaForm
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         idea_pk = kwargs.get("pk")
         idea = Idea.objects.get(pk=idea_pk)
-        IdeaForm(request.GET, instance=idea)
+        forms.IdeaForm(request.GET, instance=idea)
 
         return super().get(request, *args, **kwargs)
 
@@ -500,7 +487,7 @@ class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
         idea_pk = kwargs.get("pk")
         idea = Idea.objects.get(pk=idea_pk)
 
-        form = IdeaForm(request.POST, instance=idea)
+        form = forms.IdeaForm(request.POST, instance=idea)
 
         if form.is_valid():
             form.save()
@@ -600,7 +587,7 @@ class ChallengeDetailView(BaseProductDetailView, mixins.AttachmentMixin, DetailV
 
 
 class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
-    form_class = InitiativeForm
+    form_class = forms.InitiativeForm
     template_name = "product_management/create_initiative.html"
     login_url = "sign_in"
 
@@ -645,7 +632,7 @@ class InitiativeDetailView(BaseProductDetailView, DetailView):
 
 
 class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
-    form_class = ProductAreaForm1
+    form_class = forms.ProductAreaForm1
     template_name = "product_management/create_capability.html"
     login_url = "sign_in"
 
@@ -697,10 +684,10 @@ class CapabilityDetailView(BaseProductDetailView, DetailView):
 
 
 class BountyClaimView(LoginRequiredMixin, View):
-    form_class = BountyClaimForm
+    form_class = forms.BountyClaimForm
 
     def post(self, request, pk, *args, **kwargs):
-        form = BountyClaimForm(request.POST)
+        form = forms.BountyClaimForm(request.POST)
         if not form.is_valid():
             return JsonResponse({"errors": form.errors}, status=400)
 
@@ -719,7 +706,7 @@ class BountyClaimView(LoginRequiredMixin, View):
 
 class CreateProductView(LoginRequiredMixin, mixins.AttachmentMixin, CreateView):
     model = Product
-    form_class = ProductForm
+    form_class = forms.ProductForm
     template_name = "product_management/create_product.html"
     login_url = "sign_in"
 
@@ -739,7 +726,7 @@ class CreateProductView(LoginRequiredMixin, mixins.AttachmentMixin, CreateView):
 
 class UpdateProductView(LoginRequiredMixin, mixins.AttachmentMixin, UpdateView):
     model = Product
-    form_class = ProductForm
+    form_class = forms.ProductForm
     template_name = "product_management/update_product.html"
     login_url = "sign_in"
 
@@ -768,7 +755,7 @@ class UpdateProductView(LoginRequiredMixin, mixins.AttachmentMixin, UpdateView):
 
 class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
     model = Organisation
-    form_class = OrganisationForm
+    form_class = forms.OrganisationForm
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy("create-product")
     login_url = "sign_in"
@@ -788,7 +775,7 @@ class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, 
 
 class CreateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInlineFormValidationMixin, CreateView):
     model = Challenge
-    form_class = ChallengeForm
+    form_class = forms.ChallengeForm
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
@@ -802,7 +789,7 @@ class CreateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInline
 
 class UpdateChallengeView(LoginRequiredMixin, mixins.AttachmentMixin, HTMXInlineFormValidationMixin, UpdateView):
     model = Challenge
-    form_class = ChallengeForm
+    form_class = forms.ChallengeForm
     template_name = "product_management/update_challenge.html"
     login_url = "sign_in"
 
@@ -1135,7 +1122,7 @@ class BountyDetailView(mixins.AttachmentMixin, DetailView):
 
 class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, mixins.AttachmentMixin, CreateView):
     model = Bounty
-    form_class = BountyForm
+    form_class = forms.BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
 
@@ -1161,7 +1148,7 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, mixins.Attachm
 
 class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, mixins.AttachmentMixin, UpdateView):
     model = Bounty
-    form_class = BountyForm
+    form_class = forms.BountyForm
     template_name = "product_management/update_bounty.html"
     login_url = "sign_in"
 
@@ -1286,7 +1273,7 @@ class DashboardContributionAgreementView(LoginRequiredMixin, ListView):
 
 class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
     model = ContributionAgreement
-    form_class = ContributionAgreementForm
+    form_class = forms.ContributionAgreementForm
     template_name = "product_management/create_contribution_agreement.html"
     login_url = "sign_in"
 
@@ -1344,10 +1331,10 @@ class ContributionAgreementView(DetailView):
 class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
     login_url = "sign_in"
     template_name = "product_management/add_product_bug.html"
-    form_class = BugForm
+    form_class = forms.BugForm
 
     def post(self, request, *args, **kwargs):
-        form = BugForm(request.POST)
+        form = forms.BugForm(request.POST)
 
         if form.is_valid():
             person = self.request.user.person
@@ -1393,7 +1380,7 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
     login_url = "sign_in"
     template_name = "product_management/update_product_bug.html"
     model = Bug
-    form_class = BugForm
+    form_class = forms.BugForm
 
     def get(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         bug_pk = kwargs.get("pk")
@@ -1408,7 +1395,7 @@ class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
         bug_pk = kwargs.get("pk")
         bug = Bug.objects.get(pk=bug_pk)
 
-        form = BugForm(request.POST, instance=bug)
+        form = forms.BugForm(request.POST, instance=bug)
 
         if form.is_valid():
             form.save()
