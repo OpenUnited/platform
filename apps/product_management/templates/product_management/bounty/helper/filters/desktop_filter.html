@@ -1,0 +1,41 @@
+
+<form hx-get="{{ url("bounties") }}" class="hidden sm:block" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML" >
+    <div class="flex items-end">
+        {% with id="id_status" %}
+            {% include "product_management/bounty/helper/filters/status.html" %}
+        {% endwith %}
+
+        {% with id="id_skill" %}
+            {% include "product_management/bounty/helper/filters/skill.html" %}
+        {% endwith %}
+
+        <div class="mr-4 mt-4" id="expertise_container">
+            {% with id="id_expertise_moble" %}
+                {% include "product_management/bounty/helper/filters/expertise.html" %}
+            {% endwith %}
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("htmx:afterRequest", function(event) {
+      if (event.target.getAttribute("target_id") == "id_skill" && event.detail.successful) {
+          const responseData = JSON.parse(event.detail.xhr.response);
+          document.querySelector("#item_list_container").innerHTML = responseData.list_html;
+          document.querySelector("#expertise_container").innerHTML = responseData.expertise_html;
+          event.target.setAttribute("target_id", "none-skill")
+          event.target.setAttribute("target_id", "none-skill")
+          event.target.setAttribute("hx-vals", "");
+      }
+  });
+
+  document.getElementById("id_skill").addEventListener("change", function(event) {
+      const data = {
+          target: "skill",
+        };
+      const closestForm = event.target.closest("form")
+      closestForm.setAttribute("hx-vals", JSON.stringify(data));
+      closestForm.setAttribute("target_id", "id_skill");
+
+  });
+</script>

@@ -1,0 +1,40 @@
+<div class="flex flex-col">
+    <div class="space-y-6 mb-0">
+        {% set non_field_errors = wizard.form.non_field_errors() %}
+        {% if non_field_errors %}
+        <div
+            class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+            <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
+                <img src="{{ static('images/error.svg') }}" alt="Error Icon">
+            </span>
+            <ul>
+                {% for error in non_field_errors|list %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <div
+            class="w-fit mx-auto text-center flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#1890ff] text-sm text-black/[0.85] bg-[#e6f7ff]">
+            Please check your email for six-digit code
+        </div>
+        {% endif %}
+
+        <label class="flex flex-col items-center digit-code">
+            <div class="text-sm text-black/[0.85] mb-2">
+                Six-digit code
+            </div>
+            {{ wizard.form.verification_code }}
+        </label>
+
+        <div>
+            <div class="flex items-center text-sm text-black/[0.85] relative mb-2">
+                Didn’t recieve the code? <a
+                    class="font-semibold leading-6 text-[#1890ff] hover:text-blue-500 inline-flex items-center ml-1.5"
+                    href="#">Resend it</a>
+            </div>
+            <button type="submit"
+                class="flex w-full justify-center rounded-md bg-[#1890ff] px-3 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm transition-all hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1890ff]">Verify</button>
+        </div>
+    </div>
+</div>

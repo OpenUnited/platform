@@ -1,0 +1,92 @@
+{% set bounty=elem.bounty%}
+{% set button_class="mb-2 text-indigo hover:text-white border border-indigo-500 hover:bg-indigo-700 focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-indigo-500  dark:hover:bg-indigo-600 dark:focus:ring-indigo-900 mr-1" %}
+{% set li_class = "block px-4 py-2 text-indigo-500 hover:bg-indigo-500 dark:hover:bg-indigo-500 dark:hover:text-white" %}
+{% set can_be_modified = elem.can_be_modified %}
+{% set showDropdown = can_be_modified or elem.created_bounty_claim_request %}
+
+
+{% with elem=elem %}
+    {% include "product_management/partials/buttons/create_bounty_claim_button.html" %}
+{% endwith %}
+
+<button id="dropdownHoverButton_{{bounty.pk}}" onclick="document.getElementById('dropdownHover_{{bounty.pk}}').classList.toggle('hidden')" data-dropdown-toggle="dropdownHover_{{bounty.pk}}" data-dropdown-trigger="hover" class="{% if not showDropdown %}hidden{% endif %} text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-between items-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800" type="button">
+    <svg class="w-2.5 h-2.5 me-3 order-first" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+    </svg>
+    Actions
+</button>
+
+
+<!-- Dropdown menu -->
+<div id="dropdownHover_{{bounty.pk}}" class="absolute z-10 hidden bg-white divide-y divide-white rounded-lg shadow w-44 border border-gray-100">
+    <ul  id="ulDropdownMenu_{{bounty.pk}}" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton_{{bounty.pk}}">
+        <li>
+        {% if elem.created_bounty_claim_request %}
+        <a href="#" hx-post="{{ url('delete-bounty-claim', args=(elem.bounty_claim.pk,)) }}"
+            class="{{li_class}}"
+            hx-swap="outerHTML" hx-target="this" hx-vals='{"from": "bounty_detail_table.html"}' hx-confirm="Are you sure to cancel your bounty claim request?">
+            Cancel Request
+        </a>
+        {% endif %}
+        </li>
+
+        {% if can_be_modified  %}
+            <li>
+                <a href="{{ url('update-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                        class="{{li_class}}">Edit</a>
+            </li>
+            <li>
+                <a hx-get="{{ url('delete-bounty', args=(challenge.product.slug, challenge.id, bounty.id,)) }}"
+                    hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
+                    hx-push-url="true"
+                    class="{{li_class}} text-red-500">Delete
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</div>
+
+<script>
+    document.addEventListener('click', function(event) {
+        if (event.target.matches('#dropdownHoverButton_{{bounty.pk}}') || event.target.closest('#dropdownSearchButton_1')) {
+            var dropdown = document.getElementById('dropdownSearch_1');
+            dropdown.classList.toggle('hidden');
+        }
+    });
+
+    document.addEventListener('htmx:confirm', function (event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+            event.preventDefault()
+            claimConfirm(event, "{{ url('terms-of-use') }}")
+        }
+    })
+
+    document.addEventListener('htmx:confirm', function (event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+            event.preventDefault()
+            claimConfirm(event, "{{ url('terms-of-use') }}")
+        }
+    })
+    document.addEventListener('htmx:responseError', function(event) {
+        if (event.detail.elt.getAttribute('claim-bounty')) {
+          showNotification({message: JSON.parse(event.detail.xhr.response).errors.expected_finish_date})
+        }
+      });
+
+
+    document.addEventListener('htmx:afterRequest', function (event) {
+        if (event.detail.xhr.responseURL.indexOf('bounty-claim') !== -1) {
+            var response = JSON.parse(event.detail.xhr.responseText);
+            if (event.detail.xhr.status === 200) {
+                const tdTag = event.target.closest("td")
+                event.target.classList.add("hidden")
+                const visibleButtonCount = tdTag.querySelectorAll('a:not([class*="hidden"]').length;
+                if (visibleButtonCount == 0) {
+                    tdTag.innerHTML = "No action is available for this bounty.";
+                    tdTag.classList.remove("hidden")
+                }
+            }
+        }
+    });
+    </script>

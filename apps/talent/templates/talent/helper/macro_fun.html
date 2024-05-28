@@ -1,0 +1,43 @@
+
+{% macro expertise_filter_tree(nodes,selected_expertise_ids,outer_loop_index, depth=0) %}
+    {% for node in nodes %}
+        <li>
+            <div class="flex items-center ps-2 rounded">
+                {% if not node.children %}
+                    <input  type="checkbox" value=""
+
+                    {% if node.id in selected_expertise_ids %}checked{% endif %}
+
+                        id="{{node.id}}"
+                        class="w-4 h-4 text-indigo-600 border-indigo-600 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-indigo-700 dark:focus:ring-offset-indigo-700 focus:ring-2">
+
+                {% endif %}
+                <label  for="checkbox-item-{{loop.index0}}" class="w-full py-2 ms-2 text-sm font-medium rounded text-black">{{node.name}}</label>
+            </div>
+            {% if node.children %}
+                <ul class="px-3 overflow-y-auto text-sm" aria-labelledby="dropdownSearchButton">
+                    {{ expertise_filter_tree(node.children,selected_expertise_ids, outer_loop_index, depth+1) }}
+                </ul>
+            {% endif %}
+        </li>
+
+    {% endfor %}
+{% endmacro %}
+
+
+
+{% macro skill_filter_tree(nodes, selected_pk,has_empty, depth=0) %}
+    {% for node in nodes %}
+        {% if node.children %}
+            <optgroup class="ml-{{depth * 2}}" label="{{node.name}}">
+                {{ skill_filter_tree(node.children,selected_pk,has_empty, depth+1) }}
+            </optgroup>
+        {% else %}
+            <option class="ml-{{depth * 2}}" value="{{node.id}}" {% if node.id == selected_pk %} selected {% elif not has_empty %} disabled{% endif %}>
+                {{ node.name }}
+
+            </option>
+        {% endif %}
+
+    {% endfor %}
+{% endmacro %}

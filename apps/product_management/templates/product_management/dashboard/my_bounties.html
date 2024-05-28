@@ -1,0 +1,85 @@
+<!-- Page title & actions -->
+<div class="hidden lg:block">
+    <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Dashboard</h1>
+        </div>
+
+        <div class="relative inline-block px-3 text-left">
+            <div>
+                <button type="button" _="on click toggle .hidden on #navbar-dropdown-menu end" class=" group w-full rounded-md px-3.5 py-2 text-left text-sm font-medium
+                            text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500
+                            focus:ring-offset-2 focus:ring-offset-gray-100" id="navbar-menu-button"
+                    aria-expanded="false" aria-haspopup="true">
+                    <span class="flex w-full items-center justify-between">
+                        <span class="flex min-w-0 items-center justify-between space-x-3">
+                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
+                                src="{{ person.get_photo_url() }}" alt="Profile Picture">
+                            <span class="flex min-w-0 flex-1 flex-col">
+                                <span
+                                    class="truncate text-sm font-medium text-gray-900">{{ person.get_full_name() }}</span>
+                                <span class="truncate text-sm text-gray-500">@{{ person.get_username() }}</span>
+                            </span>
+                        </span>
+                        <svg class="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20"
+                            fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+
+            <div _="on mouseenter from <a/> in me
+                                remove .text-gray-700 from <a/> in me
+                                tell the target
+                                    add .bg-gray-100 .text-gray-900
+                            end
+                            on mouseleave from <a/> in me
+                                remove .bg-gray-100 .text-gray-900 from <a/> in me
+                                tell the target
+                                    add .text-gray-700
+                            end" id="navbar-dropdown-menu" class="hidden absolute left-0 right-0 z-10 mx-3 mt-1 origin-top
+                        divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5
+                        focus:outline-none" role="menu" aria-orientation="vertical"
+                aria-labelledby="navbar-menu-button" tabindex="-1">
+                <div class="py-1" role="none">
+                    <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
+                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                        id="options-menu-item-1">Your Profile</a>
+                    <a href="{{ url('portfolio', args=(request.user.username,) ) }}"
+                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                        id="options-menu-item-2">Visit Portfolio</a>
+                </div>
+                <div class="py-1" role="none">
+                    <form id="logout-form" method="post" action="{{ url('log_out') }}">
+                        {% csrf_token %}
+                        <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log out</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 px-4 sm:px-6 lg:px-8">
+    <div class="border-b border-gray-200">
+        <nav _="on click from <a/> in me
+                            remove .border-indigo-500 .text-indigo-600 from <a/> in me
+                            add .border-transparent .text-gray-500 .hover:border-gray-300 .hover:text-gray-700 to <a/> in me
+                            tell the target
+                                add .border-indigo-500 .text-indigo-600
+                                remove .hover:border-gray-300 .hover:text-gray-700"
+            class="-mb-px flex space-x-8 border-b-4">
+            <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+            <a hx-get="{{ url('dashboard-bounty-requests') }}" hx-swap="innerHTML" hx-target="#manage-bounties-tabs"
+                class="cursor-pointer border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                aria-current="page">Bounty Claim Requests</a>
+        </nav>
+    </div>
+
+    <div id="manage-bounties-tabs" class="mt-2 mb-4">
+        {% include 'product_management/dashboard/bounty_claim_requests.html' %}
+    </div>
+</div>

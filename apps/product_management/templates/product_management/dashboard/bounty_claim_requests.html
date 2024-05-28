@@ -1,0 +1,70 @@
+<div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto mt-2">
+        <h1 class="text-base font-semibold leading-6 text-gray-900">Bounty Claims</h1>
+        <p class="mt-2 text-sm text-gray-700">A list of all the bounty claims you requested.</p>
+    </div>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <a href="{{ url('bounties') }}"
+            class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Browse
+            Challenges</a>
+    </div>
+</div>
+<div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            {% if bounty_claims %}
+            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-300">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 max-w-xs text-left text-sm font-semibold text-gray-900
+                                sm:pl-6 lg:pl-8">
+                                Bounty Details</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                Expected
+                                Finish Date</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status
+                            </th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        {% for bounty_claim in bounty_claims %}
+                        <tr>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><a
+                                    href="{{ bounty_claim.get_challenge_detail_url() }}" class="cursor-pointer font-medium text-blue-600 mr-4
+                                    hover:underline">{{ bounty_claim.bounty }}</a>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {{ bounty_claim.expected_finish_date|date }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {{ bounty_claim.status }}</td>
+                            <td
+                                class="whitespace-nowrap py-4 text-center text-sm font-medium sm:pr-6 lg:pr-8 cursor-pointer">
+                                {% if bounty_claim.status == "Granted" %}
+                                {% set challenge = bounty_claim.bounty.challenge %}
+                                <a href="{{ url('create-bounty-delivery-attempt', args=(challenge.product.slug, challenge.id, bounty_claim.bounty.id,)) }}?id={{ bounty_claim.id }}"
+                                    class="text-indigo-600 hover:text-indigo-900">Submit Work</a>
+                                {% elif bounty_claim.status == "Requested" %}
+                                <a hx-get="{{ url('delete-bounty-claim', args=(bounty_claim.pk,)) }}"
+                                    hx-confirm="Are you sure to cancel the following claim? {{ bounty_claim.bounty }}"
+                                    hx-target="#manage-bounties-tabs" hx-swap="innerHTML"
+                                    class="text-indigo-600 hover:text-indigo-900">Cancel</a>
+                                {% else %}
+                                <p class="text-sm font-normal text-gray-900">Nothing available</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>Currently, there are no bounty requests.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+{% extends 'product_management/product_detail_base_with_macro.html' %}
+
+{% block title %}Product - Summary{% endblock %}
+{% block product_content %}
+
+<div class="">
+    <h3 class="text-xl text-gray-900 font-bold mb-3">Product Tree</h3>
+    <div class="flex flex-col sm:flex-row gap-4">
+      {% include "product_management/tree_helper/search_component.html" %}
+      {% include "product_management/tree_helper/add_product_area_button.html" %}
+    </div>
+
+      {% include "product_management/tree_helper/tree_main_content.html" %}
+
+  </div>
+
+
+{% endblock product_content %}
