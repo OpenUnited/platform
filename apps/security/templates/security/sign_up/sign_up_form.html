@@ -1,0 +1,18 @@
+<form class="space-y-6 mb-0" method="POST">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% if wizard.steps.current == '0' %}
+
+    {% include 'security/sign_up/sign_up_step_0.html' %}
+
+    {% elif wizard.steps.current == '1' %}
+
+    {% include 'security/sign_up/sign_up_step_1.html' %}
+
+    {% elif wizard.steps.current == '2' %}
+
+    {% include 'security/sign_up/sign_up_step_2.html' %}
+
+    {% endif %}
+</form>

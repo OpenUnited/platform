@@ -1,0 +1,66 @@
+{% extends 'product_management/product_detail_base.html' %}
+
+{% block title %}Product - Challenges{% endblock %}
+{% block product_content %}
+
+<div class="relative sm:rounded-lg">
+    <a class="mb-6 float-right" href="{{ url('create-challenge', args=(product.slug,)) }}">
+        <button type="button"
+            class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">
+            Create Challenge
+        </button>
+    </a>
+
+    {% if challenges|length > 0 %}
+    <table class="w-full shadow-md text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Title
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Desription
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Priority
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <span class="sr-only">Visit</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for challenge in challenges %}
+            <tr class="bg-white border-b hover:bg-gray-50 ">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900">
+                    {{ challenge.title }}
+                </th>
+                <td class="px-6 py-4">
+                    {{ challenge.get_short_description() }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ challenge.get_status_display() }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ challenge.get_priority_display() }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <a href="{{ url('challenge_detail', args=(product_slug, challenge.id)) }}"
+                        class="font-medium text-blue-600 hover:underline">Visit</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% else %}
+
+    <p>This product has no active challenges</p>
+
+    {% endif %}
+</div>
+
+{% endblock %}

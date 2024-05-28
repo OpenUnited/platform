@@ -1,0 +1,9 @@
+{% import "product_management/bounty/helper/macros_fun.html" as macros_fun %}
+<div class="mr-4 mt-4">
+    <label for="{{id}}"
+      class="inline-block text-sm font-medium leading-6 text-gray-900 mb-2">Skill</label>
+    <select id="{{id}}" name="skill" onchange=""  class="w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+        <option value="">All</option>
+      {{ macros_fun.skill_expertise_filter_tree(skills) }}
+    </select>
+</div>

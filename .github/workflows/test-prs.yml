@@ -34,7 +34,7 @@ jobs:
         playwright install
     - run: pytest .
       env:
-        DJANGO_SETTINGS_MODULE: openunited.settings.development
+        DJANGO_SETTINGS_MODULE: apps.openunited.settings.development
         DJANGO_SECRET_KEY: 123456789
     # - name: Lint with Black (Check)
     #   # We are installing Black with requirements.txt

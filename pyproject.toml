@@ -40,5 +40,5 @@ include = '\.pyi?$'
 
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "openunited.settings.test"
+DJANGO_SETTINGS_MODULE = "apps.openunited.settings.test"
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]

@@ -1,0 +1,163 @@
+<div class="hidden lg:block">
+    <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Dashboard</h1>
+        </div>
+
+        <div class="relative inline-block px-3 text-left">
+            <div>
+                <button type="button" _="on click toggle .hidden on #navbar-dropdown-menu end" class=" group w-full rounded-md px-3.5 py-2 text-left text-sm font-medium
+                            text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500
+                            focus:ring-offset-2 focus:ring-offset-gray-100" id="navbar-menu-button"
+                    aria-expanded="false" aria-haspopup="true">
+                    <span class="flex w-full items-center justify-between">
+                        <span class="flex min-w-0 items-center justify-between space-x-3">
+                            <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
+                                src="{{ person.get_photo_url() }}" alt="Profile Picture">
+                            <span class="flex min-w-0 flex-1 flex-col">
+                                <span
+                                    class="truncate text-sm font-medium text-gray-900">{{ person.get_full_name() }}</span>
+                                <span class="truncate text-sm text-gray-500">@{{ person.get_username() }}</span>
+                            </span>
+                        </span>
+                        <svg class="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20"
+                            fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd"
+                                d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+
+            <div _="on mouseenter from <a/> in me
+                                remove .text-gray-700 from <a/> in me
+                                tell the target
+                                    add .bg-gray-100 .text-gray-900
+                            end
+                            on mouseleave from <a/> in me
+                                remove .bg-gray-100 .text-gray-900 from <a/> in me
+                                tell the target
+                                    add .text-gray-700
+                            end" id="navbar-dropdown-menu" class="hidden absolute left-0 right-0 z-10 mx-3 mt-1 origin-top
+                        divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5
+                        focus:outline-none" role="menu" aria-orientation="vertical"
+                aria-labelledby="navbar-menu-button" tabindex="-1">
+                <div class="py-1" role="none">
+                    <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
+                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                        id="options-menu-item-1">Your Profile</a>
+                    <a href="{{ url('portfolio', args=(request.user.username,) ) }}"
+                        class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
+                        id="options-menu-item-2">Visit Portfolio</a>
+                </div>
+                <div class="py-1" role="none">
+                    <form id="logout-form" method="post" action="{{ url('log_out') }}">
+                        {% csrf_token %}
+                        <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log out</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="md:flex md:items-center md:justify-between md:space-x-5 my-5">
+        <div class="flex items-start space-x-5">
+            <div class="flex-shrink-0">
+                <div class="relative">
+                    <img class="h-16 w-16 rounded-full" src="{{ product.get_photo_url() }}" alt="Product Photo">
+                    <span class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="pt-1.5">
+                <h1 class="text-2xl font-bold text-gray-900">{{ product.name }}</h1>
+                <p class="text-sm font-medium text-gray-500">{{ product.short_description }}</p>
+            </div>
+        </div>
+        <div
+            class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-3 sm:space-y-0 sm:space-x-reverse md:mt-0 md:flex-row md:space-x-3">
+            <a href="{{ url('product_detail', args=(product.slug,)) }}">
+                <button type="button"
+                    class="inline-flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    Visit Product Detail Page
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!--
+  This example requires some changes to your config:
+
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+-->
+    <div class="border-b border-gray-200 pb-5 sm:pb-0 mt-8">
+        <h3 class="text-base font-semibold leading-6 text-gray-900">Manage your products</h3>
+        <div class="mt-3 sm:mt-4">
+            <!-- Dropdown menu on small screens -->
+            <div class="sm:hidden">
+                <label for="current-tab" class="sr-only">Select a tab</label>
+                <select id="current-tab" name="current-tab"
+                    class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                    <option>Applied</option>
+                    <option>Phone Screening</option>
+                    <option selected>Interview</option>
+                    <option>Offer</option>
+                    <option>Hired</option>
+                </select>
+            </div>
+            <!-- Tabs at small breakpoint and up -->
+            <div class="hidden sm:block">
+                <nav _="on click from <a/> in me
+                            remove .border-indigo-500 .text-indigo-600 from <a/> in me
+                            add .border-transparent .text-gray-500 .hover:border-gray-300 .hover:text-gray-700 to <a/> in me
+                            tell the target
+                                add .border-indigo-500 .text-indigo-600
+                                remove .hover:border-gray-300 .hover:text-gray-700" class="-mb-px flex space-x-8">
+                    <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+                    <a hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
+                        class="cursor-pointer border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        aria-current="page">
+                        Challenges
+                    </a>
+                    <a hx-get="{{ url('dashboard-product-bounties', args=(product.slug,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        Bounty Claim Requests
+                    </a>
+                    <a hx-get="{{ url('dashboard-review-work', args=(product.slug,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        Review Work
+                    </a>
+                    <a hx-get="{{ url('dashboard-contribution-agreements', args=(product.slug,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        Contribution Agreements
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-2 mb-4">
+        <div id="loading-spinner" class="flex justify-center items-center mt-4 mb-4 htmx-indicator">
+            <img src="{{ static('images/loading.svg') }}" width="32" height="32" />
+        </div>
+        <div id="manage-product-content" class="manage-product-content">
+            {% include 'product_management/dashboard/manage_challenges.html' %}
+        </div>
+    </div>
+
+</div>

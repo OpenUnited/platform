@@ -1,0 +1,64 @@
+{% if can_modify_product %}
+<div class="flex gap-3 items-center view-node-group">
+  <button type="button" class="add_node w-5 h-5"
+          onclick="event.preventDefault()"
+          trigger="create_node_{{id}}"
+          hx-swap="afterend"
+          hx-get="{{ url('product_area', args=(product_slug,)) }}"
+          hx-target="#li_node_{{id}}"
+          hx-vals='{"margin_left":"{{margin_left or 0 }}", "parent_id":"{{id}}","depth": "{{depth}}" }'>
+          <img src="{{ static('images/add.svg') }}" class="" alt="#">
+  </button>
+
+  <button type="button"
+          class="edit_node w-5 h-5"
+          hx-target="#li_node_{{id}}"
+          trigger="update_node_{{id}}"
+          hx-get="{{ url('product_area_update', args=(product_slug, id,)) }}"
+          hx-vals='{"margin_left":"{{margin_left or 0 }}", "depth": "{{depth}}" }'
+          onclick="event.preventDefault()">
+      <img src="{{ static('images/edit_icon.svg')}}" class="edit" alt="#">
+  </button>
+
+    <button  onclick="event.preventDefault()"
+             trigger="delete_node_{{id}}"
+             hx-swap="none"
+             class="delete_node w-5 h-5"
+             hx-target="#li_node_{{id}}"
+             hx-delete="{{ url('product_area_delete', args=(product_slug, id,)) }}"
+    >
+      <img src="{{ static('images/delete.svg')}}" class="" alt="#">
+    </button>
+</div>
+{% endif %}
+
+<script>
+  document.addEventListener("htmx:confirm", function(event) {
+    var triggers = ['delete_node_{{id}}', 'create_node_{{id}}', 'update_node_{{id}}'];
+    if (triggers.includes(event.detail.elt.getAttribute('trigger'))) {
+        if (event.detail.elt.getAttribute('trigger') === 'delete_node_{{id}}') {
+          event.preventDefault()
+          showConfirm({}).then(function(){event.detail.issueRequest()})
+        }
+    }
+  })
+
+  document.addEventListener('htmx:responseError', function(event) {
+    if (event.detail.elt.getAttribute('trigger') === 'delete_node_{{id}}') {
+      showNotification({message: JSON.parse(event.detail.xhr.response).error})
+    }
+  });
+
+  document.addEventListener("htmx:afterRequest", function(event) {
+      if (event.detail.elt.getAttribute('trigger')=="delete_node_{{id}}" && event.detail.successful) {
+            event.preventDefault();
+            event.detail.target.remove()
+            showNotification({
+              type: typeSuccess,
+              message: "Success, The data has deleted successfuly."
+            })
+            event.stopPropagation();
+      }
+  });
+
+</script>
