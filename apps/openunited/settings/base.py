@@ -21,6 +21,7 @@ ACTUAL_APPS = [
     "apps.engagement",
     "apps.commerce",
     "apps.canopy",
+    "apps.common",
 ]
 THIRD_PARTIES = [
     "django_htmx",
