@@ -1,21 +1,32 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 from django.forms import inlineformset_factory
-from .models import Person, Feedback, BountyClaim, BountyDeliveryAttempt
+from django.utils.translation import gettext_lazy as _
+
 from talent import models as talent
+
+from .models import BountyClaim, BountyDeliveryAttempt, Feedback, Person
 
 
 def _get_text_input_class():
-    return "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm"
+    return (
+        "pt-2 px-4 pb-3 w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm"
+    )
 
 
 def _get_text_area_class():
-    return "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9] focus:outline-none rounded-sm"
+    return (
+        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+        " focus:outline-none rounded-sm"
+    )
 
 
 def _get_text_input_class_for_link():
-    return "block w-full h-full max-w-full rounded-r-sm shadow-none border border-solid border-[#D9D9D9] py-1.5 px-3 text-gray-900 text-sm ring-0 placeholder:text-gray-400 focus:ring-0 focus-visible:outline-none sm:text-sm sm:leading-6 h-9"
+    return (
+        "block w-full h-full max-w-full rounded-r-sm shadow-none border border-solid border-[#D9D9D9] py-1.5 px-3"
+        " text-gray-900 text-sm ring-0 placeholder:text-gray-400 focus:ring-0 focus-visible:outline-none sm:text-sm"
+        " sm:leading-6 h-9"
+    )
 
 
 def _get_choice_box_class():
@@ -43,14 +54,20 @@ class PersonProfileForm(forms.ModelForm):
         widgets = {
             "full_name": forms.TextInput(
                 attrs={
-                    "class": "py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm focus:outline-none",
+                    "class": (
+                        "py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm"
+                        " focus:outline-none"
+                    ),
                     "placeholder": "Your full name",
                     "autocapitalize": "none",
                 }
             ),
             "preferred_name": forms.TextInput(
                 attrs={
-                    "class": "py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm focus:outline-none",
+                    "class": (
+                        "py-1.5 px-3 text-sm text-black border border-solid border-[#D9D9D9] rounded-sm"
+                        " focus:outline-none"
+                    ),
                     "placeholder": "Your preferred name",
                     "autocapitalize": "none",
                 }
@@ -116,9 +133,7 @@ class PersonProfileForm(forms.ModelForm):
             ),
         }
 
-        help_texts = {
-            "send_me_bounties": "Get notified when a new bounty is added."
-        }
+        help_texts = {"send_me_bounties": "Get notified when a new bounty is added."}
 
 
 class PersonSkillForm(forms.ModelForm):
@@ -171,9 +186,7 @@ class FeedbackForm(forms.ModelForm):
             cleaned_data["stars"] = star_rating
         except (AttributeError, ValueError):
             raise ValidationError(
-                _(
-                    "Something went wrong. The given star value should be in 'star-x' format where x is an integer."
-                )
+                _("Something went wrong. The given star value should be in 'star-x' format where x is an integer.")
             )
         return cleaned_data
 
@@ -185,7 +198,10 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
         label="Bounty Claim",
         widget=forms.Select(
             attrs={
-                "class": "mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6",
+                "class": (
+                    "mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset"
+                    " ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                ),
             }
         ),
     )
@@ -205,20 +221,16 @@ class BountyDeliveryAttemptForm(forms.ModelForm):
         fields = [
             "bounty_claim",
             "delivery_message",
-            "attachment",
         ]
 
         widgets = {
             "delivery_message": forms.Textarea(
                 attrs={
-                    "class": "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
-                }
-            ),
-            "attachment": forms.FileInput(
-                attrs={
-                    "class": "sr-only",
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                        " sm:leading-6"
+                    ),
                 }
             ),
         }
-
-        labels = {"attachment": "Attachment"}

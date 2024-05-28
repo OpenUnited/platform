@@ -14,7 +14,6 @@ from treebeard.mp_tree import MP_Node
 
 from openunited.mixins import TimeStampMixin, UUIDMixin
 from product_management.mixins import ProductMixin
-from talent.models import Expertise, Person, Skill
 
 
 class FileAttachment(models.Model):
@@ -361,14 +360,14 @@ class Bounty(TimeStampMixin, AttachmentAbstract):
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     description = models.TextField()
     skill = models.ForeignKey(
-        Skill,
+        "talent.Skill",
         on_delete=models.CASCADE,
         related_name="bounty_skill",
         blank=True,
         null=True,
         default=None,
     )
-    expertise = models.ManyToManyField(Expertise, related_name="bounty_expertise")
+    expertise = models.ManyToManyField("talent.Expertise", related_name="bounty_expertise")
     points = models.PositiveIntegerField()
     status = models.CharField(
         max_length=255,
@@ -378,7 +377,7 @@ class Bounty(TimeStampMixin, AttachmentAbstract):
     is_active = models.BooleanField(default=True)
 
     claimed_by = models.ForeignKey(
-        Person,
+        "talent.Person",
         on_delete=models.CASCADE,
         related_name="bounty_claimed_by",
         blank=True,
@@ -466,7 +465,7 @@ class ContributorGuide(models.Model):
     title = models.CharField(max_length=60, unique=True)
     description = models.TextField(null=True, blank=True)
     skill = models.ForeignKey(
-        Skill,
+        "talent.Skill",
         on_delete=models.CASCADE,
         related_name="category_contributor_guide",
         blank=True,
@@ -482,7 +481,7 @@ class Idea(TimeStampMixin):
     title = models.CharField(max_length=256)
     description = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey("talent.Person", on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse("add_product_idea", kwargs={"pk": self.pk})
@@ -495,7 +494,7 @@ class Bug(TimeStampMixin):
     title = models.CharField(max_length=256)
     description = models.TextField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey("talent.Person", on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse("add_product_bug", kwargs={"product_slug": self.product.slug})
@@ -512,7 +511,7 @@ class ContributionAgreement(TimeStampMixin):
     )
     content = models.TextField()
     effective_date = models.DateField()
-    created_by = models.ForeignKey(Person, on_delete=models.CASCADE)
+    created_by = models.ForeignKey("talent.Person", on_delete=models.CASCADE)
 
     class Meta:
         ordering = ("-created_at",)
