@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.AddField(
             model_name="bountydeliveryattempt",
             name="attachments",
             field=models.ManyToManyField(blank=True, to="common.fileattachment"),
