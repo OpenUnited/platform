@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("talent", "0009_alter_bountydeliveryattempt_kind"),
+        ("talent", "0010_remove_bountydeliveryattempt_attachment"),
     ]
 
     operations = [
