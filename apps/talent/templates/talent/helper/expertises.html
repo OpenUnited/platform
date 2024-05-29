@@ -1,16 +1,16 @@
 {% import "talent/helper/macro_fun.html" as macros_fun %}
 
-    <button id="dropdownSearchButton_{{index}}" onclick="document.getElementById('dropdownSearch_{{index}}').classList.toggle('hidden')" data-dropdown-toggle="dropdownSearch_{{index}}" data-dropdown-placement="bottom"
-        class="flex items-center block w-full px-2 py-1.5 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-indigo-500 flex justify-between" type="button">
-        <div>
-            <span id="selected_counter_{{index}}" class="text-indigo-500 font-bold">
-                {% if empty_form %}
-                    0
-                {% else %}
-                    {{person_skill_form.instance.expertise.count()}}
-                {% endif %}
-            </span>  selected expertise
-        </div>
+<button id="dropdownSearchButton_{{index}}" onclick="document.getElementById('dropdownSearch_{{index}}').classList.toggle('hidden')" data-dropdown-toggle="dropdownSearch_{{index}}" data-dropdown-placement="bottom"
+    class="flex items-center block w-full px-2 py-1.5 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-indigo-500 flex justify-between" type="button">
+    <div>
+        <span id="selected_counter_{{index}}" class="text-indigo-500 font-bold">
+            {% if empty_form %}
+                0
+            {% else %}
+                {{person_skill_form.instance.expertise.count()}}
+            {% endif %}
+        </span>  selected expertise
+    </div>
     <i id="view_more_{{pk}}_icon" class="fa fa-chevron-down w-3 h-3 text-gray-500"></i>
 </button>
 <div id="dropdownSearch_{{index}}" class="mt-2 absolute z-10 hidden bg-white rounded-lg shadow dropdownSearch">
@@ -74,16 +74,18 @@
         const expertiseContainer = document.getElementById(`ul_expertise_${index}`)
         const checkedCheckboxes = expertiseContainer.querySelectorAll('input[type="checkbox"]:checked');
         const expertiseElement = document.getElementById(`id_skills-${index}-expertise`);
-        while (expertiseElement.firstChild) {
+        while (expertiseElement && expertiseElement.firstChild) {
             expertiseElement.removeChild(expertiseElement.firstChild);
           }
         checkedCheckboxes.forEach((checkbox) => {
             const option = document.createElement('option');
-            const nodeId = checkbox.getAttribute("id")
+            const nodeId = checkbox.getAttribute("id");
+            const nodeTitle = checkbox.parentElement.querySelector('label').textContent.trim();
             option.value = nodeId;
-            option.textContent = nodeId;
-            option.selected = true
-           document.getElementById(`id_skills-${index}-expertise`).appendChild(option);
+            option.textContent = nodeTitle;
+            option.selected = true;
+            if(expertiseElement)
+                expertiseElement.appendChild(option);
         })
 
         document.getElementById(`dropdownSearch_${index}`).classList.add("hidden")

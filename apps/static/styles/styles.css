@@ -422,3 +422,107 @@ input[autocomplete=one-time-code] {
 .htmx-indicator, .htmx-request.htmx-indicator + .manage-product-content {
   display: none;
 }
+
+
+.step-numb.active {
+  display: flex;
+}
+
+[data-step-id] {
+  display: none;
+}
+
+[data-step-id].active {
+  display: flex;
+}
+
+.step-numb__divider {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  margin-left: -1px;
+  height: 100%;
+  width: 1px;
+  background-color: #1890FF;
+}
+
+.step-numb {
+  padding-bottom: 80px;
+}
+
+.step-numb:last-child {
+  padding-bottom: 0px;
+}
+
+.step-numb.active .step-numb__divider {
+  background-color: #1890FF;
+}
+
+.step-numb.active~.step-numb .step-numb__divider {
+  background-color: #BFBFBF;
+}
+
+@media(max-width: 639px) {
+  .step-numb {
+    padding-bottom: 0px;
+    display: none;
+  }
+
+  .step-numb.active {
+    display: inline-flex;
+  }
+
+  .step-numb__divider {
+    display: none;
+  }
+}
+
+.step-numb__item {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: solid 12px #fff;
+  font-size: 12px;
+  line-height: 20px;
+  border: 1px solid #1890FF;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13' fill='none'%3E%3Cg clip-path='url(%23clip0_1123_3753)'%3E%3Cpath d='M11.8609 1.9104H10.8976C10.7626 1.9104 10.6344 1.97242 10.5517 2.07853L4.86977 9.27638L2.14526 5.82422C2.10404 5.77189 2.05151 5.72958 1.9916 5.70046C1.93169 5.67134 1.86596 5.65617 1.79935 5.65609H0.836057C0.743724 5.65609 0.692734 5.76221 0.749237 5.83387L4.52387 10.6159C4.70027 10.8391 5.03928 10.8391 5.21706 10.6159L11.9477 2.0868C12.0042 2.01651 11.9532 1.9104 11.8609 1.9104Z' fill='%231890FF'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_1123_3753'%3E%3Crect width='12.3478' height='12.3478' fill='white' transform='translate(0.173828 0.173828)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media(max-width: 639px) {
+  .step-numb__item {
+    outline: solid 6px #fff;
+  }
+}
+
+.step-numb__item span {
+  display: none;
+}
+
+.step-numb.active .step-numb__item {
+  background-color: #1890FF;
+  color: white;
+  border-color: #1890FF;
+  background-image: none;
+}
+
+.step-numb.active .step-numb__item span {
+  display: block;
+}
+
+.step-numb.active~.step-numb .step-numb__item {
+  background-color: white;
+  color: #BFBFBF;
+  border-color: #BFBFBF;
+  background-image: none;
+}
+
+.step-numb.active~.step-numb .step-numb__item span {
+  display: block;
+}
