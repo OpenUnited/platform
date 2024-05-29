@@ -122,7 +122,6 @@ def get_current_skills(request):
     return JsonResponse(skill_ids, safe=False)
 
 
-
 class GetExpertiseView(LoginRequiredMixin, TemplateView):
     model = Expertise
     context_object_name = "expertise"
@@ -131,14 +130,9 @@ class GetExpertiseView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = {}
-
         expertises = []
-        skills = [utils.serialize_skills(skill) for skill in Skill.get_roots()]
         skill = self.request.GET.get("skill")
-        expertises = [
-            utils.serialize_expertise(expertise)
-            for expertise in Expertise.get_roots().filter(skill=skill)
-        ]
+        expertises = [utils.serialize_expertise(expertise) for expertise in Expertise.get_roots().filter(skill=skill)]
         context["expertises"] = expertises
 
         return context

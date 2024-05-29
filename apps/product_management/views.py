@@ -21,7 +21,7 @@ from apps.product_management import forms, utils
 from apps.security.models import IdeaVote, ProductRoleAssignment
 from apps.talent.forms import PersonSkillFormSet
 from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
-from apps.talent.utils import serialize_expertise, serialize_skills
+from apps.talent.utils import serialize_skills
 from apps.utility import utils as global_utils
 
 from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
@@ -797,9 +797,7 @@ class CreateChallengeView(
         context["skills"] = skills
         context["expertises"] = expertises
 
-        context["form"] = self.form_class(
-            self.request.POST, self.request.FILES
-        )
+        context["form"] = self.form_class(self.request.POST, self.request.FILES)
         context["bounty_form"] = forms.BountyForm()
         context["empty_form"] = PersonSkillFormSet().empty_form
 
@@ -830,18 +828,12 @@ class CreateChallengeView(
                     bounty.skill = Skill.objects.get(id=skill_id)
                     bounty.save()
 
-                    expertise_ids = bounty_form.cleaned_data.get(
-                        "expertise_ids"
-                    )
-                    for expertise in Expertise.objects.filter(
-                        id__in=expertise_ids.split(",")
-                    ):
+                    expertise_ids = bounty_form.cleaned_data.get("expertise_ids")
+                    for expertise in Expertise.objects.filter(id__in=expertise_ids.split(",")):
                         bounty.expertise.add(expertise)
                     bounty.save()
 
-            messages.success(
-                request, _("The challenge is successfully created!")
-            )
+            messages.success(request, _("The challenge is successfully created!"))
 
             self.success_url = reverse(
                 "challenge_detail",

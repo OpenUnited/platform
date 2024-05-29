@@ -41,4 +41,3 @@ services:
       retries: 3
 volumes:
   pgdb-data:
-

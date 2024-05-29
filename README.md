@@ -14,7 +14,7 @@ The UX Prototype repo is not for production use, we use it instead of using Figm
 \* Our "deliberately simple" frontend means that we use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, [TailwindCSS](https://tailwindcss.com/), [TailwindUI](https://tailwindui.com/), [Hyperscript](https://hyperscript.org/), plain javascript where needed, and [HTMX](https://htmx.org/) where it improves the UX.
 Earlier we had a separate ReactJS frontend and a GraphQL API layer, however [such fanciness](https://www.youtube.com/watch?v=Uo3cL4nrGOk) failed to deliver the expected value, whilst creating complexity/friction...
 Therefore, we now have a deliberately simple frontend.
-As a result, we have about 50% less code and move way faster. 
+As a result, we have about 50% less code and move way faster.
 
 ## Setting up The Project and Contributing
 
