@@ -498,3 +498,11 @@ class ContributionAgreement(TimeStampMixin):
 
     def __str__(self):
         return f"Contribution agreement - {self.id} ({self.product})"
+
+
+class IdeaVote(TimeStampMixin):
+    voter = models.ForeignKey("security.User", on_delete=models.CASCADE)
+    idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("voter", "idea")

@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.openunited.mixins import TimeStampMixin, UUIDMixin
-from apps.product_management.models import Idea, Product
+from apps.product_management.models import Product
 from apps.talent.models import Person
 
 from .constants import DEFAULT_LOGIN_ATTEMPT_BUDGET
@@ -85,11 +85,3 @@ class BlacklistedUsernames(models.Model):
 
     class Meta:
         db_table = "black_listed_usernames"
-
-
-class IdeaVote(TimeStampMixin):
-    voter = models.ForeignKey(User, on_delete=models.CASCADE)
-    idea = models.ForeignKey(Idea, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ("voter", "idea")
