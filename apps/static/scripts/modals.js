@@ -40,3 +40,47 @@ if (btnModalClose) {
     modalWrapFilter.classList.add("hidden");
   });
 } */
+
+// challenge & bounty popup open
+
+const skillsBtnOpen = document.querySelector(".skills-modal__open");
+const modalWrapSkills = document.querySelector(".modal-wrap__skills");
+const modalSkillsCloseBtn = document.querySelector(".btn-skills__close");
+
+if (skillsBtnOpen) {
+  skillsBtnOpen.addEventListener("click", () => {
+    document.getElementById('bounty_title').value = "";
+    document.getElementById('bounty_description').value = "";
+
+    modalWrapSkills.classList.remove("hidden");
+  });
+}
+
+if (modalSkillsCloseBtn) {
+  modalSkillsCloseBtn.addEventListener("click", () => {
+    modalWrapSkills.classList.add("hidden");
+  });
+}
+
+
+// open create new challange modal
+
+const btnCreateChallanegOpen = document.querySelectorAll(
+  ".btn-modal-challenge"
+);
+const modalWrapCreateChallenge = document.querySelector(
+  ".modal-wrap-create-challange"
+);
+const btnChallengeModalClose = document.querySelector(".btn-challenge__close");
+
+btnCreateChallanegOpen.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    modalWrapCreateChallenge.classList.remove("hidden");
+  });
+});
+
+if (btnChallengeModalClose) {
+  btnChallengeModalClose.addEventListener("click", () => {
+    modalWrapCreateChallenge.classList.add("hidden");
+  });
+}

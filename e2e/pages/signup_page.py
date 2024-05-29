@@ -1,12 +1,11 @@
+import re
+
+from django.core import mail
+
 from .base import BasePage
 
 
-from django.core import mail
-import re
-
-
 class SignupPage(BasePage):
-
     def __init__(self, page):
         super().__init__(page)
 
@@ -15,22 +14,17 @@ class SignupPage(BasePage):
         self.fullname_field = self.page.locator("#id_0-full_name")
         self.email_field = self.page.locator("#id_0-email")
         self.preferred_name_field = self.page.locator("#id_0-preferred_name")
-        self.send_verification_code_button = self.page.locator(
-            "#send-verification-code-btn"
-        )
+        self.send_verification_code_button = self.page.locator("#send-verification-code-btn")
 
         self.otp_field = self.page.locator("#id_1-verification_code")
         self.verify_code_btn = self.page.locator("#verify-code-btn")
 
         self.username_field = self.page.locator("#id_2-username")
         self.password_field = self.page.locator("#password-checker-field")
-        self.password_confirm_field = self.page.locator(
-            "#id_2-password_confirm"
-        )
+        self.password_confirm_field = self.page.locator("#id_2-password_confirm")
         self.signup_btn = self.page.locator("#signup-btn")
 
     def signup(self, fullname, email, preferred_name, username, password):
-
         # Step 1
         self.fullname_field.fill(fullname)
         self.email_field.fill(email)

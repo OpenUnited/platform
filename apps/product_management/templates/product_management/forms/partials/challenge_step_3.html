@@ -1,0 +1,38 @@
+<div class="flex flex-col">
+    <div class="text-xl sm:text-2xl text-black/[0.85] font-medium mb-4 sm:mb-[34px] w-full">
+        Add skills, expertise and points</div>
+    <button type="button"
+        class="skills-modal__open appearance-none w-fit md:min-w-[96px] bg-[#1890ff] text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 cursor-pointer">
+        <span>+</span> Add skill & expertise
+    </button>
+    <div class="flex flex-col pt-[18px] hidden" id="bounty_area">
+        <div class="mt-[62px] flow-root max-w-[742px] w-full">
+            <table class="min-w-full">
+                <colgroup>
+                    <col class="w-9/12">
+                    <col class="w-1/12">
+                    <col class="w-1/12">
+                    <col class="w-1/12">
+                </colgroup>
+                <thead class="border-b border-gray-300 text-gray-900">
+                    <tr>
+                        <th scope="col"
+                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                            Skill & Expertise
+                        </th>
+                        <th scope="col"
+                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                            Points
+                        </th>
+                        <th scope="col" colspan="2"
+                            class="py-3.5 pl-1.5 md:pl-3 pr-4 text-sm font-semibold text-gray-900 sm:pr-0 text-left">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="bounty_table_body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

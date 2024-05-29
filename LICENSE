@@ -3,59 +3,59 @@ Copyright (c) 2023 OpenUnited.com
 Open Product License (OPL)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated files (the "Software"), to use the Software 
-for the sole purposes of review, commentary, learning and to make 
+of this software and associated files (the "Software"), to use the Software
+for the sole purposes of review, commentary, learning and to make
 value-adding contributions to the Software via the main repository.
 
-The creator ("creator") of the software is: 
+The creator ("creator") of the software is:
 Adrian McPhee & Farbod Saraf ("OpenUnited")
 
-The main repository of the Software is located in the GitHub account of 
+The main repository of the Software is located in the GitHub account of
 OpenUnited at: https://github.com/OpenUnited/
 
 The source code of the Software is made available primarily to allow
 collaboration via OpenUnited.com. To ensure efficient and effective
-collaboration, and that the creator of the software has a viable business 
-model, you may not create derivative works of the Software. 
+collaboration, and that the creator of the software has a viable business
+model, you may not create derivative works of the Software.
 
-You may also not sell the Software or trade commercially in the Software 
-in any way. 
+You may also not sell the Software or trade commercially in the Software
+in any way.
 
-You may create a "fork" of the main repository and clone such a repository 
-to your computer, for the purposes of making software contributions via 
-"pull requests" to the main repository, where these contributions to the 
-Software relate to tasks posted on openunited.com by the creator or an 
-agent. This license must not be removed or altered in any forked 
+You may create a "fork" of the main repository and clone such a repository
+to your computer, for the purposes of making software contributions via
+"pull requests" to the main repository, where these contributions to the
+Software relate to tasks posted on openunited.com by the creator or an
+agent. This license must not be removed or altered in any forked
 repositories that you create.
 
-You may not make the functionality of this Software, or a modified version, 
-available to third parties as a service. Making the functionality of the 
-Software or modified version available to third parties as a service includes, 
-without limitation, enabling third parties to interact with the functionality 
-of the Software or modified version remotely through a computer network, 
-offering a service the value of which entirely or primarily derives from the 
-value of the Software or modified version, or offering a service that 
-accomplishes for users the primary purpose of the Software or modified 
+You may not make the functionality of this Software, or a modified version,
+available to third parties as a service. Making the functionality of the
+Software or modified version available to third parties as a service includes,
+without limitation, enabling third parties to interact with the functionality
+of the Software or modified version remotely through a computer network,
+offering a service the value of which entirely or primarily derives from the
+value of the Software or modified version, or offering a service that
+accomplishes for users the primary purpose of the Software or modified
 version.
 
 The software is provided "as is", without warranty of any kind, express or
 implied, including but not limited to the warranties of merchantability,
 fitness for a particular purpose and non-infringement. In no event shall the
-creator or contributors be liable for any claim, damages or other liability, 
+creator or contributors be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out of or
 in connection with the software or the use or other dealings in the Software.
 
 If you have obtained a commercial license for the Software from the creator or
-an appointed agent, then the terms and conditions of the commercial license 
-override this OPL. 
+an appointed agent, then the terms and conditions of the commercial license
+override this OPL.
 
-Without a commercial license, the software may operate in a mode with 
+Without a commercial license, the software may operate in a mode with
 limitations applied - for example, limited user or other object counts, or
 limited features. You are not permitted to remove such limitations. Doing so is
 a violation of this license.
 
 For the avoidance of doubt, whilst the source code of the Software is
 available in a public repository and the collaboration model in which the
-Software is maintained and improved is "open", the software does not satisfy 
-the definition of "open source" according to the OSI. No claims are made that 
+Software is maintained and improved is "open", the software does not satisfy
+the definition of "open source" according to the OSI. No claims are made that
 the Software is "open source" as defined by the OSI.
