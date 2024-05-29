@@ -19,7 +19,9 @@ from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
 from apps.product_management import forms, utils
 from apps.security.models import IdeaVote, ProductRoleAssignment
+from apps.talent.forms import PersonSkillFormSet
 from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
+from apps.talent.utils import serialize_expertise, serialize_skills
 from apps.utility import utils as global_utils
 
 from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
@@ -780,12 +782,85 @@ class CreateChallengeView(
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
-    def get_success_url(self):
-        return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
+    # def get_success_url(self):
+    #     return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user.person
         return super().form_save(form)
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        product_slug = self.kwargs.get("product_slug", None)
+        product = Product.objects.get(slug=product_slug)
+
+        expertises = []
+        context = {
+            "pk": product.pk,
+            "product": product,
+        }
+        skills = [serialize_skills(skill) for skill in Skill.get_roots()]
+
+        context["skills"] = skills
+        context["expertises"] = expertises
+
+        context["form"] = self.form_class(
+            self.request.POST, self.request.FILES
+        )
+        context["bounty_form"] = forms.BountyForm()
+        context["empty_form"] = PersonSkillFormSet().empty_form
+
+        context["bounty_formset"] = forms.BountyFormset(self.request.POST)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        product_slug = self.kwargs.get("product_slug", None)
+        product = Product.objects.get(slug=product_slug)
+
+        form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid():
+            challenge = form.save(commit=False)
+            challenge.product = product
+            challenge.created_by = request.user.person
+            challenge.save()
+
+            # now create the bounties
+            bounty_formset = forms.BountyFormset(self.request.POST)
+            if bounty_formset.is_valid():
+                for bounty_form in bounty_formset:
+                    print(bounty_form.cleaned_data)
+                    bounty = bounty_form.save(commit=False)
+                    bounty.challenge = challenge
+
+                    skill_id = bounty_form.cleaned_data.get("skill_id")
+                    bounty.skill = Skill.objects.get(id=skill_id)
+                    bounty.save()
+
+                    expertise_ids = bounty_form.cleaned_data.get(
+                        "expertise_ids"
+                    )
+                    for expertise in Expertise.objects.filter(
+                        id__in=expertise_ids.split(",")
+                    ):
+                        bounty.expertise.add(expertise)
+                    bounty.save()
+
+            messages.success(
+                request, _("The challenge is successfully created!")
+            )
+
+            self.success_url = reverse(
+                "challenge_detail",
+                args=(
+                    challenge.product.slug,
+                    challenge.id,
+                ),
+            )
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
 
 
 class UpdateChallengeView(
