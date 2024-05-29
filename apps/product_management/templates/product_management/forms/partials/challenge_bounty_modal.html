@@ -1,0 +1,117 @@
+<div class="relative z-10 modal-wrap__skills hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity modal-wrap__overlay"></div>
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:px-0">
+            <div
+                class="relative transform rounded-lg bg-white
+                    px-4 pb-4 pt-5 text-left shadow-xl transition-all
+                    sm:my-8 sm:w-full max-w-[568px]
+                    lg:max-w-[808px] px-5 lg:px-[30px] py-[30px] lg:py-[30px] sm:mx-5">
+                <div
+                    class="btn-skills__close relative -mt-0.5 sm:-mt-1.5 -mr-1 sm:-mr-2.5 ml-auto
+                        w-5 h-5 mb-2.5 cursor-pointer hover:opacity-80">
+                    <svg class="w-full h-full" viewBox="0 0 24 24" focusable="false">
+                        <path
+                            d="m12.71 12 8.15 8.15-.71.71L12 12.71l-8.15 8.15-.71-.71L11.29 12 3.15 3.85l.71-.71L12 11.29l8.15-8.15.71.71L12.71 12z">
+                        </path>
+                    </svg>
+                </div>
+
+                <div class="mb-5">
+                    <h2 class="text-2xl font-semibold leading-7 text-gray-900">Bounty Details</h2>
+                </div>
+
+                <div class="max-w-full">
+                    <div class="grid max-w-2xl grid-cols-12 gap-x-6 gap-y-8 sm:grid-cols-12 md:col-span-12">
+                        <div class="col-span-full">
+                            <label for="{{ bounty_form.title.id_for_label }}"
+                                class="block text-sm font-medium leading-6 text-gray-900">{{ bounty_form.title.label }}</label>
+                            <div class="mt-2">
+                                <input type="text" name="title"
+                                    class="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm
+                                        ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                                        focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="Enter the title here ..."
+                                        maxlength="400" required=""
+                                        id="bounty_title">
+                            </div>
+                        </div>
+                        <div class="col-span-full">
+                            <label for="{{ bounty_form.description.id_for_label }}"
+                                class="block text-sm font-medium leading-6 text-gray-900">{{ bounty_form.description.label }}</label>
+                            <div class="mt-2">
+                                <textarea name="description" cols="40" rows="10"
+                                    class="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm
+                                        ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
+                                        focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="Describe the bounty"
+                                        required="" id="bounty_description"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-span-full">
+                            <label class="block text-sm font-medium leading-6 text-gray-900">
+                                Skills & Expertise
+                            </label>
+                            <div class="mt-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-4 gap-y-6"
+                                    id="person_skill_container">
+                                    <input type="hidden" name="skills-0-id" value="{{ form.instance.pk }}" class="row">
+                                    <div id="id_skills-0-container"
+                                        class="relative bg-white border border-gray-200 p-4 rounded-md shadow-md">
+                                        <div class="mt-2">
+                                            <select id="id_skill" name="skill"
+                                                class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2
+                                                    text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset
+                                                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                hx-get="{{ url('get_expertise') }}" hx-vals=''
+                                                hx-trigger="change" hx-target="#ul_expertise_0">
+                                                {{ macros_fun.skill_filter_tree(skills, [], True) }}
+                                            </select>
+                                        </div>
+                                        <div id="td_expertise" class="mt-4">
+                                            {% with index=0 %}
+                                                {% include "talent/helper/expertises.html" %}
+                                            {% endwith %}
+                                            <select class="hidden" id="id_skills-0-expertise" name="skills-0-expertise" multiple></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-full mt-6">
+                        <label for="{{ bounty_form.status.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ bounty_form.status.label }}</label>
+                            <div class="mt-2">{{ bounty_form.status }}</div>
+                    </div>
+
+                    <div class="col-span-full mt-6">
+                        <div class="relative flex gap-x-3">
+                            <div class="flex h-6 items-center">
+                                {{ bounty_form.is_active }}
+                            </div>
+                            <div class="text-sm leading-6">
+                                <label for="{{ bounty_form.is_active.id_for_label }}"
+                                    class="font-medium text-gray-900">{{ bounty_form.is_active.label }}</label>
+                                <p class="text-gray-500">{{ bounty_form.is_active.help_text }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end mt-[34px]">
+                        <button type="button" id="bounty-add-btn" onclick="addBounty(event)"
+                            class="appearance-none w-fit md:min-w-[96px] bg-[#1890ff]
+                                text-sm font-semibold leading-6 transition-all delay-600
+                                rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500
+                                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+                                focus-visible:outline-blue-600 cursor-pointer">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

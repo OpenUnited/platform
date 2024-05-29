@@ -1,0 +1,101 @@
+
+<div class="flex flex-col">
+    <fieldset>
+        <legend for="question-1"
+            class="text-xl sm:text-2xl text-black/[0.85] font-semobild mb-4 sm:mb-6 w-full">
+            Does solving your challenge require one skill, or multiple skills?</legend>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <label class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="skills-count" class="form-check-input" value="1" checked>
+                <span class="flex items-center flex-1 ml-2.5 sm:ml-4 xl:ml-9">
+                    <div
+                        class="w-8 sm:w-[54px] h-8 sm:h-[54px] flex shrink-0 items-center justify-center mr-2.5">
+                        <img src="{{ static('images/skill-1.png') }}" alt="#">
+                    </div>
+                    <span class="flex flex-col">
+                        <span
+                            class="inline-flex text-base sm:text-lg font-medium text-black/[0.85] sm:mb-1.5">One
+                            Skill</span>
+                        <span class="inline-flex text-xs sm:text-sm text-bluack/[0.85]">E.g. Frontend
+                            Development</span>
+                    </span>
+                </span>
+            </label>
+            <label
+                class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="skills-count" class="form-check-input" value="2">
+                <span class="flex items-center flex-1 ml-2.5 sm:ml-4 xl:ml-9">
+                    <div
+                        class="w-8 sm:w-[54px] h-8 sm:h-[54px] flex shrink-0 items-center justify-center mr-2.5">
+                        <img src="{{ static('images/skill-2.svg') }}" alt="#">
+                    </div>
+                    <span class="flex flex-col">
+                        <span
+                            class="inline-flex text-base sm:text-lg font-medium text-black/[0.85] sm:mb-1.5">
+                            Multi Skills
+                        </span>
+                        <span class="inline-flex text-xs sm:text-sm text-black/[0.85]">
+                            E.g. User Research and Graphic Design
+                        </span>
+                    </span>
+                </span>
+            </label>
+        </div>
+    </fieldset>
+
+</div>
+<div class="flex flex-col">
+    <fieldset>
+        <legend for="question-1"
+            class="text-xl sm:text-2xl text-black/[0.85] font-semobild mb-4 sm:mb-6 w-full">How
+            will solving this challenge be rewarded?</legend>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <label
+                class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="reward_type" value="0"
+                    class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    required="" id="id_reward_type_0" checked>
+                <span class="flex items-center flex-1 ml-2.5 sm:ml-4 xl:ml-9">
+                    <div
+                        class="w-8 sm:w-[54px] h-8 sm:h-[54px] flex shrink-0 items-center justify-center mr-2.5">
+                        <img src="{{ static('images/skill-3.svg') }}" alt="#">
+                    </div>
+                    <span class="flex flex-col">
+                        <span
+                            class="inline-flex text-base sm:text-lg font-medium text-black/[0.85] sm:mb-1.5">
+                            Non-liquid points
+                        </span>
+                        <span class="inline-flex text-xs sm:text-sm text-black/[0.85]">
+                            Can not be redeemed for money
+                        </span>
+                    </span>
+                </span>
+
+            </label>
+            <label
+                class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="reward_type" value="1"
+                    class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    required="" id="id_reward_type_1">
+                <span class="flex items-center flex-1 ml-2.5 sm:ml-4 xl:ml-9">
+                    <div
+                        class="w-8 sm:w-[54px] h-8 sm:h-[54px] flex shrink-0 items-center justify-center mr-2.5">
+                        <img src="{{ static('images/skill-4.svg') }}" alt="#">
+                    </div>
+                    <span class="flex flex-col">
+                        <span
+                            class="inline-flex text-base sm:text-lg font-medium text-black/[0.85] sm:mb-1.5">
+                            Liquid points
+                        </span>
+                        <span class="inline-flex text-xs sm:text-sm text-black/[0.85]">
+                            Can be redeemd for money
+                        </span>
+                    </span>
+                </span>
+
+            </label>
+        </div>
+    </fieldset>
+</div>

@@ -2,6 +2,10 @@
 
 {% block title %}Create a Challenge{% endblock %}
 
+{% block page_scripts %}
+<script src="{{ static('scripts/challenge-steps.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 
 {% include 'product_management/forms/challenge_form.html' %}

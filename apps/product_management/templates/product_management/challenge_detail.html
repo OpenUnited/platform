@@ -60,20 +60,23 @@
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Priority:</strong> <span class="text-green-400 ml-1">{{ challenge.get_priority_display() }}</span>
         </div>
-
-        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {% with read_only=True %}
-                    {% include "attachments.html" %}
-                {% endwith %}
-            </dd>
-        </div>
     </div>
 
     <div class="flex flex-col">
         {% include 'product_management/partials/bounty_detail_table.html' %}
     </div>
 
+    {% if challenge.attachment.exists() %}
+    <div class="mt-4">
+        {% with attachments=challenge.attachment.all() %}
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {% include 'product_management/partials/attachments.html' %}
+            </dd>
+        </div>
+        {% endwith %}
+    </div>
+    {% endif %}
 </div>
 
 {% endblock %}

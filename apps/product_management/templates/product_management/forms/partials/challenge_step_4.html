@@ -1,0 +1,34 @@
+<div class="flex flex-col sm:max-w-[400px] w-full">
+    <div class="text-xl sm:text-2xl text-black/[0.85] font-medium mb-4 sm:mb-[38px] w-full">
+        Additional important information
+    </div>
+    <div class="flex flex-col mb-6">
+        <label for="{{ form.attachments.id_for_label }}"
+            class="text-lg text-black/[0.85] mb-2 inline-flex items-center">
+            {{ form.attachments.label }}
+        </label>
+        <div class="mt-2">
+            {{ form.attachments }}
+        </div>
+        <p class="text-xs leading-6 mt-2 text-blue-900">
+            {{ form.attachments.help_text }}
+        </p>
+    </div>
+
+    <div class="flex flex-col mb-6">
+        <label for="{{ form.status.id_for_label }}"
+            class="text-lg text-black/[0.85] mb-2 inline-flex items-center">
+            {{ form.status.label }}
+        </label>
+        {{ form.status }}
+    </div>
+
+    <div class="flex flex-col mb-6">
+        <label for="{{ form.priority.id_for_label }}"
+            class="text-lg text-black/[0.85] mb-2 inline-flex items-center">
+            {{ form.priority.label }}
+        </label>
+        {{ form.priority }}
+    </div>
+
+</div>
