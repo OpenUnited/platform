@@ -66,17 +66,6 @@
         {% include 'product_management/partials/bounty_detail_table.html' %}
     </div>
 
-    {% if challenge.attachment.exists() %}
-    <div class="mt-4">
-        {% with attachments=challenge.attachment.all() %}
-        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {% include 'product_management/partials/attachments.html' %}
-            </dd>
-        </div>
-        {% endwith %}
-    </div>
-    {% endif %}
 </div>
 
 {% endblock %}

@@ -782,13 +782,6 @@ class CreateChallengeView(
     template_name = "product_management/create_challenge.html"
     login_url = "sign_in"
 
-    # def get_success_url(self):
-    #     return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user.person
-        return super().form_save(form)
-
     def get_context_data(self, **kwargs):
         context = {}
         product_slug = self.kwargs.get("product_slug", None)
@@ -830,7 +823,6 @@ class CreateChallengeView(
             bounty_formset = forms.BountyFormset(self.request.POST)
             if bounty_formset.is_valid():
                 for bounty_form in bounty_formset:
-                    print(bounty_form.cleaned_data)
                     bounty = bounty_form.save(commit=False)
                     bounty.challenge = challenge
 

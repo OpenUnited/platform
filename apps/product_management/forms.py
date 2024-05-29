@@ -335,23 +335,11 @@ class ChallengeForm(forms.ModelForm):
 
 
 class BountyForm(forms.ModelForm):
-    challenge = forms.ModelChoiceField(
-        empty_label="Select a challenge",
-        queryset=Challenge.objects.filter(status=Challenge.ChallengeStatus.ACTIVE),
-        widget=forms.Select(
-            attrs={
-                "class": (
-                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                ),
-            }
-        ),
+    skill_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={"id": "skill_id"})
     )
-    selected_skill_ids = forms.CharField(
-        widget=forms.HiddenInput(attrs={"id": "selected-skills", "name": "selected-skills"})
-    )
-    selected_expertise_ids = forms.CharField(
-        widget=forms.HiddenInput(attrs={"id": "selected-expert", "name": "selected-expert"})
+    expertise_ids = forms.CharField(
+        widget=forms.HiddenInput(attrs={"id": "expertise_ids"})
     )
 
     def clean_selected_skill_ids(self):
@@ -374,7 +362,7 @@ class BountyForm(forms.ModelForm):
 
         widgets = {
             "points": forms.NumberInput(attrs={"class": global_utils.text_field_class_names}),
-            "status": forms.Select(attrs={"class": global_utils.text_field_class_names}),
+            "status": forms.Select(attrs={"class": global_utils.text_field_class_names, "id": "id_bounty_status"}),
         }
         help_texts = {"is_active": "Display this bounty under the challenge that is created for."}
         labels = {
@@ -382,13 +370,7 @@ class BountyForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self._challenge_queryset = kwargs.pop("challenge_queryset", None)
         super().__init__(*args, **kwargs)
-
-        if self._challenge_queryset:
-            self.fields["challenge"].queryset = self._challenge_queryset
-            self.fields["challenge"].initial = self._challenge_queryset.first()
-            self.fields["challenge"].empty_label = None
 
         for key, field in self.fields.items():
             attributes = {

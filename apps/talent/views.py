@@ -122,40 +122,26 @@ def get_current_skills(request):
     return JsonResponse(skill_ids, safe=False)
 
 
-@login_required(login_url="sign_in")
-def get_expertise(request):
-    # TODO I don't think we need this
 
-    selected_skills = request.GET.get("selected_skills")
-    if selected_skills:
-        selected_skill_ids = json.loads(selected_skills)
-        expertise_queryset = Expertise.objects.filter(skill_id__in=selected_skill_ids).values()
+class GetExpertiseView(LoginRequiredMixin, TemplateView):
+    model = Expertise
+    context_object_name = "expertise"
+    template_name = "talent/partials/partial_expertises.html"
+    login_url = "sign_in"
 
-        person = request.user.person
-        try:
-            person_skills = PersonSkill.objects.filter(person=person)
-            expertise_ids = []
-            for person_skill in person_skills:
-                for expertise in person_skill.expertise.all():
-                    expertise_ids.append(expertise.id)
-        except (ObjectDoesNotExist, AttributeError):
-            expertise_ids = []
+    def get_context_data(self, **kwargs):
+        context = {}
 
-        return JsonResponse(
-            {
-                "expertiseList": list(expertise_queryset),
-                "expertiseIDList": expertise_ids,
-            },
-            safe=False,
-        )
+        expertises = []
+        skills = [utils.serialize_skills(skill) for skill in Skill.get_roots()]
+        skill = self.request.GET.get("skill")
+        expertises = [
+            utils.serialize_expertise(expertise)
+            for expertise in Expertise.get_roots().filter(skill=skill)
+        ]
+        context["expertises"] = expertises
 
-    return JsonResponse(
-        {
-            "expertiseList": [],
-            "expertiseIDList": [],
-        },
-        safe=False,
-    )
+        return context
 
 
 @login_required(login_url="sign_in")
