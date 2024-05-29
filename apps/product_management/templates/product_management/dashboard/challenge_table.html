@@ -21,10 +21,10 @@
                 <a href="{{ challenge.get_absolute_url() }}"
                     class="font-medium text-blue-600 hover:underline">{{ challenge.title }}</a></td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ challenge.get_status_display() }}
+                {{ challenge.status }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {{ challenge.get_reward_type_display() }}
+                {{ challenge.reward_type }}
             </td>
             {% if challenge.tag.all() %}
             <td class="px-3 py-4 text-sm text-gray-500">{{ ", ".join(challenge.tag.all().values_list("name", flat=True)) }}

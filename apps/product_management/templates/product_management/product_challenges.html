@@ -42,10 +42,10 @@
                     {{ challenge.get_short_description() }}
                 </td>
                 <td class="px-6 py-4">
-                    {{ challenge.get_status_display() }}
+                    {{ challenge.status }}
                 </td>
                 <td class="px-6 py-4">
-                    {{ challenge.get_priority_display() }}
+                    {{ challenge.priority }}
                 </td>
                 <td class="px-6 py-4 text-right">
                     <a href="{{ url('challenge_detail', args=(product_slug, challenge.id)) }}"
