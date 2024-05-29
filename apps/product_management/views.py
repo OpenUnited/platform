@@ -18,13 +18,13 @@ from apps.commerce.models import Organisation
 from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
 from apps.product_management import forms, utils
-from apps.security.models import IdeaVote, ProductRoleAssignment
+from apps.security.models import ProductRoleAssignment
 from apps.talent.forms import PersonSkillFormSet
 from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
 from apps.talent.utils import serialize_skills
 from apps.utility import utils as global_utils
 
-from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
+from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, IdeaVote, Initiative, Product, ProductArea
 
 
 class ProductListView(ListView):

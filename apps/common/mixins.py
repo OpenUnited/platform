@@ -34,7 +34,7 @@ class AttachmentMixin:
         context = self.get_context_data()
         attachment_formset = context["attachment_formset"]
 
-        if len(attachment_formset.errors) == 0:
+        if attachment_formset.total_form_count() == 0:
             return super().form_valid(form)
 
         if not form.is_valid() or not attachment_formset.is_valid():
