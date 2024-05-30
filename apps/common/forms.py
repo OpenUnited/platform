@@ -1,9 +1,9 @@
 from django.forms import modelformset_factory
 
-from apps.common import models as common
+from apps.product_management import models as product_management
 
 AttachmentFormSet = modelformset_factory(
-    common.FileAttachment,
+    product_management.FileAttachment,
     fields=("file",),
     extra=0,
     can_delete=True,

@@ -17,6 +17,13 @@ from apps.openunited.mixins import TimeStampMixin, UUIDMixin
 from apps.product_management.mixins import ProductMixin
 
 
+class FileAttachment(models.Model):
+    file = models.FileField(upload_to="attachments")
+
+    def __str__(self):
+        return f"{self.file.name}"
+
+
 class Tag(TimeStampMixin):
     name = models.CharField(max_length=128)
 
