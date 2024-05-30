@@ -42,7 +42,7 @@ After that, run the following commands:
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
-export DJANGO_SETTINGS_MODULE=openunited.settings.development
+export DJANGO_SETTINGS_MODULE=apps.openunited.settings.development
 ```
 
 Setup the database and load fixtures / sample data:
