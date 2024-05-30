@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="bountydeliveryattempt",
             name="attachments",
-            field=models.ManyToManyField(blank=True, to="common.fileattachment"),
+            field=models.ManyToManyField(blank=True, to="product_management.fileattachment"),
         ),
     ]
