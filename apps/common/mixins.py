@@ -3,7 +3,7 @@ class AttachmentMixin:
     attachment_formset_class = None
 
     def get_attachment_model(self):
-        from apps.common.models import FileAttachment
+        from apps.product_management.models import FileAttachment
 
         return FileAttachment
 
