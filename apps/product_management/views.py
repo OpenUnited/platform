@@ -16,6 +16,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, R
 
 from apps.commerce.models import Organisation
 from apps.common import mixins as common_mixins
+from apps.common.forms import AttachmentFormSet
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
 from apps.product_management import forms, utils
 from apps.security.models import ProductRoleAssignment
@@ -783,19 +784,14 @@ class CreateChallengeView(
     login_url = "sign_in"
 
     def get_context_data(self, **kwargs):
-        context = {}
+        context = super().get_context_data(**kwargs)
+
         product_slug = self.kwargs.get("product_slug", None)
         product = Product.objects.get(slug=product_slug)
 
-        expertises = []
-        context = {
-            "pk": product.pk,
-            "product": product,
-        }
-        skills = [serialize_skills(skill) for skill in Skill.get_roots()]
+        context["product"] =  product
 
-        context["skills"] = skills
-        context["expertises"] = expertises
+        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
 
         context["form"] = self.form_class(self.request.POST, self.request.FILES)
         context["bounty_form"] = forms.BountyForm()
@@ -842,6 +838,14 @@ class CreateChallengeView(
                     challenge.id,
                 ),
             )
+
+            attachment_formset = AttachmentFormSet(self.request.POST, self.request.FILES)
+            if attachment_formset.is_valid():
+                for attachment_form in attachment_formset:
+                    attachment = attachment_form.save()
+                    challenge.attachments.add(attachment)
+                challenge.save()
+
             return redirect(self.success_url)
 
         return super().post(request, *args, **kwargs)
@@ -1185,14 +1189,16 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.
         context = super().get_context_data(**kwargs)
         context["challenge"] = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
         context["challenge_queryset"] = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
+        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
+        context["empty_form"] = PersonSkillFormSet().empty_form
 
         return context
 
     def form_valid(self, form):
         form.instance.challenge = form.cleaned_data.get("challenge")
-        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("selected_skill_ids")[0])
+        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill_id"))
         response = super().form_save(form)
-        form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("selected_expertise_ids")))
+        form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids")))
         form.instance.save()
         return response
 
@@ -1207,11 +1213,19 @@ class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.
         challenge = self.object.challenge
         return reverse("challenge_detail", args=(challenge.product.slug, challenge.pk))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["challenge"] = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
+        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
+        context["empty_form"] = PersonSkillFormSet().empty_form
+
+        return context
+
     def form_valid(self, form):
         form.instance.challenge = form.cleaned_data.get("challenge")
-        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("selected_skill_ids")[0])
+        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill_id"))
         response = super().form_save(form)
-        form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("selected_expertise_ids")))
+        form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids")))
         form.instance.save()
         return response
 
