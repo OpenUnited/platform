@@ -59,7 +59,7 @@ Then navigate to: http://localhost:8000/ in your browser.
 
 If you want to extend your local development, create a `local.py` in `openunited/settings`. Import `base.py` or `development.py` and make sure to export it:
 
-`export DJANGO_SETTINGS_MODULE=openunited.settings.local`
+`export DJANGO_SETTINGS_MODULE=apps.openunited.settings.local`
 
 *It is advised to put this line into your bash configuration.*
 
