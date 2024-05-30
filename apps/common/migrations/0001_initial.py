@@ -3,6 +3,14 @@
 from django.db import migrations, models
 
 
+def forward_func(apps, schema):
+    productFileAttachment = apps.get_model("product_management.FileAttachment")
+    commonFileAttachment = apps.get_model("common.FileAttachment")
+
+    for attachment in productFileAttachment.objects.all():
+        commonFileAttachment.objects.create(id=attachment.id, file=attachment.file)
+
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -17,4 +25,5 @@ class Migration(migrations.Migration):
                 ("file", models.FileField(upload_to="attachments")),
             ],
         ),
+        migrations.RunPython(forward_func),
     ]
