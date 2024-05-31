@@ -30,7 +30,7 @@
                 </div>
                 {% if can_write %}
                     <div class="ml-4 flex-shrink-0">
-                        <input type="checkbox" class="hidden"  name="form-{{loop.index0}}-DELETE" id="id_form-{{loop.index0}}-DELETE">
+                        <input type="checkbox" class="hidden"  name="attachment_f-{{loop.index0}}-DELETE" id="id_attachment_f-{{loop.index0}}-DELETE">
                         <button type="button" onclick="checkCheckbox({{ loop.index0 }})" class="font-medium">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
@@ -44,7 +44,7 @@
     const dropArea = document.getElementById('drop-area');
     const attachmentsInput = document.getElementById('attachments-input');
     const attachmentsList = document.getElementById('attachments-list');
-    const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+    const totalFormsInput = document.getElementById('id_attachment_f-TOTAL_FORMS');
     let totalForms = parseInt(totalFormsInput.value);
 
     dropArea.addEventListener('dragover', function(e) {
@@ -81,8 +81,8 @@
 
             var inputFileElement = document.createElement('input');
             inputFileElement.type = 'file';
-            inputFileElement.name = `form-${formIndex}-file`;
-            inputFileElement.id = `id_form-${formIndex}-file`;
+            inputFileElement.name = `attachment_f-${formIndex}-file`;
+            inputFileElement.id = `id_attachment_f-${formIndex}-file`;
             inputFileElement.className = 'hidden';
             inputFileElement.onclick = `checkCheckbox(${formIndex})`;
 
@@ -103,7 +103,7 @@
 
                 {% if can_write  %}
                     <div class="ml-4 flex-shrink-0">
-                        <input type="checkbox" class="hidden"  name="form-${formIndex}-DELETE" id="id_form-${formIndex}-DELETE">
+                        <input type="checkbox" class="hidden"  name="attachment_f-${formIndex}-DELETE" id="id_attachment_f-${formIndex}-DELETE">
                         <button type="button" onclick="checkCheckbox(${formIndex})" class="font-medium">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
@@ -119,7 +119,7 @@
     }
 
     function checkCheckbox(index) {
-        var checkbox = document.getElementById(`id_form-${index}-DELETE`);
+        var checkbox = document.getElementById(`id_attachment_f-${index}-DELETE`);
         checkbox.closest('li').classList.add("hidden");
         checkbox.checked = true;
     }

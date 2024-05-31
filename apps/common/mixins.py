@@ -22,6 +22,7 @@ class AttachmentMixin:
         return self.get_attachment_formset_class()(
             self.request.POST or None,
             self.request.FILES or None,
+            prefix="attachment_f",
             queryset=self.get_attachment_queryset(),
         )
 
