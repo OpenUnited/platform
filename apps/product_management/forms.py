@@ -319,13 +319,7 @@ class ChallengeForm(forms.ModelForm):
 
     class Meta:
         model = Challenge
-        fields = [
-            "title",
-            "description",
-            "reward_type",
-            "priority",
-            "status",
-        ]
+        fields = ["title", "description", "reward_type", "priority", "status", "product_area", "initiative"]
 
         widgets = {
             "reward_type": forms.RadioSelect(
