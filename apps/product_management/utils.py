@@ -3,9 +3,11 @@ import uuid
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect, get_object_or_404
 
 from apps.security.models import ProductRoleAssignment
+
+from .models import Product
 
 
 def get_person_data(person):
@@ -63,3 +65,12 @@ def serialize_tree(node):
         "has_saved": True,
         "children": [serialize_tree(child) for child in node.get_children()],
     }
+
+
+class BaseProductDetailView:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
+        context["product"] = product
+        context["product_slug"] = product.slug
+        return context

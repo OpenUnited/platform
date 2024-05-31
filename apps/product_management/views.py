@@ -10,7 +10,6 @@ from django.db import models
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, RedirectView, TemplateView, UpdateView
 
@@ -35,17 +34,7 @@ class ProductListView(ListView):
     paginate_by = 8
 
 
-# TODO: give a better name to this view, ideally make it a mixin
-class BaseProductDetailView:
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs.get("product_slug", None))
-        context["product"] = product
-        context["product_slug"] = product.slug
-        return context
-
-
-class ProductRedirectView(BaseProductDetailView, RedirectView):
+class ProductRedirectView(utils.BaseProductDetailView, RedirectView):
     def get(self, request, *args, **kwargs):
         url = reverse("product_summary", kwargs=kwargs)
 
@@ -53,7 +42,7 @@ class ProductRedirectView(BaseProductDetailView, RedirectView):
 
 
 # TODO: take a deeper look at the capability part
-class ProductSummaryView(BaseProductDetailView, TemplateView):
+class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_summary.html"
 
     def get_context_data(self, **kwargs):
@@ -138,7 +127,7 @@ class BountyListView(ListView):
         return super().render_to_response(context, **response_kwargs)
 
 
-class ProductBountyListView(BaseProductDetailView, ListView):
+class ProductBountyListView(utils.BaseProductDetailView, ListView):
     model = Bounty
     context_object_name = "bounties"
     object_list = []
@@ -159,7 +148,7 @@ class ProductBountyListView(BaseProductDetailView, ListView):
         )
 
 
-class ProductChallengesView(BaseProductDetailView, TemplateView):
+class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_challenges.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -177,7 +166,7 @@ class ProductChallengesView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductInitiativesView(BaseProductDetailView, TemplateView):
+class ProductInitiativesView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_initiatives.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
@@ -193,7 +182,7 @@ class ProductInitiativesView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductAreaCreateView(BaseProductDetailView, CreateView):
+class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
     model = ProductArea
     form_class = forms.ProductAreaForm
     template_name = "product_management/tree_helper/create_node_partial.html"
@@ -249,7 +238,7 @@ class ProductAreaCreateView(BaseProductDetailView, CreateView):
         return render(request, self.get_template_names(), context)
 
 
-class ProductAreaDetailUpdateView(BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
+class ProductAreaDetailUpdateView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = forms.ProductAreaForm
@@ -328,7 +317,7 @@ class ProductAreaDetailDeleteView(View):
         return JsonResponse({"message": "The node has been deleted successfully"}, status=204)
 
 
-class ProductTreeInteractiveView(BaseProductDetailView, TemplateView):
+class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
@@ -383,7 +372,7 @@ def update_node(request, pk):
     return render(request, template_name, context)
 
 
-class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
+class ProductIdeasAndBugsView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_ideas_and_bugs.html"
 
     def get_context_data(self, **kwargs):
@@ -422,7 +411,7 @@ class ProductIdeasAndBugsView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductIdeaListView(BaseProductDetailView, ListView):
+class ProductIdeaListView(utils.BaseProductDetailView, ListView):
     model = Idea
     template_name = "product_management/product_idea_list.html"
     context_object_name = "ideas"
@@ -434,7 +423,7 @@ class ProductIdeaListView(BaseProductDetailView, ListView):
         return self.model.objects.filter(product=product)
 
 
-class ProductBugListView(BaseProductDetailView, ListView):
+class ProductBugListView(utils.BaseProductDetailView, ListView):
     model = Bug
     template_name = "product_management/product_bug_list.html"
     context_object_name = "bugs"
@@ -449,7 +438,7 @@ class ProductBugListView(BaseProductDetailView, ListView):
 # If the user is not authenticated, we redirect him to the sign up page using LoginRequiredMixing.
 # After he signs in, we should redirect him with the help of redirect_field_name attribute
 # See for more detail: https://docs.djangoproject.com/en/4.2/topics/auth/default/
-class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
+class CreateProductIdea(LoginRequiredMixin, utils.BaseProductDetailView, CreateView):
     login_url = "sign_in"
     template_name = "product_management/add_product_idea.html"
     form_class = forms.IdeaForm
@@ -471,7 +460,7 @@ class CreateProductIdea(LoginRequiredMixin, BaseProductDetailView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
+class UpdateProductIdea(LoginRequiredMixin, utils.BaseProductDetailView, UpdateView):
     login_url = "sign_in"
     template_name = "product_management/update_product_idea.html"
     model = Idea
@@ -498,7 +487,7 @@ class UpdateProductIdea(LoginRequiredMixin, BaseProductDetailView, UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
+class ProductRoleAssignmentView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_people.html"
 
     def get_context_data(self, **kwargs):
@@ -514,7 +503,7 @@ class ProductRoleAssignmentView(BaseProductDetailView, TemplateView):
         return context
 
 
-class ProductIdeaDetail(BaseProductDetailView, DetailView):
+class ProductIdeaDetail(utils.BaseProductDetailView, DetailView):
     template_name = "product_management/product_idea_detail.html"
     model = Idea
     context_object_name = "idea"
@@ -525,7 +514,7 @@ class ProductIdeaDetail(BaseProductDetailView, DetailView):
         return context
 
 
-class ChallengeDetailView(BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
+class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
     model = Challenge
     context_object_name = "challenge"
     template_name = "product_management/challenge_detail.html"
@@ -587,7 +576,7 @@ class ChallengeDetailView(BaseProductDetailView, common_mixins.AttachmentMixin, 
         return context
 
 
-class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView):
+class CreateInitiativeView(LoginRequiredMixin, utils.BaseProductDetailView, CreateView):
     form_class = forms.InitiativeForm
     template_name = "product_management/create_initiative.html"
     login_url = "sign_in"
@@ -618,7 +607,7 @@ class CreateInitiativeView(LoginRequiredMixin, BaseProductDetailView, CreateView
         return super().post(request, *args, **kwargs)
 
 
-class InitiativeDetailView(BaseProductDetailView, DetailView):
+class InitiativeDetailView(utils.BaseProductDetailView, DetailView):
     template_name = "product_management/initiative_detail.html"
     model = Initiative
     context_object_name = "initiative"
@@ -632,7 +621,7 @@ class InitiativeDetailView(BaseProductDetailView, DetailView):
         return context
 
 
-class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
+class CreateCapability(LoginRequiredMixin, utils.BaseProductDetailView, CreateView):
     form_class = forms.ProductAreaForm1
     template_name = "product_management/create_capability.html"
     login_url = "sign_in"
@@ -671,7 +660,7 @@ class CreateCapability(LoginRequiredMixin, BaseProductDetailView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class CapabilityDetailView(BaseProductDetailView, DetailView):
+class CapabilityDetailView(utils.BaseProductDetailView, DetailView):
     model = ProductArea
     context_object_name = "capability"
     template_name = "product_management/capability_detail.html"
@@ -859,10 +848,10 @@ class DeleteChallengeView(LoginRequiredMixin, DeleteView):
         person = request.user.person
         if challenge_obj.can_delete_challenge(person) or challenge_obj.created_by == person:
             Challenge.objects.get(pk=challenge_obj.pk).delete()
-            messages.success(request, _("The challenge is successfully deleted!"))
+            messages.success(request, "The challenge is successfully deleted!")
             return redirect(self.success_url)
         else:
-            messages.error(request, _("You do not have rights to remove this challenge."))
+            messages.error(request, "You do not have rights to remove this challenge.")
 
             return redirect(
                 reverse(
@@ -884,13 +873,7 @@ class DashboardBaseView(LoginRequiredMixin):
         person = self.request.user.person
         photo_url = person.get_photo_url()
         product_queryset = Product.objects.filter(content_type__model="person", object_id=person.id)
-        context.update(
-            {
-                "person": person,
-                "photo_url": photo_url,
-                "products": product_queryset,
-            }
-        )
+        context.update({"person": person, "photo_url": photo_url, "products": product_queryset})
         return context
 
 
@@ -908,12 +891,7 @@ class DashboardView(DashboardBaseView, TemplateView):
 
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
-        context.update(
-            {
-                "active_bounty_claims": active_bounty_claims,
-                "products": products,
-            }
-        )
+        context.update({"active_bounty_claims": active_bounty_claims, "products": products})
         return context
 
 
@@ -930,12 +908,7 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         )
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
-        context.update(
-            {
-                "active_bounty_claims": active_bounty_claims,
-                "products": products,
-            }
-        )
+        context.update({"active_bounty_claims": active_bounty_claims, "products": products})
         return context
 
 
@@ -967,10 +940,7 @@ class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
         person = self.request.user.person
         return BountyClaim.objects.filter(
             person=person,
-            status__in=[
-                BountyClaim.Status.GRANTED,
-                BountyClaim.Status.REQUESTED,
-            ],
+            status__in=[BountyClaim.Status.GRANTED, BountyClaim.Status.REQUESTED],
         )
 
 
@@ -1151,7 +1121,7 @@ class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
         return {"data": data, "attachment_formset": data["attachment_formset"]}
 
 
-class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.AttachmentMixin, CreateView):
+class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, CreateView):
     model = Bounty
     form_class = forms.BountyForm
     template_name = "product_management/create_bounty.html"
@@ -1180,7 +1150,7 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.
         return response
 
 
-class UpdateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
+class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     model = Bounty
     form_class = forms.BountyForm
     template_name = "product_management/update_bounty.html"
@@ -1232,11 +1202,11 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
         if instance.status == BountyClaim.Status.REQUESTED:
             instance.status = BountyClaim.Status.CANCELLED
             instance.save()
-            messages.success(request, _("The bounty claim is successfully deleted."))
+            messages.success(request, "The bounty claim is successfully deleted.")
         else:
             messages.error(
                 request,
-                _("Only the active claims can be deleted. The bounty claim did not deleted."),
+                "Only the active claims can be deleted. The bounty claim did not deleted.",
             )
 
         return redirect(self.success_url)
@@ -1279,12 +1249,7 @@ def bounty_claim_actions(request, pk):
 
     instance.save()
 
-    return redirect(
-        reverse(
-            "dashboard-product-bounties",
-            args=(instance.bounty.challenge.product.slug,),
-        )
-    )
+    return redirect(reverse("dashboard-product-bounties", args=(instance.bounty.challenge.product.slug,)))
 
 
 class DashboardReviewWorkView(LoginRequiredMixin, ListView):
@@ -1333,10 +1298,7 @@ class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidati
             instance.created_by = request.user.person
             instance.save()
 
-            messages.success(
-                request,
-                _("The contribution agreement is successfully created!"),
-            )
+            messages.success(request, "The contribution agreement is successfully created!")
             self.success_url = reverse(
                 "contribution-agreement-detail",
                 args=(
@@ -1366,7 +1328,7 @@ class ContributionAgreementView(DetailView):
         return context
 
 
-class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
+class CreateProductBug(LoginRequiredMixin, utils.BaseProductDetailView, CreateView):
     login_url = "sign_in"
     template_name = "product_management/add_product_bug.html"
     form_class = forms.BugForm
@@ -1388,7 +1350,7 @@ class CreateProductBug(LoginRequiredMixin, BaseProductDetailView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class ProductBugDetail(BaseProductDetailView, DetailView):
+class ProductBugDetail(utils.BaseProductDetailView, DetailView):
     template_name = "product_management/product_bug_detail.html"
     model = Bug
     context_object_name = "bug"
@@ -1414,7 +1376,7 @@ class ProductBugDetail(BaseProductDetailView, DetailView):
         return context
 
 
-class UpdateProductBug(LoginRequiredMixin, BaseProductDetailView, UpdateView):
+class UpdateProductBug(LoginRequiredMixin, utils.BaseProductDetailView, UpdateView):
     login_url = "sign_in"
     template_name = "product_management/update_product_bug.html"
     model = Bug
