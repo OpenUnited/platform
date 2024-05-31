@@ -1,3 +1,5 @@
+{% import "talent/helper/macro_fun.html" as macros_fun %}
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="space-y-12">
@@ -29,14 +31,6 @@
                 </div>
 
                 <div class="col-span-full">
-                    <label for="{{ form.challenge.id_for_label }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.challenge.label }}</label>
-                    <div class="mt-2">
-                        {{ form.challenge }}
-                    </div>
-                </div>
-
-                <div class="col-span-full">
                     <label for="{{ form.description.id_for_label }}"
                         class="block text-sm font-medium leading-6 text-gray-900">{{ form.description.label }}</label>
                     <div class="mt-2">
@@ -52,45 +46,35 @@
                     </div>
                 </div>
 
-                <div class="col-span-full mt-6">
-                    <label class="text-lg text-black/[0.85] inline-flex font-semibold">
-                        Skills
+                <div class="col-span-full">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">
+                        Skills & Expertise
                     </label>
-                    <div class="text-sm">These skills are featured on your profile and can also be used to match you
-                        with
-                        tasks.
-                    </div>
-                    <div class="mt-3">
-                        <div class="treeselect-skills focus-visible:outline-transparent">
-                            {{ form.selected_skill_ids }}
+                    <div class="mt-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-4 gap-y-6"
+                            id="person_skill_container">
+                            <input type="hidden" name="skills-0-id" value="{{ form.instance.pk }}" class="row">
+                            <div id="id_skills-0-container"
+                                class="relative bg-white border border-gray-200 p-4 rounded-md shadow-md">
+                                <div class="mt-2">
+                                    <select id="id_skill" name="skill"
+                                        class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2
+                                            text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset
+                                            focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        hx-get="{{ url('get_expertise') }}" hx-vals=''
+                                        hx-trigger="change" hx-target="#ul_expertise_0">
+                                        {{ macros_fun.skill_filter_tree(skills, [], True) }}
+                                    </select>
+                                </div>
+                                <div id="td_expertise" class="mt-4">
+                                    {% with index=0 %}
+                                        {% include "talent/helper/expertises.html" %}
+                                    {% endwith %}
+                                    <select class="hidden" id="id_skills-0-expertise" name="skills-0-expertise" multiple></select>
+                                    <input type="hidden" id="id_expertise_ids" name="expertise_ids">
+                                </div>
+                            </div>
                         </div>
-                        {% set skill_field_errors = form.errors.get("selected_skill_ids") %}
-                        {% if skill_field_errors %}
-                        <div>
-                            {% for error in form.errors.get("selected_skill_ids") %}
-                            <p class="mt-2 text-sm text-red-600">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-span-full mt-6">
-                    <label class="text-lg text-black/[0.85] inline-flex font-semibold">Expertise</label>
-                    <div class="text-sm">For each Skill selected in the previous step, please select your related
-                        expertise.
-                    </div>
-                    {{ form.selected_expertise_ids }}
-                    <div class="mt-3">
-                        <div class="treeselect-expertise focus-visible:outline-transparent">
-                        </div>
-                        {% set expertise_field_errors =  form.errors.get("selected_expertise_ids") %}
-                        {% if expertise_field_errors  %}
-                        <div>
-                            {% for error in form.errors.get("selected_expertise_ids") %}
-                            <p class="mt-2 text-sm text-red-600">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -119,7 +103,6 @@
 
                 <div class="col-span-full">
                     {% include "attachments.html" %}
-
                 </div>
             </div>
         </div>
