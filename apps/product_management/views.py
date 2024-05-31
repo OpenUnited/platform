@@ -789,7 +789,7 @@ class CreateChallengeView(
         product_slug = self.kwargs.get("product_slug", None)
         product = Product.objects.get(slug=product_slug)
 
-        context["product"] =  product
+        context["product"] = product
 
         context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
 
@@ -797,7 +797,7 @@ class CreateChallengeView(
         context["bounty_form"] = forms.BountyForm()
         context["empty_form"] = PersonSkillFormSet().empty_form
 
-        context["bounty_formset"] = forms.BountyFormset(self.request.POST)
+        context["bounty_formset"] = forms.BountyFormset(data={"form-TOTAL_FORMS": "0", "form-INITIAL_FORMS": 0})
 
         return context
 
@@ -820,7 +820,7 @@ class CreateChallengeView(
                     bounty = bounty_form.save(commit=False)
                     bounty.challenge = challenge
 
-                    skill_id = bounty_form.cleaned_data.get("skill_id")
+                    skill_id = bounty_form.cleaned_data.get("skill")
                     bounty.skill = Skill.objects.get(id=skill_id)
                     bounty.save()
 
@@ -1191,14 +1191,15 @@ class CreateBountyView(LoginRequiredMixin, BaseProductDetailView, common_mixins.
         context["challenge_queryset"] = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
         context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
         context["empty_form"] = PersonSkillFormSet().empty_form
-
         return context
 
     def form_valid(self, form):
-        form.instance.challenge = form.cleaned_data.get("challenge")
-        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill_id"))
+        form.instance.challenge = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
+        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill"))
         response = super().form_save(form)
-        form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids")))
+        form.instance.expertise.add(
+            *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
+        )
         form.instance.save()
         return response
 
@@ -1355,8 +1356,6 @@ class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidati
             instance = form.save(commit=False)
             instance.created_by = request.user.person
             instance.save()
-
-            print("Saved form.....")
 
             messages.success(
                 request,
