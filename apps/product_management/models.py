@@ -490,12 +490,13 @@ class Bug(TimeStampMixin):
         return f"{self.person} - {self.title}"
 
 
-class ContributionAgreement(TimeStampMixin):
+class ProductContributorAgreementTemplate(TimeStampMixin):
     product = models.ForeignKey(
         "product_management.Product",
         related_name="product_contribution_agreements",
         on_delete=models.CASCADE,
     )
+    title = models.CharField(max_length=256)
     content = models.TextField()
     effective_date = models.DateField()
     created_by = models.ForeignKey("talent.Person", on_delete=models.CASCADE)

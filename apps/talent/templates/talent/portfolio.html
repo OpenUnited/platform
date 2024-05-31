@@ -19,18 +19,18 @@
                 </div>
                 <div class="group absolute rounded-full bg-white py-0.5 px-2 right-2 bottom-10 border border-solid border-green-600
                         inline-flex shadow-xl text-green-600 text-lg flex shrink-0 items-center justify-center cursor-pointer">
-                    {{ status.name }}
+                    {{ person.points_status }}
                     <div
                         class="absolute hidden group-hover:block group-focus:block bottom-8 -left-[116px] sm:left-4 block w-60 p-3 bg-white border border-solid border-gray-300 shadow-md rounded-md">
                         <div class="flex flex-col">
                             <div class="border-b border-solid border-gray-300 pb-1.5 mb-2 flex items-center">
                                 <div class="text-sm font-medium leading-6 text-gray-900 mr-1">Points:</div>
-                                <div class="text-sm text-gray-500">{{ status.get_display_points(status.name) }}
+                                <div class="text-sm text-gray-500">{{ person.get_display_points() }}
                                 </div>
                             </div>
                             <div>
                                 <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
-                                <div class="text-sm text-gray-500">{{ status.get_privileges(status.name) }}</div>
+                                <div class="text-sm text-gray-500">{{ person.get_points_privileges() }}</div>
                             </div>
                             <a href="{{ url('status-and-points') }}"
                                 class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
@@ -52,7 +52,7 @@
                 </div>
                 #}
 
-                <div class="pb-1 font-light text-sm text-[#4b5563] font-semibold">{{ status.points }} Points Earned
+                <div class="pb-1 font-light text-sm text-[#4b5563] font-semibold">{{ person.points }} Points Earned
                 </div>
                 <div class="space-y-1.5 flex flex-col">
                     {% if person.location %}
