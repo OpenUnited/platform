@@ -187,7 +187,7 @@ function addBounty(event) {
   input = document.createElement('input');
   input.type = 'hidden';
   input.value = bountySkill;
-  input.name = `form-${skillCount}-skill_id`;
+  input.name = `form-${skillCount}-skill`;
   td.appendChild(input);
 
   input = document.createElement('input');

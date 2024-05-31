@@ -335,7 +335,7 @@ class ChallengeForm(forms.ModelForm):
 
 
 class BountyForm(forms.ModelForm):
-    skill_id = forms.CharField(widget=forms.HiddenInput(attrs={"id": "skill_id"}))
+    skill = forms.CharField(widget=forms.HiddenInput(attrs={"id": "skill_id"}))
     expertise_ids = forms.CharField(widget=forms.HiddenInput(attrs={"id": "expertise_ids"}))
 
     def clean_selected_skill_ids(self):
@@ -387,7 +387,6 @@ BountyFormset = modelformset_factory(
     fields=("title", "description", "points", "status", "is_active"),
     extra=0,
     can_delete=True,
-    can_delete_extra=True,
 )
 
 
