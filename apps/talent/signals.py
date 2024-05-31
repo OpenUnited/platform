@@ -6,12 +6,6 @@ from apps.product_management.models import Bounty, Challenge
 from .models import BountyClaim, BountyDeliveryAttempt, Person
 
 
-@receiver(post_save, sender=Person)
-def create_status_for_person(sender, instance, created, **kwargs):
-    if created:
-        _ = Status.objects.create(person=instance)
-
-
 @receiver(post_save, sender=BountyDeliveryAttempt)
 def update_bounty_delivery_status(sender, instance, created, **kwargs):
     if not created:
