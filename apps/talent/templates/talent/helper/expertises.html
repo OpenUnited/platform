@@ -74,9 +74,12 @@
         const expertiseContainer = document.getElementById(`ul_expertise_${index}`)
         const checkedCheckboxes = expertiseContainer.querySelectorAll('input[type="checkbox"]:checked');
         const expertiseElement = document.getElementById(`id_skills-${index}-expertise`);
+        const expertiseIdsElement = document.getElementById(`id_expertise_ids`);
         while (expertiseElement && expertiseElement.firstChild) {
             expertiseElement.removeChild(expertiseElement.firstChild);
-          }
+        }
+        if(expertiseElement)
+            expertiseIdsElement.value = "";
         checkedCheckboxes.forEach((checkbox) => {
             const option = document.createElement('option');
             const nodeId = checkbox.getAttribute("id");
@@ -86,6 +89,11 @@
             option.selected = true;
             if(expertiseElement)
                 expertiseElement.appendChild(option);
+            if(expertiseIdsElement) {
+                if(expertiseIdsElement.value.length > 0)
+                    expertiseIdsElement.value += ',';
+                expertiseIdsElement.value += nodeId;
+            }
         })
 
         document.getElementById(`dropdownSearch_${index}`).classList.add("hidden")
