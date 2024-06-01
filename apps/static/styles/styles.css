@@ -526,3 +526,7 @@ input[autocomplete=one-time-code] {
 .step-numb.active~.step-numb .step-numb__item span {
   display: block;
 }
+
+.more_detail_bountry {
+  padding-top: 3px !important;
+}

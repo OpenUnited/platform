@@ -53,7 +53,7 @@
                             class="check-circle-icon" alt="status">
                         <a href="/{{ product.slug }}/challenges">
                             <!-- Filter the available challenges -->
-                            {{ product.challenge_set.filter(status=2)|count }} available challenges
+                            {{ product.challenge_set.filter(status=2)|count }} active challenges
                         </a>
                     </p>
                     <p class="text-sm text-gray-900">

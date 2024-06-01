@@ -129,24 +129,24 @@ urlpatterns += [
         name="dashboard-review-work",
     ),
     path(
-        "dashboard/product/<str:product_slug>/contribution-agreements",
-        views.DashboardContributionAgreementView.as_view(),
-        name="dashboard-contribution-agreements",
+        "dashboard/product/<str:product_slug>/contributor-agreement-templates",
+        views.DashboardContributorAgreementTemplateListView.as_view(),
+        name="dashboard-contributor-agreement-templates",
     ),
 ]
 
 
-# URL patterns for contribution agreement views
+# URL patterns for contributor agreement views
 urlpatterns += [
     path(
-        "<str:product_slug>/contribution-agreement/<int:pk>",
-        views.ContributionAgreementView.as_view(),
-        name="contribution-agreement-detail",
+        "<str:product_slug>/contributor-agreement/<int:pk>",
+        views.ContributorAgreementTemplateView.as_view(),
+        name="contributor-agreement-template-detail",
     ),
     path(
-        "<str:product_slug>/contribution-agreement/create/",
-        views.CreateContributionAgreementView.as_view(),
-        name="create-contribution-agreement",
+        "<str:product_slug>/contributor-agreement/create/",
+        views.CreateContributorAgreementTemplateView.as_view(),
+        name="create-contributor-agreement-template",
     ),
     # path(
     #     "<str:product_slug>/contribution-agreement/update/<int:pk>",
