@@ -18,6 +18,29 @@ from apps.openunited.mixins import AncestryMixin, TimeStampMixin, UUIDMixin
 
 
 class Person(TimeStampMixin):
+    class PersonStatus(models.TextChoices):
+        DRONE = "Drone"
+        HONEYBEE = "Honeybee"
+        TRUSTED_BEE = "Trusted Bee"
+        QUEEN_BEE = "Queen Bee"
+        BEEKEEPER = "Beekeeper"
+
+    STATUS_POINT_MAPPING = {
+        PersonStatus.DRONE: 0,
+        PersonStatus.HONEYBEE: 50,
+        PersonStatus.TRUSTED_BEE: 500,
+        PersonStatus.QUEEN_BEE: 2000,
+        PersonStatus.BEEKEEPER: 8000,
+    }
+
+    STATUS_PRIVILEGES_MAPPING = {
+        PersonStatus.DRONE: _("Earn points by completing bounties, submitting Ideas & Bugs"),
+        PersonStatus.HONEYBEE: _("Earn payment for payment-eligible bounties on openunited.com"),
+        PersonStatus.TRUSTED_BEE: _("Early Access to claim top tasks"),
+        PersonStatus.QUEEN_BEE: _("A grant of 1000 points for your own open product on OpenUnited"),
+        PersonStatus.BEEKEEPER: _("Invite new products to openunited.com and grant points"),
+    }
+
     full_name = models.CharField(max_length=256)
     preferred_name = models.CharField(max_length=128)
     user = models.OneToOneField("security.User", on_delete=models.CASCADE, related_name="person")
@@ -33,10 +56,39 @@ class Person(TimeStampMixin):
     github_link = models.URLField(null=True, blank=True)
     website_link = models.URLField(null=True, blank=True)
     completed_profile = models.BooleanField(default=False)
+    points = models.PositiveIntegerField(default=0)
 
     class Meta:
         db_table = "talent_person"
         verbose_name_plural = "People"
+
+    @property
+    def points_status(self):
+        return self.get_points_status()
+
+    def get_points_privileges(self):
+        return self.STATUS_PRIVILEGES_MAPPING.get(self.get_points_status())
+
+    def add_points(self, points):
+        self.points += points
+        self.save()
+
+    def get_points_status(self):
+        for status in reversed(self.STATUS_POINT_MAPPING.keys()):
+            current_points = self.STATUS_POINT_MAPPING.get(status)
+            if current_points <= self.points:
+                return status
+        return self.PersonStatus.DRONE
+
+    def get_display_points(self):
+        status = self.get_points_status()
+        statuses = list(self.STATUS_POINT_MAPPING.keys())
+        # if `status` is the last one in `statuses`
+        if status == statuses[-1]:
+            return f">= {self.STATUS_POINT_MAPPING.get(status)}"
+        # +1 is to get the next status
+        index = statuses.index(status) + 1
+        return f"< {self.STATUS_POINT_MAPPING.get(statuses[index])}"
 
     def get_initial_data(self):
         initial = {
@@ -89,88 +141,6 @@ class Person(TimeStampMixin):
 
     def __str__(self):
         return self.full_name
-
-
-class Status(models.Model):
-    DRONE = "Drone"
-    HONEYBEE = "Honeybee"
-    TRUSTED_BEE = "Trusted Bee"
-    QUEEN_BEE = "Queen Bee"
-    BEEKEEPER = "Beekeeper"
-
-    STATUS_CHOICES = [
-        (DRONE, "Drone"),
-        (HONEYBEE, "Honeybee"),
-        (TRUSTED_BEE, "Trusted Bee"),
-        (QUEEN_BEE, "Queen Bee"),
-        (BEEKEEPER, "Beekeeper"),
-    ]
-
-    STATUS_POINT_MAPPING = {
-        DRONE: 0,
-        HONEYBEE: 50,
-        TRUSTED_BEE: 500,
-        QUEEN_BEE: 2000,
-        BEEKEEPER: 8000,
-    }
-
-    STATUS_PRIVILEGES_MAPPING = {
-        DRONE: _("Earn points by completing bounties, submitting Ideas & Bugs"),
-        HONEYBEE: _("Earn payment for payment-eligible bounties on openunited.com"),
-        TRUSTED_BEE: _("Early Access to claim top tasks"),
-        QUEEN_BEE: _("A grant of 1000 points for your own open product on OpenUnited"),
-        BEEKEEPER: _("Invite new products to openunited.com and grant points"),
-    }
-
-    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name="status")
-    name = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRONE)
-    points = models.PositiveIntegerField(default=0)
-
-    def get_status_from_points(self, provided_points=None):
-        if provided_points is None:
-            provided_points = self.points
-
-        for status in reversed(Status.STATUS_POINT_MAPPING.keys()):
-            current_points = Status.STATUS_POINT_MAPPING.get(status)
-            if current_points <= provided_points:
-                return status
-
-        return Status.DRONE
-
-    def add_points(self, points):
-        self.points += points
-        expected_status = self.get_status_from_points()
-        if self.name != expected_status:
-            self.name = expected_status
-
-        self.save()
-
-    @classmethod
-    def get_privileges(cls, status: str) -> str:
-        return cls.STATUS_PRIVILEGES_MAPPING.get(status)
-
-    @classmethod
-    def get_statuses(cls) -> list:
-        return list(cls.STATUS_POINT_MAPPING.keys())
-
-    @classmethod
-    def get_display_points(cls, status: str) -> str:
-        statuses = cls.get_statuses()
-
-        # if `status` is the last one in `statuses`
-        if status == statuses[-1]:
-            return f">= {cls.get_points_for_status(status)}"
-
-        # +1 is to get the next status
-        index = statuses.index(status) + 1
-        return f"< {cls.get_points_for_status(statuses[index])}"
-
-    @classmethod
-    def get_points_for_status(cls, status: str) -> str:
-        return cls.STATUS_POINT_MAPPING.get(status)
-
-    def __str__(self):
-        return f"{self.name} - {self.points}"
 
 
 class PersonSkill(models.Model):

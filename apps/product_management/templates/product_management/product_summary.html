@@ -53,11 +53,11 @@
         {% elif challenge_count == 1 %}
         <a href="{{ url('product_challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
-            Available Challenge </a>
+            Active Challenge </a>
         {% else %}
         <a href="{{ url('product_challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ challenge_count }}
-            Available Challenges</a>
+            Active Challenges</a>
         {% endif %}
     </div>
     <div>
