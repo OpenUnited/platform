@@ -33,11 +33,15 @@ class ProductListView(ListView):
     template_name = "product_management/products.html"
     paginate_by = 8
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["challenge_status"] = Challenge.ChallengeStatus
+        return context
+
 
 class ProductRedirectView(utils.BaseProductDetailView, RedirectView):
     def get(self, request, *args, **kwargs):
         url = reverse("product_summary", kwargs=kwargs)
-
         return redirect(url)
 
 
@@ -59,7 +63,7 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
             context["can_modify_product"] = False
 
         context["challenges"] = challenges
-        context["tree_data"] = [utils.serialize_tree(node) for node in ProductArea.get_root_nodes()]
+        context["tree_data"] = [utils.serialize_tree(node) for node in ProductArea.get_root_nodes()]        
         return context
 
 
@@ -617,6 +621,7 @@ class InitiativeDetailView(utils.BaseProductDetailView, DetailView):
         context["challenges"] = Challenge.objects.filter(
             initiative=self.object, status=Challenge.ChallengeStatus.ACTIVE
         )
+        context["bounty_status"] = Bounty.BountyStatus
 
         return context
 
