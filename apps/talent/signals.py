@@ -3,13 +3,7 @@ from django.dispatch import receiver
 
 from apps.product_management.models import Bounty, Challenge
 
-from .models import BountyClaim, BountyDeliveryAttempt, Person, Status
-
-
-@receiver(post_save, sender=Person)
-def create_status_for_person(sender, instance, created, **kwargs):
-    if created:
-        _ = Status.objects.create(person=instance)
+from .models import BountyClaim, BountyDeliveryAttempt, Person
 
 
 @receiver(post_save, sender=BountyDeliveryAttempt)

@@ -226,7 +226,6 @@ class TalentPortfolio(TemplateView):
             "person": person,
             "person_linkedin_link": global_utils.get_path_from_url(person.linkedin_link, True),
             "person_twitter_link": global_utils.get_path_from_url(person.twitter_link, True),
-            "status": person.status,
             "person_skills": person.skills.all().select_related("skill"),
             "bounty_claims": bounty_claims,
             "FeedbackService": FeedbackService,

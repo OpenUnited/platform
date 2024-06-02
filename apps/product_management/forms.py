@@ -14,7 +14,7 @@ from apps.commerce.models import Organisation
 from apps.talent.models import BountyClaim, Person
 from apps.utility import utils as global_utils
 
-from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, Initiative, Product, ProductArea
+from .models import Bounty, Bug, Challenge, ProductContributorAgreementTemplate, Idea, Initiative, Product, ProductArea
 
 
 class DateInput(forms.DateInput):
@@ -319,13 +319,7 @@ class ChallengeForm(forms.ModelForm):
 
     class Meta:
         model = Challenge
-        fields = [
-            "title",
-            "description",
-            "reward_type",
-            "priority",
-            "status",
-        ]
+        fields = ["title", "description", "reward_type", "priority", "status", "product_area", "initiative"]
 
         widgets = {
             "reward_type": forms.RadioSelect(
@@ -545,7 +539,7 @@ class ProductAreaForm1(forms.ModelForm):
         }
 
 
-class ContributionAgreementForm(forms.ModelForm):
+class ContributorAgreementTemplateForm(forms.ModelForm):
     product = forms.ModelChoiceField(
         empty_label="Select a product",
         queryset=Product.objects.all(),
@@ -569,11 +563,27 @@ class ContributionAgreementForm(forms.ModelForm):
             self.fields["product"].initial = queryset.first()
 
     class Meta:
-        model = ContributionAgreement
+        model = ProductContributorAgreementTemplate
         fields = "__all__"
         exclude = ["created_by"]
 
         widgets = {
+            "title": forms.TextInput(attrs={
+                "class": (
+                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                )
+            }),
+            "effective_date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": (
+                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
+                        " focus:outline-none rounded-sm"
+                    ),
+                    "placeholder": "Select effective date",
+                }
+            ),
             "content": TinyMCE(
                 attrs={
                     "class": (
@@ -583,16 +593,6 @@ class ContributionAgreementForm(forms.ModelForm):
                     "placeholder": "Agreement content",
                     "cols": 80,
                     "rows": 50,
-                }
-            ),
-            "effective_date": forms.DateInput(
-                attrs={
-                    "type": "date",
-                    "class": (
-                        "pt-2 px-4 pb-3 min-h-[104px] w-full text-sm text-black border border-solid border-[#D9D9D9]"
-                        " focus:outline-none rounded-sm"
-                    ),
-                    "placeholder": "Select effective date",
                 }
             ),
         }

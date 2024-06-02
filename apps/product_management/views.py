@@ -23,7 +23,7 @@ from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Sk
 from apps.talent.utils import serialize_skills
 from apps.utility import utils as global_utils
 
-from .models import Bounty, Bug, Challenge, ContributionAgreement, Idea, IdeaVote, Initiative, Product, ProductArea
+from .models import Bounty, Bug, Challenge, ProductContributorAgreementTemplate, Idea, IdeaVote, Initiative, Product, ProductArea
 
 
 class ProductListView(ListView):
@@ -1260,11 +1260,11 @@ class DashboardReviewWorkView(LoginRequiredMixin, ListView):
     login_url = "sign_in"
 
 
-class DashboardContributionAgreementView(LoginRequiredMixin, ListView):
-    model = ContributionAgreement
-    context_object_name = "contribution_agreements"
+class DashboardContributorAgreementTemplateListView(LoginRequiredMixin, ListView):
+    model = ProductContributorAgreementTemplate
+    context_object_name = "contributor_agreement_templates"
     login_url = "sign_in"
-    template_name = "product_management/dashboard/contribution_agreements.html"
+    template_name = "product_management/dashboard/contributor_agreement_templates.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1274,13 +1274,13 @@ class DashboardContributionAgreementView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_slug = self.kwargs.get("product_slug")
-        return ContributionAgreement.objects.filter(product__slug=product_slug).order_by("-created_at")
+        return ProductContributorAgreementTemplate.objects.filter(product__slug=product_slug).order_by("-created_at")
 
 
-class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
-    model = ContributionAgreement
-    form_class = forms.ContributionAgreementForm
-    template_name = "product_management/create_contribution_agreement.html"
+class CreateContributorAgreementTemplateView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
+    model = ProductContributorAgreementTemplate
+    form_class = forms.ContributorAgreementTemplateForm
+    template_name = "product_management/create_contributor_agreement_template.html"
     login_url = "sign_in"
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -1297,10 +1297,11 @@ class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidati
             instance = form.save(commit=False)
             instance.created_by = request.user.person
             instance.save()
-
+            
             messages.success(request, "The contribution agreement is successfully created!")
+
             self.success_url = reverse(
-                "contribution-agreement-detail",
+                "contributor-agreement-template-detail",
                 args=(
                     instance.product.slug,
                     instance.id,
@@ -1311,10 +1312,10 @@ class CreateContributionAgreementView(LoginRequiredMixin, HTMXInlineFormValidati
         return super().post(request, *args, **kwargs)
 
 
-class ContributionAgreementView(DetailView):
-    model = ContributionAgreement
-    template_name = "product_management/contribution_agreement_detail.html"
-    context_object_name = "contribution_agreement"
+class ContributorAgreementTemplateView(DetailView):
+    model = ProductContributorAgreementTemplate
+    template_name = "product_management/contributor_agreement_template_detail.html"
+    context_object_name = "contributor_agreement_template"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
