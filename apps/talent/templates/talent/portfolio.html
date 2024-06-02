@@ -6,6 +6,7 @@
 
 {% include 'toast.html' %}
 
+{% with page_size = 7 %}
 <div class="flex-auto pb-14">
     <div class="relative z-[1] w-full h-[296px] rounded-md -mb-40 bg-gradient-to-r from-purple-100 to-indigo-400">
     </div>
@@ -138,24 +139,26 @@
                 <p class="text-sm italic">There are no expertise to list.</p>
             {% endif %}
 
-            <div class="text-lg font-semibold mb-2.5 mt-6">Open Products I contribute to</div>
+            <div class="text-lg font-semibold mt-6 border-b border-solid border-[#d0d7de]">My Contributions</div>
 
+            <h3 class="font-semibold mt-4 mb-2">Completed Bounties</h3>
             <div class="relative" id="portfolio-table">
                 <div class="overflow-x-auto pb-4 table-products-contribute">
                     <div class="w-full min-w-[660px] flex flex-col">
                         <div class="grid grid-cols-12 gap-1">
                             <div class="col-span-4 bg-gray-50 border-b border-solid border-[#e4e8f1]
-                py-2.5 px-2 text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Product
+                                py-2.5 px-2 text-gray-900 text-xs font-semibold flex">Product
                             </div>
                             <div class="col-span-6 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2
-                text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Challenges</div>
+                                text-gray-900 text-xs font-semibold flex">Bounty</div>
                             <div class="col-span-2 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2
-                text-gray-900 text-xs font-semibold flex items-center justify-center text-center">Points Earned</div>
+                                text-gray-900 text-xs font-semibold flex 
+                                items-center justify-center text-center">Points Earned</div>
                         </div>
 
-                        {% for bounty_claim in bounty_claims %}
+                        {% for bounty_claim in bounty_claims_completed %}
                         {% set challenge = bounty_claim.bounty.challenge %}
-                        <div class="grid grid-cols-12 gap-1 table-row {% if loop.index0 >= 7 %}hidden{% endif %}">
+                        <div class="grid grid-cols-12 gap-1 table-row-1 {% if loop.index0 >= page_size %}hidden{% endif %}">
                             <div
                                 class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
                                 <a href="{{ url('product_detail', args=(challenge.product.slug,)) }}"
@@ -163,7 +166,7 @@
                             </div>
                             <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
                                 <a href="{{ url('challenge_detail' , args=(challenge.product.slug, challenge.id,) )  }}"
-                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.title }}</a>
+                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ bounty_claim.bounty.title }}</a>
                             </div>
                             <div
                                 class="col-span-2 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-center text-sm">
@@ -171,14 +174,54 @@
                         </div>
                         {% endfor %}
 
-                        <button type="button" id="portfolio-show-more-button"
+                        <button type="button" id="portfolio-show-more-button-1"
                             class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
-              border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500 table-products-contribute__button">Show
-                            more</button>
-                        <button type="button" id="portfolio-show-less-button"
+                                    border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all 
+                                    cursor-pointer text-blue-500 table-products-contribute__button">Show more</button>
+                        <button type="button" id="portfolio-show-less-button-1"
                             class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
-              border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500 table-products-contribute__button">Show
-                            less</button>
+                                    border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
+                                    text-blue-500 table-products-contribute__button">Show less</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <h3 class="font-semibold mt-2 mb-2">Claimed Bounties</h3>
+            <div class="relative" id="portfolio-table">
+                <div class="overflow-x-auto pb-4 table-products-contribute">
+                    <div class="w-full min-w-[660px] flex flex-col">
+                        <div class="grid grid-cols-12 gap-1">
+                            <div class="col-span-4 bg-gray-50 border-b border-solid border-[#e4e8f1]
+                                py-2.5 px-2 text-gray-900 text-xs font-semibold flex">Product
+                            </div>
+                            <div class="col-span-8 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2
+                                text-gray-900 text-xs font-semibold flex">Bounty</div>
+                        </div>
+
+                        {% for bounty_claim in bounty_claims_claimed %}
+                        {% set challenge = bounty_claim.bounty.challenge %}
+                        <div class="grid grid-cols-12 gap-1 table-row-2 {% if loop.index0 >= page_size %}hidden{% endif %}">
+                            <div
+                                class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+                                <a href="{{ url('product_detail', args=(challenge.product.slug,)) }}"
+                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name }}</a>
+                            </div>
+                            <div class="col-span-8 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                                <a href="{{ url('challenge_detail' , args=(challenge.product.slug, challenge.id,) )  }}"
+                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ bounty_claim.bounty.title }}</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <button type="button" id="portfolio-show-more-button-2"
+                            class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
+                                border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
+                                text-blue-500 table-products-contribute__button">Show more</button>
+                        <button type="button" id="portfolio-show-less-button-2"
+                            class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
+                                border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
+                                text-blue-500 table-products-contribute__button">Show less</button>
                     </div>
                 </div>
             </div>
@@ -283,30 +326,61 @@
 <div id="feedback-modal"></div>
 
 <script>
-    const showMoreButton = document.getElementById("portfolio-show-more-button");
-    const showLessButton = document.getElementById("portfolio-show-less-button");
-    let rows = document.querySelectorAll("div.table-row");
-    rows = Array.from(rows);
+    const pageSize = {{ page_size }};
+    // completed bounty list
+    const showMoreButton1 = document.getElementById("portfolio-show-more-button-1");
+    const showLessButton1 = document.getElementById("portfolio-show-less-button-1");
+    let rows_1 = document.querySelectorAll("div.table-row-1");
+    rows_1 = Array.from(rows_1);
 
-    if (rows.length > 7) {
-        showMoreButton.classList.remove("hidden");
+    if (rows_1.length > pageSize) {
+        showMoreButton1.classList.remove("hidden");
     }
 
-    showMoreButton.addEventListener("click", () => {
-        rows.forEach(element => {
+    showMoreButton1.addEventListener("click", () => {
+        rows_1.forEach(element => {
             element.classList.remove("hidden");
         });
-        showMoreButton.classList.add("hidden");
-        showLessButton.classList.remove("hidden");
+        showMoreButton1.classList.add("hidden");
+        showLessButton1.classList.remove("hidden");
     });
 
-    showLessButton.addEventListener("click", () => {
-        rows.slice(rows.length - 7, rows.length).forEach(element => {
+    showLessButton1.addEventListener("click", () => {
+        rows_1.slice(pageSize, rows_1.length).forEach(element => {
             element.classList.add("hidden");
         });
-        showMoreButton.classList.remove("hidden");
-        showLessButton.classList.add("hidden");
+        console.log(rows_1.length, pageSize)
+        showMoreButton1.classList.remove("hidden");
+        showLessButton1.classList.add("hidden");
     });
+
+    // claimed bounty list
+    const showMoreButton2 = document.getElementById("portfolio-show-more-button-2");
+    const showLessButton2 = document.getElementById("portfolio-show-less-button-2");
+    rows_2 = document.querySelectorAll("div.table-row-2");
+    rows_2 = Array.from(rows_2);
+
+    if (rows_2.length > pageSize) {
+        showMoreButton2.classList.remove("hidden");
+    }
+
+    showMoreButton2.addEventListener("click", () => {
+        rows_2.forEach(element => {
+            element.classList.remove("hidden");
+        });
+        showMoreButton2.classList.add("hidden");
+        showLessButton2.classList.remove("hidden");
+    });
+
+    showLessButton2.addEventListener("click", () => {
+        rows_2.slice(pageSize, rows_2.length).forEach(element => {
+            element.classList.add("hidden");
+        });
+        showMoreButton2.classList.remove("hidden");
+        showLessButton2.classList.add("hidden");
+    });
+
 </script>
+{% endwith %}
 
 {% endblock %}
