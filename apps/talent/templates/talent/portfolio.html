@@ -186,42 +186,43 @@
                 </div>
             </div>
 
-
-            <h3 class="font-semibold mt-2 mb-2">Claimed Bounties</h3>
-            <div class="relative" id="portfolio-table">
-                <div class="overflow-x-auto pb-4 table-products-contribute">
-                    <div class="w-full min-w-[660px] flex flex-col">
-                        <div class="grid grid-cols-12 gap-1">
-                            <div class="col-span-4 bg-gray-50 border-b border-solid border-[#e4e8f1]
-                                py-2.5 px-2 text-gray-900 text-xs font-semibold flex">Product
+            <div class="{% if bounty_claims_claimed.count() == 0 %}hidden{% endif %}">
+                <h3 class="font-semibold mt-2 mb-2">Claimed Bounties</h3>
+                <div class="relative" id="portfolio-table">
+                    <div class="overflow-x-auto pb-4 table-products-contribute">
+                        <div class="w-full min-w-[660px] flex flex-col">
+                            <div class="grid grid-cols-12 gap-1">
+                                <div class="col-span-4 bg-gray-50 border-b border-solid border-[#e4e8f1]
+                                    py-2.5 px-2 text-gray-900 text-xs font-semibold flex">Product
+                                </div>
+                                <div class="col-span-8 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2
+                                    text-gray-900 text-xs font-semibold flex">Bounty</div>
                             </div>
-                            <div class="col-span-8 bg-gray-50 border-b border-solid border-[#e4e8f1] py-1 px-2
-                                text-gray-900 text-xs font-semibold flex">Bounty</div>
+
+                            {% for bounty_claim in bounty_claims_claimed %}
+                            {% set challenge = bounty_claim.bounty.challenge %}
+                            <div class="grid grid-cols-12 gap-1 table-row-2 {% if loop.index0 >= page_size %}hidden{% endif %}">
+                                <div
+                                    class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
+                                    <a href="{{ url('product_detail', args=(challenge.product.slug,)) }}"
+                                        class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name }}</a>
+                                </div>
+                                <div class="col-span-8 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
+                                    <a href="{{ url('challenge_detail' , args=(challenge.product.slug, challenge.id,) )  }}"
+                                        class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ bounty_claim.bounty.title }}</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <button type="button" id="portfolio-show-more-button-2"
+                                class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
+                                    border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
+                                    text-blue-500 table-products-contribute__button">Show more</button>
+                            <button type="button" id="portfolio-show-less-button-2"
+                                class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
+                                    border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
+                                    text-blue-500 table-products-contribute__button">Show less</button>
                         </div>
-
-                        {% for bounty_claim in bounty_claims_claimed %}
-                        {% set challenge = bounty_claim.bounty.challenge %}
-                        <div class="grid grid-cols-12 gap-1 table-row-2 {% if loop.index0 >= page_size %}hidden{% endif %}">
-                            <div
-                                class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
-                                <a href="{{ url('product_detail', args=(challenge.product.slug,)) }}"
-                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name }}</a>
-                            </div>
-                            <div class="col-span-8 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
-                                <a href="{{ url('challenge_detail' , args=(challenge.product.slug, challenge.id,) )  }}"
-                                    class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ bounty_claim.bounty.title }}</a>
-                            </div>
-                        </div>
-                        {% endfor %}
-
-                        <button type="button" id="portfolio-show-more-button-2"
-                            class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
-                                border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
-                                text-blue-500 table-products-contribute__button">Show more</button>
-                        <button type="button" id="portfolio-show-less-button-2"
-                            class="hidden appearance-none py-1.5 px-3 flex items-center justify-center text-center mt-4 w-full max-w-[240px] md:ml-auto mr-auto cursor-pointer
-                                border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer 
-                                text-blue-500 table-products-contribute__button">Show less</button>
                     </div>
                 </div>
             </div>
