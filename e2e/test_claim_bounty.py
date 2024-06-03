@@ -1,7 +1,7 @@
 from model_bakery import baker
 from e2e.base import BaseE2ETest
 from e2e.pages.challenge_details_page import ChallengeDetailPage
-from talent.models import BountyClaim
+from apps.talent.models import BountyClaim
 from django.utils import timezone
 from datetime import datetime, timedelta
 
