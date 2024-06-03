@@ -1,0 +1,45 @@
+<table class="min-w-full divide-y divide-gray-300">
+    <thead class="bg-gray-50">
+        <tr>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Bounty
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Person
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Expected Finish Date
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 bg-white">
+        {% for bounty_claim in bounty_claims %}
+        <tr>
+            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                <a href="{{ bounty_claim.bounty.challenge.get_absolute_url() }}"
+                    class="font-medium text-blue-600 hover:underline">{{ bounty_claim }}</a>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                <a href="{{ bounty_claim.person.get_absolute_url() }}"
+                class="font-medium text-blue-600 hover:underline">{{ bounty_claim.person }}
+            </a>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ bounty_claim.expected_finish_date }}
+            </td>
+            <td>
+                <div class="flex">
+                    <a hx-get="{{ url('dashboard-bounties-action', args=(bounty_claim.pk,)) }}?action=accept"
+                        hx-target="#manage-product-content" hx-swap="innerHTML"
+                        hx-confirm="Accepting this bounty claim request from {{ bounty_claim.person.get_full_name() }}  means that the other bounty claim requests will be rejected. Are you sure to continue?"
+                        class="cursor-pointer font-medium text-blue-600 mr-4 hover:underline">Accept</a>
+                    <a hx-get="{{ url('dashboard-bounties-action', args=(bounty_claim.pk,)) }}?action=reject"
+                        hx-target="#manage-product-content" hx-swap="innerHTML"
+                        hx-confirm="Are you sure to reject this bounty request from {{ bounty_claim.person.get_full_name() }}?"
+                        class="cursor-pointer font-medium text-red-600 hover:underline">Reject</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

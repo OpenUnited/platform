@@ -1,0 +1,47 @@
+<div class="flex flex-col max-w-[850px]">
+    <div class="text-2xl font-medium text-black/[0.85] mb-9">Summary</div>
+    <div class="flex flex-col space-y-2">
+        <div class="text-lg text-black/[0.85]" id="summary_title">
+        </div>
+        <div class="text-sm text-black" id="summary_description">
+        </div>
+    </div>
+
+    <div class="mt-[18px] flow-root max-w-[682px] w-full">
+        <table class="min-w-full">
+            <colgroup>
+                <col class="w-5/6">
+                <col class="w-1/6">
+            </colgroup>
+            <thead class="border-b border-gray-300 text-gray-900">
+                <tr>
+                    <th scope="col"
+                        class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                        Skill & Expertise
+                    </th>
+                    <th scope="col"
+                        class="py-3.5 pl-3 pr-4 text-sm font-semibold text-gray-900 sm:pr-0 text-center">
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="summary_bounty_table">
+                <tr class="border-b border-gray-200">
+                    <td class="max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0">
+                        <div class="font-medium text-gray-900"></div>
+                    </td>
+                    <td class="py-5 pl-3 pr-4 text-sm text-gray-500 sm:pr-0 text-center"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row"
+                        class="hidden pl-4 pr-3 pt-6 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">
+                        Total
+                    </th>
+                    <td class="pl-3 pr-4 pt-6 text-sm text-gray-500 sm:pr-0 text-center" id="summary_total_points"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

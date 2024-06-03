@@ -1,0 +1,137 @@
+{% extends 'security/base_security.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block media %}
+{{ wizard.form.media }}
+{% endblock %}
+
+{% block content %}
+
+{% set current_step = wizard.steps.current|int %}
+
+{% include 'logo.html' %}
+
+<div class="flex flex-col-reverse lg:flex-row grow items-center justify-center py-8 lg:py-14 sm:gap-8">
+    <div class="w-full lg:w-1/2">
+        <div class="flex items-center justify-center w-full h-[320px] lg:h-auto">
+            <img src="{{ static('images/sign-up-preview.png') }}"
+                class="w-full h-full object-cover lg:object-contain object-center sm:rounded-lg"
+                alt="Sign Up Preview Image">
+        </div>
+    </div>
+    <div class="w-full lg:w-1/2">
+        <div class="flex flex-col sm:mx-auto w-full sm:max-w-[512px]">
+            <div class="bg-white px-6 py-8 sm:shadow sm:rounded-lg sm:px-8 min-h-[512px]">
+                <div class="text-xl text-black/[0.85] inline-flex font-semibold mb-6">
+                    Create your Free Account
+                </div>
+                <div class="mb-10 flex relative items-start">
+                    <div class="{% if current_step == 0 %}active{% endif %} flex items-center">
+                        <div class="flex flex-col items-center justify-center space-y-1.5 text-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full">
+                                {% if current_step == 0 %}
+                                <div
+                                    class="w-full h-full rounded-full text-white bg-[#1890FF] flex items-center justify-center text-sm">
+                                    1
+                                </div>
+                                {% endif %}
+                                {% if current_step < 0 %}
+                                <div
+                                    class="w-full rounded-full h-full border-2 border-solid border-[#bfbfbf] text-[#bfbfbf] text-sm flex items-center justify-center">
+                                    1
+                                </div>
+                                {% endif %}
+                                {% if current_step > 0 %}
+                                <div
+                                    class="w-full h-full rounded-full border-2 border-solid border-[#1890FF] flex items-center justify-center">
+                                    <img src="{{ static('images/check.svg') }}" alt="Check Icon">
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="text-xs text-[#1890FF] whitespace-nowrap">
+                                Name & Email
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="{% if current_step > 0 %}bg-[#1890FF] {% else %}bg-[#f5f5f5]{% endif %} h-0.5 w-full w-full mx-1 sm:mx-4 relative top-4 -mt-px inline-flex">
+                    </div>
+                    <div class="{% if current_step == 1 %}active{% endif %} flex items-center">
+                        <div class="flex flex-col items-center justify-center space-y-1.5 text-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full">
+                                {% if current_step == 1 %}
+                                <div
+                                    class="w-full h-full rounded-full text-white bg-[#1890FF] flex items-center justify-center text-sm">
+                                    2
+                                </div>
+                                {% endif %}
+                                {% if current_step < 1 %}
+                                <div
+                                    class="w-full h-full rounded-full border-2 border-solid border-[#bfbfbf] text-[#bfbfbf] text-sm flex items-center justify-center">
+                                    2
+                                </div>
+                                {% endif %}
+                                {% if current_step > 1 %}
+                                <div
+                                    class="w-full h-full rounded-full border-2 border-solid border-[#1890FF] flex items-center justify-center">
+                                    <img src="{{ static('images/check.svg') }}" alt="Check Icon">
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div
+                                class="{% if current_step >= 1 %}text-[#1890FF]{% else %}text-[#bfbfbf]{% endif %} text-xs whitespace-nowrap">
+                                Email </br>Verification
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="{% if current_step > 1 %}bg-[#1890FF] {% else %}bg-[#f5f5f5]{% endif %} h-0.5 w-full w-full mx-1 sm:mx-4 relative top-4 -mt-px inline-flex">
+                    </div>
+                    <div class="{% if current_step == 2 %}active{% endif %} flex items-center">
+                        <div class="flex flex-col items-center justify-center space-y-1.5 text-center">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-full">
+                                {% if current_step < 2 %}
+                                <div
+                                    class="empty w-full h-full rounded-full border-2 border-solid border-[#bfbfbf] text-[#bfbfbf] text-sm flex items-center justify-center">
+                                    3
+                                </div>
+                                {% endif %}
+                                {% if current_step == 2 %}
+                                <div
+                                    class="filled w-full h-full rounded-full text-white bg-[#1890FF] flex items-center justify-center text-sm">
+                                    3
+                                </div>
+                                {% endif %}
+                                {% if current_step > 2 %}
+                                <div
+                                    class="done w-full h-full rounded-full border-2 border-solid border-[#1890FF] flex items-center justify-center">
+                                    <img src="{{ static('images/check.svg') }}" alt="Check Icon">
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div
+                                class="{% if current_step >= 2 %}text-[#1890FF]{% else %}text-[#bfbfbf]{% endif %} text-xs whitespace-nowrap">
+                                Username </br>& Password
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'security/sign_up/sign_up_form.html' %}
+
+                <p class="mt-6 text-left text-sm text-gray-500">
+                    Already Have an Account?
+                    <a href="{{ url('sign_in') }}"
+                        class="font-medium leading-6 text-[#1890ff] transition-all hover:text-text-[#1890ff] hover:underline underline-offset-2">Sign
+                        In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{{ static('scripts/event-listeners.js') }}"></script>
+{% endblock %}

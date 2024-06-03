@@ -1,0 +1,70 @@
+{% extends 'product_management/product_detail_base.html' %}
+
+{% macro generate_summary_structure(data, depth = 0, displayed_items=[]) %}
+{% for item in data %}
+
+{% set descendants = item.get_descendants() %}
+
+{% if depth == 0 %}
+<div class="sm:px-4 md:px-0 py-5 lg:py-6 sm:grid sm:grid-cols-3 sm:gap-4">
+    <dt class="text-sm font-medium leading-6 text-gray-900">
+        <span class="flex flex-col">
+            <span class="flex flex-wrap items-center font-semibold">
+                <a href="{{ url('capability_detail', args=(product_slug, item.id)) }}"
+                    class="mr-2">{{ item.name }}</a>
+            </span>
+            <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+                {{ item.description }}
+            </span>
+        </span>
+    </dt>
+    <dd class="mt-1 flex text-sm leading-6 text-gray-700 font-normal sm:col-span-2 sm:mt-0 ">
+        <span class="flex flex-col grow nested-item__wrap">
+            {{ generate_summary_structure(descendants, depth + 1) }}
+        </span>
+    </dd>
+</div>
+{% endif %}
+
+{% if not depth == 0 %}
+{% if item not in displayed_items %}
+{% set _ = displayed_items.append(item) %}
+<div class="nested-item flex flex-col {% if depth > 1 %}pl-4 lg:pl-8{% endif %}">
+    <div class="nested-item__label flex items-start py-1.5 border-t border-solid border-gray-100">
+
+        <button type="button"
+            class="{% if not descendants|length %}opacity-0 pointer-events-none{% endif %} nested-item__label-icon h-[22px] w-4 mr-1 flex items-center justify-center shrink-0 rounded-full focus:outline-none focus:ring-0 p-0.5 appearance-none">
+            <div class="w-full h-4 text-[#1890FF] category-close-btn">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 495 495" xml:space="preserve">
+                    <polygon class="fill-[#1890FF]"
+                        points="495,227.5 267.5,227.5 267.5,0 227.5,0 227.5,227.5 0,227.5 0,267.5 227.5,267.5 227.5,495   267.5,495 267.5,267.5 495,267.5 " />
+                </svg>
+            </div>
+            <div class="w-full h-4 text-[#1890FF] category-open-btn hidden">
+                <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 495 495" xml:space="preserve">
+                    <rect class="fill-[#1890FF]" y="227.5" width="495" height="40" />
+                </svg>
+            </div>
+        </button>
+        <span class="flex flex-col">
+            <span class="flex flex-wrap items-center font-semibold">
+                <a href="{{ url('capability_detail', args=(product_slug, item.id)) }}"
+                    class="mr-2">{{ item.name }}</a>
+            </span>
+            <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+                {{ item.description }}
+            </span>
+        </span>
+    </div>
+    {% if descendants|length > 0 %}
+    <div class="nested-item__child hidden">
+        {{ generate_summary_structure(descendants, depth + 1, displayed_items) }}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endmacro %}

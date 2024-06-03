@@ -1,0 +1,38 @@
+<table class="min-w-full divide-y divide-gray-300">
+    <thead class="bg-gray-50">
+        <tr>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Challenge
+            </th>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Bounty
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Assignee
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                <span class="sr-only">Visit</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 bg-white">
+        {% for bounty_delivery in bounty_deliveries %}
+        <tr>
+            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                <a href="{{ bounty_delivery.bounty_claim.get_challenge_detail_url() }}" class="font-medium text-blue-600
+                    hover:underline">{{ bounty_delivery.bounty_claim.bounty.challenge }}</a>
+            </td>
+            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                <a href="{{ bounty_delivery.bounty_claim.get_challenge_detail_url() }}" class="font-medium text-blue-600
+                    hover:underline">{{ bounty_delivery.bounty_claim.bounty }}</a>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                <a href="{{ bounty_delivery.person.get_absolute_url() }}"
+                    class="font-medium text-blue-600 hover:underline">{{ bounty_delivery.person }}</a>
+            </td>
+            <td>
+                <a href="{{ bounty_delivery.get_absolute_url() }}"
+                    class="font-medium text-sm text-blue-600 hover:underline">See
+                    the work</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

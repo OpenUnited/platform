@@ -1,7 +1,7 @@
 MANAGE = python manage.py
 
 help:
-	@echo "help               -- Print this help showing all commands.         "                     
+	@echo "help               -- Print this help showing all commands.         "
 	@echo "run                -- run the django development server             "
 	@echo "test               -- run all tests                                 "
 	@echo "cov                -- run all tests with coverage                   "
@@ -12,7 +12,7 @@ help:
 	@echo "setup              -- load all the data from the fixture to the app "
 	@echo "dumpdata           -- Backup the data from the running django app   "
 	@echo "tailwindcss        -- Generate Tailwindcss 						   "
-	
+
 
 rmpyc:
 	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs sudo rm -rf
@@ -28,22 +28,22 @@ seed:
 	${MANAGE} loaddata canopy commerce engagement product_management security talent
 
 setup:
-	python reset_database.py 
+	python reset_database.py
 	make migrate
 	${MANAGE} loaddata canopy commerce engagement product_management security talent
 	make test
 dumpdata:
-	${MANAGE} dumpdata canopy --output canopy/fixtures/canopy.json
-	${MANAGE} dumpdata commerce --output commerce/fixtures/commerce.json
-	${MANAGE} dumpdata engagement --output engagement/fixtures/engagement.json
-	${MANAGE} dumpdata product_management --output product_management/fixtures/product_management.json
-	${MANAGE} dumpdata security --output security/fixtures/security.json
-	${MANAGE} dumpdata talent --output talent/fixtures/talent.json
+	${MANAGE} dumpdata canopy --output apps/canopy/fixtures/canopy.json
+	${MANAGE} dumpdata commerce --output apps/commerce/fixtures/commerce.json
+	${MANAGE} dumpdata engagement --output apps/engagement/fixtures/engagement.json
+	${MANAGE} dumpdata product_management --output apps/product_management/fixtures/product_management.json
+	${MANAGE} dumpdata security --output apps/security/fixtures/security.json
+	${MANAGE} dumpdata talent --output apps/talent/fixtures/talent.json
 	make format_fixtures
 
 admin:
 	$(MANAGE) createsuperuser --username=admin --email=admin@gmail.com
-	
+
 test:
 	pytest .
 
@@ -51,12 +51,12 @@ tailwindcss:
 	tailwindcss -o ./static/styles/tailwind.css --minify
 
 format_fixtures:
-	jsonformat 	canopy/fixtures/canopy.json 
-	jsonformat	commerce/fixtures/commerce.json 
-	jsonformat	engagement/fixtures/engagement.json 
-	jsonformat	product_management/fixtures/product_management.json 
-	jsonformat	security/fixtures/security.json 
-	jsonformat	talent/fixtures/talent.json
+	jsonformat 	apps/canopy/fixtures/canopy.json
+	jsonformat	apps/commerce/fixtures/commerce.json
+	jsonformat	apps/engagement/fixtures/engagement.json
+	jsonformat	apps/product_management/fixtures/product_management.json
+	jsonformat	apps/security/fixtures/security.json
+	jsonformat	apps/talent/fixtures/talent.json
 
 cov:
 	pytest --cov
