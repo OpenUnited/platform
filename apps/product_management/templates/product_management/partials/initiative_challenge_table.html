@@ -10,7 +10,7 @@
                     {{ challenge.title }}
                 </a>
                 <div class="mt-1 text-gray-500">
-                    {{ challenge.short_description }}
+                    {{ challenge.description }}
                 </div>
             </div>
 
@@ -18,7 +18,7 @@
                 <div class="text-sm font-medium text-black">
                     <strong> Status </strong>
                     <div class="text-gray-500">
-                        {{ challenge.status() }}
+                        {{ challenge.status }}
                     </div>
                 </div>
             </div>
@@ -27,8 +27,8 @@
                 <div class="text-sm font-medium text-black">
                     <strong> Bounties </strong>
                     <div class="text-gray-500">
-                        {{ challenge.bounty_set.all()|length }}
-                        ({{ challenge.bounty_set.filter(status=2)|length }} available)
+                        {{ challenge.bounty_set.all()|count }}
+                        ({{ challenge.bounty_set.filter(status=bounty_status.AVAILABLE)|count }} available)
                     </div>
                 </div>
             </div>

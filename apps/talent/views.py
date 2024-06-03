@@ -203,10 +203,13 @@ class TalentPortfolio(TemplateView):
         person = user.person
 
         # todo: check the statuses
-        bounty_claims = BountyClaim.objects.filter(
-            Q(status=BountyClaim.Status.COMPLETED)
-            | Q(bounty__challenge__status=Challenge.ChallengeStatus.COMPLETED)
-            | Q(bounty__status=Bounty.BountyStatus.CLAIMED),
+        bounty_claims_completed = BountyClaim.objects.filter(
+            status=BountyClaim.Status.COMPLETED,
+            person=person,
+        ).select_related("bounty__challenge", "bounty__challenge__product")
+
+        bounty_claims_claimed = BountyClaim.objects.filter(
+            bounty__status=Bounty.BountyStatus.CLAIMED,
             person=person,
         ).select_related("bounty__challenge", "bounty__challenge__product")
 
@@ -227,7 +230,8 @@ class TalentPortfolio(TemplateView):
             "person_linkedin_link": global_utils.get_path_from_url(person.linkedin_link, True),
             "person_twitter_link": global_utils.get_path_from_url(person.twitter_link, True),
             "person_skills": person.skills.all().select_related("skill"),
-            "bounty_claims": bounty_claims,
+            "bounty_claims_claimed": bounty_claims_claimed,
+            "bounty_claims_completed": bounty_claims_completed,
             "FeedbackService": FeedbackService,
             "received_feedbacks": received_feedbacks,
             "form": FeedbackForm(),
