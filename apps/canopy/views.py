@@ -55,6 +55,8 @@ class ProductTreeView(generic.CreateView):
             "sharable_link": f"{domain}/product-tree?key={product_tree.pk}",
             "tree_data": [common_utils.serialize_tree(product_tree.product_areas.first())],
             "show_share_button": show_share_button,
+            "margin_left": int(self.request.GET.get("margin_left", 0)),
+            "depth": int(self.request.GET.get("depth", 0)),
         }
 
 
@@ -67,9 +69,10 @@ def add_node(request, parent_id):
             return JsonResponse({"error": "Something went wrong."}, status=400)
 
         context["product_area"] = product_area.add_child(**form.cleaned_data)
-        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
         context["parent"] = product_area
         context["depth"] = int(request.POST.get("depth", 0))
+        context["margin_left"] = int(request.POST.get("margin_left", 0))
+        context["can_modify_product"] = True
         return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
 
     context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
