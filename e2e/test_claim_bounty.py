@@ -1,150 +1,77 @@
 from model_bakery import baker
-from PIL import Image as ImageFile
 from e2e.base import BaseE2ETest
-from e2e.pages.login_page import LoginPage
-from termcolor import cprint
-from product_management.models import *
+from e2e.pages.challenge_details_page import ChallengeDetailPage
 from talent.models import BountyClaim
-
-# from datetime import datetime
 from django.utils import timezone
-import tempfile
+from datetime import datetime, timedelta
 
 
 class TestClaimBounty(BaseE2ETest):
     def setUp(self):
         super().setUp()
-        self.page = self.browser.new_page()
-        cprint(f"\n\n{self.page=}", "green")
-        import string
-        import random
-
-        letters = string.ascii_letters + string.digits + string.punctuation
-        self.username = "".join(random.choice(letters) for i in range(10))
-
-        self.user_one = baker.make(
-            "security.User",
-            username=self.username,
-            password="12345",
-            first_name="sac",
-            last_name="tom",
-        )
-        self.user_one.set_password("12345")
-        self.user_one.save()
-        self.person = baker.make("talent.Person", user=self.user_one, photo="tmp_file", full_name="asdsa")
         now = timezone.now()
-
-        product = baker.make(
+        self.product = baker.make(
             "product_management.Product",
-            name="sample",
-            slug="sample",
+            name="PetConnect",
+            slug="petconnect",
             created_at=now,
             updated_at=now,
         )
-        self.product = product
-        product_tree = baker.make("product_management.ProductTree", product=product, name="sample tree")
-        product_area = baker.make("product_management.ProductArea", product_tree=product_tree, name="sample area")
-        initiative = baker.make("product_management.Initiative", product=product, name="sample initiative")
-        challenge = baker.make(
+        product_tree = baker.make("product_management.ProductTree", product=self.product, name="PetConnect Tree")
+        product_area = baker.make("product_management.ProductArea", product_tree=product_tree, name="PetConnect Area")
+        initiative = baker.make(
+            "product_management.Initiative", product=self.product, name="PetConnect Service Integration"
+        )
+        self.challenge = baker.make(
             "product_management.Challenge",
             product_area=product_area,
             initiative=initiative,
-            product=product,
+            product=self.product,
             status="Active",
-            title="Sample challenge",
-            short_description="123",
+            title="Pet Emergency Alert System",
+            short_description="Introduce pet grooming scheduler feature.",
             priority="High",
             created_by=self.person,
         )
-        self.challenge = challenge
-        # # Now create the bounty
-        bounty = baker.make(
+        self.bounty = baker.make(
             "product_management.Bounty",
-            challenge=challenge,
-            title="first bounty",
+            challenge=self.challenge,
+            title="Pet Sitting Made Easy",
             status="Available",
-            description="eerter",
+            description="Information Systems & Networking (Python)",
         )
 
-        # print(bounty)
-        cprint(f"\n\n{bounty=}", "green")
+    def test_claim_bounty(self):
 
-        self.bounty = bounty
+        page = ChallengeDetailPage(self.page)
+        self.page.wait_for_timeout(1000)
+        self.assertEqual(BountyClaim.objects.filter(bounty=self.bounty.id).count(), 0)
 
-        qq = challenge.created_by.get_absolute_url()
-        cprint(f"\n\n{qq=}", "green")
-        qq = challenge.created_by.get_full_name()
-        cprint(f"\n\n{qq=}", "green")
+        self.page.reload()
+        challenge_detail_button = page.get_challenge_detail_button(self.product.slug, self.challenge.id)
+        challenge_detail_button.click()
+        self.page.wait_for_timeout(500)
 
-        # # self.product = baker.make("product_management.Product", username=self.username, password="12345")
-        # product_content_type = ContentType.objects.get(app_label='product_management',model='product')
-        # # self.product = Product.objects.create(content_type=product_content_type,object_id=1)
-        # # cprint(f'\n\n{self.product=}',"green")
-        # product = baker.make('product_management.Product',content_type=product_content_type,object_id=1,name="sample")
-        # initiative = baker.make('product_management.Initiative',product=product)
-        # challenge = baker.make('product_management.Challenge',initiative=initiative)
-        # baker.make('product_management.Bounty',challenge=challenge)
-        # # self.challenge = baker.make('product_management.Challenge',content_type=product_content_type,object_id=1,name="sample")
-
-        # # cprint(f'\n\n{self.product=}',"green")
-
-    def test_login123(self):
-        login_page = LoginPage(self.page)
-        login_page.navigate(f"{self.live_server_url}{login_page.url}")
-        login_page.login(self.username, "12345")
-
-        cprint(f"\n\n{self.product.name=}", "green")
-
-        href_value = f"/{self.product.name}/challenge/{self.challenge.id}"
-        cprint(f"\n\n{href_value=}", "green")
-        self.page.click(f'a[href="{href_value}"]')
-
-        href_value = f"/bounty-claim/{self.bounty.id}/"
-
-        self.page.click(f'button[hx-post="{href_value}"]')
-
-        # expected_submission_date
+        bounty_claim_button = page.get_bounty_claim_button(self.bounty.id)
+        bounty_claim_button.click()
 
         self.page.wait_for_timeout(500)
 
-        self.page.locator("#expected_submission_date").type("12")
-        self.page.locator("#expected_submission_date").type("12")
-        self.page.locator("#expected_submission_date").type("2025")
 
-        self.page.check("#term_checkbox")
+        future_date = datetime.today() + timedelta(days=10)
+        day = future_date.strftime("%d")
+        month = future_date.strftime("%m")
+        year = future_date.strftime("%Y")
 
-        # term_checkbox
+        page.expected_submission_date.type(day)
+        page.expected_submission_date.type(month)
+        page.expected_submission_date.type(year)    
+        page.terms_check_box.check()
 
-        # ajs-button ajs-ok
+        page.request_claim_button.click()
 
-        res = BountyClaim.objects.all()
-        cprint(f"\n\n{res=}", "green")
-
-        self.page.click(f'button[class="ajs-button ajs-ok"]')
-
-        bounty_claim = BountyClaim.objects.first()
-        bounty_claim_id = bounty_claim.id
-        bounty_claim_status = bounty_claim.status
-        self.assertTrue(bounty_claim.status, BountyClaim.Status.REQUESTED)
-
-        self.page.click(f"#dropdownHoverButton_{self.bounty.id}")
-
-        cprint(f"\n\n{bounty_claim_id=}", "red")
-
-        # href_value = f'/bounty_claim/delete/{bounty_claim_id}/'
-
-        self.page.wait_for_timeout(500)
-
-        # self.page.click(f'a[href="{href_value}"]')
-        # self.page.click(f'a[href="{href_value}"]')
-
-        self.page.click(f'a[hx-post="/bounty_claim/delete/{bounty_claim_id}"]')
-
-        cprint(f"\n\n{bounty_claim_status=}", "green")
-
-        from time import sleep
-
-        #
-        sleep(5000)
-        # self.assertTrue(self.page.is_visible("#navbar-menu-button"))
-        # self.assertTrue(self.page.is_visible(f"#dropdownHoverButton_{self.bounty.id}"))
+        
+        self.page.wait_for_timeout(1000)
+        
+        bounty_claim = BountyClaim.objects.get(bounty=self.bounty.id)
+        self.assertEqual(bounty_claim.status, BountyClaim.Status.REQUESTED)
