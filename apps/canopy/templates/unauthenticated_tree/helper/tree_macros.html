@@ -19,7 +19,7 @@
                             </button>
                         {% endif %}
 
-                        <a class="flex justify-between" href="">
+                        <span class="flex justify-between" href="#">
                             <span class="w-full">
                                 {% if  can_modify_product %}
                                     {% include "product_management/tree_helper/drag.html" %}
@@ -31,7 +31,7 @@
                             {% with child=child %}
                             {% include "product_management/tree_helper/video.html" %}
                         {% endwith %}
-                        </a>
+                        </button>
                     </div>
                     {% with id=child.id, depth=depth, can_modify_product=can_modify_product%}
                         {% include "unauthenticated_tree/helper/action_buttons.html" %}
