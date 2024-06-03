@@ -41,6 +41,7 @@ BUILTIN_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
 ]
 
 INSTALLED_APPS = BUILTIN_APPS + ACTUAL_APPS + THIRD_PARTIES
@@ -255,3 +256,5 @@ if os.environ.get("SENTRY_DSN"):
         # of transactions for performance monitoring.
         traces_sample_rate=1.0,
     )
+
+SITE_ID = 1
