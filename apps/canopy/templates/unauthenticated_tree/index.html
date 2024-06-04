@@ -5,23 +5,57 @@
 
 <div class="flex justify-center">
     <div id="product_tree" class="w-full sm:w-full md:w-3/5 flex flex-col">
-        <h3 class="text-xl font-bold mb-3 text-blue-500 mb-2">{{product_tree.name}}</h3>
-        <div class="flex justify-between w-full mb-2">
+        <form id="shareable_product_tree" class="hidden" hx-post="{{url('canopy:update_product_tree',args=(product_tree.pk,) )}}" hx-swap="none">
+            <div class="flex">
+                <div class="relative w-3/5">
+                    <input type="text" name="name"  value="{{product_tree.name}}" class="block p-2.5 w-full z-20 py-1.5 px-3 h-9 p-3  text-gray-900 bg-gray-50 rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Name ..." required />
+                    <button type="submit" class="absolute top-0 end-0 px-2.5 h-full text-sm font-medium text-white bg-indigo-700 rounded-e-lg border border-indigo-700 bg-white">
+                        <i class="fa fa-check-circle text-indigo-500" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="text-red-500" id="shareable_product_tree_error"> </p>
+        </form>
+
+        <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product_tree_name">
+            <span id="shareable_product_name"> {{product_tree.name}} </span>
+            <button class="ml-2" onclick="editTreeName(event)"><i class="fa-solid fa-pen-to-square text-indigo-500"></i></button>
+        </h3>
+
+        <div class="flex justify-between w-full mb-2 mt-2">
             {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
             {% include "unauthenticated_tree/helper/tooltip.html" %}
         </div>
-      <ul ondrop="drop(event)" class="pl-0" id="">
-          {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
-      </ul>
+        <ul ondrop="drop(event)" class="pl-0" id="">
+            {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
+        </ul>
 
         <!-- Container to hold the new form -->
         <div id="form_container" class="w-full"></div>
     </div>
-  </div>
+</div>
 
 
 
 <script>
+    document.addEventListener("htmx:afterRequest", function(event) {
+        if (event.target.id=="shareable_product_tree"){
+            if (event.detail.successful){
+                document.getElementById("shareable_product_tree").classList.add("hidden")
+                console.log(JSON.parse(event.detail.xhr.response).name)
+                document.getElementById("shareable_product_name").innerHTML = JSON.parse(event.detail.xhr.response).name
+                document.getElementById("shareable_product_tree_name").classList.remove("hidden")
+            }
+            else{
+                document.getElementById("shareable_product_tree_error").innerHTML = JSON.parse(event.detail.xhr.response).error
+            }
+        }
+    });
+
+    function editTreeName(event){
+        document.getElementById('shareable_product_tree').classList.remove('hidden')
+        document.getElementById('shareable_product_tree_name').classList.add('hidden')
+    }
     function copyReferralLink() {
         const copyText = document.getElementById("sharable_link");
         navigator.clipboard.writeText(copyText.value);

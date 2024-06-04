@@ -19,11 +19,12 @@ def chapter1(request):
 
 class ProductTreeView(generic.CreateView):
     template_name = "unauthenticated_tree/index.html"
+    model = mgt.ProductTree
+    fields = ["name"]
 
     def get_context_data(self, **kwargs):
         if key := self.request.GET.get("key", None):
             product_tree = get_object_or_404(mgt.ProductTree, pk=key)
-            can_modify_product = False
             show_share_button = False
 
         else:
@@ -41,23 +42,35 @@ class ProductTreeView(generic.CreateView):
                     session_id=session_id,
                 )
                 mgt.ProductArea.add_root(
-                    name="Tree name",
-                    description="Tree description",
+                    name="Product Area",
+                    description="Description of Product Area",
                     product_tree=product_tree,
                 )
-            can_modify_product = True
             show_share_button = True
 
         domain = f"{self.request.scheme}://{Site.objects.get_current().domain}"
         return {
-            "can_modify_product": can_modify_product,
+            "can_modify_product": True,
             "product_tree": product_tree,
-            "sharable_link": f"{domain}/product-tree?key={product_tree.pk}",
+            "sharable_link": f"{domain}/product-tree/?key={product_tree.pk}",
             "tree_data": [common_utils.serialize_tree(node) for node in product_tree.product_areas.all()],
             "show_share_button": show_share_button,
             "margin_left": int(self.request.GET.get("margin_left", 0)),
             "depth": int(self.request.GET.get("depth", 0)),
         }
+
+
+class ProductTreeUpdateView(generic.UpdateView):
+    template_name = "unauthenticated_tree/index.html"
+    model = mgt.ProductTree
+    fields = ["name"]
+
+    def form_valid(self, form):
+        obj = form.save()
+        return JsonResponse({"name": obj.name})
+
+    def form_invalid(self, form):
+        return JsonResponse({"error": "This name isn't available"}, status=400)
 
 
 def add_root_node(request, tree_id):
@@ -147,4 +160,4 @@ def update_node(request, pk):
             "product_area": product_area,
             "can_modify_product": True,
         }
-    return render(request, "unauthenticated_tree/helper/update_node_partial.html", context)
+        return render(request, "unauthenticated_tree/helper/update_node_partial.html", context)
