@@ -1,6 +1,5 @@
 import uuid
 
-from django.contrib.sites.models import Site
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
@@ -48,7 +47,7 @@ class ProductTreeView(generic.CreateView):
                 )
             show_share_button = True
 
-        domain = f"{self.request.scheme}://{Site.objects.get_current().domain}"
+        domain = f"{self.request.scheme}://{self.request.get_host()}"
         return {
             "can_modify_product": True,
             "product_tree": product_tree,
