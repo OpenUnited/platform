@@ -3,20 +3,19 @@
 
 {% block content %}
 
-<div class="flex justify-center p-4">
-    <div id="product_tree"
-      class="w-full sm:w-full md:w-3/5 flex flex-col gap-4 tree_container">
-      <h3 class="text-xl font-bold mb-3 text-blue-500 mb-2">{{product_tree.name}}</h3>
-
-      <div class="flex justify-between w-full">
-          {% include "product_management/tree_helper/search_component.html" %}
-          {% if show_share_button %}
-              {% include "unauthenticated_tree/helper/tooltip.html" %}
-          {% endif %}
-      </div>
-      <ul ondrop="drop(event)" class="pl-0">
+<div class="flex justify-center">
+    <div id="product_tree" class="w-full sm:w-full md:w-3/5 flex flex-col">
+        <h3 class="text-xl font-bold mb-3 text-blue-500 mb-2">{{product_tree.name}}</h3>
+        <div class="flex justify-between w-full mb-2">
+            {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
+            {% include "unauthenticated_tree/helper/tooltip.html" %}
+        </div>
+      <ul ondrop="drop(event)" class="pl-0" id="">
           {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
       </ul>
+
+        <!-- Container to hold the new form -->
+        <div id="form_container" class="w-full"></div>
     </div>
   </div>
 

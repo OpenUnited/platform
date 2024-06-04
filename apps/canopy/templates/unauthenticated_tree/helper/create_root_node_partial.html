@@ -1,19 +1,17 @@
-{% if not parent_id %}
-<ul ondrop="drop(event)" class="pl-0"> {% endif %}
-    <li draggable="false" id="li_node_{{product_area.id}}" class="ml-{{margin_left}}">
-        <form method="post" hx-post="{{ url('canopy:add_node', args=(product_area.id,) ) }}">
+<ul ondrop="drop(event)" class="pl-0">
+    <li draggable="false" id="li_node_{{id}}" class="ml-0">
+        <form method="post" hx-post="{{ url('canopy:add_node_root', args=(tree_id,),) }}"
+            hx-target="#li_node_{{id}}">
             <div class="p-2 pl-2 pr-2 mt-1 block border border-gray-300 rounded-md text-blue-500 mb-2">
               <div class="w-full mb-2">
                 <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Name</label>
-                <input type="text" name="name" id="name" class="bg-gray-50 border rounded-lg focus:ring-gray-500 block w-full text-black" placeholder="Name..." required />
+                <input type="text" name="name" id="name" class="bg-gray-50 border rounded-lg focus:ring-blue-500 block w-full text-black" placeholder="Name..." required />
 
-                <input type="hidden" name="parent_id" value="{{ parent_id }}"/>
-                <input type="hidden" name="depth" value="{{ depth }}"/>
               </div>
 
               <div>
                 <label for="description" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Description</label>
-                <textarea id="description" name="description" rows="4" class="bg-gray-50  border rounded-lg focus:ring-blue-500 block w-full p-2.5 text-black" placeholder="Write your description here..." required></textarea>
+                <textarea id="description" name="description" rows="4" class="bg-gray-50 border rounded-lg focus:ring-blue-500 block w-full p-2.5 text-black" placeholder="Write your description here..." required></textarea>
               </div>
 
               <div class="flex justify-end mr-2 mt-2 mb-2">
@@ -24,4 +22,4 @@
             </div>
         </form>
     </li>
-{% if not parent_id %} </ul> {% endif %}
+</ul>
