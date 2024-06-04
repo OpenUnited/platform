@@ -21,8 +21,8 @@
                     </a>
                 </a>
             </div>
-            {% with id=product_area.id %}
-                {% include "product_management/tree_helper/action_buttons.html" %}
+            {% with id=product_area.id, depth=depth, can_modify_product=can_modify_product%}
+                {% include "unauthenticated_tree/helper/action_buttons.html" %}
             {% endwith %}
         </div>
 
