@@ -1,0 +1,60 @@
+{% macro generate_product_area_tree(node, can_modify_product, depth=1) %}
+{% for child in node %}
+  <li
+      ondragstart="drag(event)"
+      ondragover="allowDrop(event)"
+      id="li_node_{{child.id}}"
+      class="w-full list-none"
+      data-id="{{child.id}}"
+      {% if can_modify_product %}
+      draggable="true"
+      {% endif %}
+    >
+            <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
+                <div class="flex justify-between w-full gap-2 group/item inline-flex">
+                    <div class="flex justify-start">
+                        {% if child["children"] %}
+                            <button onclick="toggleVisibility(event)" class="mr-2">
+                                <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
+
+                        <span class="flex justify-between" href="#">
+                            <span class="w-full">
+                                {% if  can_modify_product %}
+                                    {% include "product_management/tree_helper/drag.html" %}
+                                {% endif %}
+                                {{ child.name }}
+
+
+                            </span>
+                            {% with child=child %}
+                            {% include "product_management/tree_helper/video.html" %}
+                        {% endwith %}
+                        </button>
+                    </div>
+                    {% with id=child.id, depth=depth, can_modify_product=can_modify_product%}
+                        {% include "unauthenticated_tree/helper/action_buttons.html" %}
+                    {% endwith %}
+                </div>
+
+                <div class="description view-node-group text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+                    {{child.description}}
+                </div>
+            </div>
+
+            <form id="drop_form_{{child.id}}" method="post" hx-post="{{ url('canopy:update_node', args=(child.id,) ) }}"  hx-swap="none">
+                <input type="hidden" name="parent_id" id="drop_parent_{{child.id}}">
+                <input type="hidden" name="name" value="{{child.name}}">
+                <input type="hidden" name="has_dropped" value="true">
+                <button type="submit" class="hidden" id="drop_submit_{{child.id}}"></button>
+            </form>
+
+        {% if child["children"] %}
+            <ul ondrop="drop(event)" class="hidden pl-{{depth * 4}}">
+                {{ generate_product_area_tree(child["children"], can_modify_product, depth + 1)}}
+            </ul>
+        {% endif %}
+        </li>
+    {% endfor %}
+{% endmacro %}

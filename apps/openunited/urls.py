@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 
+from apps.canopy.views import ProductTreeView
+
 from . import views
 
 handler404 = views.custom_404_view
@@ -43,6 +45,7 @@ urlpatterns += [
     path("", include("apps.product_management.urls")),
     path("", include("social_django.urls", namespace="social")),
     path("tinymce/", include("tinymce.urls")),
+    path("product-tree", ProductTreeView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

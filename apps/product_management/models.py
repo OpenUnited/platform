@@ -1,5 +1,3 @@
-import uuid
-
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -31,14 +29,25 @@ class Tag(TimeStampMixin):
         return self.name
 
 
-class ProductTree(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255)
+class ProductTree(common.AbstractModel):
+    name = models.CharField(max_length=255, unique=True)
+    session_id = models.CharField(max_length=255, blank=True, null=True)
     product = models.ForeignKey(
         "product_management.Product",
         related_name="product_trees",
+        blank=True,
+        null=True,
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def next_product_name(cls):
+        tree_first = cls.objects.first()
+        next_number = int(tree_first.name.split()[-1]) + 1 if tree_first else 1
+        return f"Product tree {next_number}"
 
 
 class ProductArea(MP_Node, common.AttachmentAbstract):
