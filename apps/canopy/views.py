@@ -1,4 +1,12 @@
-from django.shortcuts import render
+import uuid
+
+from django.contrib.sites.models import Site
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.views import generic
+
+from apps.common import utils as common_utils
+from apps.product_management import forms as mgt_forms, models as mgt
 
 
 def introduction(request):
@@ -7,3 +15,115 @@ def introduction(request):
 
 def chapter1(request):
     return render(request, "chapter-1.html")
+
+
+class ProductTreeView(generic.CreateView):
+    template_name = "unauthenticated_tree/index.html"
+
+    def get_context_data(self, **kwargs):
+        if key := self.request.GET.get("key", None):
+            product_tree = get_object_or_404(mgt.ProductTree, pk=key)
+            can_modify_product = False
+            show_share_button = False
+
+        else:
+            if "tree_session_id" not in self.request.session:
+                session_id = str(uuid.uuid4())
+                self.request.session["tree_session_id"] = session_id
+            else:
+                session_id = self.request.session["tree_session_id"]
+
+            product_tree = mgt.ProductTree.objects.filter(session_id=session_id).first()
+
+            if not product_tree:
+                product_tree = mgt.ProductTree.objects.create(
+                    name=mgt.ProductTree.next_product_name(),
+                    session_id=session_id,
+                )
+                mgt.ProductArea.add_root(
+                    name="Tree name",
+                    description="Tree description",
+                    product_tree=product_tree,
+                )
+            can_modify_product = True
+            show_share_button = True
+
+        domain = f"{self.request.scheme}://{Site.objects.get_current().domain}"
+        return {
+            "can_modify_product": can_modify_product,
+            "product_tree": product_tree,
+            "sharable_link": f"{domain}/product-tree?key={product_tree.pk}",
+            "tree_data": [common_utils.serialize_tree(product_tree.product_areas.first())],
+            "show_share_button": show_share_button,
+            "margin_left": int(self.request.GET.get("margin_left", 0)),
+            "depth": int(self.request.GET.get("depth", 0)),
+        }
+
+
+def add_node(request, parent_id):
+    product_area = mgt.ProductArea.objects.get(pk=parent_id)
+    context = {}
+    if request.method == "POST":
+        form = mgt_forms.ProductAreaForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({"error": "Something went wrong."}, status=400)
+
+        context["product_area"] = product_area.add_child(**form.cleaned_data)
+        context["parent"] = product_area
+        context["depth"] = int(request.POST.get("depth", 0))
+        context["margin_left"] = int(request.POST.get("margin_left", 0))
+        context["can_modify_product"] = True
+        return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
+
+    context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
+    context["depth"] = int(request.GET.get("depth", 0))
+    context["parent_id"] = product_area.id
+    context["product_area"] = product_area
+    context["can_modify_product"] = True
+    return render(request, "unauthenticated_tree/helper/create_node_partial.html", context)
+
+
+def delete_node(request, pk):
+    product_area = mgt.ProductArea.objects.get(pk=pk)
+    if product_area.numchild > 0:
+        return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
+    mgt.ProductArea.objects.filter(pk=pk).delete()
+    return JsonResponse({"message:": "The node has deleted successfully"}, status=204)
+
+
+def update_node(request, pk):
+    product_area = mgt.ProductArea.objects.get(pk=pk)
+    if request.method == "POST":
+        form = mgt_forms.ProductAreaForm(request.POST)
+        has_dropped = bool(request.POST.get("has_dropped", False))
+        parent_id = request.POST.get("parent_id")
+
+        has_cancelled = bool(request.POST.get("cancelled", False))
+        if not has_cancelled and has_dropped and parent_id:
+            parent = mgt.ProductArea.objects.get(pk=parent_id)
+            product_area.move(parent, "last-child")
+            return JsonResponse({})
+
+        if not has_cancelled and form.is_valid():
+            product_area.name = form.cleaned_data["name"]
+            product_area.description = form.cleaned_data["description"]
+            product_area.save()
+
+        context = {
+            "product_area": product_area,
+            "parent_id": int(request.POST.get("parent_id", 0)),
+            "descendants": common_utils.serialize_tree(product_area)["children"],
+            "depth": int(request.POST.get("depth", 0)),
+            "can_modify_product": True,
+        }
+        return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
+
+    else:
+        context = {
+            "margin_left": int(request.GET.get("margin_left", 0)) + 4,
+            "parent_id": product_area.id,
+            "depth": int(request.GET.get("depth", 0)),
+            "product_area": product_area,
+            "can_modify_product": True,
+        }
+    return render(request, "unauthenticated_tree/helper/update_node_partial.html", context)
