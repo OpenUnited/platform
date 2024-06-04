@@ -45,7 +45,7 @@ urlpatterns += [
     path("", include("apps.product_management.urls")),
     path("", include("social_django.urls", namespace="social")),
     path("tinymce/", include("tinymce.urls")),
-    path("product-tree", ProductTreeView.as_view()),
+    path("product-tree/", ProductTreeView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
