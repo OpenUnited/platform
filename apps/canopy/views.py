@@ -53,11 +53,32 @@ class ProductTreeView(generic.CreateView):
             "can_modify_product": can_modify_product,
             "product_tree": product_tree,
             "sharable_link": f"{domain}/product-tree?key={product_tree.pk}",
-            "tree_data": [common_utils.serialize_tree(product_tree.product_areas.first())],
+            "tree_data": [common_utils.serialize_tree(node) for node in product_tree.product_areas.all()],
             "show_share_button": show_share_button,
             "margin_left": int(self.request.GET.get("margin_left", 0)),
             "depth": int(self.request.GET.get("depth", 0)),
         }
+
+
+def add_root_node(request, tree_id):
+    context = {}
+    if request.method == "POST":
+        form = mgt_forms.ProductAreaForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse({"error": "Something went wrong."}, status=400)
+
+        product_area = mgt.ProductArea.add_root(**form.cleaned_data, product_tree_id=tree_id)
+        context["product_area"] = product_area
+        context["depth"] = int(request.POST.get("depth", 0))
+        context["margin_left"] = int(request.POST.get("margin_left", 0))
+        context["can_modify_product"] = True
+        context["id"] = product_area.pk
+        return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
+
+    context["can_modify_product"] = True
+    context["tree_id"] = tree_id
+    context["id"] = str(uuid.uuid4())[:8]
+    return render(request, "unauthenticated_tree/helper/create_root_node_partial.html", context)
 
 
 def add_node(request, parent_id):
@@ -76,7 +97,7 @@ def add_node(request, parent_id):
         return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
 
     context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
-    context["depth"] = int(request.GET.get("depth", 0))
+    context["depth"] = int(request.GET.get("depth", 0)) + 1
     context["parent_id"] = product_area.id
     context["product_area"] = product_area
     context["can_modify_product"] = True

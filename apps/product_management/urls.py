@@ -159,7 +159,7 @@ urlpatterns += [
 # URL patterns for various product views
 urlpatterns += [
     path(
-        "<str:product_slug>/",
+        "product/<str:product_slug>/",
         views.ProductRedirectView.as_view(),
         name="product_detail",
     ),
