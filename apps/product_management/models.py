@@ -43,12 +43,6 @@ class ProductTree(common.AbstractModel):
     def __str__(self):
         return self.name
 
-    @classmethod
-    def next_product_name(cls):
-        tree_first = cls.objects.first()
-        next_number = int(tree_first.name.split()[-1]) + 1 if tree_first else 1
-        return f"Product tree {next_number}"
-
 
 class ProductArea(MP_Node, common.AttachmentAbstract):
     name = models.CharField(max_length=255)
