@@ -9,16 +9,14 @@
                     <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
                 </button>
 
-                <a href="{{ url('product_area_update', args=(product_slug, product_area.id,)) }}">
-                    <a class="flex justify-between" href="{{ url('product_area_update', args=(product_slug, product_area.id,)) }}">
-                        <span class="w-full">
-                            {% include "product_management/tree_helper/drag.html" %} {{ product_area.name }}
-                        </span>
+                <a class="flex justify-between" href="{{ url('canopy:update_node', args=(product_area.id,)) }}">
+                    <span class="w-full">
+                        {% include "product_management/tree_helper/drag.html" %} {{ product_area.name }}
+                    </span>
 
-                        {% with child=product_area %}
-                            {% include "product_management/tree_helper/video.html" %}
-                        {% endwith %}
-                    </a>
+                    {% with child=product_area %}
+                        {% include "product_management/tree_helper/video.html" %}
+                    {% endwith %}
                 </a>
             </div>
             {% with id=product_area.id, depth=depth, can_modify_product=can_modify_product%}
