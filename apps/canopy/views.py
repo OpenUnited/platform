@@ -1,7 +1,8 @@
 import uuid
 
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views import generic
 
 from apps.canopy import utils
@@ -68,6 +69,11 @@ class ProductTreeUpdateView(generic.UpdateView):
 
     def form_invalid(self, form):
         return JsonResponse({"error": "This name isn't available"}, status=400)
+
+
+def reset_tree(request):
+    request.session.pop("tree_session_id", None)
+    return redirect(reverse("shareable_product_tree"))
 
 
 def add_root_node(request, tree_id):
