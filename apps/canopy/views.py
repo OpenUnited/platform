@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
 
+from apps.canopy import utils
 from apps.common import utils as common_utils
 from apps.product_management import forms as mgt_forms, models as mgt
 
@@ -36,10 +37,7 @@ class ProductTreeView(generic.CreateView):
             product_tree = mgt.ProductTree.objects.filter(session_id=session_id).first()
 
             if not product_tree:
-                product_tree = mgt.ProductTree.objects.create(
-                    name=mgt.ProductTree.next_product_name(),
-                    session_id=session_id,
-                )
+                product_tree = mgt.ProductTree.objects.create(name=utils.generate_unique_name(), session_id=session_id)
                 mgt.ProductArea.add_root(
                     name="Product Area",
                     description="Description of Product Area",
