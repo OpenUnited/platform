@@ -4,28 +4,33 @@
 {% block content %}
 
 <div class="flex justify-center">
-    <div id="product_tree" class="w-full sm:w-full md:w-3/5 flex flex-col">
-        <form id="shareable_product_tree" class="hidden" hx-post="{{url('canopy:update_product_tree',args=(product_tree.pk,) )}}" hx-swap="none">
-            <div class="flex">
-                <div class="relative w-3/5">
-                    <input type="text" name="name"  value="{{product_tree.name}}" class="block p-2.5 w-full z-20 py-1.5 px-3 h-9 p-3  text-gray-900 bg-gray-50 rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Name ..." required />
-                    <button type="submit" class="absolute top-0 end-0 px-2.5 h-full text-sm font-medium text-white bg-indigo-700 rounded-e-lg border border-indigo-700 bg-white">
-                        <i class="fa fa-check-circle text-indigo-500" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
-            <p class="text-red-500" id="shareable_product_tree_error"> </p>
-        </form>
+    <form id="reset_tree" action="{{ url('canopy:reset_tree') }}"></form>
 
-        <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product_tree_name">
-            <span id="shareable_product_name"> {{product_tree.name}} </span>
-            <button class="ml-2" onclick="editTreeName(event)"><i class="fa-solid fa-pen-to-square text-indigo-500"></i></button>
-        </h3>
+    <div id="product_tree" class="w-full sm:w-full md:w-3/5 flex flex-col">
+        {% include "unauthenticated_tree/helper/update_tree.html" %}
+
+        <div class="flex justify-between w-full mb-2 mt-2">
+            <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product_tree_name">
+                <span id="shareable_product_name"> {{product_tree.name}} </span>
+
+                <button onclick="editTreeName(event)" class="text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                </button>
+
+                <button onclick="resetTree(event)" class="group text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white relative">
+                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                    <span class="opacity-0 w-[160px]  bg-black text-white text-center text-xs rounded py-2 px-2 absolute z-10 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2">Create new Product Tree</span>
+                </button>
+
+            </h3>
+        </div>
+
 
         <div class="flex justify-between w-full mb-2 mt-2">
             {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
             {% include "unauthenticated_tree/helper/tooltip.html" %}
         </div>
+
         <ul ondrop="drop(event)" class="pl-0" id="">
             {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
         </ul>
@@ -51,7 +56,11 @@
             }
         }
     });
-
+    function resetTree(event){
+        showConfirm({"message":"Create a new Product Tree and lose your changes?"}).then(function(){
+            document.getElementById("reset_tree").submit()
+        })
+    }
     function editTreeName(event){
         document.getElementById('shareable_product_tree').classList.remove('hidden')
         document.getElementById('shareable_product_tree_name').classList.add('hidden')
