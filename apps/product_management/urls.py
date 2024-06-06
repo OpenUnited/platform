@@ -201,8 +201,13 @@ urlpatterns += [
     ),
     path(
         "<str:product_slug>/product-areas/<int:pk>/update",
-        views.ProductAreaDetailUpdateView.as_view(),
+        views.ProductAreaUpdateView.as_view(),
         name="product_area_update",
+    ),
+    path(
+        "<str:product_slug>/product-areas/<int:pk>/detail",
+        views.ProductAreaDetailView.as_view(),
+        name="product_area_detail",
     ),
     path(
         "<str:product_slug>/product-areas/<int:pk>/delete",
