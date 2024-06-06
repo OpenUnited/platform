@@ -126,7 +126,7 @@ def delete_node(request, pk):
     product_area = mgt.ProductArea.objects.get(pk=pk)
     if product_area.numchild > 0:
         return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
-    mgt.ProductArea.objects.filter(pk=pk).delete()
+    product_area.delete()
     return JsonResponse({"message:": "The node has deleted successfully"}, status=204)
 
 
