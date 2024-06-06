@@ -1,0 +1,22 @@
+
+{% include "product_management/product_area_detail_helper/product_area_detail/product_area_breadcrumbs.html" %}
+
+<h2 class="mt-2.5 mb-4 w-full text-neutral-800 text-xl">{{ product_area.name }}</h2>
+<div class="space-y-2.5 text-sm text-black/[0.85]">
+    <div>
+        <p>{{ product_area.description|linebreaks }}</p>
+    </div>
+</div>
+
+<div class="mt-5 w-full">
+    <h2 class="mt-1 mb-4 w-full text-neutral-800 text-xl font-semibold leading-7 text-indigo-600">Child product areas</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-4">
+        {% for child in  children %}
+            {% with index=loop.index0 %}
+                {% include "product_management/product_area_detail_helper/product_area_detail/card.html" %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+
+</div>
