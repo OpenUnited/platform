@@ -1,7 +1,5 @@
-{% if not parent_id %}
-<ul ondrop="drop(event)" class="pl-0"> {% endif %}
-    <li draggable="false" id="li_node_{{product_area.id}}" class="ml-{{margin_left}}">
-        <form method="post" hx-post="{{ url('canopy:add_node', args=(product_area.id,) ) }}" swap="innerHTML">
+    <li draggable="false" id="li_node_{{id}}">
+        <form method="post" id="form_id_{{id}}" hx-post="{{ url('canopy:add_node', args=(product_area.id,) ) }}" hx-target="#li_{{parent_id}}_ul_child" hx-swap="afterbegin">
             <div class="p-2 pl-2 pr-2 mt-1 block border border-gray-300 rounded-md text-blue-500 mb-2">
               <div class="w-full mb-2">
                 <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Name</label>
@@ -23,5 +21,20 @@
               </div>
             </div>
         </form>
+
+        <ul ondrop="drop(event)" class="pl-0" id="li_{{id}}_ul_child">
+
+        </ul>
+
+        <script>
+          document.addEventListener("htmx:afterOnLoad", function(event) {
+            var form = document.getElementById("form_id_{{id}}");
+            if (event.detail.elt === form) {
+                const ExpandButton = document.getElementById("toggleVisibility_{{parent_id}}")
+                ExpandButton.querySelector(".icon-arrow").setAttribute("data-icon","circle-chevron-down");
+                ExpandButton.classList.remove("hidden")
+                form.closest('li').remove();
+            }
+        });
+      </script>
     </li>
-{% if not parent_id %} </ul> {% endif %}

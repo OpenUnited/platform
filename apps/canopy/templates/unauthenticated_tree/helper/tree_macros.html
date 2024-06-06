@@ -13,11 +13,15 @@
             <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
                 <div class="flex justify-between w-full gap-2 group/item inline-flex">
                     <div class="flex justify-start">
-                        {% if child["children"] %}
-                            <button onclick="toggleVisibility(event)" class="mr-2">
+                        <button id="toggleVisibility_{{child.id}}" onclick="toggleVisibility(event)"
+                            {% if child["children"] %}
+                                class="mr-2"
+                            {% else %}
+                                class="mr-2 hidden"
+                            {% endif %}
+                            >
                                 <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
                             </button>
-                        {% endif %}
 
                         <span class="flex justify-between" href="#">
                             <span class="w-full">
@@ -50,11 +54,11 @@
                 <button type="submit" class="hidden" id="drop_submit_{{child.id}}"></button>
             </form>
 
-        {% if child["children"] %}
-            <ul ondrop="drop(event)" class="hidden pl-{{depth * 4}}">
-                {{ generate_product_area_tree(child["children"], can_modify_product, depth + 1)}}
+            <ul ondrop="drop(event)" class="pl-{{depth * 4}} hidden" id="li_{{child.id}}_ul_child">
+                {% if child["children"] %}
+                        {{ generate_product_area_tree(child["children"], can_modify_product, depth + 1)}}
+                {% endif %}
             </ul>
-        {% endif %}
         </li>
     {% endfor %}
 {% endmacro %}

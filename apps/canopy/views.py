@@ -85,13 +85,14 @@ def add_root_node(request, tree_id):
 
         product_area = mgt.ProductArea.add_root(**form.cleaned_data, product_tree_id=tree_id)
         context["product_area"] = product_area
-        context["depth"] = int(request.POST.get("depth", 0))
+        context["depth"] = int(request.POST.get("depth", 0)) + 1
         context["margin_left"] = int(request.POST.get("margin_left", 0))
         context["can_modify_product"] = True
         context["id"] = product_area.pk
         return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
 
     context["can_modify_product"] = True
+    context["depth"] = int(request.POST.get("depth", 0)) + 1
     context["tree_id"] = tree_id
     context["id"] = str(uuid.uuid4())[:8]
     return render(request, "unauthenticated_tree/helper/create_root_node_partial.html", context)
@@ -112,6 +113,7 @@ def add_node(request, parent_id):
         context["can_modify_product"] = True
         return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
 
+    context["id"] = str(uuid.uuid4())[:8]
     context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
     context["depth"] = int(request.GET.get("depth", 0)) + 1
     context["parent_id"] = product_area.id
