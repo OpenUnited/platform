@@ -1,13 +1,13 @@
 {% if can_modify_product %}
 <div class="flex gap-3 items-center view-node-group">
   <button type="button" class="add_node w-5 h-5"
-          onclick="event.preventDefault()"
-          trigger="create_node_{{id}}"
-          hx-swap="afterend"
-          hx-get="{{ url('canopy:add_node', args=(id,))}}"
-          hx-target="#li_node_{{id}}"
-          hx-vals='{"margin_left":"{{margin_left or 0 }}","has_post":"{{True}}", "parent_id":"{{id}}","depth": "{{depth}}" }'>
-          <img src="{{ static('images/add.svg') }}" class="" alt="#">
+      onclick="add_new_form(event, {{id}})"
+      trigger="create_node_{{id}}"
+      hx-target="#li_{{id}}_ul_child"
+      hx-swap="afterbegin"
+      hx-get="{{ url('canopy:add_node', args=(id,))}}"
+      hx-vals='{"margin_left":"{{margin_left or 0 }}","has_post":"{{True}}", "parent_id":"{{id}}","depth": "{{depth}}" }'>
+      <img src="{{ static('images/add.svg') }}" class="" alt="#">
   </button>
 
   <button type="button"
@@ -33,6 +33,14 @@
 {% endif %}
 
 <script>
+  function add_new_form(event, id){
+      const childUl = document.getElementById(`li_${id}_ul_child`)
+      if (childUl.classList.contains('hidden')) {
+        childUl.classList.remove("hidden")
+        const icon = childUl.closest("li").querySelector(".icon-arrow");
+        icon.setAttribute("data-icon","circle-chevron-down");
+      }
+  }
   document.addEventListener("htmx:confirm", function(event) {
     var triggers = ['delete_node_{{id}}', 'create_node_{{id}}', 'update_node_{{id}}'];
     if (triggers.includes(event.detail.elt.getAttribute('trigger'))) {
