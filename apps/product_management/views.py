@@ -324,29 +324,14 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
 
 class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
     template_name = "product_management/product_area_detail.html"
+
     model = ProductArea
     context_object_name = "product_area"
 
-    # def get_context_data(self, **kwargs):
-    #     product = Product.objects.get(slug=self.kwargs.get("product_slug"))
-    #     product_perm = utils.has_product_modify_permission(self.request.user, product)
-    #     product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
-    #     challenges = Challenge.objects.filter(product_area=product_area)
-
-    #     form = forms.ProductAreaForm(instance=product_area, can_modify_product=product_perm)
-    #     context = super().get_context_data(**kwargs)
-    #     new_context = {
-    #         "product": product,
-    #         "product_slug": product.slug,
-    #         "can_modify_product": product_perm,
-    #         "form": form,
-    #         "challenges": challenges,
-    #         "product_area": product_area,
-    #         "margin_left": int(self.request.GET.get("margin_left", 0)) + 4,
-    #         "depth": int(self.request.GET.get("depth", 0)),
-    #     }
-    #     context.update(**new_context)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["children"] = utils.serialize_tree(self.get_object())["children"]
+        return context
 
 
 class ProductAreaDetailDeleteView(View):
