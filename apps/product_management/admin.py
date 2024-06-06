@@ -23,7 +23,7 @@ class ProductTreeAdmin(admin.ModelAdmin):
 
 @admin.register(product.ProductArea)
 class ProductAreaAdmin(admin.ModelAdmin):
-    list_display = ["pk", "name", "video_link", "path"]
+    list_display = ["pk", "name", "product_tree", "video_link", "path"]
     search_fields = ["name", "video_link"]
     filter_horizontal = ("attachments",)
 
