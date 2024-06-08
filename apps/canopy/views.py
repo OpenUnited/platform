@@ -150,7 +150,7 @@ def update_node(request, pk):
 
         context = {
             "product_area": product_area,
-            "parent_id": int(request.POST.get("parent_id", 0)),
+            "parent_id": parent_id or 0,
             "descendants": common_utils.serialize_tree(product_area)["children"],
             "depth": int(request.POST.get("depth", 0)),
             "can_modify_product": True,
