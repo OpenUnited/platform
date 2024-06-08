@@ -51,7 +51,7 @@ class ProductTreeView(generic.CreateView):
             "can_modify_product": True,
             "product_tree": product_tree,
             "sharable_link": f"{domain}/product-tree/?key={product_tree.pk}",
-            "tree_data": [common_utils.serialize_tree(node) for node in product_tree.product_areas.all()],
+            "tree_data": [common_utils.serialize_tree(node) for node in product_tree.product_areas.filter(depth=1)],
             "show_share_button": show_share_button,
             "margin_left": int(self.request.GET.get("margin_left", 0)),
             "depth": int(self.request.GET.get("depth", 0)),
