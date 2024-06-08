@@ -179,6 +179,7 @@ class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
         )
         challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
         context["challenges"] = challenges
+        context["challenge_status"] = Challenge.ChallengeStatus
         return context
 
 
