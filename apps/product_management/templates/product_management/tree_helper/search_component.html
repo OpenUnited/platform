@@ -9,6 +9,7 @@
     var searchField = document.getElementById("search-field");
     searchField.addEventListener('input', (e) => {
         var searchTerm = e.currentTarget.value.trim().toLowerCase();
+        var searchEmptyElement = document.querySelector(".search_empty");
 
         if (searchTerm === "") {
         searchEmptyElement.classList.add("hidden");

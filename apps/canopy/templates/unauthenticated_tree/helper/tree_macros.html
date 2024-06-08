@@ -42,12 +42,9 @@
                 </div>
             </div>
 
-            <form id="drop_form_{{child.id}}" method="post" hx-post="{{ url('canopy:update_node', args=(child.id,) ) }}"  hx-swap="none">
-                <input type="hidden" name="parent_id" id="drop_parent_{{child.id}}">
-                <input type="hidden" name="name" value="{{child.name}}">
-                <input type="hidden" name="has_dropped" value="true">
-                <button type="submit" class="hidden" id="drop_submit_{{child.id}}"></button>
-            </form>
+            {% with child=child %}
+                    {% include "unauthenticated_tree/helper/hidden_form.html" %}
+            {% endwith %}
 
             <ul ondrop="drop(event)" class="pl-{{depth * 4}} hidden" id="li_{{child.id}}_ul_child">
                 {% if child["children"] %}

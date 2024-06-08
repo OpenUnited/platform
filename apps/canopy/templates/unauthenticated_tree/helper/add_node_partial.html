@@ -1,7 +1,7 @@
 
 {% import "unauthenticated_tree/helper/tree_macros.html" as tree_macros %}
 
-<li draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{product_area.id}}" class="ml-{{margin_left}}">
+<li draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{product_area.id}}" data-id="{{product_area.id}}" class="ml-{{margin_left}}">
     <div  class="flex flex-col items-start gap-2 group/item block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 w-full">
         <div class="flex justify-between w-full gap-2 group/item inline-flex">
             <div class="flex justify-start">
@@ -24,10 +24,15 @@
             {% endwith %}
         </div>
 
+
+        {% with child=product_area %}
+            {% include "unauthenticated_tree/helper/hidden_form.html" %}
+        {% endwith %}
+
         <div class="description view-node-group text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">{{ product_area.description }}</div>
     </div>
 
-    <ul class="pl-{{depth * 4}}" id="li_{{product_area.id}}_ul_child">
+    <ul class="pl-{{depth * 4}}" ondrop="drop(event)"  id="li_{{product_area.id}}_ul_child">
         {{ tree_macros.generate_product_area_tree(descendants,can_modify_product, depth+1) }}
     </ul>
 

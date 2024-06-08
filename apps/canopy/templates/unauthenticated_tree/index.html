@@ -6,7 +6,7 @@
 <div class="flex justify-center">
     <form id="reset_tree" action="{{ url('canopy:reset_tree') }}"></form>
 
-    <div id="product_tree" class="w-full sm:w-full md:w-3/5 flex flex-col">
+    <div id="product_tree"  class="w-full sm:w-full md:w-3/5 flex flex-col">
         {% include "unauthenticated_tree/helper/update_tree.html" %}
 
         <div class="flex justify-between w-full mb-2 mt-2">
@@ -23,9 +23,13 @@
 
 
         <div class="flex justify-between w-full mb-2 mt-2">
-            {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
-            {% include "unauthenticated_tree/helper/tooltip.html" %}
+            {% include "product_management/tree_helper/search_component.html" %}
+            <div>
+                {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
+                {% include "unauthenticated_tree/helper/tooltip.html" %}
+            </div>
         </div>
+        {% include "product_management/tree_helper/search_empty.html" %}
 
         <ul ondrop="drop(event)" draggable="false" class="pl-0" id="">
             {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
@@ -87,6 +91,7 @@
         var data = event.dataTransfer.getData("text");
         var draggedElement = document.getElementById(data)
         var targetElement = event.target.closest("li")
+
         var existingUl = targetElement.querySelector("ul");
         var parentUl = targetElement.closest("ul");
 
@@ -102,7 +107,6 @@
             targetElement.appendChild(existingUl);
         }
         existingUl.appendChild(draggedElement);
-
         const targetId = draggedElement.getAttribute("data-id")
         const parentId = targetElement.getAttribute("data-id")
         document.getElementById(`drop_parent_${targetId}`).value = parentId
@@ -120,7 +124,6 @@
         event.dataTransfer.setData("text", event.target.id);
     }
 
-    var searchEmptyElement = document.querySelector(".search_empty");
     var treeContainer = document.getElementById("product_tree");
     var treeNodes = treeContainer.querySelectorAll("li");
 

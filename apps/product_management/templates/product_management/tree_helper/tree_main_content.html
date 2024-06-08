@@ -1,10 +1,7 @@
 {% import "product_management/tree_helper/product_tree_macros.html" as tree_macros %}
 
 <div class="flex flex-col flex-grow nested">
-    <div class="hidden search_empty flex justify-center items-center flex-col gap-5 ">
-      <img src="{{ static('images/no-data.svg') }}" alt="no data">
-      <span class="text-base text-gray-900 font-medium mb-2">There is no product area</span>
-    </div>
+    {% include "product_management/tree_helper/search_empty.html" %}
 
     <div class="mt-4 lg:mt-6">
       <div id="product_tree"
@@ -69,36 +66,6 @@
         event.dataTransfer.setData("text", event.target.id);
     }
 
-    var searchField = document.getElementById("search-field");
-    var searchEmptyElement = document.querySelector(".search_empty");
     var treeContainer = document.getElementById("product_tree");
     var treeNodes = treeContainer.querySelectorAll("li");
-
-    searchField.addEventListener('input', (e) => {
-        var searchTerm = e.currentTarget.value.trim().toLowerCase();
-
-        if (searchTerm === "") {
-        searchEmptyElement.classList.add("hidden");
-        treeNodes.forEach(function(node) {
-            node.classList.remove("hidden");
-        });
-        } else {
-        var foundMatch = false;
-        treeNodes.forEach(function(node) {
-            var textContent = node.textContent.trim().toLowerCase();
-            if (textContent.includes(searchTerm)) {
-            node.classList.remove("hidden");
-            foundMatch = true;
-            } else {
-            node.classList.add("hidden");
-            }
-        });
-
-        if (!foundMatch) {
-            searchEmptyElement.classList.remove("hidden");
-        } else {
-            searchEmptyElement.classList.add("hidden");
-        }
-        }
-    });
 </script>
