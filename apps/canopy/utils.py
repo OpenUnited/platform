@@ -16,24 +16,21 @@ adjectives = [
     "Glorious",
     "Enchanting",
     "Effervescent",
-]
-
-animals = [
-    "Swan",
-    "Lynx",
-    "Eagle",
-    "Tiger",
-    "Panda",
-    "Shark",
-    "Zebra",
-    "Horse",
-    "Crane",
-    "Whale",
-    "Otter",
-    "Gecko",
-    "Koala",
-    "Bison",
-    "Ibex",
+    "Brilliant",
+    "Luminous",
+    "Dazzling",
+    "Vibrant",
+    "Stellar",
+    "Sparkling",
+    "Glistening",
+    "Shimmering",
+    "Lustrous",
+    "Fabulous",
+    "Marvelous",
+    "Stunning",
+    "Radiant",
+    "Glowing",
+    "Awe-inspiring",
 ]
 
 trees = [
@@ -52,11 +49,24 @@ trees = [
     "Alder",
     "Willow",
     "Ebony",
+    "Yew",
+    "Holly",
+    "Fig",
+    "Rowan",
+    "Teak",
+    "Lime",
+    "Cork",
+    "Mango",
+    "Apple",
+    "Pear",
+    "Plum",
+    "Cherry",
+    "Peach",
+    "Palm",
 ]
-
 
 def generate_unique_name():
     adjective = random.choice(adjectives)
-    noun = random.choice(animals + trees)
+    noun = random.choice(trees)
     number = random.randint(100, 999)
     return f"{adjective} {noun} {number}"
