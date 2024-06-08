@@ -1,12 +1,12 @@
 
 {% import "unauthenticated_tree/helper/tree_macros.html" as tree_macros %}
 
-<li draggable="true" id="li_node_{{product_area.id}}" class="ml-{{margin_left}}">
+<li draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{product_area.id}}" class="ml-{{margin_left}}">
     <div  class="flex flex-col items-start gap-2 group/item block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 w-full">
         <div class="flex justify-between w-full gap-2 group/item inline-flex">
             <div class="flex justify-start">
-                <button id="toggleVisibility_{{product_area.id}}" onclick="toggleVisibility(event)" class="mr-2 hidden">
-                    <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
+                <button id="toggleVisibility_{{product_area.id}}" onclick="toggleVisibility(event)" class="mr-2 toggleVisibility hidden">
+                    <i class="fa fa-chevron-circle-down text-gray-400 icon-arrow" aria-hidden="true"></i>
                 </button>
 
                 <a class="flex justify-between" href="{{ url('canopy:update_node', args=(product_area.id,)) }}">

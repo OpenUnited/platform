@@ -105,9 +105,10 @@
 
         const targetId = draggedElement.getAttribute("data-id")
         const parentId = targetElement.getAttribute("data-id")
-
         document.getElementById(`drop_parent_${targetId}`).value = parentId
         document.getElementById(`drop_submit_${targetId}`).click()
+
+        targetElement.querySelector(".toggleVisibility").classList.remove("hidden")
         event.stopPropagation();
     }
 
