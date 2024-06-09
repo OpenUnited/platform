@@ -12,7 +12,7 @@ from . import views
 # URL patterns for challenge and product list views
 urlpatterns = [
     # This pattern matches any subpath under 'challenges/'
-    re_path(r"^challenges/.*$", views.redirect_challenge_to_bounties),
+    re_path(r"^challenges/.*$", views.redirect_challenge_to_bounties, name="challenges"),
     path(
         "<str:product_slug>/challenge/create/",
         views.CreateChallengeView.as_view(),

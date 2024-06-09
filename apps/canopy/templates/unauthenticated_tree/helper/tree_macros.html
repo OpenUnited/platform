@@ -13,17 +13,13 @@
             <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
                 <div class="flex justify-between w-full gap-2 group/item inline-flex">
                     <div class="flex justify-start">
-                        <button id="toggleVisibility_{{child.id}}" onclick="toggleVisibility(event)"
-                            {% if child["children"] %}
-                                class="mr-2"
-                            {% else %}
-                                class="mr-2 hidden"
-                            {% endif %}
-                            >
-                                <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
-                            </button>
+                        <button class="toggleVisibility mr-2 {% if child.children|length == 0 %}hidden{% endif %}"
+                        id="toggleVisibility_{{ child.id }}"
+                        onclick="toggleVisibility(event)">
+                    <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
+                    </button>
 
-                        <span class="flex justify-between" href="#">
+                        <span class="flex justify-between">
                             <span class="w-full">
                                 {% if  can_modify_product %}
                                     {% include "product_management/tree_helper/drag.html" %}
@@ -34,8 +30,7 @@
                             </span>
                             {% with child=child %}
                             {% include "product_management/tree_helper/video.html" %}
-                        {% endwith %}
-                        </button>
+                            {% endwith %}
                     </div>
                     {% with id=child.id, depth=depth, can_modify_product=can_modify_product%}
                         {% include "unauthenticated_tree/helper/action_buttons.html" %}
@@ -47,12 +42,9 @@
                 </div>
             </div>
 
-            <form id="drop_form_{{child.id}}" method="post" hx-post="{{ url('canopy:update_node', args=(child.id,) ) }}"  hx-swap="none">
-                <input type="hidden" name="parent_id" id="drop_parent_{{child.id}}">
-                <input type="hidden" name="name" value="{{child.name}}">
-                <input type="hidden" name="has_dropped" value="true">
-                <button type="submit" class="hidden" id="drop_submit_{{child.id}}"></button>
-            </form>
+            {% with child=child %}
+                    {% include "unauthenticated_tree/helper/hidden_form.html" %}
+            {% endwith %}
 
             <ul ondrop="drop(event)" class="pl-{{depth * 4}} hidden" id="li_{{child.id}}_ul_child">
                 {% if child["children"] %}

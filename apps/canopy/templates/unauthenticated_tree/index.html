@@ -6,16 +6,12 @@
 <div class="flex justify-center">
     <form id="reset_tree" action="{{ url('canopy:reset_tree') }}"></form>
 
-    <div id="product_tree" class="w-full sm:w-full md:w-3/5 flex flex-col">
+    <div id="product_tree"  class="w-full sm:w-full md:w-3/5 flex flex-col">
         {% include "unauthenticated_tree/helper/update_tree.html" %}
 
         <div class="flex justify-between w-full mb-2 mt-2">
             <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product_tree_name">
-                <span id="shareable_product_name"> {{product_tree.name}} </span>
-
-                <button onclick="editTreeName(event)" class="text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white">
-                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                </button>
+                <span onclick="editTreeName(event)" class="mr-2 cursor-pointer text-indigo-500 text-2xl" id="shareable_product_name"> {{product_tree.name}} </span>
 
                 <button onclick="resetTree(event)" class="group text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white relative">
                     <i class="fa fa-bolt" aria-hidden="true"></i>
@@ -27,11 +23,15 @@
 
 
         <div class="flex justify-between w-full mb-2 mt-2">
-            {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
-            {% include "unauthenticated_tree/helper/tooltip.html" %}
+            {% include "product_management/tree_helper/search_component.html" %}
+            <div>
+                {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
+                {% include "unauthenticated_tree/helper/tooltip.html" %}
+            </div>
         </div>
+        {% include "product_management/tree_helper/search_empty.html" %}
 
-        <ul ondrop="drop(event)" class="pl-0" id="">
+        <ul ondrop="drop(event)" draggable="false" class="pl-0" id="">
             {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
         </ul>
 
@@ -91,6 +91,7 @@
         var data = event.dataTransfer.getData("text");
         var draggedElement = document.getElementById(data)
         var targetElement = event.target.closest("li")
+
         var existingUl = targetElement.querySelector("ul");
         var parentUl = targetElement.closest("ul");
 
@@ -106,12 +107,12 @@
             targetElement.appendChild(existingUl);
         }
         existingUl.appendChild(draggedElement);
-
         const targetId = draggedElement.getAttribute("data-id")
         const parentId = targetElement.getAttribute("data-id")
-
         document.getElementById(`drop_parent_${targetId}`).value = parentId
         document.getElementById(`drop_submit_${targetId}`).click()
+
+        targetElement.querySelector(".toggleVisibility").classList.remove("hidden")
         event.stopPropagation();
     }
 
@@ -123,7 +124,6 @@
         event.dataTransfer.setData("text", event.target.id);
     }
 
-    var searchEmptyElement = document.querySelector(".search_empty");
     var treeContainer = document.getElementById("product_tree");
     var treeNodes = treeContainer.querySelectorAll("li");
 
