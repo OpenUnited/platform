@@ -18,6 +18,10 @@ def chapter1(request):
     return render(request, "chapter-1.html")
 
 
+def share_tree_link(request):
+    return redirect(f'{reverse("shareable_product_tree")}?key={request.GET.get("key", None)}')
+
+
 class ProductTreeView(generic.CreateView):
     template_name = "unauthenticated_tree/index.html"
     model = mgt.ProductTree
@@ -50,7 +54,7 @@ class ProductTreeView(generic.CreateView):
         return {
             "can_modify_product": True,
             "product_tree": product_tree,
-            "sharable_link": f"{domain}/product-tree/?key={product_tree.pk}",
+            "sharable_link": f"{domain}/product-tree/share/?key={product_tree.pk}",
             "tree_data": [common_utils.serialize_tree(node) for node in product_tree.product_areas.filter(depth=1)],
             "show_share_button": show_share_button,
             "margin_left": int(self.request.GET.get("margin_left", 0)),
@@ -127,7 +131,7 @@ def delete_node(request, pk):
     if product_area.numchild > 0:
         return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
     product_area.delete()
-    return JsonResponse({"message:": "The node has deleted successfully"}, status=204)
+    return JsonResponse({"message": "The node has deleted successfully"})
 
 
 def update_node(request, pk):
