@@ -12,6 +12,7 @@ def playwright_context():
     yield playwright
     playwright.stop()
 
+
 @pytest.fixture
 def browser_context(playwright_context):
     # browser = playwright_context.chromium.launch(headless=False,slow_mo=300)
@@ -19,10 +20,12 @@ def browser_context(playwright_context):
     yield browser
     browser.close()
 
+
 @pytest.fixture
 def page_context(browser_context):
     page = browser_context.new_page()
     yield page
+
 
 @pytest.fixture
 def create_user(db):
@@ -30,7 +33,7 @@ def create_user(db):
     password = "12345"
     first_name = "Test"
     last_name = "User"
-    full_name = f'{first_name} {last_name}'
+    full_name = f"{first_name} {last_name}"
 
     user = baker.make(
         "security.User",
@@ -44,8 +47,6 @@ def create_user(db):
     person = baker.make("talent.Person", user=user, photo="image.png", full_name=full_name)
 
     return user, username, password, person
-
-
 
 
 @pytest.fixture
@@ -62,9 +63,7 @@ def setup_bounty(db, create_user):
     )
     product_tree = baker.make("product_management.ProductTree", product=product, name="PetConnect Tree")
     product_area = baker.make("product_management.ProductArea", product_tree=product_tree, name="PetConnect Area")
-    initiative = baker.make(
-        "product_management.Initiative", product=product, name="PetConnect Service Integration"
-    )
+    initiative = baker.make("product_management.Initiative", product=product, name="PetConnect Service Integration")
     challenge = baker.make(
         "product_management.Challenge",
         product_area=product_area,
@@ -83,11 +82,4 @@ def setup_bounty(db, create_user):
         status="Available",
         description="Information Systems & Networking (Python)",
     )
-    return product, challenge, bounty, person,username,password
-
-
-
-
-
-
-
+    return product, challenge, bounty, person, username, password

@@ -1,5 +1,6 @@
 from e2e.pages.signup_page import SignupPage
 
+
 def test_signup(live_server, page_context):
     signup_page = SignupPage(page_context)
     signup_page.navigate(f"{live_server.url}{signup_page.url}")

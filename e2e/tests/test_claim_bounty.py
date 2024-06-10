@@ -4,9 +4,10 @@ from e2e.pages.challenge_details_page import ChallengeDetailPage
 from e2e.helpers import login_user
 from apps.talent.models import BountyClaim
 
-def test_claim_bounty(live_server, page_context,setup_bounty):
-    
-    product, challenge, bounty, _,username,password = setup_bounty
+
+def test_claim_bounty(live_server, page_context, setup_bounty):
+
+    product, challenge, bounty, _, username, password = setup_bounty
     login_user(page_context, live_server.url, username, password)
 
     page = ChallengeDetailPage(page_context)
@@ -16,7 +17,7 @@ def test_claim_bounty(live_server, page_context,setup_bounty):
     page_context.reload()
     page_context.wait_for_timeout(500)
     challenge_detail_button = page.get_challenge_detail_button(product.slug, challenge.id)
-    
+
     challenge_detail_button.click()
     page_context.wait_for_timeout(500)
 
@@ -32,7 +33,7 @@ def test_claim_bounty(live_server, page_context,setup_bounty):
 
     page.expected_submission_date.type(day)
     page.expected_submission_date.type(month)
-    page.expected_submission_date.type(year)    
+    page.expected_submission_date.type(year)
     page.terms_check_box.check()
 
     page.request_claim_button.click()
