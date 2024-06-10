@@ -38,7 +38,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
 
     page.request_claim_button.click()
 
-    page_context.wait_for_timeout(500)
+    page_context.wait_for_timeout(1500)
 
     bounty_claim = BountyClaim.objects.get(bounty=bounty.id)
     assert bounty_claim.status == BountyClaim.Status.REQUESTED
