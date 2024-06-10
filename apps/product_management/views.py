@@ -341,7 +341,7 @@ class ProductAreaDetailDeleteView(View):
             return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
 
         product_area.delete()
-        return JsonResponse({"message": "The node has been deleted successfully"}, status=204)
+        return JsonResponse({"message": "The node has been deleted successfully"}, status=200)
 
 
 class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
