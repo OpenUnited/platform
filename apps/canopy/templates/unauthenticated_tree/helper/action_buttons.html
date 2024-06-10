@@ -34,6 +34,11 @@
             method: 'DELETE',
             target: `#li_node_${id}`
           }).then(({event, data}) => {
+              const parentButton = document.getElementById(`toggleVisibility_${data.parent_id}`)
+              if (parentButton && data.prarent_count >= 1){
+                parentButton.classList.add("hidden");
+              }
+
               event.detail.target.remove()
               showNotification({type: typeSuccess, message:data.message})
           }).catch(({event, data}) => {

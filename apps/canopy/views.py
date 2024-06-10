@@ -128,10 +128,17 @@ def add_node(request, parent_id):
 
 def delete_node(request, pk):
     product_area = mgt.ProductArea.objects.get(pk=pk)
+    parent = product_area.get_parent() if product_area.get_parent() else None
+
     if product_area.numchild > 0:
         return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
     product_area.delete()
-    return JsonResponse({"message": "The node has deleted successfully"})
+    context = {
+        "message": "The node has deleted successfully",
+        "parent_id": parent.id if parent else None,
+        "prarent_count": parent.get_children_count() if parent else 0,
+    }
+    return JsonResponse(context)
 
 
 def update_node(request, pk):
@@ -145,7 +152,12 @@ def update_node(request, pk):
         if not has_cancelled and has_dropped and parent_id:
             parent = mgt.ProductArea.objects.get(pk=parent_id)
             product_area.move(parent, "last-child")
-            return JsonResponse({})
+            talent_target_parent = product_area.get_parent() or 0
+            context = {
+                "child_count": talent_target_parent.get_children_count() if product_area else 0,
+                "target_parent_id": talent_target_parent.id if talent_target_parent else None,
+            }
+            return JsonResponse(context)
 
         if not has_cancelled and form.is_valid():
             product_area.name = form.cleaned_data["name"]
