@@ -23,7 +23,17 @@ from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Sk
 from apps.talent.utils import serialize_skills
 from apps.utility import utils as global_utils
 
-from .models import Bounty, Bug, Challenge, ProductContributorAgreementTemplate, Idea, IdeaVote, Initiative, Product, ProductArea
+from .models import (
+    Bounty,
+    Bug,
+    Challenge,
+    ProductContributorAgreementTemplate,
+    Idea,
+    IdeaVote,
+    Initiative,
+    Product,
+    ProductArea,
+)
 
 
 class ProductListView(ListView):
@@ -63,7 +73,7 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
             context["can_modify_product"] = False
 
         context["challenges"] = challenges
-        context["tree_data"] = [utils.serialize_tree(node) for node in ProductArea.get_root_nodes()]        
+        context["tree_data"] = [utils.serialize_tree(node) for node in ProductArea.get_root_nodes()]
         return context
 
 
@@ -1302,7 +1312,7 @@ class CreateContributorAgreementTemplateView(LoginRequiredMixin, HTMXInlineFormV
             instance = form.save(commit=False)
             instance.created_by = request.user.person
             instance.save()
-            
+
             messages.success(request, "The contribution agreement is successfully created!")
 
             self.success_url = reverse(

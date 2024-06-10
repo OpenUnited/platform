@@ -304,9 +304,7 @@ class Migration(migrations.Migration):
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 (
                     "photo",
-                    models.ImageField(
-                        blank=True, null=True, upload_to="avatars/"
-                    ),
+                    models.ImageField(blank=True, null=True, upload_to="avatars/"),
                 ),
                 ("name", models.TextField()),
                 ("short_description", models.TextField()),

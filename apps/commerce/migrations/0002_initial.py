@@ -33,9 +33,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="productaccountcredit",
             name="actioned_by",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.person"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="talent.person"),
         ),
         migrations.AddField(
             model_name="productaccountcredit",
@@ -203,16 +201,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="contributoraccount",
             name="owner",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.person"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="talent.person"),
         ),
         migrations.AddField(
             model_name="cart",
             name="creator",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.person"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="talent.person"),
         ),
         migrations.AddField(
             model_name="cart",

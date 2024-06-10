@@ -16,9 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="idea",
             name="person",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="talent.person"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="talent.person"),
         ),
         migrations.AddField(
             model_name="idea",
@@ -228,9 +226,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="bounty",
             name="expertise",
-            field=models.ManyToManyField(
-                related_name="bounty_expertise", to="talent.expertise"
-            ),
+            field=models.ManyToManyField(related_name="bounty_expertise", to="talent.expertise"),
         ),
         migrations.AddField(
             model_name="bounty",

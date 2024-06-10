@@ -12,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="capability",
             name="description",
-            field=models.TextField(
-                blank=True, default="", max_length=1000, null=True
-            ),
+            field=models.TextField(blank=True, default="", max_length=1000, null=True),
         ),
     ]
