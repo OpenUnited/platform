@@ -11,15 +11,15 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     login_user(page_context, live_server.url, username, password)
 
     page = ChallengeDetailPage(page_context)
-    page_context.wait_for_timeout(500)
+    page_context.wait_for_timeout(1500)
     assert BountyClaim.objects.filter(bounty=bounty.id).count() == 0
 
     page_context.reload()
-    page_context.wait_for_timeout(500)
+    page_context.wait_for_timeout(1500)
     challenge_detail_button = page.get_challenge_detail_button(product.slug, challenge.id)
 
     challenge_detail_button.click()
-    page_context.wait_for_timeout(500)
+    page_context.wait_for_timeout(1500)
 
     bounty_claim_button = page.get_bounty_claim_button(bounty.id)
     bounty_claim_button.click()
