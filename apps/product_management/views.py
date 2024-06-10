@@ -27,12 +27,12 @@ from .models import (
     Bounty,
     Bug,
     Challenge,
-    ProductContributorAgreementTemplate,
     Idea,
     IdeaVote,
     Initiative,
     Product,
     ProductArea,
+    ProductContributorAgreementTemplate,
 )
 
 
@@ -73,7 +73,9 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
             context["can_modify_product"] = False
 
         context["challenges"] = challenges
-        context["tree_data"] = [utils.serialize_tree(node) for node in ProductArea.get_root_nodes()]
+        context["tree_data"] = [
+            utils.serialize_tree(node) for node in ProductArea.get_root_nodes().filter(product_tree=None)
+        ]
         return context
 
 
@@ -177,6 +179,7 @@ class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
         )
         challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
         context["challenges"] = challenges
+        context["challenge_status"] = Challenge.ChallengeStatus
         return context
 
 
@@ -252,7 +255,7 @@ class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
         return render(request, self.get_template_names(), context)
 
 
-class ProductAreaDetailUpdateView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
+class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
     form_class = forms.ProductAreaForm
@@ -277,18 +280,17 @@ class ProductAreaDetailUpdateView(utils.BaseProductDetailView, common_mixins.Att
 
         form = forms.ProductAreaForm(instance=product_area, can_modify_product=product_perm)
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "product": product,
-                "product_slug": product.slug,
-                "can_modify_product": product_perm,
-                "form": form,
-                "challenges": challenges,
-                "product_area": product_area,
-                "margin_left": int(self.request.GET.get("margin_left", 0)) + 4,
-                "depth": int(self.request.GET.get("depth", 0)),
-            }
-        )
+        new_context = {
+            "product": product,
+            "product_slug": product.slug,
+            "can_modify_product": product_perm,
+            "form": form,
+            "challenges": challenges,
+            "product_area": product_area,
+            "margin_left": int(self.request.GET.get("margin_left", 0)) + 4,
+            "depth": int(self.request.GET.get("depth", 0)),
+        }
+        context.update(**new_context)
         return context
 
     def form_valid(self, form):
@@ -321,6 +323,18 @@ class ProductAreaDetailUpdateView(utils.BaseProductDetailView, common_mixins.Att
         return render(request, template_name, context)
 
 
+class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
+    template_name = "product_management/product_area_detail.html"
+
+    model = ProductArea
+    context_object_name = "product_area"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["children"] = utils.serialize_tree(self.get_object())["children"]
+        return context
+
+
 class ProductAreaDetailDeleteView(View):
     def delete(self, request, *args, **kwargs):
         product_area = ProductArea.objects.get(pk=kwargs.get("pk"))
@@ -337,7 +351,7 @@ class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
-        capability_root_trees = ProductArea.get_root_nodes()
+        capability_root_trees = ProductArea.get_root_nodes().filter(product_tree=None)
         context["tree_data"] = [utils.serialize_tree(node) for node in capability_root_trees]
 
         return context

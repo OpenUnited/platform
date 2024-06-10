@@ -3,3 +3,36 @@
       class="block w-full sm:max-w-[320px] rounded-l-md border-0 py-1.5 px-3 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus-visible:outline-none sm:text-sm sm:leading-6 h-9 p-3  rounded-md"
       placeholder="Search...">
   </div>
+
+
+  <script>
+    var searchField = document.getElementById("search-field");
+    searchField.addEventListener('input', (e) => {
+        var searchTerm = e.currentTarget.value.trim().toLowerCase();
+        var searchEmptyElement = document.querySelector(".search_empty");
+
+        if (searchTerm === "") {
+        searchEmptyElement.classList.add("hidden");
+        treeNodes.forEach(function(node) {
+            node.classList.remove("hidden");
+        });
+        } else {
+        var foundMatch = false;
+        treeNodes.forEach(function(node) {
+            var textContent = node.textContent.trim().toLowerCase();
+            if (textContent.includes(searchTerm)) {
+            node.classList.remove("hidden");
+            foundMatch = true;
+            } else {
+            node.classList.add("hidden");
+            }
+        });
+
+        if (!foundMatch) {
+            searchEmptyElement.classList.remove("hidden");
+        } else {
+            searchEmptyElement.classList.add("hidden");
+        }
+        }
+    });
+  </script>

@@ -15,9 +15,15 @@ class InitiativeAdmin(admin.ModelAdmin):
     search_fields = ["product__name", "status"]
 
 
+@admin.register(product.ProductTree)
+class ProductTreeAdmin(admin.ModelAdmin):
+    list_display = ["name", "created_at"]
+    search_fields = ["name"]
+
+
 @admin.register(product.ProductArea)
 class ProductAreaAdmin(admin.ModelAdmin):
-    list_display = ["pk", "name", "video_link", "path"]
+    list_display = ["pk", "name", "product_tree", "video_link", "path"]
     search_fields = ["name", "video_link"]
     filter_horizontal = ("attachments",)
 

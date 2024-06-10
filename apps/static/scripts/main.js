@@ -7,3 +7,4 @@ import './confetti.js'
 import './website-row.js'
 import './forms.js'
 import './portfolio.js'
+import "./htmx.ajax.js"
