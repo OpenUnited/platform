@@ -65,6 +65,7 @@ trees = [
     "Palm",
 ]
 
+
 def generate_unique_name():
     adjective = random.choice(adjectives)
     noun = random.choice(trees)
