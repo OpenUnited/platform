@@ -17,12 +17,13 @@
                     class="appearance-none transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85] mr-auto text-xs"> Read More</a>
 
                     <!-- TODO: add product owner logic here -->
-                    {% if can_edit_product %}
+                    {% if can_modify_product %}
                     <a href="{{ url('update-product', args=(product.id,)) }}">
                         <button type="button"
-                            class="w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            class="w-full rounded-l-md border-0 py-1.5 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                             Edit Product
                         </button>
+
                     </a>
                     {% endif %}
             </div>
