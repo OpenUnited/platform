@@ -10,14 +10,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-3">
         <div class="flex flex-col w-full">
             <div class="flex flex-col gap-y-1.5 md:gap-y-2.5 text-sm leading-6 text-gray-700 pr-10 md:pr-0">
-                <div id="productFullDescription" class="overflow-hidden line-clamp-3">
-                    <p>{{ product.full_description }}</p>
+                <div>
+                    <p id="productFullDescription">{{ product.full_description }}</p>
                 </div>
-                {% if product.full_description|length > 170 %}
-                <button id="showMore"
-                    class="appearance-none transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85] mr-auto text-xs">Show
-                    more</a>
-                    {% endif %}
+                <button  id="read_more_btn_0" onclick="readMoreFunction(0)"
+                    class="appearance-none transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85] mr-auto text-xs"> Read More</a>
 
                     <!-- TODO: add product owner logic here -->
                     {% if can_edit_product %}
@@ -75,5 +72,14 @@
     </div>
 </div>
 
+<script>
+    var data = {
+        "index":0,
+        "textElementId":"productFullDescription",
+        "visibleWords":30,
+    }
+    preSetup(data)
+
+</script>
 
 {% endblock %}
