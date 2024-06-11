@@ -109,11 +109,24 @@
         existingUl.appendChild(draggedElement);
         const targetId = draggedElement.getAttribute("data-id")
         const parentId = targetElement.getAttribute("data-id")
-        document.getElementById(`drop_parent_${targetId}`).value = parentId
-        document.getElementById(`drop_submit_${targetId}`).click()
 
         targetElement.querySelector(".toggleVisibility").classList.remove("hidden")
-        event.stopPropagation();
+
+        htmxRequest({
+            url: `{{ url('canopy:update_node', args=(123,) ) }}`.replace("123", targetId),
+            method: 'POST',
+            values: {
+                "has_dropped": true,
+                "parent_id": parentId
+            }
+          }).then(({event, data}) => {
+            const parentButton = document.getElementById(`toggleVisibility_${data.target_parent_id}`)
+            if (parentButton && data.child_count < 1){
+              parentButton.classList.add("hidden");
+            }
+
+          }).catch(({event, data}) => {});
+
     }
 
     function allowDrop(event) {

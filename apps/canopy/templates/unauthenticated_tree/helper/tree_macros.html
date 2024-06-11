@@ -42,10 +42,6 @@
                 </div>
             </div>
 
-            {% with child=child %}
-                    {% include "unauthenticated_tree/helper/hidden_form.html" %}
-            {% endwith %}
-
             <ul ondrop="drop(event)" class="pl-{{depth * 4}} hidden" id="li_{{child.id}}_ul_child">
                 {% if child["children"] %}
                         {{ generate_product_area_tree(child["children"], can_modify_product, depth + 1)}}
