@@ -10,7 +10,7 @@
             <p class="mt-1 text-gray-500" id="id_description_{{index}}">{{ child.description }}</p>
         </div>
 
-        <button id="read_more_btn_{{index}}" onclick="readMoreFunction(event, {{index}})" class="text-indigo-500 hover:text-indigo-700 focus:outline-none mt-2">
+        <button id="read_more_btn_{{index}}" onclick="readMoreFunction({{index}})" class="text-indigo-500 hover:text-indigo-700 focus:outline-none mt-2">
             Read More
         </button>
     </div>
@@ -18,32 +18,11 @@
 </div>
 
 <script>
-    var textElement = document.getElementById("id_description_{{index}}");
-    var fullText = textElement.textContent;
-    var words = fullText.split(" ");
-    var visibleWords = 10;
-    var initialText = words.slice(0, visibleWords).join(" ") + "...";
-    var remainingText = ""
-
-    if (words.length > visibleWords) {
-        remainingText = words.slice(visibleWords).join(" ");
+    var data = {
+        "index":"{{index}}",
+        "textElementId":"id_description_{{index}}",
+        "visibleWords":10,
     }
-    textElement.innerHTML = initialText + '<span class="hidden" id="more_text_{{index}}">' + remainingText + '</span>';
+    preSetup(data)
 
-    function readMoreFunction(event, index){
-        var textElementNew = document.getElementById(`id_description_${index}`);
-        var readMoreBtn = document.getElementById(`read_more_btn_${index}`);
-        console.log(index)
-        var moreText = document.getElementById(`more_text_${index}`);
-        if (moreText.classList.contains("hidden")) {
-            moreText.classList.remove("hidden");
-            readMoreBtn.textContent = "Read Less";
-        } else {
-            moreText.classList.add("hidden");
-            var remainingTextNew = words.slice(visibleWords).join(" ");
-            var initialTextNew = words.slice(0, visibleWords).join(" ") + "...";
-            textElementNew.innerHTML =  initialTextNew + `<span class="hidden" id="more_text_${index}">` + remainingTextNew + '</span>';
-            readMoreBtn.textContent = "Read More";
-        }
-    }
 </script>
