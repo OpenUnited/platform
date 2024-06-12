@@ -14,20 +14,18 @@
                 <div class="flex justify-between w-full gap-2 group/item inline-flex">
                     <div class="flex justify-start">
                         <button class="toggleVisibility mr-2 {% if child.children|length == 0 %}hidden{% endif %}"
-                        id="toggleVisibility_{{ child.id }}"
-                        onclick="toggleVisibility(event)">
-                    <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
-                    </button>
+                            id="toggleVisibility_{{ child.id }}"
+                            onclick="toggleVisibility(event)">
+                            <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
+                        </button>
 
-                        <span class="flex justify-between">
                             <span class="w-full">
                                 {% if  can_modify_product %}
                                     {% include "product_management/tree_helper/drag.html" %}
                                 {% endif %}
                                 {{ child.name }}
-
-
                             </span>
+
                             {% with child=child %}
                             {% include "product_management/tree_helper/video.html" %}
                             {% endwith %}
