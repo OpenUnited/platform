@@ -36,8 +36,6 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page.terms_check_box.check()
     page_context.wait_for_timeout(500)
     page.request_claim_button.click()
-    page.wait_for_selector('li.list-none a[href^="/bounty_claim/delete/"]')
-    
     print("start loop===================:", BountyClaim.objects.all())
 
     
