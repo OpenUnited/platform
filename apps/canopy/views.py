@@ -154,7 +154,11 @@ def update_node(request, pk):
             product_area.move(parent, "last-child")
             talent_target_parent = product_area.get_parent() or 0
             context = {
-                "child_count": talent_target_parent.get_children_count() if product_area else 0,
+                "child_count": (
+                    talent_target_parent.get_children_count()
+                    if isinstance(talent_target_parent, mgt.ProductArea)
+                    else 0
+                ),
                 "target_parent_id": talent_target_parent.id if talent_target_parent else None,
             }
             return JsonResponse(context)
