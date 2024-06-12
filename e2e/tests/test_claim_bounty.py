@@ -38,8 +38,11 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page.request_claim_button.click()
 
     page_context.wait_for_timeout(1500)
+    print("++++++++++++++++++", bounty)
+    print("start loop===================:")
     for i in  BountyClaim.objects.all():
         print("===================:",  i.bounty)
-        
+    print("end loop===================:")
+    
     bounty_claim = BountyClaim.objects.get(bounty=bounty)
     assert bounty_claim.status == BountyClaim.Status.REQUESTED
