@@ -20,12 +20,9 @@
       <img src="{{ static('images/edit_icon.svg')}}" class="edit" alt="#">
   </button>
 
-    <button  onclick="event.preventDefault()"
-             trigger="delete_node_{{id}}"
-             hx-swap="none"
+    <button  trigger="delete_node_{{id}}"
              class="delete_node w-5 h-5"
-             hx-target="#li_node_{{id}}"
-             hx-delete="{{ url('product_area_delete', args=(product_slug, id,)) }}"
+             onclick="deleteNode(event, '{{ url('product_area_delete', args=(product_slug, id,)) }}', {{id}})"
     >
       <img src="{{ static('images/delete.svg')}}" class="" alt="#">
     </button>
@@ -33,32 +30,20 @@
 {% endif %}
 
 <script>
-  document.addEventListener("htmx:confirm", function(event) {
-    var triggers = ['delete_node_{{id}}', 'create_node_{{id}}', 'update_node_{{id}}'];
-    if (triggers.includes(event.detail.elt.getAttribute('trigger'))) {
-        if (event.detail.elt.getAttribute('trigger') === 'delete_node_{{id}}') {
-          event.preventDefault()
-          showConfirm({}).then(function(){event.detail.issueRequest()})
-        }
+    function deleteNode(event, url, id){
+        event.preventDefault()
+        showConfirm({}).then(async function(){
+            htmxRequest({
+              url: url,
+              method: 'DELETE',
+              target: `#li_node_${id}`
+            }).then(({event, data}) => {
+                event.detail.target.remove()
+                showNotification({type: typeSuccess, message:data.message})
+            }).catch(({event, data}) => {
+                showNotification({message:data.error})
+            });
+        })
     }
-  })
-
-  document.addEventListener('htmx:responseError', function(event) {
-    if (event.detail.elt.getAttribute('trigger') === 'delete_node_{{id}}') {
-      showNotification({message: JSON.parse(event.detail.xhr.response).error})
-    }
-  });
-
-  document.addEventListener("htmx:afterRequest", function(event) {
-      if (event.detail.elt.getAttribute('trigger')=="delete_node_{{id}}" && event.detail.successful) {
-            event.preventDefault();
-            event.detail.target.remove()
-            showNotification({
-              type: typeSuccess,
-              message: "Success, The data has deleted successfuly."
-            })
-            event.stopPropagation();
-      }
-  });
 
 </script>

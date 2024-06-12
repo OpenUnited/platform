@@ -63,15 +63,12 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
         challenges = Challenge.objects.filter(product=product, status=Challenge.ChallengeStatus.ACTIVE)
-        product_role_assignments = ProductRoleAssignment.objects.filter(
-            models.Q(product=product) & ~models.Q(role=ProductRoleAssignment.CONTRIBUTOR)
-        )
+
+        can_modify_product = False
         if self.request.user.is_authenticated:
-            context["can_modify_product"] = product_role_assignments.filter(person=self.request.user.person).exists()
+            can_modify_product = utils.has_product_modify_permission(self.request.user, product)
 
-        else:
-            context["can_modify_product"] = False
-
+        context["can_modify_product"] = can_modify_product
         context["challenges"] = challenges
         context["tree_data"] = [
             utils.serialize_tree(node) for node in ProductArea.get_root_nodes().filter(product_tree=None)
@@ -342,7 +339,7 @@ class ProductAreaDetailDeleteView(View):
             return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
 
         product_area.delete()
-        return JsonResponse({"message": "The node has been deleted successfully"}, status=204)
+        return JsonResponse({"message": "The node has been deleted successfully"}, status=200)
 
 
 class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
@@ -754,6 +751,7 @@ class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Updat
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        initial = {}
         if self.object.content_type_id == ContentType.objects.get_for_model(self.request.user.person).id:
             initial_make_me_owner = self.object.object_id == self.request.user.id
             initial = {"make_me_owner": initial_make_me_owner}
