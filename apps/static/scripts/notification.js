@@ -80,19 +80,13 @@ const authPopUp = (event, signUpUrl, signInUrl) => {
 }
 
 
-// function claimConfirm(event, bounty_id, agreement_status, termConditionUrl) {
 function claimConfirm(event, termConditionUrl) {
-  // if (!agreement_status) {
-  //   // alert("need to accept agreement...")
-  //   console.log(bounty_id)
-  //   document.querySelector(".modal-wrap").classList.remove("hidden");
-  //   var input_clicked_bounty = document.getElementById("clicked_bounty");
-
-  //   if(input_clicked_bounty.value == "")
-  //     input_clicked_bounty.value = bounty_id;
-  // }
-  // else {
-
+  let agreementStatus = document.getElementById("clicked_bounty").getAttribute("agreement-status");
+  if (!agreementStatus) {
+    document.querySelector(".modal-wrap").classList.remove("hidden");
+    document.getElementById("clicked_bounty").value = event.target.id;
+  }
+  else {
     alertify.confirm('Bounty Claim', `
     <hr><br>
     <form class="w-full confirm-form">
@@ -133,6 +127,6 @@ function claimConfirm(event, termConditionUrl) {
       }
     }, function () { }).set('labels', { ok: 'Request claim', cancel: 'Cancel' })
 
-  // }
+  }
 
 }

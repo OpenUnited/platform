@@ -32,8 +32,8 @@ from .models import (
     Initiative,
     Product,
     ProductArea,
-    ProductContributorAgreementTemplate,
     ProductContributorAgreement,
+    ProductContributorAgreementTemplate,
 )
 
 
@@ -560,13 +560,14 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
         person = user.person if user.is_authenticated else None
 
         agreement_template = ProductContributorAgreementTemplate.objects.filter(product=challenge.product)
-        agreement_content = ""
-        if agreement_template.count():
-            agreement_content = agreement_template.first().content
+        if agreement_template.exists():
+            agreement_template = agreement_template.first()
+        else:
+            agreement_template = None
 
         contributor_agreement_status = False
         if person.contributor_agreement.filter(agreement_template__product=challenge.product).count():
-            contributor_agreement_status = True       
+            contributor_agreement_status = True
 
         for bounty in bounties:
             data = {
@@ -612,7 +613,7 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
         context["bounty_data"] = extra_data
         context["does_have_permission"] = utils.has_product_modify_permission(user, context.get("product"))
         context["agreement_status"] = contributor_agreement_status
-        context["agreement_content"] = agreement_content
+        context["agreement_template"] = agreement_template
         return context
 
 

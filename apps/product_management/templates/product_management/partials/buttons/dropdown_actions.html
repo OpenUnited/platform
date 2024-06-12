@@ -57,23 +57,14 @@
 
     document.addEventListener('htmx:confirm', function (event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {
-            console.log('htmx:confirm.....,', {{bounty.pk}})
-            var agreement_status = false;
-            if(event.detail.elt.getAttribute('agreement-status'))
-                agreement_status = true;
             event.preventDefault();
-            console.log("=====", agreement_status)
-            claimConfirm(event, {{bounty.pk}}, agreement_status, "{{ url('terms-of-use') }}")
+            {% if agreement_template %}
+            claimConfirm(event, "{{ url('contributor-agreement-template-detail', args=(bounty.challenge.product.slug, agreement_template.id)) }}")
+            {% else %}
+            claimConfirm(event, "#")
+            {% endif %}
         }
     })
-
-    // document.addEventListener('htmx:confirm', function (event) {
-    //     if (event.detail.elt.getAttribute('claim-bounty')) {
-    //         alert(2)
-    //         event.preventDefault()
-    //         claimConfirm(event, "{{ url('terms-of-use') }}")
-    //     }
-    // })
 
     document.addEventListener('htmx:responseError', function(event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {

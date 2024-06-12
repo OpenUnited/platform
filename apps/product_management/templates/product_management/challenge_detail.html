@@ -95,10 +95,10 @@
                 <div class="relative overflow-y-auto p-4 h-[400px]">
                     <div class="mt-10">
                         {% autoescape off %}
-                        {{ agreement_content }}
+                        {{ agreement_template.content }}
                         {% endautoescape %}
                     </div>
-                   
+
                 </div>
 
                 <div class="max-w-full">
@@ -115,10 +115,10 @@
                 </div>
 
             </div>
-            
+
         </div>
     </div>
-    <input id="clicked_bounty" type="hidden" value="">
+    <input id="clicked_bounty" type="hidden" value="" {% if agreement_status %}agreement-status="true"{% endif %}>
 </div>
 
 <script>
@@ -130,10 +130,10 @@ modalCloseBtn.addEventListener("click", () => {
 
 function acceptAgreement() {
     document.querySelector(".modal-wrap").classList.add("hidden");
-    let clicked_bounty_id = document.getElementById("clicked_bounty").value;
-    // claimConfirm(event, true, "")
-    console.log(clicked_bounty_id)
-    htmx.trigger(`#claim_request_${clicked_bounty_id}`, "clicked")
+    let inputClickedBounty = document.getElementById("clicked_bounty");
+    let clickedBountyId = inputClickedBounty.value;
+    inputClickedBounty.setAttribute("agreement-status", "true");
+    htmx.trigger(`#${clickedBountyId}`, "click");
 }
 
 </script>
