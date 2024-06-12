@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- tailwind version 3.3.2 -->
-    <!-- <link rel="stylesheet" href="{{ static('styles/tailwind.css') }}"> -->
+    <link rel="stylesheet" href="{{ static('styles/tailwind.css') }}">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <link rel="stylesheet" href="{{ static('styles/styles.css') }}">
 
@@ -21,23 +21,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
     <link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" rel="stylesheet">
 
-    <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              dark: '#181826',
-              'light-gray': '#D3D9E1',
-              'gray-dark': '#a3acb9',
-              'light-blue': '#f0f9ff',
-              'light-indigo': 'rgb(54 42 255 / 8%)'
-            }
-          }
-        }
-      }
-    </script>
-    
     {% block media %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
@@ -57,7 +40,6 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 
     {% block scripts %}{% endblock %}
 
