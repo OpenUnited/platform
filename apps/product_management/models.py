@@ -471,7 +471,7 @@ class Bug(TimeStampMixin):
 class ProductContributorAgreementTemplate(TimeStampMixin):
     product = models.ForeignKey(
         "product_management.Product",
-        related_name="product_contributor_agreements",
+        related_name="contributor_agreement_templates",
         on_delete=models.CASCADE,
     )
     title = models.CharField(max_length=256)
@@ -499,6 +499,6 @@ class ProductContributorAgreement(TimeStampMixin):
     person = models.ForeignKey(
         to="talent.Person",
         on_delete=models.CASCADE,
-        related_name="person_contributor_agreement",
+        related_name="contributor_agreement",
     )
     accepted_at = models.DateTimeField(auto_now_add=True, null=True)

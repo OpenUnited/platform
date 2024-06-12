@@ -57,17 +57,24 @@
 
     document.addEventListener('htmx:confirm', function (event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {
-            event.preventDefault()
-            claimConfirm(event, "{{ url('terms-of-use') }}")
+            console.log('htmx:confirm.....,', {{bounty.pk}})
+            var agreement_status = false;
+            if(event.detail.elt.getAttribute('agreement-status'))
+                agreement_status = true;
+            event.preventDefault();
+            console.log("=====", agreement_status)
+            claimConfirm(event, {{bounty.pk}}, agreement_status, "{{ url('terms-of-use') }}")
         }
     })
 
-    document.addEventListener('htmx:confirm', function (event) {
-        if (event.detail.elt.getAttribute('claim-bounty')) {
-            event.preventDefault()
-            claimConfirm(event, "{{ url('terms-of-use') }}")
-        }
-    })
+    // document.addEventListener('htmx:confirm', function (event) {
+    //     if (event.detail.elt.getAttribute('claim-bounty')) {
+    //         alert(2)
+    //         event.preventDefault()
+    //         claimConfirm(event, "{{ url('terms-of-use') }}")
+    //     }
+    // })
+
     document.addEventListener('htmx:responseError', function(event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {
           showNotification({message: JSON.parse(event.detail.xhr.response).errors.expected_finish_date})
@@ -89,4 +96,4 @@
             }
         }
     });
-    </script>
+</script>
