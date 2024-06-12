@@ -22,7 +22,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
 
     bounty_claim_button = page.get_bounty_claim_button(bounty.id)
     bounty_claim_button.click()
-
+    
     page_context.wait_for_timeout(500)
 
     future_date = datetime.today() + timedelta(days=10)
@@ -37,7 +37,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
 
     page.request_claim_button.click()
 
-    page_context.wait_for_timeout(1500)
+    page_context.wait_for_timeout(5000)
     print("++++++++++++++++++",  bounty.refresh_from_db())
     print("start loop===================:")
     for i in  BountyClaim.objects.all():
