@@ -34,9 +34,9 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page.expected_submission_date.type(month)
     page.expected_submission_date.type(year)
     page.terms_check_box.check()
-
+    page_context.wait_for_timeout(500)
     page.request_claim_button.click()
-
+    print(page.content())
     page_context.wait_for_timeout(5000)
     print("++++++++++++++++++",  bounty.refresh_from_db())
     print("start loop===================:")
