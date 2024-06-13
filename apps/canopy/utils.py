@@ -135,5 +135,6 @@ def add_root_node_helper(request, tree_id, context):
     context["depth"] = int(request.POST.get("depth", 0)) + 1
     context["margin_left"] = int(request.POST.get("margin_left", 0))
     context["can_modify_product"] = True
+    context["node"] = [common_utils.serialize_tree(product_area)]
     context["id"] = product_area.pk
     return render(request, "product_tree/components/partials/add_node_partial.html", context)
