@@ -32,6 +32,7 @@ from .models import (
     Initiative,
     Product,
     ProductArea,
+    ProductContributorAgreement,
     ProductContributorAgreementTemplate,
 )
 
@@ -555,6 +556,16 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
         user = self.request.user
         person = user.person if user.is_authenticated else None
 
+        agreement_template = ProductContributorAgreementTemplate.objects.filter(product=challenge.product)
+        if agreement_template.exists():
+            agreement_template = agreement_template.first()
+        else:
+            agreement_template = None
+
+        contributor_agreement_status = False
+        if person.contributor_agreement.filter(agreement_template__product=challenge.product).count():
+            contributor_agreement_status = True
+
         for bounty in bounties:
             data = {
                 "bounty": bounty,
@@ -598,6 +609,8 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
 
         context["bounty_data"] = extra_data
         context["does_have_permission"] = utils.has_product_modify_permission(user, context.get("product"))
+        context["agreement_status"] = contributor_agreement_status
+        context["agreement_template"] = agreement_template
         return context
 
 
@@ -712,6 +725,17 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance.person = request.user.person
         instance.status = BountyClaim.Status.REQUESTED
         instance.save()
+
+        contributor_agreement_templates = instance.bounty.challenge.product.contributor_agreement_templates.all()
+        if contributor_agreement_templates.exists():
+            agreement_template = contributor_agreement_templates.first()
+            if not ProductContributorAgreement.objects.filter(
+                agreement_template=agreement_template, person=instance.person
+            ).exists():
+                contributor_agreement = ProductContributorAgreement()
+                contributor_agreement.agreement_template = agreement_template
+                contributor_agreement.person = instance.person
+                contributor_agreement.save()
 
         return render(
             request,

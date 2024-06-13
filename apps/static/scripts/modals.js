@@ -10,7 +10,8 @@ const btnModalClose = document.querySelector(".btn-modal__close");
 
 
 if(modalWrap) {
-  modalWrap.querySelector("iframe").src = "";
+  if(modalWrap.querySelector("iframe"))
+    modalWrap.querySelector("iframe").src = "";
 }
 
 videoBtnsOpen.forEach((btn) => {

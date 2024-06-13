@@ -22,7 +22,7 @@ class DateInput(forms.DateInput):
 
 
 class BountyClaimForm(forms.ModelForm):
-    are_terms_accepted = forms.BooleanField(label=_("I accept the terms and conditions"))
+    is_agreement_accepted = forms.BooleanField(label=_("I have read and agree to the Contribution Agreement"))
 
     class Meta:
         model = BountyClaim
