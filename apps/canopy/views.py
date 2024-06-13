@@ -93,13 +93,13 @@ def add_root_node(request, tree_id):
         context["margin_left"] = int(request.POST.get("margin_left", 0))
         context["can_modify_product"] = True
         context["id"] = product_area.pk
-        return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
+        return render(request, "product_tree/components/partials/add_node_partial.html", context)
 
     context["can_modify_product"] = True
     context["depth"] = int(request.POST.get("depth", 0)) + 1
     context["tree_id"] = tree_id
     context["id"] = str(uuid.uuid4())[:8]
-    return render(request, "unauthenticated_tree/helper/create_root_node_partial.html", context)
+    return render(request, "product_tree/components/partials/create_root_node_partial.html", context)
 
 
 def add_node(request, parent_id):
@@ -115,7 +115,7 @@ def add_node(request, parent_id):
         context["depth"] = int(request.POST.get("depth", 0))
         context["margin_left"] = int(request.POST.get("margin_left", 0))
         context["can_modify_product"] = True
-        return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
+        return render(request, "product_tree/components/partials/add_node_partial.html", context)
 
     context["id"] = str(uuid.uuid4())[:8]
     context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
@@ -123,7 +123,7 @@ def add_node(request, parent_id):
     context["parent_id"] = product_area.id
     context["product_area"] = product_area
     context["can_modify_product"] = True
-    return render(request, "unauthenticated_tree/helper/create_node_partial.html", context)
+    return render(request, "product_tree/components/partials/create_node_partial.html", context)
 
 
 def delete_node(request, pk):
@@ -136,7 +136,7 @@ def delete_node(request, pk):
     context = {
         "message": "The node has deleted successfully",
         "parent_id": parent.id if parent else None,
-        "prarent_count": parent.get_children_count() if parent else 0,
+        "parent_child_count": parent.get_children_count() if parent else 0,
     }
     return JsonResponse(context)
 
@@ -175,7 +175,7 @@ def update_node(request, pk):
             "depth": int(request.POST.get("depth", 0)),
             "can_modify_product": True,
         }
-        return render(request, "unauthenticated_tree/helper/add_node_partial.html", context)
+        return render(request, "product_tree/components/partials/add_node_partial.html", context)
 
     else:
         context = {
@@ -185,4 +185,4 @@ def update_node(request, pk):
             "product_area": product_area,
             "can_modify_product": True,
         }
-        return render(request, "unauthenticated_tree/helper/update_node_partial.html", context)
+        return render(request, "product_tree/components/partials/update_node_partial.html", context)
