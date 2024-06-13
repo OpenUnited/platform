@@ -7,7 +7,7 @@ from django.views import generic
 
 from apps.canopy import utils
 from apps.common import utils as common_utils
-from apps.product_management import forms as mgt_forms, models as mgt
+from apps.product_management import models as mgt
 
 
 def introduction(request):
@@ -83,17 +83,7 @@ def reset_tree(request):
 def add_root_node(request, tree_id):
     context = {}
     if request.method == "POST":
-        form = mgt_forms.ProductAreaForm(request.POST)
-        if not form.is_valid():
-            return JsonResponse({"error": "Something went wrong."}, status=400)
-
-        product_area = mgt.ProductArea.add_root(**form.cleaned_data, product_tree_id=tree_id)
-        context["product_area"] = product_area
-        context["depth"] = int(request.POST.get("depth", 0)) + 1
-        context["margin_left"] = int(request.POST.get("margin_left", 0))
-        context["can_modify_product"] = True
-        context["id"] = product_area.pk
-        return render(request, "product_tree/components/partials/add_node_partial.html", context)
+        return utils.add_root_node_helper(request, tree_id, context)
 
     context["can_modify_product"] = True
     context["depth"] = int(request.POST.get("depth", 0)) + 1
@@ -106,17 +96,7 @@ def add_node(request, parent_id):
     product_area = mgt.ProductArea.objects.get(pk=parent_id)
     context = {}
     if request.method == "POST":
-        form = mgt_forms.ProductAreaForm(request.POST)
-        if not form.is_valid():
-            return JsonResponse({"error": "Something went wrong."}, status=400)
-
-        context["product_area"] = product_area.add_child(**form.cleaned_data)
-        context["parent"] = product_area
-        context["depth"] = int(request.POST.get("depth", 0))
-        context["margin_left"] = int(request.POST.get("margin_left", 0))
-        context["can_modify_product"] = True
-        return render(request, "product_tree/components/partials/add_node_partial.html", context)
-
+        return utils.add_node_helper(request, product_area, context)
     context["id"] = str(uuid.uuid4())[:8]
     context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
     context["depth"] = int(request.GET.get("depth", 0)) + 1
@@ -128,7 +108,7 @@ def add_node(request, parent_id):
 
 def delete_node(request, pk):
     product_area = mgt.ProductArea.objects.get(pk=pk)
-    parent = product_area.get_parent() if product_area.get_parent() else None
+    parent = product_area.get_parent() or None
 
     if product_area.numchild > 0:
         return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
@@ -144,45 +124,12 @@ def delete_node(request, pk):
 def update_node(request, pk):
     product_area = mgt.ProductArea.objects.get(pk=pk)
     if request.method == "POST":
-        form = mgt_forms.ProductAreaForm(request.POST)
-        has_dropped = bool(request.POST.get("has_dropped", False))
-        parent_id = request.POST.get("parent_id")
-
-        has_cancelled = bool(request.POST.get("cancelled", False))
-        if not has_cancelled and has_dropped and parent_id:
-            parent = mgt.ProductArea.objects.get(pk=parent_id)
-            product_area.move(parent, "last-child")
-            talent_target_parent = product_area.get_parent() or 0
-            context = {
-                "child_count": (
-                    talent_target_parent.get_children_count()
-                    if isinstance(talent_target_parent, mgt.ProductArea)
-                    else 0
-                ),
-                "target_parent_id": talent_target_parent.id if talent_target_parent else None,
-            }
-            return JsonResponse(context)
-
-        if not has_cancelled and form.is_valid():
-            product_area.name = form.cleaned_data["name"]
-            product_area.description = form.cleaned_data["description"]
-            product_area.save()
-
-        context = {
-            "product_area": product_area,
-            "parent_id": parent_id or 0,
-            "descendants": common_utils.serialize_tree(product_area)["children"],
-            "depth": int(request.POST.get("depth", 0)),
-            "can_modify_product": True,
-        }
-        return render(request, "product_tree/components/partials/add_node_partial.html", context)
-
-    else:
-        context = {
-            "margin_left": int(request.GET.get("margin_left", 0)) + 4,
-            "parent_id": product_area.id,
-            "depth": int(request.GET.get("depth", 0)),
-            "product_area": product_area,
-            "can_modify_product": True,
-        }
-        return render(request, "product_tree/components/partials/update_node_partial.html", context)
+        return utils.update_node_helper(request, product_area)
+    context = {
+        "margin_left": int(request.GET.get("margin_left", 0)) + 4,
+        "parent_id": product_area.id,
+        "depth": int(request.GET.get("depth", 0)),
+        "product_area": product_area,
+        "can_modify_product": True,
+    }
+    return render(request, "product_tree/components/partials/update_node_partial.html", context)
