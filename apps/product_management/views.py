@@ -13,6 +13,7 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, RedirectView, TemplateView, UpdateView
 
+from apps.canopy import utils as canopy_utils
 from apps.commerce.models import Organisation
 from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
@@ -183,7 +184,7 @@ class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
 class ProductInitiativesView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_initiatives.html"
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         initiatives = Initiative.objects.filter(product=context["product"]).annotate(
             total_points=models.Sum(
@@ -220,15 +221,15 @@ class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
         return context
 
     def form_valid(self, form, **kwargs):
+        context = self.get_context_data(**kwargs)
         try:
             parent = ProductArea.objects.get(pk=self.request.POST.get("parent_id"))
             new_node = parent.add_child(**form.cleaned_data)
         except ProductArea.DoesNotExist:
             new_node = ProductArea.add_root(**form.cleaned_data)
 
-        context = self.get_context_data(**kwargs)
         context["product_area"] = new_node
-        context["node"] = new_node
+        context["node"] = [utils.serialize_tree(new_node)]
         context["depth"] = int(self.request.POST.get("depth", 0))
         return render(self.request, self.get_template_names(), context)
 
@@ -275,33 +276,8 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
         return context
 
     def form_valid(self, form):
-        request = self.request
         context = self.get_context_data()
-        product_area = context["product_area"]
-        product = context["product"]
-
-        has_cancelled = bool(request.POST.get("cancelled", False))
-        has_dropped = bool(request.POST.get("has_dropped", False))
-        parent_id = request.POST.get("parent_id")
-
-        if not request.htmx:
-            return super().form_save(form)
-        if not has_cancelled and has_dropped and parent_id:
-            parent = ProductArea.objects.get(pk=parent_id)
-            product_area.move(parent, "last-child")
-            return JsonResponse({})
-
-        if not has_cancelled and form.is_valid():
-            product_area.name = form.cleaned_data["name"]
-            product_area.description = form.cleaned_data["description"]
-            product_area.save()
-
-        context["parent_id"] = int(request.POST.get("parent_id", 0))
-        context["depth"] = int(request.POST.get("depth", 0))
-        context["descendants"] = utils.serialize_tree(product_area)["children"]
-        context["product"] = product
-        template_name = "product_tree/components/partials/add_node_partial.html"
-        return render(request, template_name, context)
+        return canopy_utils.update_node_helper(context["product_area"])
 
 
 class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
@@ -325,49 +301,6 @@ class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
         capability_root_trees = ProductArea.get_root_nodes().filter(product_tree=None)
         context["tree_data"] = [utils.serialize_tree(node) for node in capability_root_trees]
         return context
-
-
-def update_node(request, product_slug, pk):
-    product_area = ProductArea.objects.get(pk=pk)
-    context = {
-        "product_area": product_area,
-        "product_slug": product_slug,
-        "node": product_area,
-    }
-    if request.method == "POST":
-        form = forms.ProductAreaForm(request.POST)
-        has_cancelled = bool(request.POST.get("cancelled", False))
-        has_dropped = bool(request.POST.get("has_dropped", False))
-
-        parent_id = request.POST.get("parent_id")
-        if not has_cancelled and has_dropped and parent_id:
-            parent = ProductArea.objects.get(pk=parent_id)
-            product_area.move(parent, "last-child")
-            return JsonResponse({})
-
-        if not has_cancelled and form.is_valid():
-            product_area.name = form.cleaned_data["name"]
-            product_area.description = form.cleaned_data["description"]
-            product_area.save()
-
-        context["parent_id"] = int(request.POST.get("parent_id", 0))
-        context["depth"] = int(request.POST.get("depth", 0))
-        context["descendants"] = utils.serialize_tree(product_area)["children"]
-        context["product"] = Product.objects.first()
-        template_name = "product_tree/components/partials/add_node_partial.html"
-
-    elif request.method == "GET":
-        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
-        context["depth"] = int(request.GET.get("depth", 0))
-        template_name = "product_tree/components/partials/update_node_partial.html"
-
-    elif request.method == "DELETE":
-        if product_area.numchild > 0:
-            return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
-        ProductArea.objects.filter(pk=pk).delete()
-        return JsonResponse({"message:": "The node has deleted successfully"}, status=204)
-
-    return render(request, template_name, context)
 
 
 class ProductIdeasAndBugsView(utils.BaseProductDetailView, TemplateView):

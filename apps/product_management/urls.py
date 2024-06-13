@@ -190,11 +190,6 @@ urlpatterns += [
         name="product_tree",
     ),
     path(
-        "update-node/<str:product_slug>/<int:pk>",
-        views.update_node,
-        name="update_node",
-    ),
-    path(
         "<str:product_slug>/product-areas",
         views.ProductAreaCreateView.as_view(),
         name="product_area",
