@@ -44,7 +44,8 @@ class ProductTree(common.AbstractModel):
         return self.name
 
 
-class ProductArea(MP_Node, common.AttachmentAbstract):
+class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
+    id = models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, blank=True, null=True, default="")
     video_link = models.URLField(max_length=255, blank=True, null=True)
