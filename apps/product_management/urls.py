@@ -210,11 +210,6 @@ urlpatterns += [
         name="product_area_detail",
     ),
     path(
-        "<str:product_slug>/product-areas/<int:pk>/delete",
-        views.ProductAreaDetailDeleteView.as_view(),
-        name="product_area_delete",
-    ),
-    path(
         "<str:product_slug>/idea-list",
         views.ProductIdeaListView.as_view(),
         name="product_idea_list",
