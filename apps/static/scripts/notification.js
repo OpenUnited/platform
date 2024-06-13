@@ -116,6 +116,8 @@ function claimConfirm(event, termConditionUrl){
   }, function () {}).set('labels', {ok: 'Request claim', cancel: 'Cancel'})
 }
 
+window.typeSuccess = typeSuccess
+window.typeError = typeError
 window.showConfirm = showConfirm
 window.openVideoModal = openVideoModal
 window.showNotification = showNotification
