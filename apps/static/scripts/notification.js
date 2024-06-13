@@ -31,7 +31,6 @@ const showNotification = (data) =>{
     }
   }
 
-
 const showConfirm = (data) =>{
   const type =  data.type|| "red"
   const message = data.message|| "Are you sure you want to delete this item?"
@@ -41,8 +40,6 @@ const showConfirm = (data) =>{
       resolve(confirmed)}, function(){});
 })
 }
-
-
 
 const authPopUp = (event, signUpUrl, signInUrl) =>{
   const currentPageUrl = window.location.href;
@@ -77,7 +74,6 @@ const authPopUp = (event, signUpUrl, signInUrl) =>{
   }).show()
 
 }
-
 
 function claimConfirm(event, termConditionUrl){
   alertify.confirm('Bounty Claim', `
@@ -119,3 +115,9 @@ function claimConfirm(event, termConditionUrl){
       }
   }, function () {}).set('labels', {ok: 'Request claim', cancel: 'Cancel'})
 }
+
+window.showConfirm = showConfirm
+window.openVideoModal = openVideoModal
+window.showNotification = showNotification
+window.authPopUp = authPopUp
+window.claimConfirm = claimConfirm
