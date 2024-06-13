@@ -1,0 +1,49 @@
+
+{% import "product_tree/components/main/macros/index.html" as tree_macros %}
+
+<li draggable="true" ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{product_area.id}}" data-id="{{product_area.id}}">
+    <div  class="flex flex-col items-start group/item block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 w-full">
+        <div class="flex justify-between w-full gap-2 group/item inline-flex">
+            <div class="flex justify-start">
+                <button id="toggleVisibility_{{product_area.id}}" onclick="toggleVisibility(event)" class="mr-2 toggleVisibility hidden">
+                    <i class="fa fa-chevron-circle-down text-gray-400 icon-arrow" aria-hidden="true"></i>
+                </button>
+
+                <a class="flex justify-between"
+                    {% if  product_slug %}
+                        href="{{ url('update_node', args=(product_slug, product_area.id,)) }}"
+                    {% else %}
+                        href="{{ url('canopy:update_node', args=(product_area.id,)) }}"
+                    {% endif %}
+                >
+                    <span class="w-full">
+                        {% include "product_tree/components/main/macros/drag.html" %} {{ product_area.name }}
+                    </span>
+
+                    {% with child=product_area %}
+                        {% include "product_tree/components/main/macros/video.html" %}
+                    {% endwith %}
+                </a>
+            </div>
+            {% with id=product_area.id, depth=depth, can_modify_product=can_modify_product%}
+                {% include "product_tree/components/main/macros/action_buttons.html" %}
+            {% endwith %}
+        </div>
+
+
+        <div class="description view-node-group text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+            {{product_area.description}}
+        </div>
+    </div>
+
+    <ul class="pl-{{depth * 4}}" ondrop="drop(event)"  id="li_{{product_area.id}}_ul_child">
+
+        {{ tree_macros.generate_product_area_tree(
+            descendants,
+            can_modify_product=can_modify_product,
+            slug=slug,
+            depth=depth + 1
+        ) }}
+    </ul>
+
+</li>
