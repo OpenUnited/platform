@@ -12,7 +12,11 @@
                         {% endwith %}
 
                         {% include "product_tree/components/main/macros/drag.html" %}
-                        {{ child.name }}
+
+                        {% with product_slug=slug, child=child, can_modify_product=can_modify_product %}
+                            {% include "product_tree/components/main/macros/tree_name.html" %}
+                        {% endwith %}
+
 
                         {% with child=child %}
                             {% include "product_tree/components/main/macros/video.html" %}
