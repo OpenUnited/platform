@@ -1,5 +1,12 @@
     <li draggable="false" id="li_node_{{id}}">
-        <form method="post" id="form_id_{{id}}" hx-post="{{ url('canopy:add_node', args=(product_area.id,) ) }}" hx-target="#li_{{parent_id}}_ul_child" hx-swap="afterbegin">
+        <form method="post" id="form_id_{{id}}"
+            {% if product_slug %}
+                hx-post="{{ url('product_area', args=(product_slug,) ) }}"
+            {% else %}
+                hx-post="{{ url('canopy:add_node', args=(product_area.id,) ) }}"
+            {% endif %}
+            hx-target="#li_node_{{id}}" hx-swap="outerHTML"
+        >
             <div class="p-2 pl-2 pr-2 mt-1 block border border-gray-300 rounded-md text-blue-500 mb-2">
               <div class="w-full mb-2">
                 <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Name</label>
@@ -25,16 +32,12 @@
         <ul ondrop="drop(event)" class="pl-0" id="li_{{id}}_ul_child">
 
         </ul>
-
-        <script>
-          document.addEventListener("htmx:afterOnLoad", function(event) {
-            var form = document.getElementById("form_id_{{id}}");
-            if (event.detail.elt === form) {
-                const ExpandButton = document.getElementById("toggleVisibility_{{parent_id}}")
-                ExpandButton.querySelector(".icon-arrow").setAttribute("data-icon","circle-chevron-down");
-                ExpandButton.classList.remove("hidden")
-                form.closest('li').remove();
-            }
-        });
-      </script>
     </li>
+
+  <script>
+      document.addEventListener("htmx:afterOnLoad", function(event) {
+            const ExpandButton = document.getElementById("toggleVisibility_{{parent_id}}")
+            ExpandButton.querySelector(".icon-arrow").setAttribute("data-icon","circle-chevron-down");
+            ExpandButton.classList.remove("hidden")
+    });
+  </script>

@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% import "unauthenticated_tree/helper/tree_macros.html" as tree_macros %}
 
 {% block content %}
 
@@ -7,33 +6,10 @@
     <form id="reset_tree" action="{{ url('canopy:reset_tree') }}"></form>
 
     <div id="product_tree"  class="w-full sm:w-full md:w-3/5 flex flex-col">
-        {% include "unauthenticated_tree/helper/update_tree.html" %}
+        {% with product_tree=product_tree %}
+            {% include "product_tree/index.html" %}
+        {% endwith %}
 
-        <div class="flex justify-between w-full mb-2 mt-2">
-            <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product_tree_name">
-                <span onclick="editTreeName(event)" class="mr-2 cursor-pointer text-indigo-500 text-2xl" id="shareable_product_name"> {{product_tree.name}} </span>
-
-                <button onclick="resetTree(event)" class="group text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white relative">
-                    <i class="fa fa-bolt" aria-hidden="true"></i>
-                    <span class="opacity-0 w-[160px]  bg-black text-white text-center text-xs rounded py-2 px-2 absolute z-10 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2">Create new Product Tree</span>
-                </button>
-
-            </h3>
-        </div>
-
-
-        <div class="flex justify-between w-full mb-2 mt-2">
-            {% include "product_management/tree_helper/search_component.html" %}
-            <div>
-                {% include "unauthenticated_tree/helper/add_product_area_button.html" %}
-                {% include "unauthenticated_tree/helper/tooltip.html" %}
-            </div>
-        </div>
-        {% include "product_management/tree_helper/search_empty.html" %}
-
-        <ul ondrop="drop(event)" draggable="false" class="pl-0" id="">
-            {{ tree_macros.generate_product_area_tree(tree_data, can_modify_product) }}
-        </ul>
 
         <!-- Container to hold the new form -->
         <div id="form_container" class="w-full"></div>
@@ -56,89 +32,8 @@
             }
         }
     });
-    function resetTree(event){
-        showConfirm({"message":"Create a new Product Tree and lose your changes?"}).then(function(){
-            document.getElementById("reset_tree").submit()
-        })
-    }
-    function editTreeName(event){
-        document.getElementById('shareable_product_tree').classList.remove('hidden')
-        document.getElementById('shareable_product_tree_name').classList.add('hidden')
-    }
-    function copyReferralLink() {
-        const copyText = document.getElementById("sharable_link");
-        navigator.clipboard.writeText(copyText.value);
-        var tooltip = document.getElementById("myTooltip");
-        tooltip.innerHTML = "Copied!";
-    }
 
-    function toggleVisibility(event) {
-        event.preventDefault()
-        const targetElement = event.target.closest("li");
-        const ul = targetElement.querySelector("ul");
-        const icon = targetElement.querySelector(".icon-arrow");
-        if (icon.getAttribute("data-icon")=="circle-chevron-down"){
-            icon.setAttribute("data-icon","circle-chevron-right");
-            ul.classList.add("hidden");
-        }
-        else{
-            icon.setAttribute("data-icon","circle-chevron-down");
-            ul.classList.remove("hidden");
-        }
-    }
 
-    function drop(event) {
-        var data = event.dataTransfer.getData("text");
-        var draggedElement = document.getElementById(data)
-        var targetElement = event.target.closest("li")
-
-        var existingUl = targetElement.querySelector("ul");
-        var parentUl = targetElement.closest("ul");
-
-        var parentClass = parentUl.className;
-
-        var currentMarginLeft = parseInt(parentClass.match(/pl-([0-9]+)/)[1])
-        var childMargin = currentMarginLeft + 4
-        var childClass = parentClass.replace(/pl-[0-9]+/, "pl-" + childMargin);
-
-        if (!existingUl) {
-            existingUl = document.createElement("ul");
-            existingUl.className = childClass;
-            targetElement.appendChild(existingUl);
-        }
-        existingUl.appendChild(draggedElement);
-        const targetId = draggedElement.getAttribute("data-id")
-        const parentId = targetElement.getAttribute("data-id")
-
-        targetElement.querySelector(".toggleVisibility").classList.remove("hidden")
-
-        htmxRequest({
-            url: `{{ url('canopy:update_node', args=(123,) ) }}`.replace("123", targetId),
-            method: 'POST',
-            values: {
-                "has_dropped": true,
-                "parent_id": parentId
-            }
-          }).then(({event, data}) => {
-            const parentButton = document.getElementById(`toggleVisibility_${data.target_parent_id}`)
-            if (parentButton && data.child_count < 1){
-              parentButton.classList.add("hidden");
-            }
-
-          }).catch(({event, data}) => {});
-
-    }
-
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    function drag(event) {
-        event.dataTransfer.setData("text", event.target.id);
-    }
-
-    var treeContainer = document.getElementById("product_tree");
-    var treeNodes = treeContainer.querySelectorAll("li");
 
 </script>
 {% endblock content %}

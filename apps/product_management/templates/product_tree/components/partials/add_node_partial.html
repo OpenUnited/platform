@@ -1,0 +1,6 @@
+
+{% import "product_tree/components/main/macros/index.html" as tree_macros %}
+    {{ tree_macros.generate_product_area_tree(
+        node,
+        can_modify_product=can_modify_product,
+    ) }}

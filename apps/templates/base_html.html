@@ -18,8 +18,9 @@
     <link rel="manifest" href="{{ static ('images/favicon/site.webmanifest') }}">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" rel="stylesheet">
+    <link href="{{static('plugin/alert/css/alertify.min.css')}}" rel="stylesheet">
+    <link rel="icon" href="{{ static ('images/favicon/favicon.ico') }}">
+
 
     <!--This is the right place-->
     <script src="{{ static('scripts/read_more.js') }}"></script>
@@ -40,9 +41,9 @@
     {% block footer %}{% endblock %}
 
 
-    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.12/dist/htmx.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js"></script>
+    <script src="{{ static('plugin/hyperscript/js/_hyperscript.min.js') }}"></script>
+    <script src="{{ static('plugin/htmx/js/htmx.min.js') }}"></script>
+    <script src="{{ static('plugin/font-awesome/js/all.min.js') }}"></script>
 
     {% block scripts %}{% endblock %}
 

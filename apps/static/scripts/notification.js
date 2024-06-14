@@ -31,11 +31,10 @@ const showNotification = (data) => {
   }
 }
 
-
-const showConfirm = (data) => {
-  const type = data.type || "red"
-  const message = data.message || "Are you sure you want to delete this item?"
-  const title = data.title || 'Warning!'
+const showConfirm = (data) =>{
+  const type =  data.type|| "red"
+  const message = data.message|| "Are you sure you want to delete this item?"
+  const title = data.title|| 'Warning!'
   return new Promise((resolve) => {
     alertify.confirm(title, message, function (confirmed) {
       resolve(confirmed)
@@ -130,3 +129,11 @@ function claimConfirm(event, termConditionUrl) {
   }
 
 }
+
+window.typeSuccess = typeSuccess
+window.typeError = typeError
+window.showConfirm = showConfirm
+window.openVideoModal = openVideoModal
+window.showNotification = showNotification
+window.authPopUp = authPopUp
+window.claimConfirm = claimConfirm
