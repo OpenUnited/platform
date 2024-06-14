@@ -245,8 +245,7 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
 
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
-        product_area = self.get_object()
-        return reverse("product_area_update", args=(product_slug, product_area.pk))
+        return reverse("product_tree", args=(product_slug,))
 
     def get_template_names(self):
         request = self.request
@@ -278,7 +277,9 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
 
     def form_valid(self, form):
         context = self.get_context_data()
-        return canopy_utils.update_node_helper(context["product_area"])
+        if not self.request.htmx:
+            return super().form_save(form)
+        return canopy_utils.update_node_helper(self.request, context["product_area"])
 
 
 class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):

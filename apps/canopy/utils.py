@@ -96,8 +96,8 @@ def update_node_helper(request, product_area):
     form = mgt_forms.ProductAreaForm(request.POST)
     has_dropped = bool(request.POST.get("has_dropped", False))
     parent_id = request.POST.get("parent_id")
-
     has_cancelled = bool(request.POST.get("cancelled", False))
+
     if not has_cancelled and has_dropped and parent_id:
         parent = mgt.ProductArea.objects.get(pk=parent_id)
         product_area.move(parent, "last-child")
