@@ -133,6 +133,11 @@ urlpatterns += [
         views.DashboardContributorAgreementTemplateListView.as_view(),
         name="dashboard-contributor-agreement-templates",
     ),
+    path(
+        "dashboard/product/<str:product_slug>/user-management",
+        views.ManageUsersView.as_view(),
+        name="manage-users",
+    ),
 ]
 
 

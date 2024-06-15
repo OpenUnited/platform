@@ -844,7 +844,7 @@ class DashboardView(DashboardBaseView, TemplateView):
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
         product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
-            role=ProductRoleAssignment.CONTRIBUTOR
+            role=ProductRoleAssignment.ProductRoles.CONTRIBUTOR
         )
 
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
@@ -862,7 +862,7 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
         product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
-            role=ProductRoleAssignment.CONTRIBUTOR
+            role=ProductRoleAssignment.ProductRoles.CONTRIBUTOR
         )
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
@@ -885,6 +885,22 @@ class ManageBountiesView(DashboardBaseView, TemplateView):
             ],
         )
         context.update({"bounty_claims": queryset})
+        return context
+
+
+class ManageUsersView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard/manage_users.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("product_slug")
+        product = Product.objects.get(slug=slug)
+
+        product_users = ProductRoleAssignment.objects.filter(product=product).order_by("-role")
+
+        context["product"] = product
+        context["product_users"] = product_users
+
         return context
 
 
