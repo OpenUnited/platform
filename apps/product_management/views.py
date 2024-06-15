@@ -13,6 +13,7 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, RedirectView, TemplateView, UpdateView
 
+from apps.canopy import utils as canopy_utils
 from apps.commerce.models import Organisation
 from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
@@ -32,6 +33,7 @@ from .models import (
     Initiative,
     Product,
     ProductArea,
+    ProductContributorAgreement,
     ProductContributorAgreementTemplate,
 )
 
@@ -63,15 +65,12 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
         context = super().get_context_data(**kwargs)
         product = context["product"]
         challenges = Challenge.objects.filter(product=product, status=Challenge.ChallengeStatus.ACTIVE)
-        product_role_assignments = ProductRoleAssignment.objects.filter(
-            models.Q(product=product) & ~models.Q(role=ProductRoleAssignment.CONTRIBUTOR)
-        )
+
+        can_modify_product = False
         if self.request.user.is_authenticated:
-            context["can_modify_product"] = product_role_assignments.filter(person=self.request.user.person).exists()
+            can_modify_product = utils.has_product_modify_permission(self.request.user, product)
 
-        else:
-            context["can_modify_product"] = False
-
+        context["can_modify_product"] = can_modify_product
         context["challenges"] = challenges
         context["tree_data"] = [
             utils.serialize_tree(node) for node in ProductArea.get_root_nodes().filter(product_tree=None)
@@ -186,7 +185,7 @@ class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
 class ProductInitiativesView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_initiatives.html"
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         initiatives = Initiative.objects.filter(product=context["product"]).annotate(
             total_points=models.Sum(
@@ -202,57 +201,41 @@ class ProductInitiativesView(utils.BaseProductDetailView, TemplateView):
 class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
     model = ProductArea
     form_class = forms.ProductAreaForm
-    template_name = "product_management/tree_helper/create_node_partial.html"
+    template_name = "product_tree/components/partials/create_node_partial.html"
 
     def get_template_names(self):
         if self.request.method == "POST":
-            return ["product_management/tree_helper/add_node_partial.html"]
-        return super().get_template_names()
+            return ["product_tree/components/partials/add_node_partial.html"]
+        elif not self.request.GET.get("parent_id"):
+            return ["product_tree/components/partials/create_root_node_partial.html"]
+        else:
+            return super().get_template_names()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
+        if self.request.method == "GET":
+            context["id"] = str(uuid.uuid4())[:8]
+            context["parent_id"] = self.request.GET.get("parent_id")
+        context["depth"] = self.request.GET.get("depth", 0)
+        context["product_slug"] = self.kwargs.get("product_slug")
         return context
 
-    # @utils.modify_permission_required
-    def post(self, request, **kwargs):
-        form = forms.ProductAreaForm(request.POST)
-        if not form.is_valid():
-            return render(request, self.get_template_names(), form.errors)
-        context = {
-            "product_slug": kwargs.get("product_slug"),
-        }
-        return self.valid_form(request, form, context)
-
-    def valid_form(self, request, form, context):
-        if request.POST.get("parent_id") == "None":
-            new_node = ProductArea.add_root(**form.cleaned_data)
-        else:
-            parent_id = request.POST.get("parent_id")
-            parent = ProductArea.objects.get(pk=parent_id)
-            context["parent_id"] = parent_id
+    def form_valid(self, form, **kwargs):
+        context = self.get_context_data(**kwargs)
+        try:
+            parent = ProductArea.objects.get(pk=self.request.POST.get("parent_id"))
             new_node = parent.add_child(**form.cleaned_data)
+        except ProductArea.DoesNotExist:
+            new_node = ProductArea.add_root(**form.cleaned_data)
+
         context["product_area"] = new_node
-        context["node"] = new_node
-        context["depth"] = int(request.POST.get("depth", 0))
-        return render(request, self.get_template_names(), context)
+        context["node"] = [utils.serialize_tree(new_node)]
+        context["depth"] = int(self.request.POST.get("depth", 0))
+        return render(self.request, self.get_template_names(), context)
 
-    def get(self, request, *args, **kwargs):
-        product_area = ProductArea.objects.first()
-        if request.GET.get("parent_id"):
-            margin_left = int(request.GET.get("margin_left", 0)) + 4
-        else:
-            margin_left = request.GET.get("margin_left", 0)
-
-        context = {
-            "id": str(uuid.uuid4())[:8],
-            "product_area": product_area,
-            "parent_id": request.GET.get("parent_id"),
-            "margin_left": margin_left,
-            "depth": request.GET.get("depth", 0),
-            "product_slug": kwargs.get("product_slug"),
-        }
-        return render(request, self.get_template_names(), context)
+    def form_invalid(self, form):
+        return super().form_invalid(form)
 
 
 class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
@@ -262,13 +245,12 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
 
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
-        product_area = self.get_object()
-        return reverse("product_area_update", args=(product_slug, product_area.pk))
+        return reverse("product_tree", args=(product_slug,))
 
     def get_template_names(self):
         request = self.request
         if request.htmx:
-            return "product_management/tree_helper/update_node_partial.html"
+            return "product_tree/components/partials/update_node_partial.html"
         else:
             return super().get_template_names()
 
@@ -294,33 +276,10 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
         return context
 
     def form_valid(self, form):
-        request = self.request
         context = self.get_context_data()
-        product_area = context["product_area"]
-        product = context["product"]
-
-        has_cancelled = bool(request.POST.get("cancelled", False))
-        has_dropped = bool(request.POST.get("has_dropped", False))
-        parent_id = request.POST.get("parent_id")
-
-        if not request.htmx:
+        if not self.request.htmx:
             return super().form_save(form)
-        if not has_cancelled and has_dropped and parent_id:
-            parent = ProductArea.objects.get(pk=parent_id)
-            product_area.move(parent, "last-child")
-            return JsonResponse({})
-
-        if not has_cancelled and form.is_valid():
-            product_area.name = form.cleaned_data["name"]
-            product_area.description = form.cleaned_data["description"]
-            product_area.save()
-
-        context["parent_id"] = int(request.POST.get("parent_id", 0))
-        context["depth"] = int(request.POST.get("depth", 0))
-        context["descendants"] = utils.serialize_tree(product_area)["children"]
-        context["product"] = product
-        template_name = "product_management/tree_helper/add_node_partial.html"
-        return render(request, template_name, context)
+        return canopy_utils.update_node_helper(self.request, context["product_area"])
 
 
 class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
@@ -335,16 +294,6 @@ class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.Attachmen
         return context
 
 
-class ProductAreaDetailDeleteView(View):
-    def delete(self, request, *args, **kwargs):
-        product_area = ProductArea.objects.get(pk=kwargs.get("pk"))
-        if product_area.numchild > 0:
-            return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
-
-        product_area.delete()
-        return JsonResponse({"message": "The node has been deleted successfully"}, status=204)
-
-
 class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_tree.html"
 
@@ -353,51 +302,7 @@ class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
         context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
         capability_root_trees = ProductArea.get_root_nodes().filter(product_tree=None)
         context["tree_data"] = [utils.serialize_tree(node) for node in capability_root_trees]
-
         return context
-
-
-def update_node(request, pk):
-    product_area = ProductArea.objects.get(pk=pk)
-    context = {
-        "product_area": product_area,
-        "product_slug": product_area.slug,
-        "node": product_area,
-    }
-    if request.method == "POST":
-        form = forms.ProductAreaForm(request.POST)
-        has_cancelled = bool(request.POST.get("cancelled", False))
-        has_dropped = bool(request.POST.get("has_dropped", False))
-
-        parent_id = request.POST.get("parent_id")
-        if not has_cancelled and has_dropped and parent_id:
-            parent = ProductArea.objects.get(pk=parent_id)
-            product_area.move(parent, "last-child")
-            return JsonResponse({})
-
-        if not has_cancelled and form.is_valid():
-            product_area.name = form.cleaned_data["name"]
-            product_area.description = form.cleaned_data["description"]
-            product_area.save()
-
-        context["parent_id"] = int(request.POST.get("parent_id", 0))
-        context["depth"] = int(request.POST.get("depth", 0))
-        context["descendants"] = utils.serialize_tree(product_area)["children"]
-        context["product"] = Product.objects.first()
-        template_name = "product_management/tree_helper/add_node_partial.html"
-
-    elif request.method == "GET":
-        context["margin_left"] = int(request.GET.get("margin_left", 0)) + 4
-        context["depth"] = int(request.GET.get("depth", 0))
-        template_name = "product_management/tree_helper/update_node_partial.html"
-
-    elif request.method == "DELETE":
-        if product_area.numchild > 0:
-            return JsonResponse({"error": "Unable to delete a node with a child."}, status=400)
-        ProductArea.objects.filter(pk=pk).delete()
-        return JsonResponse({"message:": "The node has deleted successfully"}, status=204)
-
-    return render(request, template_name, context)
 
 
 class ProductIdeasAndBugsView(utils.BaseProductDetailView, TemplateView):
@@ -558,6 +463,16 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
         user = self.request.user
         person = user.person if user.is_authenticated else None
 
+        agreement_template = ProductContributorAgreementTemplate.objects.filter(product=challenge.product)
+        if agreement_template.exists():
+            agreement_template = agreement_template.first()
+        else:
+            agreement_template = None
+
+        contributor_agreement_status = False
+        if person.contributor_agreement.filter(agreement_template__product=challenge.product).count():
+            contributor_agreement_status = True
+
         for bounty in bounties:
             data = {
                 "bounty": bounty,
@@ -601,6 +516,8 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
 
         context["bounty_data"] = extra_data
         context["does_have_permission"] = utils.has_product_modify_permission(user, context.get("product"))
+        context["agreement_status"] = contributor_agreement_status
+        context["agreement_template"] = agreement_template
         return context
 
 
@@ -716,6 +633,17 @@ class BountyClaimView(LoginRequiredMixin, View):
         instance.status = BountyClaim.Status.REQUESTED
         instance.save()
 
+        contributor_agreement_templates = instance.bounty.challenge.product.contributor_agreement_templates.all()
+        if contributor_agreement_templates.exists():
+            agreement_template = contributor_agreement_templates.first()
+            if not ProductContributorAgreement.objects.filter(
+                agreement_template=agreement_template, person=instance.person
+            ).exists():
+                contributor_agreement = ProductContributorAgreement()
+                contributor_agreement.agreement_template = agreement_template
+                contributor_agreement.person = instance.person
+                contributor_agreement.save()
+
         return render(
             request,
             "product_management/partials/buttons/delete_bounty_claim_button.html",
@@ -754,6 +682,7 @@ class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Updat
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        initial = {}
         if self.object.content_type_id == ContentType.objects.get_for_model(self.request.user.person).id:
             initial_make_me_owner = self.object.object_id == self.request.user.id
             initial = {"make_me_owner": initial_make_me_owner}

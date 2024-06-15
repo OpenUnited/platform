@@ -1,6 +1,0 @@
-<form id="drop_form_{{child.id}}" method="post" hx-post="{{ url('canopy:update_node', args=(child.id,) ) }}"  hx-swap="none">
-    <input type="hidden" name="parent_id" id="drop_parent_{{child.id}}">
-    <input type="hidden" name="name" value="{{child.name}}">
-    <input type="hidden" name="has_dropped" value="true">
-    <button type="submit" class="hidden" id="drop_submit_{{child.id}}"></button>
-</form>

@@ -10,22 +10,20 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-3">
         <div class="flex flex-col w-full">
             <div class="flex flex-col gap-y-1.5 md:gap-y-2.5 text-sm leading-6 text-gray-700 pr-10 md:pr-0">
-                <div id="productFullDescription" class="overflow-hidden line-clamp-3">
-                    <p>{{ product.full_description }}</p>
+                <div>
+                    <p id="productFullDescription">{{ product.full_description }}</p>
                 </div>
-                {% if product.full_description|length > 170 %}
-                <button id="showMore"
-                    class="appearance-none transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85] mr-auto text-xs">Show
-                    more</a>
-                    {% endif %}
+                <button  id="read_more_btn_0" onclick="readMoreFunction(0)"
+                    class="appearance-none transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85] mr-auto text-xs"> Read More</a>
 
                     <!-- TODO: add product owner logic here -->
-                    {% if can_edit_product %}
+                    {% if can_modify_product %}
                     <a href="{{ url('update-product', args=(product.id,)) }}">
                         <button type="button"
-                            class="w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            class="w-full rounded-l-md border-0 py-1.5 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                             Edit Product
                         </button>
+
                     </a>
                     {% endif %}
             </div>
@@ -64,16 +62,20 @@
         <h3 class="text-xl text-gray-900 font-bold mb-3">Product Tree</h3>
 
         <div class="">
-            <div class="flex flex-col sm:flex-row gap-4">
-              {% include "product_management/tree_helper/search_component.html" %}
-            </div>
-
-              {% include "product_management/tree_helper/tree_main_content.html" %}
-
+              {% include "product_tree/index.html" %}
           </div>
 
     </div>
 </div>
 
+<script>
+    var data = {
+        "index":0,
+        "textElementId":"productFullDescription",
+        "visibleWords":30,
+    }
+    preSetup(data)
+
+</script>
 
 {% endblock %}

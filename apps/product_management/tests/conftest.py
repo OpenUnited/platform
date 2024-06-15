@@ -15,11 +15,11 @@ def product_data(organisation):
 
 
 @pytest.fixture
-def product_area_data():
+def product_area_data(product_area):
     return {
         "name": "New Area",
-        "parent_id": "None",
         "depth": "0",
+        "parent_id": product_area.pk,
     }
 
 
