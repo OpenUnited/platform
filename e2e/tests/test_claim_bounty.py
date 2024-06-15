@@ -36,9 +36,15 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page.expected_submission_date.type(year)
     page.terms_check_box.check()
 
+    page_context.wait_for_timeout(1000)
+
     page.request_claim_button.click()
 
     page_context.wait_for_timeout(1500)
+
+    print("Checking if BountyClaim is created")
+    bounty_claim_count = BountyClaim.objects.filter(bounty=bounty.id).count()
+    print(f"BountyClaim count: {bounty_claim_count}")
 
     bounty_claim = BountyClaim.objects.get(bounty=bounty.id)
     assert bounty_claim.status == BountyClaim.Status.REQUESTED
