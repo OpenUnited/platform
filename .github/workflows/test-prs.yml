@@ -36,6 +36,12 @@ jobs:
       env:
         DJANGO_SETTINGS_MODULE: apps.openunited.settings.development
         DJANGO_SECRET_KEY: 123456789
+    - name: Upload screenshot on failure
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: screenshot
+        path: screenshot.png
     # - name: Lint with Black (Check)
     #   # We are installing Black with requirements.txt
     #   run: black --check .

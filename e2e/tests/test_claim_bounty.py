@@ -17,7 +17,6 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page_context.reload()
     page_context.wait_for_timeout(1500)
     challenge_detail_button = page.get_challenge_detail_button(product.slug, challenge.id)
-
     challenge_detail_button.click()
     page_context.wait_for_timeout(1500)
 
@@ -45,6 +44,11 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     print("Checking if BountyClaim is created")
     bounty_claim_count = BountyClaim.objects.filter(bounty=bounty.id).count()
     print(f"BountyClaim count: {bounty_claim_count}")
+
+    if bounty_claim_count == 0:
+        page_context.screenshot(path="screenshot.png")
+        logs = page_context.evaluate("() => console.log(arguments)")
+        print(f"Console logs: {logs}")
 
     bounty_claim = BountyClaim.objects.get(bounty=bounty.id)
     assert bounty_claim.status == BountyClaim.Status.REQUESTED
