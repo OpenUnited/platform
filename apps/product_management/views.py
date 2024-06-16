@@ -492,7 +492,7 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
                 data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
                     product=context["product"],
-                    role=ProductRoleAssignment.PRODUCT_ADMIN,
+                    role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
                 ).exists()
 
                 bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
@@ -1153,7 +1153,7 @@ class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
             can_be_modified = ProductRoleAssignment.objects.filter(
                 person=person,
                 product=product,
-                role=ProductRoleAssignment.PRODUCT_ADMIN,
+                role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
             ).exists()
 
         data.update(
