@@ -666,7 +666,7 @@ class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Creat
             ProductRoleAssignment.objects.create(
                 person=self.request.user.person,
                 product=form.instance,
-                role=ProductRoleAssignment.PRODUCT_ADMIN,
+                role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
             )
         return response
 
