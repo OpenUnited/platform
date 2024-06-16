@@ -492,7 +492,7 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
                 data["can_be_modified"] = ProductRoleAssignment.objects.filter(
                     person=person,
                     product=context["product"],
-                    role=ProductRoleAssignment.PRODUCT_ADMIN,
+                    role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
                 ).exists()
 
                 bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
@@ -666,7 +666,7 @@ class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Creat
             ProductRoleAssignment.objects.create(
                 person=self.request.user.person,
                 product=form.instance,
-                role=ProductRoleAssignment.PRODUCT_ADMIN,
+                role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
             )
         return response
 
@@ -844,7 +844,7 @@ class DashboardView(DashboardBaseView, TemplateView):
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
         product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
-            role=ProductRoleAssignment.CONTRIBUTOR
+            role=ProductRoleAssignment.ProductRoles.CONTRIBUTOR
         )
 
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
@@ -862,7 +862,7 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         person = context.get("person")
         active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
         product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
-            role=ProductRoleAssignment.CONTRIBUTOR
+            role=ProductRoleAssignment.ProductRoles.CONTRIBUTOR
         )
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
@@ -886,6 +886,100 @@ class ManageBountiesView(DashboardBaseView, TemplateView):
         )
         context.update({"bounty_claims": queryset})
         return context
+
+
+class ManageUsersView(DashboardBaseView, TemplateView):
+    template_name = "product_management/dashboard/manage_users.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("product_slug")
+        product = Product.objects.get(slug=slug)
+
+        product_users = ProductRoleAssignment.objects.filter(product=product).order_by("-role")
+
+        context["product"] = product
+        context["product_users"] = product_users
+
+        return context
+
+
+class AddProductUserView(DashboardBaseView, CreateView):
+    model = ProductRoleAssignment
+    form_class = forms.ProductRoleAssignmentForm
+    template_name = "product_management/dashboard/add_product_user.html"
+    login_url = "sign_in"
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        if product_slug := self.kwargs.get("product_slug", None):
+            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("product_slug")
+        product = Product.objects.get(slug=slug)
+
+        product_users = ProductRoleAssignment.objects.filter(product=product).order_by("-role")
+
+        context["product"] = product
+        context["product_users"] = product_users
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            product = Product.objects.get(slug=kwargs.get("product_slug"))
+
+            instance = form.save(commit=False)
+            instance.product = product
+            instance.save()
+
+            messages.success(request, "The user was successfully added!")
+
+            self.success_url = reverse("manage-users", args=(product.slug,))
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateProductUserView(DashboardBaseView, UpdateView):
+    model = ProductRoleAssignment
+    form_class = forms.ProductRoleAssignmentForm
+    template_name = "product_management/dashboard/update_product_user.html"
+    login_url = "sign_in"
+    context_object_name = "product_role_assignment"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get("product_slug")
+        product = Product.objects.get(slug=slug)
+        product_role_assignment = ProductRoleAssignment.objects.get(pk=self.kwargs.get("pk"))
+
+        product_users = ProductRoleAssignment.objects.filter(product=product).order_by("-role")
+
+        context["product"] = product
+        context["product_users"] = product_users
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        product_role_assignment = ProductRoleAssignment.objects.get(pk=kwargs.get("pk"))
+        product = Product.objects.get(slug=kwargs.get("product_slug"))
+
+        form = forms.ProductRoleAssignmentForm(request.POST, instance=product_role_assignment)
+
+        if form.is_valid():
+            form.save()
+
+            self.success_url = reverse("manage-users", args=(product.slug,))
+
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
 
 
 class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
@@ -1059,7 +1153,7 @@ class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
             can_be_modified = ProductRoleAssignment.objects.filter(
                 person=person,
                 product=product,
-                role=ProductRoleAssignment.PRODUCT_ADMIN,
+                role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
             ).exists()
 
         data.update(

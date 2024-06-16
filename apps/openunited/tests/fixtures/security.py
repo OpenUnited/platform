@@ -86,7 +86,7 @@ def product_role_assignment_admin(user, product):
         "security.ProductRoleAssignment",
         person=user.person,
         product=product,
-        role=ProductRoleAssignment.PRODUCT_ADMIN,
+        role=ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
     )
 
 
