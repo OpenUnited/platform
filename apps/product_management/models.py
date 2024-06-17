@@ -22,13 +22,6 @@ class FileAttachment(models.Model):
         return f"{self.file.name}"
 
 
-class Tag(TimeStampMixin):
-    name = models.CharField(max_length=128)
-
-    def __str__(self):
-        return self.name
-
-
 class ProductTree(common.AbstractModel):
     name = models.CharField(max_length=255, unique=True)
     session_id = models.CharField(max_length=255, blank=True, null=True)
@@ -199,7 +192,6 @@ class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
         choices=ChallengeStatus.choices,
         default=ChallengeStatus.DRAFT,
     )
-    tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     priority = models.CharField(
