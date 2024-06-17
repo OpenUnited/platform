@@ -25,9 +25,11 @@
                 {{ challenge.reward_type }}
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
-                    src="{{ challenge.created_by.get_photo_url() }}" alt="{{ challenge.created_by.get_short_name() }}">
-                <span class="ml-1.5">{{ challenge.created_by.get_full_name() }}</span>
+                <a href="{{ challenge.created_by.get_absolute_url() }}" class="flex items-center ml-4">
+                    <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
+                        src="{{ challenge.created_by.get_photo_url() }}" alt="{{ challenge.created_by.get_short_name() }}">
+                    <span class="ml-1.5">{{ challenge.created_by.get_full_name() }}</span>
+                </a>
             </td>
         </tr>
         {% endfor %}
