@@ -470,8 +470,10 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
             agreement_template = None
 
         contributor_agreement_status = False
-        if person.contributor_agreement.filter(agreement_template__product=challenge.product).count():
-            contributor_agreement_status = True
+        if person:
+            contributor_agreement_status = person.contributor_agreement.filter(
+                agreement_template__product=challenge.product
+            ).exists()
 
         for bounty in bounties:
             data = {
@@ -957,8 +959,6 @@ class UpdateProductUserView(DashboardBaseView, UpdateView):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=slug)
-        product_role_assignment = ProductRoleAssignment.objects.get(pk=self.kwargs.get("pk"))
-
         product_users = ProductRoleAssignment.objects.filter(product=product).order_by("-role")
 
         context["product"] = product
