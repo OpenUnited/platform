@@ -3,14 +3,8 @@ from django import forms, template
 import django_filters
 
 from apps.product_management.models import Challenge
-from apps.security.models import ProductRoleAssignment
 
 register = template.Library()
-
-
-@register.filter
-def display_role(role):
-    return dict(ProductRoleAssignment.ROLES).get(role, "")
 
 
 class ChallengeFilter(django_filters.FilterSet):
