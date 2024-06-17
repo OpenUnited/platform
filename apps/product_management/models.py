@@ -79,7 +79,7 @@ class Product(ProductMixin, common.AttachmentAbstract):
         return self.product_trees.first()
 
     def get_photo_url(self):
-        return self.photo.url if self.photo else f"{settings.MEDIA_URL}products/product-empty.png"
+        return self.photo.url if self.photo else f"{settings.STATIC_URL}images/product-empty.png"
 
     @staticmethod
     def check_slug_from_name(product_name: str):
