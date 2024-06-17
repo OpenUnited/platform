@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 
-from apps.canopy.views import ProductTreeView, share_tree_link
+from apps.canopy.views import ProductTreeUpdateView, ProductTreeView
 
 from . import views
 
@@ -43,7 +43,7 @@ urlpatterns += [
     path("tinymce/", include("tinymce.urls")),
     path("product-tree", ProductTreeView.as_view()),
     path("product-tree/", ProductTreeView.as_view(), name="shareable_product_tree"),
-    path("product-tree/share/", share_tree_link, name="share_tree_link"),
+    path("product-tree/share/<str:pk>", ProductTreeUpdateView.as_view(), name="update_product_tree"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
