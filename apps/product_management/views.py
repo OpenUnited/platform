@@ -906,7 +906,7 @@ class ManageUsersView(DashboardBaseView, TemplateView):
         return context
 
 
-class AddProductUserView(DashboardBaseView, CreateView):
+class AddProductUserView(DashboardBaseView, common_mixins.PersonSearchMixin, CreateView):
     model = ProductRoleAssignment
     form_class = forms.ProductRoleAssignmentForm
     template_name = "product_management/dashboard/add_product_user.html"
@@ -920,6 +920,10 @@ class AddProductUserView(DashboardBaseView, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if context["search_result"]:
+            return context
+
         slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=slug)
 
@@ -948,7 +952,7 @@ class AddProductUserView(DashboardBaseView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class UpdateProductUserView(DashboardBaseView, UpdateView):
+class UpdateProductUserView(DashboardBaseView, common_mixins.PersonSearchMixin, UpdateView):
     model = ProductRoleAssignment
     form_class = forms.ProductRoleAssignmentForm
     template_name = "product_management/dashboard/update_product_user.html"
@@ -957,6 +961,9 @@ class UpdateProductUserView(DashboardBaseView, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if context["search_result"]:
+            return context
+
         slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=slug)
         product_users = ProductRoleAssignment.objects.filter(product=product).order_by("-role")
