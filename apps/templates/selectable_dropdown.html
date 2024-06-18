@@ -14,12 +14,8 @@
       </span>
 
       <div id="searchable-dropdown" class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg overflow-y-auto sm:w-screen sm:left-0 sm:right-0 sm:max-h-[20vh] hidden">
-          <input type="search" onkeyup="searchableDropdownFilterInput(event)" id="searchable-dropdown-input" class="w-full rounded-md py-1 px-2 mb-1 border border-red-400" placeholder="Search...">
-          <ul id="searchable-dropdown-list" class="py-1" style="max-height:60vh; overflow-y-auto">
-            {% for item in inital_data %}
-                <li onclick="selectItem(event)" id="{{item.pk}}" class="searchable-dropdown-li relative py-1 pl-3 mb-1 text-gray-900 select-none pr-9 hover:bg-gray-100 cursor-pointer rounded-md hidden">{{item}}</li>
-            {% endfor %}
-          </ul>
-
+            <input type="search" onkeyup="searchableDropdownFilterInput(event, '{{url('add-product-user', args=(product.slug,))}}')" id="searchable-dropdown-input" class="w-full rounded-md py-1 px-2 mb-1 border border-red-400" placeholder="Search...">
+            <ul id="searchable-dropdown-list" class="py-1" style="max-height:60vh; overflow-y-auto">
+            </ul>
       </div>
   </div>
