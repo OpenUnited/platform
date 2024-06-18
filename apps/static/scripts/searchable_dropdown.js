@@ -1,22 +1,14 @@
-function searchableDropdownFilterInput(event){
-    const filterInput = document.getElementById('searchable-dropdown-input');
-    const dropdownList = document.getElementById('searchable-dropdown-list');
-    const value = filterInput.value.toLowerCase();
-    const listItems = dropdownList.children;
-
-
-    if (value.length === 0){
-      return document.querySelectorAll(".searchable-dropdown-li").forEach(item => item.classList.add("hidden"));
-    }
-    else {
-      for (let i = 0; i < listItems.length; i++) {
-        const listItem = listItems[i];
-        if (listItem.textContent.toLowerCase().includes(value)) {
-          listItem.classList.remove("hidden");
-        } else {
-          listItem.classList.add("hidden");
-        }
-      }
+function searchableDropdownFilterInput(event, url){
+  if (event.target.value.length>1){
+    htmxRequest({
+      url: url,
+      values:{"search": event.target.value},
+      target: `#searchable-dropdown-list`,
+      swap:"innerHTML"
+    })
+  }
+  else{
+    document.getElementById("searchable-dropdown-list").innerHTML = ""
   }
 }
 
