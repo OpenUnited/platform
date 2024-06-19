@@ -16,7 +16,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ static ('images/favicon/favicon-16x16.png') }}">
     <link rel="manifest" href="{{ static ('images/favicon/site.webmanifest') }}">
 
-    <title>Dashboard</title>
+    <title>Product Management Portal</title>
 
 </head>
 
@@ -114,7 +114,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                                     </svg>
-                                    Home
+                                    Dashboard
                                 </button>
                                 <button hx-get="{{ url('manage-bounties') }}" hx-target="#dashboard-tabs"
                                     hx-swap="innerHTML"
@@ -130,7 +130,7 @@
                                 <button _="on click
                                         toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu-mobile
                                         then toggle .hidden on #sub-menu-1-mobile" type="button" class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center
-                            rounded-md px-2 py-2 text-sm font-medium" aria-controls="sub-menu-1-mobile"
+                                        rounded-md px-2 py-2 text-sm font-medium text-left" aria-controls="sub-menu-1-mobile"
                                     aria-expanded="false">
                                     <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
                                     <svg id="side-arrow-for-expandable-menu-mobile"
@@ -140,7 +140,7 @@
                                             d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    Products
+                                    Product Management Portal
                                 </button>
                                 <!-- Expandable link section, show/hide based on state. -->
                                 <ul _="on click from <a/> in me
@@ -152,7 +152,7 @@
                                     {% for product in products %}
                                     <li>
                                         <!-- TODO: Maybe this anchor tag can be converted to a button -->
-                                        <a hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}"
+                                        <a hx-get="{{ url('dashboard-product-detail', args=(product.slug, default_tab)) }}"
                                             hx-target="#dashboard-tabs" hx-swap="innerHTML"
                                             class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
                                     </li>
@@ -165,6 +165,7 @@
                                     </li>
                                     {% endif %}
                                 </ul>
+
                             </div>
 
                         </nav>
@@ -209,7 +210,8 @@
                                         add .bg-gray-200 .text-gray-900">
                     <div class="space-y-1">
                         <!-- Current: "bg-gray-200 text-gray-900", Default: "text-gray-700 hover:bg-gray-50 hover:text-gray-900" -->
-                        <button hx-get="{{ url('dashboard-home') }}" hx-target="#dashboard-tabs" hx-swap="innerHTML"
+                        <button hx-get="{{ url('dashboard-home') }}" hx-target="#dashboard-tabs"
+                            hx-swap="innerHTML" hx-push-url="true"
                             class="w-full bg-gray-200 text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                             aria-current="page">
                             <!-- Current: "text-gray-500", Default: "text-gray-400 group-hover:text-gray-500" -->
@@ -218,7 +220,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                             </svg>
-                            Home
+                            Dashboard
                         </button>
                         <button hx-get="{{ url('manage-bounties') }}" hx-target="#dashboard-tabs" hx-swap="innerHTML"
                             class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center rounded-md px-2 py-2 text-sm font-medium">
@@ -232,7 +234,7 @@
                         <button _="on click
                                         toggle between .rotate-90 and .text-gray-400 on #side-arrow-for-expandable-menu
                                         then toggle .hidden on #sub-menu-1" type="button" class="w-full text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center
-                            rounded-md px-2 py-2 text-sm font-medium" aria-controls="sub-menu-1" aria-expanded="false">
+                            rounded-md px-2 py-2 text-sm font-medium text-left" aria-controls="sub-menu-1" aria-expanded="false">
                             <!-- Expanded: "rotate-90 text-gray-500", Collapsed: "text-gray-400" -->
                             <svg id="side-arrow-for-expandable-menu" class="text-gray-400 mr-3 h-6 w-6 shrink-0"
                                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -240,7 +242,7 @@
                                     d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Products
+                            Product Management Portal
                         </button>
                         <!-- Expandable link section, show/hide based on state. -->
                         <ul _="on click from <a/> in me
@@ -252,7 +254,7 @@
                             {% for product in products %}
                             <li>
                                 <!-- TODO: Maybe this anchor tag can be converted to a button -->
-                                <a hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}"
+                                <a hx-get="{{ url('dashboard-product-detail', args=(product.slug, 0)) }}"
                                     hx-target="#dashboard-tabs" hx-swap="innerHTML"
                                     class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
                             </li>
@@ -260,8 +262,7 @@
                             {% else %}
                             <li>
                                 <a href="javascript:;"
-                                    class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">No
-                                    product is found.</a>
+                                    class="hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">No product is found.</a>
                             </li>
                             {% endif %}
                         </ul>
@@ -353,12 +354,14 @@
             </div>
             <main class="flex-1">
                 <!-- Main content -->
-                <div id="dashboard-tabs">
+                <div id="dashboard-tabs" class="hidden">
                     {% include 'product_management/dashboard/dashboard_home.html' %}
                 </div>
             </main>
         </div>
     </div>
+    <script src="{{ static('scripts/htmx.ajax.js') }}"></script>
+    <script src="{{ static('scripts/searchable_dropdown.js') }}"></script>
 
     <script src="https://unpkg.com/htmx.org@1.9.4"
         integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous">

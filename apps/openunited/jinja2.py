@@ -5,7 +5,6 @@ from django.urls import reverse
 
 from jinja2 import Environment
 
-from apps.product_management.filters import display_role
 from apps.talent.templatetags.custom_filters import expertise_filter, get_ids
 
 
@@ -20,5 +19,4 @@ def environment(**options):
         }
     )
 
-    env.filters["display_role"] = display_role
     return env

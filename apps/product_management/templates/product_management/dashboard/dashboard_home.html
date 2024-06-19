@@ -80,8 +80,9 @@
                     <!-- Get the following information from the database -->
                     <p class="text-gray-500">12 People</p>
 
-                    <a hx-get="{{ url('dashboard-product-detail', args=(product.slug,)) }}" hx-target="#dashboard-tabs"
-                        hx-swap="innerHTML" class="cursor-pointer font-medium text-gray-900 hover:text-gray-600">Manage Product</a>
+                    <a hx-get="{{ url('dashboard-product-detail', args=(product.slug, default_tab)) }}" hx-target="#dashboard-tabs"
+                        hx-swap="innerHTML" class="cursor-pointer font-medium text-gray-900 hover:text-gray-600"
+                        id="manage-product-{{product.id}}">Manage Product</a>
                 </div>
             </div>
         </li>
@@ -174,3 +175,13 @@
     <p>Currently, there are no active bounties.</p>
     {% endif %}
 </div>
+
+<script>
+{% if product %}
+setTimeout(function() {
+    htmx.trigger("#manage-product-{{product.id}}", "click");
+}, 500);
+{% else %}
+document.getElementById("dashboard-tabs").classList.remove("hidden");
+{% endif %}
+</script>

@@ -8,3 +8,5 @@ import './website-row.js'
 import './forms.js'
 import './portfolio.js'
 import "./htmx.ajax.js"
+import "./notification.js"
+import "./product_tree.js"

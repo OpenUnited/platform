@@ -79,6 +79,11 @@ urlpatterns = [
 urlpatterns += [
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path(
+        "dashboard/product/<str:product_slug>/<int:default_tab>/",
+        views.DashboardView.as_view(),
+        name="product-dashboard",
+    ),
+    path(
         "dashboard/home",
         views.DashboardHomeView.as_view(),
         name="dashboard-home",
@@ -94,7 +99,7 @@ urlpatterns += [
         name="dashboard-bounty-requests",
     ),
     path(
-        "dashboard/product/<str:product_slug>/",
+        "dashboard/product/<str:product_slug>/tab/<int:default_tab>/",
         views.DashboardProductDetailView.as_view(),
         name="dashboard-product-detail",
     ),
@@ -132,6 +137,26 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/contributor-agreement-templates",
         views.DashboardContributorAgreementTemplateListView.as_view(),
         name="dashboard-contributor-agreement-templates",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/user-management",
+        views.ManageUsersView.as_view(),
+        name="manage-users",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/add-product-user",
+        views.AddProductUserView.as_view(),
+        name="add-product-user",
+    ),
+    path(
+        "dashboard/product/<str:product_slug>/product-users/<int:pk>/update",
+        views.UpdateProductUserView.as_view(),
+        name="update-product-user",
+    ),
+    path(
+        "dashboard/product-setting/<int:pk>/",
+        views.ProductSettingView.as_view(),
+        name="product-setting",
     ),
 ]
 
@@ -190,11 +215,6 @@ urlpatterns += [
         name="product_tree",
     ),
     path(
-        "update-node/<str:product_slug>/<int:pk>",
-        views.update_node,
-        name="update_node",
-    ),
-    path(
         "<str:product_slug>/product-areas",
         views.ProductAreaCreateView.as_view(),
         name="product_area",
@@ -208,11 +228,6 @@ urlpatterns += [
         "<str:product_slug>/product-areas/<int:pk>/detail",
         views.ProductAreaDetailView.as_view(),
         name="product_area_detail",
-    ),
-    path(
-        "<str:product_slug>/product-areas/<int:pk>/delete",
-        views.ProductAreaDetailDeleteView.as_view(),
-        name="product_area_delete",
     ),
     path(
         "<str:product_slug>/idea-list",

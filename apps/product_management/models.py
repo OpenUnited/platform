@@ -22,13 +22,6 @@ class FileAttachment(models.Model):
         return f"{self.file.name}"
 
 
-class Tag(TimeStampMixin):
-    name = models.CharField(max_length=128)
-
-    def __str__(self):
-        return self.name
-
-
 class ProductTree(common.AbstractModel):
     name = models.CharField(max_length=255, unique=True)
     session_id = models.CharField(max_length=255, blank=True, null=True)
@@ -44,7 +37,8 @@ class ProductTree(common.AbstractModel):
         return self.name
 
 
-class ProductArea(MP_Node, common.AttachmentAbstract):
+class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
+    id = models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=1000, blank=True, null=True, default="")
     video_link = models.URLField(max_length=255, blank=True, null=True)
@@ -85,7 +79,7 @@ class Product(ProductMixin, common.AttachmentAbstract):
         return self.product_trees.first()
 
     def get_photo_url(self):
-        return self.photo.url if self.photo else f"{settings.MEDIA_URL}products/product-empty.png"
+        return self.photo.url if self.photo else f"{settings.STATIC_URL}images/product-empty.png"
 
     @staticmethod
     def check_slug_from_name(product_name: str):
@@ -198,7 +192,6 @@ class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
         choices=ChallengeStatus.choices,
         default=ChallengeStatus.DRAFT,
     )
-    tag = models.ManyToManyField(Tag, related_name="challenge_tags", blank=True)
     blocked = models.BooleanField(default=False)
     featured = models.BooleanField(default=False)
     priority = models.CharField(
@@ -421,31 +414,6 @@ def save_product_task(sender, instance, created, **kwargs):
         challenge.save()
 
 
-class ContributorAgreement(models.Model):
-    product = models.ForeignKey(
-        to=Product,
-        on_delete=models.CASCADE,
-        related_name="product_contributor_agreement",
-    )
-    agreement_content = models.TextField()
-
-    class Meta:
-        db_table = "contribution_management_contributor_agreement"
-
-
-class ContributorAgreementAcceptance(models.Model):
-    agreement = models.ForeignKey(to=ContributorAgreement, on_delete=models.CASCADE)
-    person = models.ForeignKey(
-        to="talent.Person",
-        on_delete=models.CASCADE,
-        related_name="person_contributor_agreement_acceptance",
-    )
-    accepted_at = models.DateTimeField(auto_now_add=True, null=True)
-
-    class Meta:
-        db_table = "contribution_management_contributor_agreement_acceptance"
-
-
 class ContributorGuide(models.Model):
     product = models.ForeignKey(
         to=Product,
@@ -496,7 +464,7 @@ class Bug(TimeStampMixin):
 class ProductContributorAgreementTemplate(TimeStampMixin):
     product = models.ForeignKey(
         "product_management.Product",
-        related_name="product_contribution_agreements",
+        related_name="contributor_agreement_templates",
         on_delete=models.CASCADE,
     )
     title = models.CharField(max_length=256)
@@ -508,7 +476,7 @@ class ProductContributorAgreementTemplate(TimeStampMixin):
         ordering = ("-created_at",)
 
     def __str__(self):
-        return f"Contribution agreement - {self.id} ({self.product})"
+        return f"{self.title} ({self.product})"
 
 
 class IdeaVote(TimeStampMixin):
@@ -517,3 +485,13 @@ class IdeaVote(TimeStampMixin):
 
     class Meta:
         unique_together = ("voter", "idea")
+
+
+class ProductContributorAgreement(TimeStampMixin):
+    agreement_template = models.ForeignKey(to=ProductContributorAgreementTemplate, on_delete=models.CASCADE)
+    person = models.ForeignKey(
+        to="talent.Person",
+        on_delete=models.CASCADE,
+        related_name="contributor_agreement",
+    )
+    accepted_at = models.DateTimeField(auto_now_add=True, null=True)

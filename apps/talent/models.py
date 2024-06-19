@@ -110,11 +110,7 @@ class Person(TimeStampMixin):
         return self.user.username if self.user else ""
 
     def get_photo_url(self):
-        return (
-            self.photo.url
-            if self.photo
-            else settings.MEDIA_URL + settings.PERSON_PHOTO_UPLOAD_TO + "profile-empty.png"
-        )
+        return self.photo.url if self.photo else f"{settings.STATIC_URL}images/profile-empty.png"
 
     def get_products(self):
         return self.products.all()

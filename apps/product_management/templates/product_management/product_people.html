@@ -9,7 +9,7 @@
     {% for role, product_people in grouped_product_people %}
     <div class="flex flex-col py-[30px] first:pt-0">
         <div class="flex items-center text-xl tracking-tight text-gray-900">
-            {{ role|display_role }} - {{ product_people|length }}
+            {{ role }} - {{ product_people|length }}
         </div>
         <div class="mt-[30px] grid gap-x-4 gap-y-12 grid-cols-1 md:grid-cols-2">
             {% for product_person in product_people %}

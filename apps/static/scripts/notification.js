@@ -1,36 +1,35 @@
-const typeSuccess="success"
-const typeError="error"
+const typeSuccess = "success"
+const typeError = "error"
 
 const openVideoModal = (videoLink) => {
   alertify.alert().setting({
-      modal: true,
-      basic: true,
-      message: `
+    modal: true,
+    basic: true,
+    message: `
           <div style="height: 50vh; width: 100%;">
             <iframe style="height: 100%; width: 100%" frameborder="0" allowfullscreen src="${videoLink}"></iframe>
           </div>
       `,
-      onshow: function () {
-          this.elements.dialog.style.maxWidth = "none";
-          this.elements.dialog.style.width = "60%";
-          this.elements.dialog.style.height = "auto";
-      }
+    onshow: function () {
+      this.elements.dialog.style.maxWidth = "none";
+      this.elements.dialog.style.width = "60%";
+      this.elements.dialog.style.height = "auto";
+    }
   }).show();
 }
 
-const showNotification = (data) =>{
-    const type = data.type || typeError
-    const message = `<span class="text-white">${data.message|| "Something went wrong!"} </span>`
-    alertify.set('notifier', 'position', 'top-right');
+const showNotification = (data) => {
+  const type = data.type || typeError
+  const message = `<span class="text-white">${data.message || "Something went wrong!"} </span>`
+  alertify.set('notifier', 'position', 'top-right');
 
-    if (type==typeSuccess){
-      alertify.success(message);
-    }
-    else if (type==typeError){
-      alertify.error(message);
-    }
+  if (type == typeSuccess) {
+    alertify.success(message);
   }
-
+  else if (type == typeError) {
+    alertify.error(message);
+  }
+}
 
 const showConfirm = (data) =>{
   const type =  data.type|| "red"
@@ -38,18 +37,19 @@ const showConfirm = (data) =>{
   const title = data.title|| 'Warning!'
   return new Promise((resolve) => {
     alertify.confirm(title, message, function (confirmed) {
-      resolve(confirmed)}, function(){});
-})
+      resolve(confirmed)
+    }, function () { });
+  })
 }
 
 
 
-const authPopUp = (event, signUpUrl, signInUrl) =>{
+const authPopUp = (event, signUpUrl, signInUrl) => {
   const currentPageUrl = window.location.href;
   signUpUrl += '?next=' + encodeURIComponent(currentPageUrl);
   signInUrl += '?next=' + encodeURIComponent(currentPageUrl);
 
-  alertify.alert().set({'frameless':true, padding: false}).setting({
+  alertify.alert().set({ 'frameless': true, padding: false }).setting({
     message: `
       <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 px-4 py-3 text-left shadow-xl transition-all">
         <div class="border-b border-gray-200 flex items-center justify-between">
@@ -79,43 +79,61 @@ const authPopUp = (event, signUpUrl, signInUrl) =>{
 }
 
 
-function claimConfirm(event, termConditionUrl){
-  alertify.confirm('Bounty Claim', `
-  <hr><br>
-  <form class="w-full max-w-sm confirm-form">
-      <div class="w-full px-3">
-          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="expected_submission_date">
-              Expected Submission Date
-          </label>
-          <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="expected_submission_date" type="date" placeholder="DD/MM/YY" required>
-      </div>
+function claimConfirm(event, termConditionUrl) {
+  let agreementStatus = document.getElementById("clicked_bounty").getAttribute("agreement-status");
+  if (!agreementStatus) {
+    document.querySelector(".modal-wrap").classList.remove("hidden");
+    document.getElementById("clicked_bounty").value = event.target.id;
+  }
+  else {
+    alertify.confirm('Bounty Claim', `
+    <hr><br>
+    <form class="w-full confirm-form">
+        <div class="w-full px-3">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="expected_submission_date">
+                Expected Submission Date
+            </label>
+            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="expected_submission_date" type="date" placeholder="DD/MM/YY" required>
+        </div>
 
-      <div class="w-full px-3">
-          <input id="term_checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  focus:ring-2" required>
-          <label for="term_checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">I have read and agree to the <a href="${termConditionUrl}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">Contribution Agreement</a>.</label>
-      </div>
-  </form>
-`, function () {
+        <div class="mt-3 w-full px-3">
+            <input id="is_agreement_accepted" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600  focus:ring-2" required>
+            <label for="is_agreement_accepted" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+            I have read and agree to the <a href="${termConditionUrl}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">Contribution Agreement</a>.</label>
+        </div>
+    </form>
+  `, function () {
       const inputField = document.getElementById("expected_submission_date");
       const checkbox = document.getElementById("term_checkbox");
       const form = document.querySelector('.confirm-form');
       if (!form.checkValidity()) {
-          const formControls = form.querySelectorAll('input');
-          formControls.forEach(function (control) {
-              if (!control.checkValidity()) {
-                  control.reportValidity();
-              }
-          });
-          return false;
+        const formControls = form.querySelectorAll('input');
+        formControls.forEach(function (control) {
+          if (!control.checkValidity()) {
+            control.reportValidity();
+          }
+        });
+        return false;
       } else {
-          const data = {
-              are_terms_accepted: true,
-              expected_finish_date: inputField.value,
-          };
-          event.target.setAttribute("hx-vals", JSON.stringify(data));
+        const data = {
+          is_agreement_accepted: true,
+          expected_finish_date: inputField.value,
+        };
+        event.target.setAttribute("hx-vals", JSON.stringify(data));
 
-          event.detail.issueRequest()
-          this.close();
+        event.detail.issueRequest()
+        this.close();
       }
-  }, function () {}).set('labels', {ok: 'Request claim', cancel: 'Cancel'})
+    }, function () { }).set('labels', { ok: 'Request claim', cancel: 'Cancel' })
+
+  }
+
 }
+
+window.typeSuccess = typeSuccess
+window.typeError = typeError
+window.showConfirm = showConfirm
+window.openVideoModal = openVideoModal
+window.showNotification = showNotification
+window.authPopUp = authPopUp
+window.claimConfirm = claimConfirm

@@ -1,7 +1,6 @@
 <div class="hidden lg:block">
     <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <div class="min-w-0 flex-1">
-            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Dashboard</h1>
         </div>
 
         <div class="relative inline-block px-3 text-left">
@@ -102,18 +101,23 @@
   ```
 -->
     <div class="border-b border-gray-200 pb-5 sm:pb-0 mt-8">
-        <h3 class="text-base font-semibold leading-6 text-gray-900">Manage your products</h3>
+        <!-- <h3 class="text-base font-semibold leading-6 text-gray-900">Manage your products</h3> -->
         <div class="mt-3 sm:mt-4">
             <!-- Dropdown menu on small screens -->
             <div class="sm:hidden">
                 <label for="current-tab" class="sr-only">Select a tab</label>
                 <select id="current-tab" name="current-tab"
-                    class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                    <option>Applied</option>
-                    <option>Phone Screening</option>
-                    <option selected>Interview</option>
-                    <option>Offer</option>
-                    <option>Hired</option>
+                    class="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    hx-get=""
+                    hx-target="#manage-product-content"
+                    hx-on="htmx:configRequest: event.detail.path = this.value"
+                >
+                    <option selected value="{{ url('dashboard-product-challenges', args=(product.slug,)) }}">Challenges</option>
+                    <option value="{{ url('dashboard-product-bounties', args=(product.slug,)) }}">Bounty Claim Requests</option>
+                    <option value="{{ url('dashboard-review-work', args=(product.slug,)) }}">Review Work</option>
+                    <option value="{{ url('dashboard-contributor-agreement-templates', args=(product.slug,)) }}">Contribution Agreements</option>
+                    <option value="{{ url('manage-users', args=(product.slug,)) }}">User Management</option>
+                    <option value="{{ url('product-setting', args=(product.id,)) }}">Product Setting</option>
                 </select>
             </div>
             <!-- Tabs at small breakpoint and up -->
@@ -126,25 +130,40 @@
                                 remove .hover:border-gray-300 .hover:text-gray-700" class="-mb-px flex space-x-8">
                     <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
                     <a hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}"
-                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
                         class="cursor-pointer border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
-                        aria-current="page">
+                        aria-current="page" id="product-tab-0">
                         Challenges
                     </a>
                     <a hx-get="{{ url('dashboard-product-bounties', args=(product.slug,)) }}"
-                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
-                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        id="product-tab-1">
                         Bounty Claim Requests
                     </a>
                     <a hx-get="{{ url('dashboard-review-work', args=(product.slug,)) }}"
-                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
-                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        id="product-tab-2">
                         Review Work
                     </a>
                     <a hx-get="{{ url('dashboard-contributor-agreement-templates', args=(product.slug,)) }}"
-                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
-                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        id="product-tab-3">
                         Contribution Agreements
+                    </a>
+                    <a hx-get="{{ url('manage-users', args=(product.slug,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        id="product-tab-4">
+                        User Management
+                    </a>
+                    <a hx-get="{{ url('product-setting', args=(product.id,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                        id="product-tab-5">
+                        Product Setting
                     </a>
                 </nav>
             </div>
@@ -156,8 +175,12 @@
             <img src="{{ static('images/loading.svg') }}" width="32" height="32" />
         </div>
         <div id="manage-product-content" class="manage-product-content">
-            {% include 'product_management/dashboard/manage_challenges.html' %}
         </div>
     </div>
 
 </div>
+
+<script>
+htmx.trigger("#product-tab-{{default_tab}}", "click");
+document.getElementById("dashboard-tabs").classList.remove("hidden");
+</script>

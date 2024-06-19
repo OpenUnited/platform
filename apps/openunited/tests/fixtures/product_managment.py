@@ -74,7 +74,7 @@ def product_areas():
 
 @pytest.fixture
 def product_area():
-    return baker.make("product_management.ProductArea", _fill_optional=True)
+    return baker.make("product_management.ProductArea", depth=1, _fill_optional=True)
 
 
 @pytest.fixture

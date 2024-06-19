@@ -24,11 +24,11 @@ def has_product_modify_permission(user, product):
         try:
             role_assignment = ProductRoleAssignment.objects.get(person__user=user, product=product)
             return role_assignment.role in [
-                ProductRoleAssignment.PRODUCT_ADMIN,
-                ProductRoleAssignment.PRODUCT_MANAGER,
+                ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN,
+                ProductRoleAssignment.ProductRoles.PRODUCT_MANAGER,
             ]
-
-        except ProductRoleAssignment.DoesNotExist:
+        except Exception as ex:
+            print(ex)
             return False
     return False
 

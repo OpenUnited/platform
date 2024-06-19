@@ -380,7 +380,7 @@ class BountyDeliveryAttemptDetail(LoginRequiredMixin, mixins.AttachmentMixin, De
         is_product_admin = ProductRoleAssignment.objects.filter(
             product=product,
             person=self.request.user.person,
-            role__in=[ProductRoleAssignment.PRODUCT_ADMIN, ProductRoleAssignment.PRODUCT_MANAGER],
+            role__in=[ProductRoleAssignment.ProductRoles.PRODUCT_ADMIN, ProductRoleAssignment.PRODUCT_MANAGER],
         ).exists()
         data["is_product_admin"] = is_product_admin
         return data
