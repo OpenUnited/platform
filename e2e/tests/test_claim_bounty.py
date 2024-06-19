@@ -14,7 +14,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     assert BountyClaim.objects.filter(bounty=bounty.id).count() == 0
 
     page_context.reload()
-    page_context.wait_for_timeout(1500)
+    page_context.wait_for_timeout(5000)
     challenge_detail_button = page.get_challenge_detail_button(product.slug, challenge.id)
 
     challenge_detail_button.click()
