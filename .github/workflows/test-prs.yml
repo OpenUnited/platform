@@ -23,6 +23,12 @@ jobs:
           --health-retries 5
     steps:
     - uses: actions/checkout@v3
+    - name: Wait for PostgreSQL
+      run: |
+        until pg_isready -h localhost -p 5432; do
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 5
+        done
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
