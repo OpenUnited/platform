@@ -18,12 +18,11 @@
 
                     <!-- TODO: add product owner logic here -->
                     {% if can_modify_product %}
-                    <a href="{{ url('update-product', args=(product.id,)) }}">
+                    <a href="{{ url('product-dashboard', args=(product.slug, 5)) }}">
                         <button type="button"
                             class="w-full rounded-l-md border-0 py-1.5 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            Edit Product
+                            Edit Settings
                         </button>
-
                     </a>
                     {% endif %}
             </div>
@@ -34,12 +33,11 @@
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
             {% else %}
-            <div class="w-full h-full bg-gray-200 inline-flex items-center"><span
-                    class="text-sm font-medium text-center">The
-                    video of your product will
-                    be
-                    shown here when you provide a URL.
-                </span></div>
+            <div class="w-full h-full bg-gray-200 inline-flex items-center">
+                <span class="text-sm font-medium text-center">The
+                    video of your product will be shown here when you provide a URL.
+                </span>
+            </div>
             {% endif %}
         </div>
     </div>
