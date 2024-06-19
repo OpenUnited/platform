@@ -24,6 +24,8 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     bounty_claim_button.click()
 
     page_context.wait_for_timeout(500)
+    page.bounty_add_btn.click()
+    page_context.wait_for_timeout(500)
 
     future_date = datetime.today() + timedelta(days=10)
     day = future_date.strftime("%d")
