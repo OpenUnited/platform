@@ -38,6 +38,8 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page.expected_submission_date.type(day)
     page.expected_submission_date.type(month)
     page.expected_submission_date.type(year)
+
+    print(page.expected_submission_date)
     page.terms_check_box.check()
 
     page.request_claim_button.click()
