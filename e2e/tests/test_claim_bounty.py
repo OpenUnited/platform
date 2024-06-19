@@ -35,6 +35,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     year = future_date.strftime("%Y")
     print("========================:", datetime.today())
     print("========================:", day, month, year)
+    page.expected_submission_date.clear()
     page.expected_submission_date.type(day)
     page.expected_submission_date.type(month)
     page.expected_submission_date.type(year)
