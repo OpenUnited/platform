@@ -1,0 +1,3 @@
+{% for item in search_result %}
+    <li onclick="selectItem(event)" id="{{item.pk}}" class="searchable-dropdown-li relative py-1 pl-3 mb-1 text-gray-900 select-none pr-9 hover:bg-gray-100 cursor-pointer rounded-md">{{item}}</li>
+{% endfor %}

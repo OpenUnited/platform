@@ -602,19 +602,6 @@ class ContributorAgreementTemplateForm(forms.ModelForm):
 
 
 class ProductRoleAssignmentForm(forms.ModelForm):
-    person = forms.ModelChoiceField(
-        empty_label="Select a person",
-        queryset=Person.objects.all(),
-        widget=forms.Select(
-            attrs={
-                "class": (
-                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                )
-            }
-        ),
-    )
-
     class Meta:
         model = ProductRoleAssignment
         fields = ["person", "role"]
