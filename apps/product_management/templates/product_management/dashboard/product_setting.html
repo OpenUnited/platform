@@ -1,0 +1,189 @@
+<div class="mt-5">
+    <div id="loading-spinner" class="flex justify-center items-center mt-4 mb-4 htmx-indicator">
+        <img src="{{ static('images/loading.svg') }}" width="32" height="32" />
+    </div>
+
+    <form enctype="multipart/form-data"
+        hx-post="{{ url('product-setting', args=(product.id,)) }}"
+        hx-trigger="submit"
+        hx-indicator="#loading-spinner"
+        >
+        {% csrf_token %}
+        <div class="space-y-12">
+            <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                <div>
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">Product Information</h2>
+                    <p class="mt-1 text-sm leading-6 text-gray-600">General information related to the product.</p>
+                </div>
+
+                <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                    <div class="sm:col-span-4">
+                        <label for="{{ form.name.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ form.name.label }}</label>
+                        <div class="mt-2">
+                            {{ form.name }}
+                        </div>
+                        <div id="name-errors">
+                            {% if form.name.errors %}
+                            {% for error in form.name.errors %}
+                            <p class="mt-3 text-sm leading-6 text-red-900">{{ error }}</p>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-full">
+                        <div class="sm:col-span-3">
+                            <label for="{{ form.organisation.id_for_label }}"
+                                class="block text-sm font-medium leading-6 text-gray-900">Owner</label>
+                            <div class="mt-2">
+                                <div class="my-2">
+                                    {{ form.organisation }}
+                                </div>
+                                <p class="text-xs leading-6 text-red-900">
+                                    Don't have an organisation? <a class="font-semibold"
+                                    href="{{ url('create-organisation') }}">Create one.</a>
+                                </p>
+
+                                <div class="my-2">
+                                    {% if form.organisation.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form.organisation.errors %}
+                                    <li class="text-xs text-red-600 ">{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                </div>
+
+                                <div class="my-2"><span>or</span></div>
+                                <div class="relative flex gap-x-3">
+                                    <div class="inline-flex items-center">
+                                        {{ form.make_me_owner }}
+                                    </div>
+                                    <div class="text-sm leading-6">
+                                        <label for="{{ form.make_me_owner.id_for_label }}"
+                                            class="font-medium text-gray-900">{{ form.make_me_owner.label }}</label>
+                                        <p class="text-gray-500">{{ form.make_me_owner.help_text }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-full">
+                        <label for="{{ form.short_description.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ form.short_description.label }}</label>
+                        <div class="mt-2">
+                            {{ form.short_description }}
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-gray-600">{{ form.short_description.help_text }}</p>
+                    </div>
+
+                    <div class="col-span-full">
+                        <label for="{{ form.full_description.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ form.full_description.label }}</label>
+                        <div class="mt-2">
+                            {{ form.full_description }}
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-gray-600">{{ form.full_description.help_text }}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                <div>
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">Details</h2>
+                    <p class="mt-1 text-sm leading-6 text-gray-600">Provide URLs and additional documents.</p>
+                </div>
+
+                <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                    <div class="sm:col-span-4">
+                        <label for="{{ form.website.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ form.website.label }}</label>
+                        <div class="mt-2">
+                            <div
+                                class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                {{ form.website }}
+                            </div>
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-gray-600">{{ form.website.help_text }}
+                        </p>
+                    </div>
+
+                    <div class="sm:col-span-4">
+                        <label for="{{ form.video_url.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ form.video_url.label }}</label>
+                        <div class="mt-2">
+                            <div
+                                class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                {{ form.video_url }}
+                            </div>
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-gray-600">{{ form.video_url.help_text }}
+                        </p>
+                    </div>
+
+                    <div class="sm:col-span-4">
+                        <label for="{{ form.detail_url.id_for_label }}"
+                            class="block text-sm font-medium leading-6 text-gray-900">{{ form.detail_url.label }}</label>
+                        <div class="mt-2">
+                            <div
+                                class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                {{ form.detail_url }}
+                            </div>
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-gray-600">{{ form.detail_url.help_text }}
+                        </p>
+                    </div>
+
+                    <div class="col-span-full">
+                        <label for="photo"
+                            class="block text-sm mb-2 font-medium leading-6 text-gray-900">{{ form.photo.label }}</label>
+                        {{ form.photo }}
+
+                        {% if form.name.errors %}
+                        <p class="mt-3 text-sm leading-6 text-red-900">
+                            {{ form.photo.errors }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-span-full">
+                            <!--File attachment plugin-->
+                            {% include "attachments.html" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                <div>
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">Settings</h2>
+                    <p class="mt-1 text-sm leading-6 text-gray-600">Configurations about the product.</p>
+                </div>
+
+                <div class="max-w-2xl space-y-10 md:col-span-2">
+                    <fieldset>
+                        <div class="mt-6 space-y-6">
+                            <div class="relative flex gap-x-3">
+                                <div class="flex h-6 items-center">
+                                    {{ form.is_private }}
+                                </div>
+                                <div class="text-sm leading-6">
+                                    <label for="{{ form.is_private.id_for_label }}"
+                                        class="font-medium text-gray-900">{{ form.is_private.label }}</label>
+                                    <p class="text-gray-500">{{ form.is_private.help_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+            <button type="submit"
+                class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit</button>
+        </div>
+    </form>
+</div>

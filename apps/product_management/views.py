@@ -680,7 +680,7 @@ class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Updat
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("product_summary", args=(self.object.slug,))
+        return reverse("update-product", args=(self.object.id,))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -852,6 +852,13 @@ class DashboardView(DashboardBaseView, TemplateView):
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
         context.update({"active_bounty_claims": active_bounty_claims, "products": products})
+
+        slug = self.kwargs.get("product_slug", "")
+        if Product.objects.filter(slug=slug).exists():
+            context["product"] = Product.objects.get(slug=slug)
+
+        context["default_tab"] = self.kwargs.get("default_tab", 0)
+
         return context
 
 
@@ -868,7 +875,7 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
         )
         product_ids = product_roles_queryset.values_list("product_id", flat=True)
         products = Product.objects.filter(id__in=product_ids)
-        context.update({"active_bounty_claims": active_bounty_claims, "products": products})
+        context.update({"active_bounty_claims": active_bounty_claims, "products": products, "default_tab": 0})
         return context
 
 
@@ -982,6 +989,42 @@ class UpdateProductUserView(DashboardBaseView, UpdateView):
         return super().post(request, *args, **kwargs)
 
 
+class ProductSettingView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
+    model = Product
+    form_class = forms.ProductForm
+    template_name = "product_management/dashboard/product_setting.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("product-setting", args=(self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        initial = {}
+        if self.object.content_type_id == ContentType.objects.get_for_model(self.request.user.person).id:
+            initial_make_me_owner = self.object.object_id == self.request.user.id
+            initial = {"make_me_owner": initial_make_me_owner}
+            context["make_me_owner"] = initial_make_me_owner
+
+        if self.object.content_type_id == ContentType.objects.get_for_model(Organisation).id:
+            initial_organisation = Organisation.objects.filter(id=self.object.object_id).first()
+            initial = {"organisation": initial_organisation}
+            context["organisation"] = initial_organisation
+
+        context["form"] = self.form_class(instance=self.object, initial=initial)
+        context["product_instance"] = self.object
+
+        print("======= product settings....")
+        return context
+
+    def form_valid(self, form):
+        return super().form_save(form)
+
+    def form_invalid(self, form):
+        print(form.errors)
+        return super().form_invalid(form)
+
+
 class DashboardBountyClaimRequestsView(LoginRequiredMixin, ListView):
     model = BountyClaim
     context_object_name = "bounty_claims"
@@ -1006,7 +1049,12 @@ class DashboardProductDetailView(DashboardBaseView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({"challenges": Challenge.objects.filter(product=self.object).order_by("-created_at")})
+        context.update(
+            {
+                "challenges": Challenge.objects.filter(product=self.object).order_by("-created_at"),
+                "default_tab": self.kwargs.get("default_tab", 0),
+            }
+        )
         return context
 
 
