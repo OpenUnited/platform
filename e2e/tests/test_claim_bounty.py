@@ -23,6 +23,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     print("=======================:", bounty)
     bounty_claim_button = page.get_bounty_claim_button(bounty.id)
     bounty_claim_button.click()
+    print("=======================:", page.get_bounty_claim_button(bounty.id))
 
     page_context.wait_for_timeout(500)
     page.bounty_add_btn.click()
