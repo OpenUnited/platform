@@ -627,7 +627,7 @@ class BountyClaimView(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         form = forms.BountyClaimForm(request.POST)
         form.is_valid()
-        print("=======================:", form)
+        print("=======================:", request.POST)
         print("=======================:", form.errors)
         if not form.is_valid():
             return JsonResponse({"errors": form.errors}, status=400)
