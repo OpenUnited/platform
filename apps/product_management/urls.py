@@ -79,6 +79,11 @@ urlpatterns = [
 urlpatterns += [
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path(
+        "dashboard/product/<str:product_slug>/<int:default_tab>/",
+        views.DashboardView.as_view(),
+        name="product-dashboard",
+    ),
+    path(
         "dashboard/home",
         views.DashboardHomeView.as_view(),
         name="dashboard-home",
@@ -94,7 +99,7 @@ urlpatterns += [
         name="dashboard-bounty-requests",
     ),
     path(
-        "dashboard/product/<str:product_slug>/",
+        "dashboard/product/<str:product_slug>/tab/<int:default_tab>/",
         views.DashboardProductDetailView.as_view(),
         name="dashboard-product-detail",
     ),
@@ -147,6 +152,11 @@ urlpatterns += [
         "dashboard/product/<str:product_slug>/product-users/<int:pk>/update",
         views.UpdateProductUserView.as_view(),
         name="update-product-user",
+    ),
+    path(
+        "dashboard/product-setting/<int:pk>/",
+        views.ProductSettingView.as_view(),
+        name="product-setting",
     ),
 ]
 
