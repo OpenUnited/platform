@@ -20,16 +20,15 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     challenge_detail_button.click()
     page_context.wait_for_timeout(1500)
 
+    print("=======================:", bounty)
     bounty_claim_button = page.get_bounty_claim_button(bounty.id)
     bounty_claim_button.click()
 
     page_context.wait_for_timeout(500)
     page.bounty_add_btn.click()
     page_context.wait_for_timeout(500)
-    future_date = datetime.date() + timedelta(days=10)
 
-    print("=======================:", future_date)
-
+    future_date = datetime.today() + timedelta(days=10)
     day = future_date.strftime("%d")
     month = future_date.strftime("%m")
     year = future_date.strftime("%Y")
