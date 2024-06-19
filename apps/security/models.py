@@ -62,8 +62,8 @@ class SignInAttempt(TimeStampMixin):
 class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
     class ProductRoles(models.TextChoices):
         CONTRIBUTOR = "Contributor"
-        PRODUCT_MANAGER = "Manager"
-        PRODUCT_ADMIN = "Admin"
+        MANAGER = "Manager"
+        ADMIN = "Admin"
 
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, default="")
