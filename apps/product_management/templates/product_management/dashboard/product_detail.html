@@ -102,7 +102,7 @@
   ```
 -->
     <div class="border-b border-gray-200 pb-5 sm:pb-0 mt-8">
-        <h3 class="text-base font-semibold leading-6 text-gray-900">Manage your products</h3>
+        <!-- <h3 class="text-base font-semibold leading-6 text-gray-900">Manage your products</h3> -->
         <div class="mt-3 sm:mt-4">
             <!-- Dropdown menu on small screens -->
             <div class="sm:hidden">
@@ -145,6 +145,11 @@
                         hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
                         class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
                         Contribution Agreements
+                    </a>
+                    <a hx-get="{{ url('manage-users', args=(product.slug,)) }}"
+                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner"
+                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium">
+                        User Management
                     </a>
                 </nav>
             </div>

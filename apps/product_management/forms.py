@@ -11,10 +11,11 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.widgets import TinyMCE
 
 from apps.commerce.models import Organisation
+from apps.security.models import ProductRoleAssignment
 from apps.talent.models import BountyClaim, Person
 from apps.utility import utils as global_utils
 
-from .models import Bounty, Bug, Challenge, ProductContributorAgreementTemplate, Idea, Initiative, Product, ProductArea
+from .models import Bounty, Bug, Challenge, Idea, Initiative, Product, ProductArea, ProductContributorAgreementTemplate
 
 
 class DateInput(forms.DateInput):
@@ -596,5 +597,22 @@ class ContributorAgreementTemplateForm(forms.ModelForm):
                     "cols": 80,
                     "rows": 50,
                 }
+            ),
+        }
+
+
+class ProductRoleAssignmentForm(forms.ModelForm):
+    class Meta:
+        model = ProductRoleAssignment
+        fields = ["person", "role"]
+        widgets = {
+            "role": forms.Select(
+                attrs={
+                    "class": (
+                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    ),
+                },
+                choices=ProductRoleAssignment.ProductRoles.choices,
             ),
         }

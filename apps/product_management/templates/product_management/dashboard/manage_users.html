@@ -1,0 +1,59 @@
+<div id="product_user_content">
+    <div class="mt-5 px-4 sm:px-6 lg:px-8">
+        <div id="manage-bounties-tabs" class="mt-2 mb-4">
+            <div class="relative">
+                <a href="#" hx-get="{{ url('add-product-user', args=(product.slug,)) }}"
+                    hx-target="#product_user_content" hx-swap="innerHTML" hx-push-url="false"
+                >
+                    <button
+                        type="button"
+                        class="absolute right-0 items-center justify-center rounded-md bg-blue-400 px-3 py-2
+                            text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500">
+                        Add User
+                    </button>
+                </a>
+            </div>
+            <div class="sm:flex sm:items-center mt-3 mb-8">
+                <div class="sm:flex-auto">
+                    <p class="mt-2 text-md text-gray-700">A list of users associated with this product.</p>
+                </div>
+            </div>
+
+            <div class="" id="user_table">
+            {% if product_users %}
+                <table class="min-w-full divide-y divide-gray-300">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">#</th>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Role</th>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        {% for product_role in product_users %}
+                        <tr>
+                            <td class="max-w-xs py-4 pl-4 text-sm text-gray-500 text-left">
+                                {{ loop.index }}
+                            </td>
+                            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                                {{ product_role.person }}
+                            </td>
+                            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                                {{ product_role.role }}
+                            </td>
+                            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                                <a href="#" hx-get="{{ url('update-product-user', args=(product.slug, product_role.id)) }}"
+                                    hx-target="#product_user_content" hx-swap="innerHTML" hx-push-url="false">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="mt-5 italic ml-2">Currently, there are no users for this product.</p>
+            {% endif  %}
+            </div>
+        </div>
+    </div>
+</div>

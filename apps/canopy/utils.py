@@ -138,3 +138,16 @@ def add_root_node_helper(request, tree_id, context):
     context["node"] = [common_utils.serialize_tree(product_area)]
     context["id"] = product_area.pk
     return render(request, "product_tree/components/partials/add_node_partial.html", context)
+
+
+def shareable_tree_helper(request, product_tree, show_share_button=False):
+    domain = f"{request.scheme}://{request.get_host()}"
+    return {
+        "can_modify_product": True,
+        "product_tree": product_tree,
+        "sharable_link": f"{domain}/product-tree/share/{product_tree.pk}",
+        "tree_data": [common_utils.serialize_tree(node) for node in product_tree.product_areas.filter(depth=1)],
+        "show_share_button": show_share_button,
+        "margin_left": int(request.GET.get("margin_left", 0)),
+        "depth": int(request.GET.get("depth", 0)),
+    }

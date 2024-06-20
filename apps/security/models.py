@@ -60,21 +60,21 @@ class SignInAttempt(TimeStampMixin):
 
 
 class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
-    CONTRIBUTOR = 0
-    PRODUCT_MANAGER = 1
-    PRODUCT_ADMIN = 2
+    class ProductRoles(models.TextChoices):
+        CONTRIBUTOR = "Contributor"
+        MANAGER = "Manager"
+        ADMIN = "Admin"
 
-    ROLES = (
-        (CONTRIBUTOR, "Contributor"),
-        (PRODUCT_MANAGER, "Manager"),
-        (PRODUCT_ADMIN, "Admin"),
-    )
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, default="")
-    role = models.IntegerField(choices=ROLES, default=0)
+    role = models.CharField(
+        max_length=255,
+        choices=ProductRoles.choices,
+        default=ProductRoles.CONTRIBUTOR,
+    )
 
     def __str__(self):
-        return f"{self.person} - {self.get_role_display()}"
+        return f"{self.person} - {self.role}"
 
 
 class BlacklistedUsernames(models.Model):

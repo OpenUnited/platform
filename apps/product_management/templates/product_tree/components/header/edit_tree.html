@@ -1,5 +1,5 @@
 {% if not product_slug %}
-    <form id="shareable_product_tree" class="hidden" hx-post="{{url('canopy:update_product_tree',args=(product_tree.pk,) )}}" hx-swap="none">
+    <form id="shareable_product_tree" class="hidden" hx-post="{{url('update_product_tree',args=(product_tree.pk,) )}}" hx-swap="none">
         <div class="flex">
             <div class="relative w-3/5">
                 <input type="text" name="name"  value="{{product_tree.name}}" class="block p-2.5 w-full z-20 py-1.5 px-3 h-9 p-3  text-gray-900 bg-gray-50 rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Name ..." required />

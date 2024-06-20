@@ -46,3 +46,28 @@ class AttachmentMixin:
             for attachment in attachments:
                 self.object.attachments.add(attachment)
         return response
+
+
+class PersonSearchMixin:
+    def get_template_names(self):
+        if self.request.htmx and self.request.GET.get("search"):
+            return "partials/dropdown_search.html"
+        return super().get_template_names()
+
+    def get_person_model(self):
+        from apps.talent.models import Person
+
+        return Person
+
+    def get_person_queryset(self):
+        from django.db.models import Q
+
+        if query_parameter := self.request.GET.get("search"):
+            query = Q(Q(full_name__icontains=query_parameter) | Q(user__email__icontains=query_parameter))
+            return self.get_person_model().objects.filter(query)
+        return self.get_person_model().objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_result"] = self.get_person_queryset()
+        return context

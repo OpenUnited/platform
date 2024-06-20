@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -15,7 +14,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from apps.common import mixins
-from apps.product_management.models import Bounty, Challenge
+from apps.product_management.models import Bounty
 from apps.security.models import ProductRoleAssignment
 from apps.talent import utils
 from apps.utility import utils as global_utils
@@ -380,7 +379,7 @@ class BountyDeliveryAttemptDetail(LoginRequiredMixin, mixins.AttachmentMixin, De
         is_product_admin = ProductRoleAssignment.objects.filter(
             product=product,
             person=self.request.user.person,
-            role__in=[ProductRoleAssignment.PRODUCT_ADMIN, ProductRoleAssignment.PRODUCT_MANAGER],
+            role__in=[ProductRoleAssignment.ProductRoles.ADMIN, ProductRoleAssignment.ProductRoles.MANAGER],
         ).exists()
         data["is_product_admin"] = is_product_admin
         return data
