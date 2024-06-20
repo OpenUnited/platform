@@ -41,17 +41,9 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
 
     # Clear the date input fields before typing
     page.expected_submission_date.clear()
-    page_context.wait_for_timeout(500)
     page.expected_submission_date.type("21")
-
-    page_context.wait_for_timeout(500)
-    page.expected_submission_date.clear()
     page.expected_submission_date.type("08")
-
-    page_context.wait_for_timeout(500)
-    page.expected_submission_date.clear()
     page.expected_submission_date.type("2024")
-    page_context.wait_for_timeout(500)
 
     print(page.expected_submission_date)
     page.terms_check_box.check()
