@@ -42,7 +42,7 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     # Clear the date input fields before typing
     page.expected_submission_date.clear()
     page.expected_submission_date.type("21")
-    page.expected_submission_date.type("08")
+    page.expected_submission_date.type("18")
     page.expected_submission_date.type("2024")
 
     print(page.expected_submission_date)
