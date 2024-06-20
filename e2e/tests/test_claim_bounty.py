@@ -29,21 +29,17 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page.bounty_add_btn.click()
     page_context.wait_for_timeout(500)
 
-    future_date = datetime.today() + timedelta(days=10)
+    future_date = datetime.now() + timedelta(days=10)
     day = future_date.strftime("%d")
     month = future_date.strftime("%m")
     year = future_date.strftime("%Y")
-    print("========================:", datetime.today())
+    print("========================:", datetime.now())
     print("========================:", day, month, year)
 
     # Clear the date input fields before typing
     page.expected_submission_date.clear()
     page.expected_submission_date.type(day)
-
-    page.expected_submission_date.clear()
     page.expected_submission_date.type(month)
-
-    page.expected_submission_date.clear()
     page.expected_submission_date.type(year)
 
     print(page.expected_submission_date)
