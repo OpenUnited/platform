@@ -30,6 +30,8 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page_context.wait_for_timeout(500)
 
     future_date = datetime.now() + timedelta(days=10)
+    page_context.wait_for_timeout(500)
+
     day = future_date.strftime("%d")
     page_context.wait_for_timeout(500)
     month = future_date.strftime("%m")
