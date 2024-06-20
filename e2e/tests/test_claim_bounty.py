@@ -43,9 +43,9 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     print("========================:", day, month, year)
 
     # Clear the date input fields before typing
-    page.expected_submission_date.type(day)
-    page.expected_submission_date.type(month)
-    page.expected_submission_date.type(year)
+    page.expected_submission_date.type("21")
+    page.expected_submission_date.type("07")
+    page.expected_submission_date.type("2024")
 
     print(page.expected_submission_date)
     page.terms_check_box.check()
