@@ -4,9 +4,10 @@ from e2e.pages.base import BasePage
 class ChallengeDetailPage(BasePage):
     def __init__(self, page):
         super().__init__(page)
+        self.bounty_add_btn = self.page.locator("#bounty-add-btn")
         self.expected_submission_date = self.page.locator("#expected_submission_date")
-        self.terms_check_box = self.page.locator("#term_checkbox")
-        self.request_claim_button = self.page.locator(f'button[class="ajs-button ajs-ok"]')
+        self.terms_check_box = self.page.locator("#is_agreement_accepted")
+        self.request_claim_button = self.page.locator('button[class="ajs-button ajs-ok"]')
 
     def get_challenge_detail_button(self, product_slug, challenge_id):
         href_value = f"/{product_slug}/challenge/{challenge_id}"
