@@ -33,11 +33,8 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     page_context.wait_for_timeout(500)
 
     day = future_date.strftime("%d")
-    page_context.wait_for_timeout(500)
     month = future_date.strftime("%m")
-    page_context.wait_for_timeout(500)
     year = future_date.strftime("%Y")
-    page_context.wait_for_timeout(500)
 
     print("========================:", datetime.now())
     print("========================:", day, month, year)
@@ -45,8 +42,13 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
     # Clear the date input fields before typing
     page.expected_submission_date.clear()
     page.expected_submission_date.type("21")
+    page_context.wait_for_timeout(500)
+
     page.expected_submission_date.type("07")
+    page_context.wait_for_timeout(500)
+
     page.expected_submission_date.type("2024")
+    page_context.wait_for_timeout(500)
 
     print(page.expected_submission_date)
     page.terms_check_box.check()
