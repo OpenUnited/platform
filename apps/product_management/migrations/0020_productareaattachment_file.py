@@ -15,9 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="productareaattachment",
             name="file",
-            field=models.FileField(
-                blank=True, null=True, upload_to="attachments"
-            ),
+            field=models.FileField(blank=True, null=True, upload_to="attachments"),
         ),
         migrations.RemoveField(
             model_name="productareaattachment",

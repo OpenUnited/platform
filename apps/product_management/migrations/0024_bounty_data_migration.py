@@ -6,9 +6,7 @@ from django.db import migrations, models
 def forward_func(apps, schema_editor):
     Bounty = apps.get_model("product_management.Bounty")
     for bounty in Bounty.objects.all():
-        expertise_as_str = ", ".join(
-            [exp.name.title() for exp in bounty.expertise.all()]
-        )
+        expertise_as_str = ", ".join([exp.name.title() for exp in bounty.expertise.all()])
         skill_name = ""
         if expertise_as_str:
             expertise_as_str = f"({expertise_as_str})"
@@ -16,9 +14,7 @@ def forward_func(apps, schema_editor):
         if bounty.skill:
             skill_name = bounty.skill.name
 
-        bounty.title = (
-            f"{skill_name} {expertise_as_str} - {bounty.challenge.title}"
-        )
+        bounty.title = f"{skill_name} {expertise_as_str} - {bounty.challenge.title}"
         bounty.save()
 
 

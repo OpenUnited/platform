@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
-                        default=uuid.UUID(
-                            "09332c8a-0484-43c7-b283-42e07798686e"
-                        ),
+                        default=uuid.UUID("09332c8a-0484-43c7-b283-42e07798686e"),
                         primary_key=True,
                         serialize=False,
                     ),

@@ -84,9 +84,7 @@ class Migration(migrations.Migration):
                 ("preferred_name", models.CharField(max_length=128)),
                 (
                     "photo",
-                    models.ImageField(
-                        blank=True, null=True, upload_to="avatars/"
-                    ),
+                    models.ImageField(blank=True, null=True, upload_to="avatars/"),
                 ),
                 ("headline", models.TextField()),
                 ("overview", models.TextField(blank=True)),
@@ -208,9 +206,7 @@ class Migration(migrations.Migration):
                 ("website", models.CharField(max_length=200)),
                 (
                     "type",
-                    models.IntegerField(
-                        choices=[(0, "Personal"), (1, "Company")]
-                    ),
+                    models.IntegerField(choices=[(0, "Personal"), (1, "Company")]),
                 ),
                 (
                     "person",
