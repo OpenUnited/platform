@@ -38,10 +38,9 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
 
     print("========================:", datetime.now())
     print("========================:", day, month, year)
-    print("======:", page.expected_submission_date.inner_text)
-
+    date = f"{year}/{month}/{day}"
     # Clear the date input fields before typing
-    page.expected_submission_date.fill(f"{year}/{month}/{day}")
+    page.expected_submission_date.fill(f"{year}-{month}-{day}")
 
     page.terms_check_box.check()
 
