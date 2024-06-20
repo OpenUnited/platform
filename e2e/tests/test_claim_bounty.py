@@ -31,13 +31,16 @@ def test_claim_bounty(live_server, page_context, setup_bounty):
 
     future_date = datetime.now() + timedelta(days=10)
     day = future_date.strftime("%d")
+    page_context.wait_for_timeout(500)
     month = future_date.strftime("%m")
+    page_context.wait_for_timeout(500)
     year = future_date.strftime("%Y")
+    page_context.wait_for_timeout(500)
+
     print("========================:", datetime.now())
     print("========================:", day, month, year)
 
     # Clear the date input fields before typing
-    page.expected_submission_date.clear()
     page.expected_submission_date.type(day)
     page.expected_submission_date.type(month)
     page.expected_submission_date.type(year)
