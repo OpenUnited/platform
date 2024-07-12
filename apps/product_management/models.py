@@ -135,35 +135,6 @@ class Initiative(TimeStampMixin, UUIDMixin):
     def get_challenge_tags(self):
         return Challenge.objects.filter(task_tags__initiative=self).distinct("id").all()
 
-    @staticmethod
-    def get_filtered_data(input_data, filter_data=None, exclude_data=None):
-        if filter_data is None:
-            filter_data = {}
-        if not filter_data:
-            filter_data = dict()
-
-        if not input_data:
-            input_data = dict()
-
-        statuses = input_data.get("statuses", [])
-        tags = input_data.get("tags", [])
-        categories = input_data.get("categories", None)
-
-        if statuses:
-            filter_data["status__in"] = statuses
-
-        if tags:
-            filter_data["challenge__tag__in"] = tags
-
-        if categories:
-            filter_data["challenge__category__parent__in"] = categories
-
-        queryset = Initiative.objects.filter(**filter_data)
-        if exclude_data:
-            queryset = queryset.exclude(**exclude_data)
-
-        return queryset.distinct("id").all()
-
 
 class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
     class ChallengeStatus(models.TextChoices):
@@ -280,47 +251,6 @@ class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
             total += elem.points
 
         return total
-
-    @staticmethod
-    def get_filtered_data(input_data, filter_data=None, exclude_data=None):
-        if not filter_data:
-            filter_data = {}
-
-        if not input_data:
-            input_data = {}
-
-        sorted_by = input_data.get("sorted_by", "title")
-        statuses = input_data.get("statuses", [])
-        tags = input_data.get("tags", [])
-        priority = input_data.get("priority", [])
-        assignee = input_data.get("assignee", [])
-        task_creator = input_data.get("task_creator", [])
-        skills = input_data.get("skils", [])
-
-        if statuses:
-            filter_data["status__in"] = statuses
-
-        if tags:
-            filter_data["tag__in"] = tags
-
-        if priority:
-            filter_data["priority__in"] = priority
-
-        if task_creator:
-            filter_data["created_by__in"] = task_creator
-
-        if assignee:
-            filter_data["bountyclaim__status__in"] = [0, 1]
-            filter_data["bountyclaim__person_id__in"] = assignee
-
-        if skills:
-            filter_data["skill__parent__in"] = skills
-
-        queryset = Challenge.objects.filter(**filter_data)
-        if exclude_data:
-            queryset = queryset.exclude(**exclude_data)
-
-        return queryset.order_by(sorted_by).all()
 
     def get_short_description(self):
         # return a shortened version of the description text
