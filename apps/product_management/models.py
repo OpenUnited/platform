@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
@@ -396,22 +396,6 @@ class ChallengeDependency(models.Model):
 
     class Meta:
         db_table = "product_management_challenge_dependencies"
-
-
-class ProductChallenge(TimeStampMixin, UUIDMixin):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
-
-
-@receiver(post_save, sender=ProductChallenge)
-def save_product_task(sender, instance, created, **kwargs):
-    if created:
-        challenge = instance.challenge
-        last_product_challenge = (
-            Challenge.objects.filter(productchallenge__product=instance.product).order_by("-published_id").first()
-        )
-        challenge.published_id = last_product_challenge.published_id + 1 if last_product_challenge else 1
-        challenge.save()
 
 
 class ContributorGuide(models.Model):
