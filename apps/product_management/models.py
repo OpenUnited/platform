@@ -262,7 +262,7 @@ class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
         try:
             product_role_assignment = ProductRoleAssignment.objects.get(person=person, product=product)
 
-            if product_role_assignment.role == ProductRoleAssignment.CONTRIBUTOR:
+            if product_role_assignment.role == ProductRoleAssignment.ProductRoles.CONTRIBUTOR:
                 return False
 
         except ProductRoleAssignment.DoesNotExist:
