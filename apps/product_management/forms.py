@@ -331,7 +331,7 @@ class ChallengeForm(forms.ModelForm):
 
 class BountyForm(forms.ModelForm):
     skill = forms.CharField(widget=forms.HiddenInput(attrs={"id": "skill_id"}))
-    expertise_ids = forms.CharField(widget=forms.HiddenInput(attrs={"id": "expertise_ids"}))
+    expertise_ids = forms.CharField(widget=forms.HiddenInput(attrs={"id": "expertise_ids"}), required=False)
 
     def clean_selected_skill_ids(self):
         skill_id = self.cleaned_data.get("selected_skill_ids")
