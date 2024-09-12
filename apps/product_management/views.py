@@ -1281,7 +1281,9 @@ class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill_id"))
         response = super().form_save(form)
         if len(form.cleaned_data.get("expertise_ids")) > 0:
-            form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids")))
+            form.instance.expertise.add(
+                *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
+            )
         form.instance.save()
         return response
 
