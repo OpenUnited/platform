@@ -1250,9 +1250,10 @@ class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         form.instance.challenge = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
         form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill"))
         response = super().form_save(form)
-        form.instance.expertise.add(
-            *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
-        )
+        if len(form.cleaned_data.get("expertise_ids")) > 0:
+            form.instance.expertise.add(
+                *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
+            )
         form.instance.save()
         return response
 
@@ -1279,7 +1280,10 @@ class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         form.instance.challenge = form.cleaned_data.get("challenge")
         form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill_id"))
         response = super().form_save(form)
-        form.instance.expertise.add(*Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids")))
+        if len(form.cleaned_data.get("expertise_ids")) > 0:
+            form.instance.expertise.add(
+                *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
+            )
         form.instance.save()
         return response
 
