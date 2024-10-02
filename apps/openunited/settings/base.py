@@ -1,14 +1,19 @@
 import os
-from pathlib import Path
-
-import sentry_sdk
 from dotenv import load_dotenv
+from pathlib import Path
+import sentry_sdk
 
 DEBUG = True
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR should point to the platform directory
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+# Path to the .env file
+dotenv_path = os.path.join(BASE_DIR.parent, ".env")
+
+# Load .env file
+load_dotenv(dotenv_path)
+
 
 ALLOWED_HOSTS = []
 if allowed_hosts := os.environ.get("DJANGO_ALLOWED_HOSTS"):
