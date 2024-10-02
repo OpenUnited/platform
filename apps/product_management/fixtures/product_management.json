@@ -1,212 +1,5 @@
 [
     {
-        "model": "product_management.tag",
-        "pk": 1,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.589Z",
-            "updated_at": "2024-05-06T17:34:14.589Z",
-            "name": "fitness-tracking"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 2,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.591Z",
-            "updated_at": "2024-05-06T17:34:14.591Z",
-            "name": "notification-system"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 3,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.592Z",
-            "updated_at": "2024-05-06T17:34:14.592Z",
-            "name": "battery-optimization"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 4,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.593Z",
-            "updated_at": "2024-05-06T17:34:14.593Z",
-            "name": "sleep-tracking"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 5,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.594Z",
-            "updated_at": "2024-05-06T17:34:14.594Z",
-            "name": "heart-rate-monitoring"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 6,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.595Z",
-            "updated_at": "2024-05-06T17:34:14.595Z",
-            "name": "water-intake-tracking"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 7,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.596Z",
-            "updated_at": "2024-05-06T17:34:14.596Z",
-            "name": "gps-navigation"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 8,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.597Z",
-            "updated_at": "2024-05-06T17:34:14.597Z",
-            "name": "guided-workouts"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 9,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.597Z",
-            "updated_at": "2024-05-06T17:34:14.597Z",
-            "name": "display-visibility"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 10,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.598Z",
-            "updated_at": "2024-05-06T17:34:14.598Z",
-            "name": "voice-assistant-integration"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 11,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.599Z",
-            "updated_at": "2024-05-06T17:34:14.599Z",
-            "name": "noise-canceling-feature"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 12,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.600Z",
-            "updated_at": "2024-05-06T17:34:14.600Z",
-            "name": "battery-efficiency"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 13,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.600Z",
-            "updated_at": "2024-05-06T17:34:14.600Z",
-            "name": "gesture-controls"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 14,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.601Z",
-            "updated_at": "2024-05-06T17:34:14.601Z",
-            "name": "bluetooth-connectivity"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 15,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.602Z",
-            "updated_at": "2024-05-06T17:34:14.602Z",
-            "name": "customizable-eq-settings"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 16,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.603Z",
-            "updated_at": "2024-05-06T17:34:14.603Z",
-            "name": "find-my-earbuds"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 17,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.603Z",
-            "updated_at": "2024-05-06T17:34:14.603Z",
-            "name": "comfort-and-fit"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 18,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.604Z",
-            "updated_at": "2024-05-06T17:34:14.604Z",
-            "name": "multi-device-pairing"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 19,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.605Z",
-            "updated_at": "2024-05-06T17:34:14.605Z",
-            "name": "water-and-sweat-resistance"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 20,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.606Z",
-            "updated_at": "2024-05-06T17:34:14.606Z",
-            "name": "real-time-language-translation"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 21,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.606Z",
-            "updated_at": "2024-05-06T17:34:14.606Z",
-            "name": "coffee-coding-challenge"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 22,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.607Z",
-            "updated_at": "2024-05-06T17:34:14.607Z",
-            "name": "coffee-api-integration"
-        }
-    },
-    {
-        "model": "product_management.tag",
-        "pk": 23,
-        "fields": {
-            "created_at": "2024-05-06T17:34:14.608Z",
-            "updated_at": "2024-05-06T17:34:14.608Z",
-            "name": "coffee-machine-learning-challenge"
-        }
-    },
-    {
         "model": "product_management.productarea",
         "pk": 1,
         "fields": {
@@ -1333,10 +1126,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1364,10 +1154,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1395,10 +1182,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1426,10 +1210,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1457,10 +1238,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1488,10 +1266,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1519,10 +1294,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1550,10 +1322,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1581,10 +1350,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1612,10 +1378,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1643,10 +1406,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
+            "attachments": []
         }
     },
     {
@@ -1674,10 +1434,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8
-            ]
+            "attachments": []
         }
     },
     {
@@ -1705,10 +1462,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17
-            ]
+            "attachments": []
         }
     },
     {
@@ -1736,10 +1490,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                4
-            ]
+            "attachments": []
         }
     },
     {
@@ -1767,10 +1518,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                22
-            ]
+            "attachments": []
         }
     },
     {
@@ -1798,10 +1546,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                11
-            ]
+            "attachments": []
         }
     },
     {
@@ -1829,10 +1574,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                5
-            ]
+            "attachments": []
         }
     },
     {
@@ -1860,10 +1602,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10
-            ]
+            "attachments": []
         }
     },
     {
@@ -1891,10 +1630,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                18
-            ]
+            "attachments": []
         }
     },
     {
@@ -1922,10 +1658,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9
-            ]
+            "attachments": []
         }
     },
     {
@@ -1953,11 +1686,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -1984,11 +1713,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2015,12 +1740,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10,
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2047,11 +1767,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                2
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2078,11 +1794,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                16
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2109,12 +1821,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9,
-                21
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2141,12 +1848,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                1,
-                12
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2173,11 +1875,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                3
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2204,11 +1902,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                4
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2235,12 +1929,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17,
-                6
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2267,11 +1956,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2298,12 +1983,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8,
-                18
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2330,12 +2010,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10,
-                4
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2362,13 +2037,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                3,
-                12,
-                20
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2395,12 +2064,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                16,
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2427,13 +2091,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                15,
-                22,
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2460,13 +2118,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                1,
-                21,
-                9
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2493,13 +2145,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                19,
-                2,
-                11
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2526,13 +2172,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                13,
-                6,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2559,11 +2199,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2590,11 +2226,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2621,12 +2253,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8,
-                17
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2653,11 +2280,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                3
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2684,12 +2307,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                20,
-                15
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2716,11 +2334,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2747,12 +2361,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                22,
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2779,11 +2388,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                12
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2810,11 +2415,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                1
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2841,12 +2442,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                19,
-                13
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2873,12 +2469,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                2,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2905,11 +2496,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2936,11 +2523,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2967,11 +2550,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -2998,11 +2577,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3029,11 +2604,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                18
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3060,12 +2631,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                21,
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3092,11 +2658,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3123,12 +2685,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                19,
-                13
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3155,12 +2712,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17,
-                3
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3187,12 +2739,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                11,
-                20
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3219,13 +2766,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                18,
-                14,
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3252,12 +2793,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10,
-                22
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3284,13 +2820,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                19,
-                6,
-                14
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3317,13 +2847,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                2,
-                11,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3350,13 +2874,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8,
-                1,
-                15
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3383,13 +2901,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                20,
-                4,
-                12
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3416,13 +2928,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                21,
-                3,
-                13
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3449,13 +2955,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                16,
-                9,
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3482,12 +2982,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3514,13 +3009,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                1,
-                10,
-                22
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3547,11 +3036,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3578,12 +3063,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9,
-                17
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3610,11 +3090,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3641,12 +3117,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                19,
-                6
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3673,12 +3144,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                3,
-                12
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3705,12 +3171,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10,
-                21
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3737,12 +3198,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                1,
-                15
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3769,12 +3225,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8,
-                22
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3801,12 +3252,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                18,
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3833,12 +3279,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                11,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3865,12 +3306,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14,
-                6
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3897,11 +3333,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3928,12 +3360,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10,
-                19
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3960,12 +3387,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                16,
-                4
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -3992,11 +3414,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4023,12 +3441,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                3,
-                21
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4055,12 +3468,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4087,12 +3495,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                13,
-                5
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4119,12 +3522,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17,
-                12
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4151,12 +3549,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                2,
-                18
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4183,12 +3576,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                14,
-                7
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4215,13 +3603,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                9,
-                18,
-                3
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4248,11 +3630,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                10
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4279,12 +3657,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                4,
-                15
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4311,13 +3684,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                8,
-                11,
-                23
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4344,12 +3711,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                17,
-                2
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4376,12 +3738,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                12,
-                6
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4408,13 +3765,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                16,
-                5,
-                21
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4441,12 +3792,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                20,
-                13
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.challenge",
@@ -4473,11 +3819,7 @@
             "video_url": "https://www.youtube.com/watch?v=abcd1234",
             "contribution_guide": null,
             "reward_type": "Liquid Points",
-            "attachments": [],
-            "tag": [
-                19
-            ]
-        }
+            "attachments": []        }
     },
     {
         "model": "product_management.bounty",
