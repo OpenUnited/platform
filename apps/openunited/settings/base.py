@@ -5,11 +5,12 @@ import sentry_sdk
 
 DEBUG = True
 
-# BASE_DIR should point to the platform directory
+# BASE_DIR points to the "apps" directory
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Path to the .env file
-dotenv_path = os.path.join(BASE_DIR.parent, ".env")
+# Path to the .env file, one level above the BASE_DIR in the root of the project
+ENV_DIR = BASE_DIR.parent
+dotenv_path = os.path.join(ENV_DIR, ".env")
 
 # Load .env file
 load_dotenv(dotenv_path)
