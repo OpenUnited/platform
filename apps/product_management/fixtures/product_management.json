@@ -1,196 +1,648 @@
 [
     {
+        "model": "product_management.producttree",
+        "pk": 1,
+        "fields": {
+          "name": "CloudCanvas Main Tree",
+          "product": 1
+        }
+      },
+      {
         "model": "product_management.productarea",
         "pk": 1,
         "fields": {
-            "path": "0001",
-            "depth": 1,
-            "numchild": 3,
-            "name": "Root product area  1",
-            "description": "Root Description of Capability 1",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "0001",
+          "depth": 1,
+          "numchild": 4,
+          "name": "Canvas Tools",
+          "description": "Core drawing and editing tools",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 2,
         "fields": {
-            "path": "0002",
-            "depth": 1,
-            "numchild": 3,
-            "name": "Root product area  2",
-            "description": "Root Description of product area  2",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00010002",
+          "depth": 2,
+          "numchild": 2,
+          "name": "Brushes",
+          "description": "Various brush tools",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 3,
         "fields": {
-            "path": "00020001",
-            "depth": 2,
-            "numchild": 1,
-            "name": "Child of a Root product area  2",
-            "description": "Child Description of product area  2",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "000100020003",
+          "depth": 3,
+          "numchild": 0,
+          "name": "Customizable Brushes",
+          "description": "Create and modify brushes",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 4,
         "fields": {
-            "path": "00020002",
-            "depth": 2,
-            "numchild": 0,
-            "name": "Sibling of Child of Root product area  1",
-            "description": "Sibling Description of Child of Root product area  1",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "000100020004",
+          "depth": 3,
+          "numchild": 0,
+          "name": "Brush Presets",
+          "description": "Pre-defined brush settings",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 5,
         "fields": {
-            "path": "00020003",
-            "depth": 2,
-            "numchild": 0,
-            "name": "Sibling of Child of Root product area  2",
-            "description": "Sibling Description of Child of Root product area  2",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00010005",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Layers",
+          "description": "Layer management system",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 6,
         "fields": {
-            "path": "000200010001",
-            "depth": 3,
-            "numchild": 0,
-            "name": "Sibling of Child of Root product area  3",
-            "description": "Sibling Description of Child of Root product area  3",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00010006",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Color Palette",
+          "description": "Color selection and management",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 7,
         "fields": {
-            "path": "00010001",
-            "depth": 2,
-            "numchild": 3,
-            "name": "product area 2",
-            "description": "Description of product area  2",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00010007",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Transform Tools",
+          "description": "Tools for manipulating canvas elements",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 8,
         "fields": {
-            "path": "00010002",
-            "depth": 2,
-            "numchild": 0,
-            "name": "product area 3",
-            "description": "Description of product area  3",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "0008",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Collaboration Features",
+          "description": "Tools for team collaboration",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 9,
         "fields": {
-            "path": "00010003",
-            "depth": 2,
-            "numchild": 0,
-            "name": "product area 4",
-            "description": "Description of product area  4",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00080009",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Real-time Co-editing",
+          "description": "Simultaneous editing capabilities",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 10,
         "fields": {
-            "path": "000100010001",
-            "depth": 3,
-            "numchild": 0,
-            "name": "product area 5",
-            "description": "Description of product area 5",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00080010",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Version Control",
+          "description": "Track and manage art versions",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
         "model": "product_management.productarea",
         "pk": 11,
         "fields": {
-            "path": "000100010002",
-            "depth": 3,
-            "numchild": 0,
-            "name": "product area 6",
-            "description": "Description of product area 6",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "00080011",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Comments and Annotations",
+          "description": "Add notes and feedback to artworks",
+          "product_tree": 1
         }
-    },
-    {
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 2,
+        "fields": {
+          "name": "EduSync Main Tree",
+          "product": 2
+        }
+      },
+      {
         "model": "product_management.productarea",
         "pk": 12,
         "fields": {
-            "path": "000100010003",
-            "depth": 3,
-            "numchild": 0,
-            "name": "product area 7",
-            "description": "Description of product area 7",
-            "video_link": null,
-            "video_name": null,
-            "video_duration": null,
-            "product_tree": null,
-            "comments_start": null
+          "path": "0012",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Course Management",
+          "description": "Tools for managing educational courses",
+          "product_tree": 2
         }
-    },
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 13,
+        "fields": {
+          "path": "00120013",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Curriculum Design",
+          "description": "Create and organize course curricula",
+          "product_tree": 2
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 14,
+        "fields": {
+          "path": "00120014",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Assignment Creator",
+          "description": "Create and manage course assignments",
+          "product_tree": 2
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 15,
+        "fields": {
+          "path": "00120015",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Grading System",
+          "description": "Manage student grades and assessments",
+          "product_tree": 2
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 3,
+        "fields": {
+          "name": "HealthHub Main Tree",
+          "product": 3
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 16,
+        "fields": {
+          "path": "0016",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Patient Services",
+          "description": "Core services for patients",
+          "product_tree": 3
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 17,
+        "fields": {
+          "path": "00160017",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Appointment Scheduling",
+          "description": "Book and manage medical appointments",
+          "product_tree": 3
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 18,
+        "fields": {
+          "path": "00160018",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Virtual Consultations",
+          "description": "Conduct online doctor consultations",
+          "product_tree": 3
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 19,
+        "fields": {
+          "path": "00160019",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Prescription Management",
+          "description": "Manage and renew prescriptions",
+          "product_tree": 3
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 4,
+        "fields": {
+          "name": "EcoTracker Main Tree",
+          "product": 4
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 20,
+        "fields": {
+          "path": "0020",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Carbon Footprint Calculator",
+          "description": "Tools for calculating carbon emissions",
+          "product_tree": 4
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 21,
+        "fields": {
+          "path": "00200021",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Energy Consumption",
+          "description": "Track and analyze energy usage",
+          "product_tree": 4
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 22,
+        "fields": {
+          "path": "00200022",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Transportation Emissions",
+          "description": "Calculate emissions from various transport modes",
+          "product_tree": 4
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 23,
+        "fields": {
+          "path": "00200023",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Waste Generation",
+          "description": "Measure and analyze waste production",
+          "product_tree": 4
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 5,
+        "fields": {
+          "name": "FinanceFlow Main Tree",
+          "product": 5
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 24,
+        "fields": {
+          "path": "0024",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Budgeting Tools",
+          "description": "Features for personal budget management",
+          "product_tree": 5
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 25,
+        "fields": {
+          "path": "00240025",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Expense Categorization",
+          "description": "Categorize and track expenses",
+          "product_tree": 5
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 26,
+        "fields": {
+          "path": "00240026",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Income Tracking",
+          "description": "Monitor and analyze income sources",
+          "product_tree": 5
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 27,
+        "fields": {
+          "path": "00240027",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Budget Planner",
+          "description": "Create and manage budget plans",
+          "product_tree": 5
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 6,
+        "fields": {
+          "name": "VirtualEventPro Main Tree",
+          "product": 6
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 28,
+        "fields": {
+          "path": "0028",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Event Management",
+          "description": "Tools for organizing virtual events",
+          "product_tree": 6
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 29,
+        "fields": {
+          "path": "00280029",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Event Creation Wizard",
+          "description": "Step-by-step event setup process",
+          "product_tree": 6
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 30,
+        "fields": {
+          "path": "00280030",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Attendee Registration",
+          "description": "Manage event registrations",
+          "product_tree": 6
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 31,
+        "fields": {
+          "path": "00280031",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Schedule Builder",
+          "description": "Create and manage event schedules",
+          "product_tree": 6
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 7,
+        "fields": {
+          "name": "CodeCraft Main Tree",
+          "product": 7
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 32,
+        "fields": {
+          "path": "0032",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Code Editor",
+          "description": "Core code editing features",
+          "product_tree": 7
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 33,
+        "fields": {
+          "path": "00320033",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Syntax Highlighting",
+          "description": "Language-specific code coloring",
+          "product_tree": 7
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 34,
+        "fields": {
+          "path": "00320034",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Auto-completion",
+          "description": "Intelligent code completion suggestions",
+          "product_tree": 7
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 35,
+        "fields": {
+          "path": "00320035",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Version Control Integration",
+          "description": "Built-in version control features",
+          "product_tree": 7
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 8,
+        "fields": {
+          "name": "PetConnect Main Tree",
+          "product": 8
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 36,
+        "fields": {
+          "path": "0036",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Pet Services Finder",
+          "description": "Find pet care services",
+          "product_tree": 8
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 37,
+        "fields": {
+          "path": "00360037",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Veterinarians",
+          "description": "Find and book veterinarians",
+          "product_tree": 8
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 38,
+        "fields": {
+          "path": "00360038",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Groomers",
+          "description": "Find and book pet groomers",
+          "product_tree": 8
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 39,
+        "fields": {
+          "path": "00360039",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Pet Sitters",
+          "description": "Find and book pet sitters",
+          "product_tree": 8
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 9,
+        "fields": {
+          "name": "SecureHome Main Tree",
+          "product": 9
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 40,
+        "fields": {
+          "path": "0040",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Security Devices",
+          "description": "Smart home security devices",
+          "product_tree": 9
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 41,
+        "fields": {
+          "path": "00400041",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Smart Cameras",
+          "description": "AI-powered security cameras",
+          "product_tree": 9
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 42,
+        "fields": {
+          "path": "00400042",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Door/Window Sensors",
+          "description": "Sensors for entry points",
+          "product_tree": 9
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 43,
+        "fields": {
+          "path": "00400043",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Motion Detectors",
+          "description": "Detect movement in specified areas",
+          "product_tree": 9
+        }
+      },
+      {
+        "model": "product_management.producttree",
+        "pk": 10,
+        "fields": {
+          "name": "GigGear Main Tree",
+          "product": 10
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 44,
+        "fields": {
+          "path": "0044",
+          "depth": 1,
+          "numchild": 3,
+          "name": "Gear Marketplace",
+          "description": "Buy and sell music equipment",
+          "product_tree": 10
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 45,
+        "fields": {
+          "path": "00440045",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Buy/Sell Instruments",
+          "description": "Platform for instrument transactions",
+          "product_tree": 10
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 46,
+        "fields": {
+          "path": "00440046",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Gear Rentals",
+          "description": "Rent music equipment",
+          "product_tree": 10
+        }
+      },
+      {
+        "model": "product_management.productarea",
+        "pk": 47,
+        "fields": {
+          "path": "00440047",
+          "depth": 2,
+          "numchild": 0,
+          "name": "Equipment Reviews",
+          "description": "User-generated gear reviews",
+          "product_tree": 10
+        }
+      },
     {
         "model": "product_management.product",
         "pk": 1,
