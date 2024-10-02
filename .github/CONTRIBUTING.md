@@ -45,6 +45,9 @@ pip install -r requirements.txt
 export DJANGO_SETTINGS_MODULE=apps.openunited.settings.development
 ```
 
+For end-to-end tests, the OpenUnited platform uses Playwright. If you don't have Playwright installed, please do so. See [installing Playwright](https://playwright.dev/docs/intro)
+
+
 Setup the database and load fixtures / sample data:
 
 `make setup`
