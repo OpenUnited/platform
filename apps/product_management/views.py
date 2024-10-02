@@ -72,9 +72,17 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
 
         context["can_modify_product"] = can_modify_product
         context["challenges"] = challenges
-        context["tree_data"] = [
-            utils.serialize_tree(node) for node in ProductArea.get_root_nodes().filter(product_tree=None)
-        ]
+
+        # Get the first ProductTree for the current product
+        product_tree = product.product_trees.first()
+        
+        if product_tree:
+            # Get all root ProductAreas associated with this ProductTree
+            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
+            context["tree_data"] = [utils.serialize_tree(node) for node in product_areas]
+        else:
+            context["tree_data"] = []
+
         return context
 
 
@@ -299,11 +307,22 @@ class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
-        capability_root_trees = ProductArea.get_root_nodes().filter(product_tree=None)
-        context["tree_data"] = [utils.serialize_tree(node) for node in capability_root_trees]
+        product = context["product"]
+        
+        context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, product)
+        
+        # Get the first ProductTree for the current product
+        product_tree = product.product_trees.first()
+        
+        if product_tree:
+            # Get all root ProductAreas associated with this ProductTree
+            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
+            context["tree_data"] = [utils.serialize_tree(node) for node in product_areas]
+        else:
+            context["tree_data"] = []
+        
         return context
-
+    
 
 class ProductIdeasAndBugsView(utils.BaseProductDetailView, TemplateView):
     template_name = "product_management/product_ideas_and_bugs.html"
