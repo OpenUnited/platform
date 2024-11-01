@@ -1286,7 +1286,6 @@ class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         if len(form.cleaned_data.get("expertise_ids")) > 0:
             form.instance.expertise.add(
                 *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
-                )
             )
         form.instance.save()
         return response
