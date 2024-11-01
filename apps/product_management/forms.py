@@ -333,6 +333,10 @@ class BountyForm(forms.ModelForm):
     skill = forms.CharField(widget=forms.HiddenInput(attrs={"id": "skill_id"}))
     expertise_ids = forms.CharField(widget=forms.HiddenInput(attrs={"id": "expertise_ids"}), required=False)
 
+    @property
+    def is_active(self):
+        return True  # Default to True while we remove references to this field
+
     def clean_selected_skill_ids(self):
         skill_id = self.cleaned_data.get("selected_skill_ids")
         skill_id = json.loads(skill_id)
@@ -349,15 +353,11 @@ class BountyForm(forms.ModelForm):
 
     class Meta:
         model = Bounty
-        fields = ["title", "description", "points", "status", "is_active"]
+        fields = ["title", "description", "points", "status"]
 
         widgets = {
             "points": forms.NumberInput(attrs={"class": global_utils.text_field_class_names}),
             "status": forms.Select(attrs={"class": global_utils.text_field_class_names, "id": "id_bounty_status"}),
-        }
-        help_texts = {"is_active": "Display this bounty under the challenge that is created for."}
-        labels = {
-            "is_active": "Is Active",
         }
 
     def __init__(self, *args, **kwargs):
@@ -379,7 +379,7 @@ class BountyForm(forms.ModelForm):
 BountyFormset = modelformset_factory(
     Bounty,
     form=BountyForm,
-    fields=("title", "description", "points", "status", "is_active"),
+    fields=("title", "description", "points", "status"),
     extra=0,
     can_delete=True,
 )

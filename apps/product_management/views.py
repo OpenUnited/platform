@@ -762,21 +762,41 @@ class CreateChallengeView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         product_slug = self.kwargs.get("product_slug", None)
         product = Product.objects.get(slug=product_slug)
-
-        context["product"] = product
-
-        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
-
-        context["form"] = self.form_class(self.request.POST, self.request.FILES)
-        context["bounty_form"] = forms.BountyForm()
-        context["empty_form"] = PersonSkillFormSet().empty_form
-
-        context["bounty_formset"] = forms.BountyFormset(data={"form-TOTAL_FORMS": "0", "form-INITIAL_FORMS": 0})
-
+        
+        context.update({
+            "product": product,
+            "skills": [serialize_skills(skill) for skill in Skill.get_roots()],
+            "bounty_form": forms.BountyForm(),
+            "empty_form": PersonSkillFormSet().empty_form,
+            "bounty_formset": forms.BountyFormset(data={"form-TOTAL_FORMS": "0", "form-INITIAL_FORMS": 0})
+        })
+        
         return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        product_slug = self.kwargs.get('product_slug')
+        product = Product.objects.get(slug=product_slug)
+        
+        # Filter product areas by current product's tree
+        product_tree = product.product_trees.first()
+        if product_tree:
+            # Update queryset and force evaluation
+            product_areas = ProductArea.objects.filter(product_tree=product_tree)
+            form.fields['product_area'].queryset = product_areas
+            print(f"Product Areas for {product_slug}: {list(product_areas.values_list('name', flat=True))}")
+        else:
+            form.fields['product_area'].queryset = ProductArea.objects.none()
+            print(f"No product tree found for {product_slug}")
+            
+        # Filter initiatives by current product and force evaluation
+        initiatives = Initiative.objects.filter(product=product)
+        form.fields['initiative'].queryset = initiatives
+        print(f"Initiatives for {product_slug}: {list(initiatives.values_list('name', flat=True))}")
+        
+        return form
 
     def form_valid(self, form):
         product_slug = self.kwargs.get("product_slug", None)

@@ -54,27 +54,25 @@
                                 Skills & Expertise
                             </label>
                             <div class="mt-2">
-                                <div class="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-4 gap-y-6"
-                                    id="person_skill_container">
-                                    <input type="hidden" name="skills-0-id" value="{{ form.instance.pk }}" class="row">
-                                    <div id="id_skills-0-container"
-                                        class="relative bg-white border border-gray-200 p-4 rounded-md shadow-md">
+                                <div id="person_skill_container">
+                                    <div id="id_skills-0-container">
                                         <div class="mt-2">
                                             <select id="id_skill" name="skill"
-                                                class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2
-                                                    text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset
-                                                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                hx-get="{{ url('get_expertise') }}" hx-vals=''
-                                                hx-trigger="change" hx-target="#ul_expertise_0">
+                                                hx-get="{{ url('get_expertise') }}" 
+                                                hx-trigger="change" 
+                                                hx-target="#td_expertise_container"
+                                                hx-swap="innerHTML">
                                                 {{ macros_fun.skill_filter_tree(skills, [], True) }}
                                             </select>
                                         </div>
-                                        <div id="td_expertise" class="mt-4">
-                                            {% with index=0 %}
-                                                {% include "talent/helper/expertises.html" %}
-                                            {% endwith %}
+                                        <div id="td_expertise_container" class="mt-4">
+                                            <div id="td_expertise">
+                                                {% with index=0 %}
+                                                    {% include "talent/helper/expertises.html" %}
+                                                {% endwith %}
+                                            </div>
                                             <select class="hidden" id="id_skills-0-expertise" name="skills-0-expertise" multiple></select>
-                                            <input type="hidden" id="id_expertise_ids" name="expertise_ids">
+                                            <input type="hidden" id="id_expertise_ids" name="expertise_ids" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +86,7 @@
                             <div class="mt-2">{{ bounty_form.status }}</div>
                     </div>
 
-                    <div class="col-span-full mt-6">
+                    <!-- <div class="col-span-full mt-6">
                         <div class="relative flex gap-x-3">
                             <div class="flex h-6 items-center">
                                 {{ bounty_form.is_active }}
@@ -99,7 +97,7 @@
                                 <p class="text-gray-500">{{ bounty_form.is_active.help_text }}</p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="flex items-center justify-end mt-[34px]">
                         <button type="button" id="bounty-add-btn" onclick="addBounty(event)"
@@ -116,3 +114,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    const expertiseSelect = document.getElementById(`id_skills-0-expertise`);
+    if (expertiseSelect) {
+        expertiseSelect.value = "";
+    }
+</script>

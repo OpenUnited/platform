@@ -3,13 +3,7 @@
 <button id="dropdownSearchButton_{{index}}" onclick="document.getElementById('dropdownSearch_{{index}}').classList.toggle('hidden')" data-dropdown-toggle="dropdownSearch_{{index}}" data-dropdown-placement="bottom"
     class="flex items-center block w-full px-2 py-1.5 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-indigo-500 flex justify-between" type="button">
     <div>
-        <span id="selected_counter_{{index}}" class="text-indigo-500 font-bold">
-            {% if empty_form %}
-                0
-            {% else %}
-                {{person_skill_form.instance.expertise.count()}}
-            {% endif %}
-        </span>  selected expertise
+        <span id="selected_counter_{{index}}" class="text-indigo-500 font-bold">0</span> selected expertise
     </div>
     <i id="view_more_{{pk}}_icon" class="fa fa-chevron-down w-3 h-3 text-gray-500"></i>
 </button>
@@ -20,23 +14,17 @@
             <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                 <i class="fa fa-search w-4 h-4 text-gray-500" aria-hidden="true"></i>
             </div>
-            <input type="text" id="input-group-search_{{index}}" onkeyup="searchFunc(event, {{index}})" class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-indigo-500" placeholder="Search user">
+            <input type="text" id="input-group-search_{{index}}" onkeyup="searchFunc(event, {{index}})" class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-indigo-500" placeholder="Search expertise">
         </div>
     </div>
 
     <ul id="ul_expertise_{{index}}" class="max-h-48 px-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton_{{index}}">
-        {% if empty_form %}
-            {% set selected_expertise_ids = [] %}
-            {% set filtered_expertises = [] %}
-        {% else %}
-            {% set selected_expertise_ids = person_skill_form.instance.expertise.all()|get_ids %}
-            {% set filtered_expertises = expertises|expertise_filter(person_skill_form.instance.skill.pk) %}
-        {% endif %}
-
-        {{ macros_fun.expertise_filter_tree(filtered_expertises,selected_expertise_ids,  index, 0) }}
+        {% set selected_expertise_ids = [] %}
+        {% set filtered_expertises = expertises %}
+        {{ macros_fun.expertise_filter_tree(filtered_expertises, selected_expertise_ids, index, 0) }}
     </ul>
 
-    <a onclick="addExpertise(event, {{index}})" class="flex items-center justify-center p-3 text-sm font-medium  border border-gray-200 rounded-b-lg cursor-pointer">
+    <a onclick="addExpertise(event, {{index}})" class="flex items-center justify-center p-3 text-sm font-medium border border-gray-200 rounded-b-lg cursor-pointer">
         Apply
     </a>
 </div>

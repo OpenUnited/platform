@@ -124,16 +124,22 @@ def get_current_skills(request):
 class GetExpertiseView(LoginRequiredMixin, TemplateView):
     model = Expertise
     context_object_name = "expertise"
-    template_name = "talent/partials/partial_expertises.html"
+    template_name = "talent/helper/expertises.html"
     login_url = "sign_in"
 
     def get_context_data(self, **kwargs):
-        context = {}
-        expertises = []
+        context = super().get_context_data(**kwargs)
         skill = self.request.GET.get("skill")
-        expertises = [utils.serialize_expertise(expertise) for expertise in Expertise.get_roots().filter(skill=skill)]
-        context["expertises"] = expertises
-
+        
+        # Get only selectable expertises for the skill
+        expertise_queryset = (Expertise.get_roots()
+                             .filter(skill=skill)
+                             .prefetch_related('expertise_children'))
+        
+        context['expertises'] = expertise_queryset
+        context['selected_expertise_ids'] = []
+        context['index'] = self.request.GET.get('index', 0)
+        
         return context
 
 

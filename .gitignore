@@ -98,3 +98,5 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+create_superuser.py

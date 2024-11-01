@@ -7,6 +7,7 @@ const stepNext = document.querySelector('[data-step-next]');
 const stepPrevious = document.querySelector('[data-step-previous]');
 const changeStepEdit = document.querySelector('#change-step-edit');
 const publishBtn = document.querySelector('#publish-challenge-btn');
+const bountyContainer = document.querySelector('#bounty_area');
 
 function changeStep(currentStep) {
 
@@ -133,7 +134,6 @@ function deleteBounty(index) {
 
 
 function addBounty(event) {
-  const bountyContainer = document.getElementById(`bounty_area`);
   const inputTotalForms = document.getElementById('id_form-TOTAL_FORMS');
   const skillCount = parseInt(inputTotalForms.value);
 
@@ -141,23 +141,25 @@ function addBounty(event) {
   const bountyDesc = document.getElementById('bounty_description').value;
   const bountySkill = document.getElementById('id_skill').value;
   const bountySkillLabel = document.getElementById('id_skill').querySelector('option:checked').textContent.trim();
-  const bountyStatus = document.getElementById('id_bounty_status').value;
-  const bountyIsActive = document.getElementById('id_is_active').value;
+  const bountyStatus = document.getElementById('id_status').value;
 
   var bountyExpertise = [];
   var expertiseStr = "";
-  var expertiseIds = "";
-  document.getElementById('id_skills-0-expertise')
-      .querySelectorAll('option:checked')
-      .forEach((elem) => {
-          bountyExpertise.push({'id': elem.value, 'title': elem.textContent.trim()});
-          if(expertiseStr.length > 0) {
-              expertiseStr += ", ";
-              expertiseIds += ",";
-          }
-          expertiseStr += elem.textContent.trim();
-          expertiseIds += elem.value;
-      });
+  var expertiseIds = document.getElementById('id_expertise_ids')?.value || "";
+
+  const expertiseContainer = document.getElementById('ul_expertise_0');
+  if (expertiseContainer) {
+    const checkedBoxes = expertiseContainer.querySelectorAll('input[type="checkbox"]:checked');
+    checkedBoxes.forEach((checkbox) => {
+      const label = checkbox.parentElement.querySelector('label');
+      if (label) {
+        if (expertiseStr.length > 0) {
+          expertiseStr += ", ";
+        }
+        expertiseStr += label.textContent.trim();
+      }
+    });
+  }
 
   const bountyTable = document.getElementById('bounty_table_body');
 
@@ -169,7 +171,8 @@ function addBounty(event) {
   td.className = 'max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0';
   div = document.createElement('div');
   div.className = 'font-medium text-gray-900';
-  div.innerHTML = bountySkillLabel + " (" + expertiseStr + ")";
+  const displayText = bountySkillLabel + (expertiseStr ? ` (${expertiseStr})` : '');
+  div.innerHTML = displayText;
   td.appendChild(div);
 
   input = document.createElement('input');
@@ -202,12 +205,6 @@ function addBounty(event) {
   input.name = `form-${skillCount}-status`;
   td.appendChild(input);
 
-  input = document.createElement('input');
-  input.type = 'hidden';
-  input.value = bountyIsActive;
-  input.name = `form-${skillCount}-is_active`;
-  td.appendChild(input);
-
   tr.appendChild(td);
 
   td = document.createElement('td');
@@ -219,14 +216,6 @@ function addBounty(event) {
   input.name = `form-${skillCount}-points`;
   td.appendChild(input);
   tr.appendChild(td);
-
-  // td = document.createElement('td');
-  // td.className = 'py-5 pl-1.5 md:pl-3 pr-2 md:pr-4 text-xs sm:text-sm text-gray-500 sm:pr-0 text-left';
-  // button = document.createElement('button');
-  // button.className = 'appearance-none text-sm leading-[22px] text-[#1890FF] transition-all underline-offset-2 no-underline hover:underline';
-  // button.innerHTML = 'Edit';
-  // td.appendChild(button);
-  // tr.appendChild(td);
 
   td = document.createElement('td');
   td.className = 'py-5 pl-1.5 md:pl-3 pr-2 md:pr-4 text-xs sm:text-sm text-gray-500 sm:pr-0 text-left';
@@ -242,7 +231,12 @@ function addBounty(event) {
   inputTotalForms.value = skillCount + 1;
 
   const modalWrapSkills = document.querySelector(".modal-wrap__skills");
-  modalWrapSkills.classList.add("hidden");
-  bountyContainer.classList.remove("hidden");
+  if (modalWrapSkills) {
+    modalWrapSkills.classList.add("hidden");
+  }
+  
+  if (bountyContainer) {
+    bountyContainer.classList.remove("hidden");
+  }
 
 }
