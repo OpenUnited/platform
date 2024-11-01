@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import BadRequest, PermissionDenied
+from django.core.exceptions import BadRequest, PermissionDenied, ValidationError
 from django.db import models
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, get_object_or_404, redirect, render
@@ -1295,15 +1295,31 @@ class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         return context
 
     def form_valid(self, form):
-        form.instance.challenge = form.cleaned_data.get("challenge")
-        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill_id"))
-        response = super().form_save(form)
-        if len(form.cleaned_data.get("expertise_ids")) > 0:
-            form.instance.expertise.add(
-                *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
-            )
-        form.instance.save()
-        return response
+        try:
+            form.instance.challenge = form.cleaned_data.get("challenge")
+            skill = form.cleaned_data.get("skill")
+            
+            if not skill:
+                raise ValidationError("Skill is required")
+            
+            # If skill is already a Skill object, use it directly
+            if isinstance(skill, Skill):
+                form.instance.skill = skill
+            # If skill is an ID (string or integer), get the Skill object
+            else:
+                form.instance.skill = Skill.objects.get(id=skill)
+                
+            response = super().form_save(form)
+            expertise_ids = form.cleaned_data.get("expertise_ids")
+            if expertise_ids:
+                form.instance.expertise.add(
+                    *Expertise.objects.filter(id__in=expertise_ids.split(","))
+                )
+            form.instance.save()
+            return response
+        except Skill.DoesNotExist:
+            form.add_error('skill', 'Selected skill does not exist')
+            return self.form_invalid(form)
 
 
 class DeleteBountyView(LoginRequiredMixin, DeleteView):
