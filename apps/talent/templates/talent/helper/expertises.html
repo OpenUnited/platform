@@ -12,16 +12,45 @@
         <label for="input-group-search_{{index}}" class="sr-only">Search</label>
         <div class="relative">
             <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                <i class="fa fa-search w-4 h-4 text-gray-500" aria-hidden="true"></i>
+                <i class="fa fa-search w-4 h-4 text-gray-500"></i>
             </div>
             <input type="text" id="input-group-search_{{index}}" onkeyup="searchFunc(event, {{index}})" class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:border-indigo-500" placeholder="Search expertise">
         </div>
     </div>
 
-    <ul id="ul_expertise_{{index}}" class="max-h-48 px-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownSearchButton_{{index}}">
-        {% set selected_expertise_ids = [] %}
-        {% set filtered_expertises = expertises %}
-        {{ macros_fun.expertise_filter_tree(filtered_expertises, selected_expertise_ids, index, 0) }}
+    <ul id="ul_expertise_{{index}}" class="max-h-48 px-3 overflow-y-auto text-sm text-gray-700">
+        {% for expertise in expertises %}
+            {% if not expertise.parent %}
+                <li class="py-1 ps-0">
+                    {% if expertise.get_children.exists() %}
+                        <span class="text-sm text-gray-500">{{ expertise.name }}</span>
+                        <ul>
+                            {% for child in expertise.get_children %}
+                                <li class="py-1 ps-4">
+                                    <div class="flex items-center">
+                                        <input id="{{ child.id }}" 
+                                               type="checkbox" 
+                                               value="{{ child.id }}"
+                                               class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500"
+                                               {% if not child.selectable %}disabled{% endif %}>
+                                        <label for="{{ child.id }}" class="ms-2 text-sm text-gray-900">{{ child.name }}</label>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="flex items-center">
+                            <input id="{{ expertise.id }}" 
+                                   type="checkbox" 
+                                   value="{{ expertise.id }}"
+                                   class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500"
+                                   {% if not expertise.selectable %}disabled{% endif %}>
+                            <label for="{{ expertise.id }}" class="ms-2 text-sm text-gray-900">{{ expertise.name }}</label>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
     </ul>
 
     <a onclick="addExpertise(event, {{index}})" class="flex items-center justify-center p-3 text-sm font-medium border border-gray-200 rounded-b-lg cursor-pointer">

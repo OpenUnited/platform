@@ -27,25 +27,26 @@
                             <label for="{{ bounty_form.title.id_for_label }}"
                                 class="block text-sm font-medium leading-6 text-gray-900">{{ bounty_form.title.label }}</label>
                             <div class="mt-2">
-                                <input type="text" name="title"
+                                <input type="text" name="bounty-0-title"
+                                    id="id_bounty-0-title"
                                     class="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm
                                         ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                                         focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         placeholder="Enter the title here ..."
-                                        maxlength="400" required=""
-                                        id="bounty_title">
+                                        maxlength="400" required="">
                             </div>
                         </div>
                         <div class="col-span-full">
                             <label for="{{ bounty_form.description.id_for_label }}"
                                 class="block text-sm font-medium leading-6 text-gray-900">{{ bounty_form.description.label }}</label>
                             <div class="mt-2">
-                                <textarea name="description" cols="40" rows="10"
+                                <textarea name="bounty-0-description"
+                                    id="id_bounty-0-description"
                                     class="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm
                                         ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
                                         focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         placeholder="Describe the bounty"
-                                        required="" id="bounty_description"></textarea>
+                                        required=""></textarea>
                             </div>
                         </div>
 
@@ -55,13 +56,16 @@
                             </label>
                             <div class="mt-2">
                                 <div id="person_skill_container">
-                                    <div id="id_skills-0-container">
+                                    <div id="id_bounty-0-container">
                                         <div class="mt-2">
-                                            <select id="id_skill" name="skill"
-                                                hx-get="{{ url('get_expertise') }}" 
-                                                hx-trigger="change" 
+                                            <select id="id_bounty-0-skill" 
+                                                name="skill_id"
+                                                hx-get="{{ url('get_expertise') }}"
+                                                hx-trigger="change"
                                                 hx-target="#td_expertise_container"
-                                                hx-swap="innerHTML">
+                                                hx-swap="innerHTML"
+                                                hx-include="this"
+                                                class="form-select">
                                                 {{ macros_fun.skill_filter_tree(skills, [], True) }}
                                             </select>
                                         </div>
@@ -71,8 +75,8 @@
                                                     {% include "talent/helper/expertises.html" %}
                                                 {% endwith %}
                                             </div>
-                                            <select class="hidden" id="id_skills-0-expertise" name="skills-0-expertise" multiple></select>
-                                            <input type="hidden" id="id_expertise_ids" name="expertise_ids" value="">
+                                            <select class="hidden select2-expertise" id="id_bounty-0-expertise" name="bounty-0-expertise" multiple></select>
+                                            <input type="hidden" id="id_bounty-0-expertise_ids" name="bounty-0-expertise_ids" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -116,8 +120,50 @@
 </div>
 
 <script>
-    const expertiseSelect = document.getElementById(`id_skills-0-expertise`);
-    if (expertiseSelect) {
-        expertiseSelect.value = "";
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle expertise selection
+        document.body.addEventListener('change', function(e) {
+            if (e.target.matches('input[type="checkbox"][name^="expertise"]')) {
+                updateExpertiseIds();
+            }
+        });
+
+        // Handle skill selection
+        const skillSelect = document.getElementById('id_bounty-0-skill');
+        if (skillSelect) {
+            skillSelect.addEventListener('change', function() {
+                // HTMX will handle the AJAX request
+                // Additional handling if needed can go here
+            });
+        }
+    });
+
+    function updateExpertiseIds() {
+        const checkedExpertise = document.querySelectorAll('input[type="checkbox"][name^="expertise"]:checked');
+        const ids = Array.from(checkedExpertise).map(cb => cb.value);
+        const expertiseIdsInput = document.getElementById('id_bounty-0-expertise_ids');
+        if (expertiseIdsInput) {
+            expertiseIdsInput.value = ids.join(',');
+        }
     }
 </script>
+
+<style>
+    /* Add some basic styling for the select */
+    .form-select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        background-color: #fff;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+
+    .form-select:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 1px #2563eb;
+    }
+</style>

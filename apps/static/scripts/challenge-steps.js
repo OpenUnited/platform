@@ -9,6 +9,53 @@ const changeStepEdit = document.querySelector('#change-step-edit');
 const publishBtn = document.querySelector('#publish-challenge-btn');
 const bountyContainer = document.querySelector('#bounty_area');
 
+function updateAllSummaries() {
+    // Update title and description
+    const titleElem = document.getElementById('summary_title');
+    const descElem = document.getElementById('summary_description');
+    if (titleElem) titleElem.textContent = document.getElementById('id_title')?.value || '';
+    if (descElem) descElem.textContent = document.getElementById('id_description')?.value || '';
+
+    // Update bounties table
+    const summaryTable = document.getElementById('summary_bounty_table');
+    const bountyTable = document.getElementById('bounty_table_body');
+    
+    if (summaryTable && bountyTable) {
+        // Clear the placeholder row
+        summaryTable.innerHTML = '';
+        
+        // If no bounties, exit
+        if (!bountyTable.children.length) return;
+
+        let totalPoints = 0; // Initialize total points
+
+        // Copy bounties
+        Array.from(bountyTable.children).forEach(row => {
+            const skillText = row.querySelector('div.font-medium')?.textContent || '';
+            const points = parseInt(row.querySelector('input[type="number"]')?.value || '0');
+            totalPoints += points; // Add to running total
+            
+            const newRow = `
+                <tr class="border-b border-gray-200">
+                    <td class="max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0">
+                        <div class="font-medium text-gray-900">${skillText}</div>
+                    </td>
+                    <td class="py-5 pl-3 pr-4 text-sm text-gray-500 sm:pr-0 text-center">
+                        ${points}
+                    </td>
+                </tr>
+            `;
+            summaryTable.insertAdjacentHTML('beforeend', newRow);
+        });
+
+        // Update total points
+        const totalElement = document.getElementById('summary_total_points');
+        if (totalElement) {
+            totalElement.textContent = totalPoints;
+        }
+    }
+}
+
 function changeStep(currentStep) {
 
   stepCurrent.dataset.currentStep = Number(currentStep);
@@ -38,55 +85,14 @@ function changeStep(currentStep) {
   };
 
   if (currentStep === 5) {
+    console.log("Updating summary table...");
     stepNext.classList.add('hidden');
     publishBtn.classList.remove('hidden');
+    setTimeout(updateAllSummaries, 100);
   } else {
     stepNext.classList.remove('hidden');
     publishBtn.classList.add('hidden');
   };
-
-  if(currentStep === 5) {
-    const title = document.getElementById('id_title').value;
-    const desc = document.getElementById('id_description').value;
-
-    document.getElementById('summary_title').innerHTML = title;
-    document.getElementById('summary_description').innerHTML = desc;
-
-    const summaryBountyTable = document.getElementById('summary_bounty_table');
-    const bountyTable = document.getElementById('bounty_table_body');
-
-    var div, button, tr, td, input;
-    var total = 0;
-
-    summaryBountyTable.innerHTML = "";
-
-    bountyTable.querySelectorAll('tr').forEach((elem, idx) => {
-      let skillStr = elem.querySelectorAll('td')[0].querySelector('div').innerHTML;
-      let points = parseInt(elem.querySelectorAll('input')[6].value);
-
-      tr = document.createElement('tr');
-      tr.className = 'border-b border-gray-200';
-      td = document.createElement('td');
-      td.className = 'max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0';
-      div = document.createElement('div');
-      div.className = 'font-medium text-gray-900';
-      div.innerHTML = skillStr;
-      td.appendChild(div);
-      tr.appendChild(td);
-
-      td = document.createElement('td');
-      td.className = 'py-5 pl-3 pr-4 text-sm text-gray-500 sm:pr-0 text-center';
-      td.innerHTML = points;
-      tr.appendChild(td);
-
-      summaryBountyTable.appendChild(tr);
-
-      total = total + points;
-    });
-
-    document.getElementById('summary_total_points').innerHTML = total;
-
-  }
 
 }
 
@@ -117,126 +123,147 @@ if (stepPrevious) {
 
 
 function deleteBounty(index) {
-  console.log("delete please....", index)
-  const bountyTable = document.getElementById('bounty_table_body');
-  bountyTable.querySelectorAll('tr')[index].remove();
+    // Find and remove the row from bounty table
+    const bountyTable = document.getElementById('bounty_table_body');
+    if (!bountyTable) return;
 
-  const inputTotalForms = document.getElementById('id_form-TOTAL_FORMS');
-  const skillCount = parseInt(inputTotalForms.value);
-  inputTotalForms.value = skillCount - 1;
+    // Find the row to delete
+    const rows = bountyTable.getElementsByTagName('tr');
+    if (rows[index]) {
+        rows[index].remove();
+    }
 
-  const allRows = bountyTable.querySelectorAll('tr');
-  allRows.forEach((elem, idx) => {
-    let td = elem.querySelectorAll('td')[2];
-    td.onclick = function() { deleteBounty(idx); return false; };
-  });
+    // Update the TOTAL_FORMS count
+    const inputTotalForms = document.getElementById('id_bounty-TOTAL_FORMS');
+    if (inputTotalForms) {
+        inputTotalForms.value = Math.max(0, parseInt(inputTotalForms.value) - 1);
+    }
+
+    // Update the summary table
+    updateAllSummaries();
+
+    // If no bounties left, show empty state
+    if (bountyTable.children.length === 0 && bountyContainer) {
+        bountyContainer.classList.add("hidden");
+    }
 }
 
 
 function addBounty(event) {
-  const inputTotalForms = document.getElementById('id_form-TOTAL_FORMS');
-  const skillCount = parseInt(inputTotalForms.value);
+    // Debug logging
+    console.log('TOTAL_FORMS element:', document.getElementById('id_bounty-TOTAL_FORMS'));
+    console.log('title element:', document.getElementById('id_bounty-0-title'));
+    console.log('description element:', document.getElementById('id_bounty-0-description'));
+    console.log('skill element:', document.getElementById('id_bounty-0-skill'));
+    console.log('expertise_ids element:', document.getElementById('id_bounty-0-expertise_ids'));
+    console.log('status element:', document.getElementById('id_bounty-0-status'));
 
-  const bountyTitle = document.getElementById('bounty_title').value;
-  const bountyDesc = document.getElementById('bounty_description').value;
-  const bountySkill = document.getElementById('id_skill').value;
-  const bountySkillLabel = document.getElementById('id_skill').querySelector('option:checked').textContent.trim();
-  const bountyStatus = document.getElementById('id_status').value;
+    // Declare all variables at the top
+    const inputTotalForms = document.getElementById('id_bounty-TOTAL_FORMS') || { value: '0' };
+    const skillCount = parseInt(inputTotalForms.value);
+    const bountyTitle = document.getElementById('id_bounty-0-title')?.value || '';
+    const bountyDesc = document.getElementById('id_bounty-0-description')?.value || '';
+    const bountySkill = document.getElementById('id_bounty-0-skill')?.value || '';
+    const bountySkillLabel = document.getElementById('id_bounty-0-skill')?.querySelector('option:checked')?.textContent.trim() || '';
+    const bountyStatus = document.getElementById('id_bounty-0-status')?.value || 'DRAFT';
+    var bountyExpertise = [];
+    var expertiseStr = "";
+    var expertiseIds = document.getElementById('id_bounty-0-expertise_ids')?.value || "";
 
-  var bountyExpertise = [];
-  var expertiseStr = "";
-  var expertiseIds = document.getElementById('id_expertise_ids')?.value || "";
+    const expertiseContainer = document.getElementById('ul_expertise_0');
+    if (expertiseContainer) {
+        const checkedBoxes = expertiseContainer.querySelectorAll('input[type="checkbox"]:checked');
+        checkedBoxes.forEach((checkbox) => {
+            const label = checkbox.parentElement.querySelector('label');
+            if (label) {
+                if (expertiseStr.length > 0) {
+                    expertiseStr += ", ";
+                }
+                expertiseStr += label.textContent.trim();
+            }
+        });
+    }
 
-  const expertiseContainer = document.getElementById('ul_expertise_0');
-  if (expertiseContainer) {
-    const checkedBoxes = expertiseContainer.querySelectorAll('input[type="checkbox"]:checked');
-    checkedBoxes.forEach((checkbox) => {
-      const label = checkbox.parentElement.querySelector('label');
-      if (label) {
-        if (expertiseStr.length > 0) {
-          expertiseStr += ", ";
-        }
-        expertiseStr += label.textContent.trim();
-      }
+    const bountyTable = document.getElementById('bounty_table_body');
+    if (!bountyTable) {
+        console.error('Bounty table not found');
+        return;
+    }
+
+    // Create table row
+    var tr = document.createElement('tr');
+    tr.className = 'border-b border-gray-200';
+
+    // First column with skill and hidden inputs
+    var td = document.createElement('td');
+    td.className = 'max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0';
+    
+    var div = document.createElement('div');
+    div.className = 'font-medium text-gray-900';
+    const displayText = bountySkillLabel + (expertiseStr ? ` (${expertiseStr})` : '');
+    div.innerHTML = displayText;
+    td.appendChild(div);
+
+    // Add hidden inputs
+    const hiddenInputs = [
+        { name: 'title', value: bountyTitle },
+        { name: 'description', value: bountyDesc },
+        { name: 'skill', value: bountySkill },
+        { name: 'expertise_ids', value: expertiseIds },
+        { name: 'status', value: bountyStatus }
+    ];
+
+    hiddenInputs.forEach(input => {
+        var hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.value = input.value;
+        hiddenInput.name = `bounty-${skillCount}-${input.name}`;
+        td.appendChild(hiddenInput);
     });
-  }
 
-  const bountyTable = document.getElementById('bounty_table_body');
+    tr.appendChild(td);
 
-  var div, button, tr, td, input;
+    // Rest of the row (points and delete button)
+    td = document.createElement('td');
+    td.className = 'py-5 pr-1.5 sm:pr-4 text-sm text-gray-500 text-right md:text-left';
+    var input = document.createElement('input');
+    input.className = 'w-12 sm:w-[72px] h-7 rounded-sm border border-solid border-[#1890FF] shadow-[0px_0px_0px_2px_rgba(24,144,255,0.20)] p-1.5';
+    input.value = 0;
+    input.type = 'number';
+    input.name = `bounty-${skillCount}-points`;
+    td.appendChild(input);
+    tr.appendChild(td);
 
-  tr = document.createElement('tr');
-  tr.className = 'border-b border-gray-200';
-  td = document.createElement('td');
-  td.className = 'max-w-0 py-5 pl-4 pr-3 text-xs sm:pl-0';
-  div = document.createElement('div');
-  div.className = 'font-medium text-gray-900';
-  const displayText = bountySkillLabel + (expertiseStr ? ` (${expertiseStr})` : '');
-  div.innerHTML = displayText;
-  td.appendChild(div);
+    td = document.createElement('td');
+    td.className = 'py-5 pl-1.5 md:pl-3 pr-2 md:pr-4 text-xs sm:text-sm text-gray-500 sm:pr-0 text-left';
+    var button = document.createElement('button');
+    button.className = 'appearance-none text-sm leading-[22px] text-[#1890FF] transition-all underline-offset-2 no-underline hover:underline';
+    button.innerHTML = 'Delete';
+    
+    // Fix: Use row index instead of form count
+    button.onclick = function() { 
+        const row = this.closest('tr');
+        const index = Array.from(bountyTable.children).indexOf(row);
+        deleteBounty(index); 
+        return false; 
+    };
+    
+    td.appendChild(button);
+    tr.appendChild(td);
 
-  input = document.createElement('input');
-  input.type = 'hidden';
-  input.value = bountyTitle;
-  input.name = `form-${skillCount}-title`;
-  td.appendChild(input);
+    bountyTable.appendChild(tr);
+    inputTotalForms.value = skillCount + 1;
 
-  input = document.createElement('input');
-  input.type = 'hidden';
-  input.value = bountyDesc;
-  input.name = `form-${skillCount}-description`;
-  td.appendChild(input);
+    // Hide modal and show bounty container
+    const modalWrapSkills = document.querySelector(".modal-wrap__skills");
+    if (modalWrapSkills) {
+        modalWrapSkills.classList.add("hidden");
+    }
+    
+    if (bountyContainer) {
+        bountyContainer.classList.remove("hidden");
+    }
 
-  input = document.createElement('input');
-  input.type = 'hidden';
-  input.value = bountySkill;
-  input.name = `form-${skillCount}-skill`;
-  td.appendChild(input);
-
-  input = document.createElement('input');
-  input.type = 'hidden';
-  input.value = expertiseIds;
-  input.name = `form-${skillCount}-expertise_ids`;
-  td.appendChild(input);
-
-  input = document.createElement('input');
-  input.type = 'hidden';
-  input.value = bountyStatus;
-  input.name = `form-${skillCount}-status`;
-  td.appendChild(input);
-
-  tr.appendChild(td);
-
-  td = document.createElement('td');
-  td.className = 'py-5 pr-1.5 sm:pr-4 text-sm text-gray-500 text-right md:text-left';
-  input = document.createElement('input');
-  input.className = 'w-12 sm:w-[72px] h-7 rounded-sm border border-solid border-[#1890FF] shadow-[0px_0px_0px_2px_rgba(24,144,255,0.20)] p-1.5';
-  input.value = 0;
-  input.type = 'number';
-  input.name = `form-${skillCount}-points`;
-  td.appendChild(input);
-  tr.appendChild(td);
-
-  td = document.createElement('td');
-  td.className = 'py-5 pl-1.5 md:pl-3 pr-2 md:pr-4 text-xs sm:text-sm text-gray-500 sm:pr-0 text-left';
-  button = document.createElement('button');
-  button.className = 'appearance-none text-sm leading-[22px] text-[#1890FF] transition-all underline-offset-2 no-underline hover:underline';
-  button.innerHTML = 'Delete';
-  button.onclick = function() { deleteBounty(skillCount); return false;};
-  td.appendChild(button);
-  tr.appendChild(td);
-
-  bountyTable.appendChild(tr);
-
-  inputTotalForms.value = skillCount + 1;
-
-  const modalWrapSkills = document.querySelector(".modal-wrap__skills");
-  if (modalWrapSkills) {
-    modalWrapSkills.classList.add("hidden");
-  }
-  
-  if (bountyContainer) {
-    bountyContainer.classList.remove("hidden");
-  }
-
+    // Update summary table
+    updateAllSummaries();
 }

@@ -9,22 +9,28 @@ const modalWrapFilter = document.querySelector(".modal-wrap-filter");
 const btnModalClose = document.querySelector(".btn-modal__close");
 
 
-if(modalWrap) {
-  if(modalWrap.querySelector("iframe"))
+if(modalWrap && modalWrap.querySelector("iframe")) {
     modalWrap.querySelector("iframe").src = "";
 }
 
-videoBtnsOpen.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    modalWrap.classList.remove("hidden");
-    modalWrap.querySelector("iframe").src = btn.dataset.video;
-  });
-});
+if (videoBtnsOpen) {
+    videoBtnsOpen.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            if (modalWrap && modalWrap.querySelector("iframe")) {
+                modalWrap.classList.remove("hidden");
+                modalWrap.querySelector("iframe").src = btn.dataset.video || "";
+            }
+        });
+    });
+}
 
-if(modalWrapCloseBtn) {
-  modalWrapCloseBtn.addEventListener("click", () => {
-    modalWrap.classList.add("hidden");
-  });
+if(modalWrapCloseBtn && modalWrap) {
+    modalWrapCloseBtn.addEventListener("click", () => {
+        modalWrap.classList.add("hidden");
+        if (modalWrap.querySelector("iframe")) {
+            modalWrap.querySelector("iframe").src = "";
+        }
+    });
 }
 
 
@@ -44,25 +50,37 @@ if (btnModalClose) {
 
 // challenge & bounty popup open
 
-const skillsBtnOpen = document.querySelector(".skills-modal__open");
-const modalWrapSkills = document.querySelector(".modal-wrap__skills");
-const modalSkillsCloseBtn = document.querySelector(".btn-skills__close");
+document.addEventListener('DOMContentLoaded', function() {
+    const skillsBtnOpen = document.querySelector(".skills-modal__open");
+    const modalWrapSkills = document.querySelector(".modal-wrap__skills");
+    const modalSkillsCloseBtn = document.querySelector(".btn-skills__close");
 
-if (skillsBtnOpen) {
-  skillsBtnOpen.addEventListener("click", () => {
-    document.getElementById('bounty_title').value = "";
-    document.getElementById('bounty_description').value = "";
+    if (skillsBtnOpen) {
+        skillsBtnOpen.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent any default button behavior
+            
+            // First check if modal exists
+            if (modalWrapSkills) {
+                // Try to reset form, but don't fail if elements don't exist
+                try {
+                    resetBountyForm();
+                } catch (error) {
+                    console.log("Some form elements were not found:", error);
+                }
+                
+                modalWrapSkills.classList.remove("hidden");
+            }
+        });
+    }
 
-    modalWrapSkills.classList.remove("hidden");
-  });
-}
-
-if (modalSkillsCloseBtn) {
-  modalSkillsCloseBtn.addEventListener("click", () => {
-    modalWrapSkills.classList.add("hidden");
-  });
-}
-
+    if (modalSkillsCloseBtn) {
+        modalSkillsCloseBtn.addEventListener("click", () => {
+            if (modalWrapSkills) {
+                modalWrapSkills.classList.add("hidden");
+            }
+        });
+    }
+});
 
 // open create new challange modal
 
@@ -85,3 +103,100 @@ if (btnChallengeModalClose) {
     modalWrapCreateChallenge.classList.add("hidden");
   });
 }
+
+// Update resetBountyForm to be more defensive
+function resetBountyForm() {
+    // Create an array of form field IDs to reset
+    const formFields = [
+        'id_bounty-0-title',
+        'id_bounty-0-description',
+        'id_bounty-0-skill',
+        'id_bounty-0-expertise_ids',
+        'id_bounty-0-expertise'
+    ];
+
+    // Try to reset each field, skip if not found
+    formFields.forEach(fieldId => {
+        const element = document.getElementById(fieldId);
+        if (element) {
+            element.value = '';
+        }
+    });
+
+    // Try to reset checkboxes if they exist
+    try {
+        const expertiseChecks = document.querySelectorAll('input[type="checkbox"][name^="expertise"]');
+        expertiseChecks.forEach(check => {
+            if (check) {
+                check.checked = false;
+            }
+        });
+    } catch (error) {
+        console.log("No expertise checkboxes found");
+    }
+}
+
+// Keep the showBountyModal function for external use
+function showBountyModal() {
+    const modalWrap = document.querySelector(".modal-wrap__skills");
+    if (modalWrap) {
+        try {
+            resetBountyForm();
+        } catch (error) {
+            console.log("Error resetting form:", error);
+        }
+        modalWrap.classList.remove("hidden");
+    }
+}
+
+// Bounty modal specific handling
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal elements
+    const bountyButton = document.querySelector('.skills-modal__open');
+    const bountyModal = document.querySelector('.modal-wrap__skills');
+    const closeButton = document.querySelector('.btn-skills__close');
+    const overlay = document.querySelector('.modal-wrap__overlay');
+    
+    // Show modal
+    if (bountyButton) {
+        bountyButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (bountyModal) {
+                bountyModal.classList.remove('hidden');
+            }
+        });
+    }
+
+    // Close modal - close button
+    if (closeButton) {
+        closeButton.addEventListener('click', function() {
+            if (bountyModal) {
+                bountyModal.classList.add('hidden');
+            }
+        });
+    }
+
+    // Close modal - overlay
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            if (bountyModal) {
+                bountyModal.classList.add('hidden');
+            }
+        });
+    }
+});
+
+// Expose global modal functions
+window.showBountyModal = function() {
+    const modal = document.querySelector('.modal-wrap__skills');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+};
+
+window.hideBountyModal = function() {
+    const modal = document.querySelector('.modal-wrap__skills');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+};

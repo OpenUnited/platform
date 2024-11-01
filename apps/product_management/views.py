@@ -1648,3 +1648,19 @@ def cast_vote_for_idea(request, pk):
         IdeaVote.objects.create(idea=idea, voter=request.user)
 
     return HttpResponse(IdeaVote.objects.filter(idea=idea).count())
+
+
+@login_required
+def get_expertise(request):
+    skill_id = request.GET.get('skill_id')
+    if skill_id:
+        try:
+            skill = Skill.objects.get(id=skill_id)
+            expertises = skill.skill_expertise.all()  # Get all expertises
+            return render(request, 'talent/helper/expertises.html', {
+                'expertises': expertises,
+                'index': 0
+            })
+        except Skill.DoesNotExist:
+            return HttpResponse('')
+    return HttpResponse('')

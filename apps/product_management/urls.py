@@ -318,3 +318,7 @@ urlpatterns += [
         name="cast-vote-for-idea",
     )
 ]
+
+urlpatterns += [
+    path('get_expertise/', views.get_expertise, name='get_expertise'),
+]
