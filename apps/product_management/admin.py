@@ -5,8 +5,10 @@ from apps.product_management import models as product
 
 @admin.register(product.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["slug", "name"]
-    search_fields = ["slug", "name"]
+    list_display = ["slug", "name", "visibility", "owner_type", "owner"]
+    list_filter = ["visibility"]
+    search_fields = ["slug", "name", "organisation__name", "person__name"]
+    raw_id_fields = ["organisation", "person"]
 
 
 @admin.register(product.Initiative)

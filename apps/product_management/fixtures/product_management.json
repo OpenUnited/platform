@@ -643,216 +643,186 @@
           "product_tree": 10
         }
       },
-    {
-        "model": "product_management.product",
-        "pk": 1,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.014Z",
-            "updated_at": "2024-05-06T17:34:37.014Z",
-            "uuid": "f8204ccd-5976-403f-b851-9cec73dd86cd",
-            "photo": "products/smart_watch_pro.jpg",
-            "name": "CloudCanvas",
-            "short_description": "A collaborative digital art platform allowing artists to create and share large-scale artwork online.",
-            "full_description": "A collaborative digital art platform allowing artists to create and share large-scale artwork online.",
-            "website": "https://www.smartwatchpro.com",
-            "detail_url": "https://www.smartwatchpro.com/products/smartwatch-pro",
-            "video_url": "https://www.youtube.com/embed/LtJNX-oWIVc",
-            "slug": "cloud-canvas",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 1,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 2,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.018Z",
-            "updated_at": "2024-05-06T17:34:37.018Z",
-            "uuid": "38583ad3-a18c-4068-b1ec-239dc57d940c",
-            "photo": "products/wireless_earbuds.jpg",
-            "name": "EduSync",
-            "short_description": "An interactive learning management system that integrates gamification to enhance user engagement in educational environments.",
-            "full_description": "An interactive learning management system that integrates gamification to enhance user engagement in educational environments.",
-            "website": "https://www.wirelessearbudsx.com",
-            "detail_url": "https://www.wirelessearbudsx.com/products/wireless-earbuds-x",
-            "video_url": "https://www.youtube.com/embed/PzlSdp7Dz1U",
-            "slug": "edu-sync",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 2,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 3,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.020Z",
-            "updated_at": "2024-05-06T17:34:37.020Z",
-            "uuid": "d6c44803-9e5c-47eb-aa95-a71e13d1f719",
-            "photo": "products/coffee_blend.jpg",
-            "name": "HealthHub",
-            "short_description": "A telemedicine app that provides virtual healthcare services and patient management tools to doctors and patients.",
-            "full_description": "A telemedicine app that provides virtual healthcare services and patient management tools to doctors and patients.",
-            "website": "https://www.gourmetcoffeeblend.com",
-            "detail_url": "https://www.gourmetcoffeeblend.com/products/gourmet-coffee-blend",
-            "video_url": "https://www.youtube.com/embed/pYT6RxeKXJI",
-            "slug": "health-hub",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 3,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 4,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.023Z",
-            "updated_at": "2024-05-06T17:34:37.023Z",
-            "uuid": "6b1107d9-201e-472e-aa73-fdad8f9a639f",
-            "photo": "products/skincare_set.jpg",
-            "name": "EcoTracker",
-            "short_description": "A sustainability tracking tool that helps companies measure and reduce their carbon footprint through advanced analytics and reporting.",
-            "full_description": "A sustainability tracking tool that helps companies measure and reduce their carbon footprint through advanced analytics and reporting.",
-            "website": "https://www.organicskincareset.com",
-            "detail_url": "https://www.organicskincareset.com/products/organic-skincare-set",
-            "video_url": "https://www.youtube.com/embed/UCE84HDi8OY",
-            "slug": "eco-tracker",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 4,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 5,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.028Z",
-            "updated_at": "2024-05-06T17:34:37.028Z",
-            "uuid": "40d0100e-02fb-4a89-a636-f57e9e6a6063",
-            "photo": "products/smart_home_hub.jpg",
-            "name": "FinanceFlow",
-            "short_description": "A personal finance application that uses AI to offer customized budgeting, investing, and savings advice.",
-            "full_description": "A personal finance application that uses AI to offer customized budgeting, investing, and savings advice.",
-            "website": "https://www.smarthomehub.com",
-            "detail_url": "https://www.smarthomehub.com/products/smart-home-hub",
-            "video_url": "https://www.youtube.com/embed/MtSojiNQH_4",
-            "slug": "finance-flow",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 5,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 6,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.030Z",
-            "updated_at": "2024-05-06T17:34:37.030Z",
-            "uuid": "05c6774a-d4fa-4f21-bb46-2c8420843259",
-            "photo": "products/eco_friendly_water_bottle.jpg",
-            "name": "VirtualEventPro",
-            "short_description": "A comprehensive platform for hosting virtual events, featuring tools for live broadcasting, attendee interaction, and event analytics.",
-            "full_description": "A comprehensive platform for hosting virtual events, featuring tools for live broadcasting, attendee interaction, and event analytics.",
-            "website": "https://www.ecofriendlywaterbottle.com",
-            "detail_url": "https://www.ecofriendlywaterbottle.com/products/eco-friendly-water-bottle",
-            "video_url": "https://www.youtube.com/embed/7Vx2k9tH1p8",
-            "slug": "virtual-event-pro",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 6,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 7,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.033Z",
-            "updated_at": "2024-05-06T17:34:37.033Z",
-            "uuid": "40fd55c7-6e35-452c-964e-2a288e9f72fa",
-            "photo": "products/wireless_charging_pad.jpg",
-            "name": "CodeCraft",
-            "short_description": "An online platform for coders to collaborate on open-source projects, featuring real-time coding sessions and peer reviews.",
-            "full_description": "An online platform for coders to collaborate on open-source projects, featuring real-time coding sessions and peer reviews.",
-            "website": "https://www.wirelesschargingpad.com",
-            "detail_url": "https://www.wirelesschargingpad.com/products/wireless-charging-pad",
-            "video_url": "https://www.youtube.com/embed/8CPGUe_IaZs",
-            "slug": "code-craft",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 7,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 8,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.034Z",
-            "updated_at": "2024-05-06T17:34:37.035Z",
-            "uuid": "0c8cf466-3c82-460f-ae3a-1c0c476996b4",
-            "photo": "products/bluetooth_speaker.jpg",
-            "name": "PetConnect",
-            "short_description": "A mobile app that connects pet owners with services such as veterinary care, grooming, and pet sitting within their local area.",
-            "full_description": "A mobile app that connects pet owners with services such as veterinary care, grooming, and pet sitting within their local area.",
-            "website": "https://www.portablebluetoothspeaker.com",
-            "detail_url": "https://www.portablebluetoothspeaker.com/products/portable-bluetooth-speaker",
-            "video_url": "https://www.youtube.com/embed/QSPOEolV4Rc",
-            "slug": "pet-connect",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 8,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 9,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.036Z",
-            "updated_at": "2024-05-06T17:34:37.036Z",
-            "uuid": "b727a1a6-c2a8-4b3f-ac15-7972cdd4bc0c",
-            "photo": "products/fashion_backback.jpg",
-            "name": "SecureHome",
-            "short_description": "A smart home security system that uses AI-driven cameras and sensors to provide enhanced security features.",
-            "full_description": "A smart home security system that uses AI-driven cameras and sensors to provide enhanced security features.",
-            "website": "https://www.sustainablefashionbackpack.com",
-            "detail_url": "https://www.sustainablefashionbackpack.com/products/sustainable-fashion-backpack",
-            "video_url": "https://www.youtube.com/embed/c9dJfXMKOzw",
-            "slug": "secure-home",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 9,
-            "attachments": []
-        }
-    },
-    {
-        "model": "product_management.product",
-        "pk": 10,
-        "fields": {
-            "created_at": "2024-05-06T17:34:37.039Z",
-            "updated_at": "2024-05-06T17:34:37.039Z",
-            "uuid": "6700a1a9-8bd1-4235-b75e-ff9ba26616d9",
-            "photo": "products/security_camera.jpg",
-            "name": "GigGear",
-            "short_description": "A marketplace for musicians to buy, sell, and rent gear and equipment, integrated with a feature-rich platform for live streaming performances.",
-            "full_description": "A marketplace for musicians to buy, sell, and rent gear and equipment, integrated with a feature-rich platform for live streaming performances.",
-            "website": "https://www.homesecuritycamera.com",
-            "detail_url": "https://www.homesecuritycamera.com/products/home-security-camera",
-            "video_url": "https://www.youtube.com/embed/H0yF5HESP0Q",
-            "slug": "gig-gear",
-            "is_private": false,
-            "content_type": 12,
-            "object_id": 10,
-            "attachments": []
-        }
-    },
+        {
+            "model": "product_management.product",
+            "pk": 1,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.014Z",
+                "updated_at": "2024-05-06T17:34:37.014Z",
+                "uuid": "f8204ccd-5976-403f-b851-9cec73dd86cd",
+                "photo": "products/smart_watch_pro.jpg",
+                "name": "CloudCanvas",
+                "short_description": "A collaborative digital art platform allowing artists to create and share large-scale artwork online.",
+                "full_description": "A collaborative digital art platform allowing artists to create and share large-scale artwork online.",
+                "website": "https://www.smartwatchpro.com",
+                "visibility": "GLOBAL",
+                "person": 1,
+                "organisation": null,
+                "slug": "cloudcanvas"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 2,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.018Z",
+                "updated_at": "2024-05-06T17:34:37.018Z",
+                "uuid": "38583ad3-a18c-4068-b1ec-239dc57d940c",
+                "photo": "products/wireless_earbuds.jpg",
+                "name": "EduSync",
+                "short_description": "An interactive learning management system that integrates gamification to enhance user engagement in educational environments.",
+                "full_description": "An interactive learning management system that integrates gamification to enhance user engagement in educational environments.",
+                "website": "https://www.wirelessearbudsx.com",
+                "visibility": "GLOBAL",
+                "organisation": 1,
+                "person": null,
+                "slug": "edusync"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 3,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.020Z",
+                "updated_at": "2024-05-06T17:34:37.020Z",
+                "uuid": "d6c44803-9e5c-47eb-aa95-a71e13d1f719",
+                "photo": "products/coffee_blend.jpg",
+                "name": "HealthHub",
+                "short_description": "A telemedicine app that provides virtual healthcare services and patient management tools to doctors and patients.",
+                "full_description": "A telemedicine app that provides virtual healthcare services and patient management tools to doctors and patients.",
+                "website": "https://www.gourmetcoffeeblend.com",
+                "visibility": "GLOBAL",
+                "person": 2,
+                "organisation": null,
+                "slug": "healthhub"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 4,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.023Z",
+                "updated_at": "2024-05-06T17:34:37.023Z",
+                "uuid": "6b1107d9-201e-472e-aa73-fdad8f9a639f",
+                "photo": "products/skincare_set.jpg",
+                "name": "EcoTracker",
+                "short_description": "A sustainability tracking tool that helps companies measure and reduce their carbon footprint through advanced analytics and reporting.",
+                "full_description": "A sustainability tracking tool that helps companies measure and reduce their carbon footprint through advanced analytics and reporting.",
+                "website": "https://www.organicskincareset.com",
+                "visibility": "GLOBAL",
+                "organisation": 2,
+                "person": null,
+                "slug": "ecotracker"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 5,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.028Z",
+                "updated_at": "2024-05-06T17:34:37.028Z",
+                "uuid": "40d0100e-02fb-4a89-a636-f57e9e6a6063",
+                "photo": "products/smart_home_hub.jpg",
+                "name": "FinanceFlow",
+                "short_description": "A personal finance application that uses AI to offer customized budgeting, investing, and savings advice.",
+                "full_description": "A personal finance application that uses AI to offer customized budgeting, investing, and savings advice.",
+                "website": "https://www.smarthomehub.com",
+                "visibility": "GLOBAL",
+                "person": 3,
+                "organisation": null,
+                "slug": "financeflow"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 6,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.030Z",
+                "updated_at": "2024-05-06T17:34:37.030Z",
+                "uuid": "05c6774a-d4fa-4f21-bb46-2c8420843259",
+                "photo": "products/eco_friendly_water_bottle.jpg",
+                "name": "VirtualEventPro",
+                "short_description": "A comprehensive platform for hosting virtual events, featuring tools for live broadcasting, attendee interaction, and event analytics.",
+                "full_description": "A comprehensive platform for hosting virtual events, featuring tools for live broadcasting, attendee interaction, and event analytics.",
+                "website": "https://www.ecofriendlywaterbottle.com",
+                "visibility": "GLOBAL",
+                "organisation": 3,
+                "person": null,
+                "slug": "virtualeventpro"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 7,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.033Z",
+                "updated_at": "2024-05-06T17:34:37.033Z",
+                "uuid": "40fd55c7-6e35-452c-964e-2a288e9f72fa",
+                "photo": "products/wireless_charging_pad.jpg",
+                "name": "CodeCraft",
+                "short_description": "An online platform for coders to collaborate on open-source projects, featuring real-time coding sessions and peer reviews.",
+                "full_description": "An online platform for coders to collaborate on open-source projects, featuring real-time coding sessions and peer reviews.",
+                "website": "https://www.wirelesschargingpad.com",
+                "visibility": "GLOBAL",
+                "person": 4,
+                "organisation": null,
+                "slug": "codecraft"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 8,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.034Z",
+                "updated_at": "2024-05-06T17:34:37.035Z",
+                "uuid": "0c8cf466-3c82-460f-ae3a-1c0c476996b4",
+                "photo": "products/bluetooth_speaker.jpg",
+                "name": "PetConnect",
+                "short_description": "A mobile app that connects pet owners with services such as veterinary care, grooming, and pet sitting within their local area.",
+                "full_description": "A mobile app that connects pet owners with services such as veterinary care, grooming, and pet sitting within their local area.",
+                "website": "https://www.portablebluetoothspeaker.com",
+                "visibility": "GLOBAL",
+                "organisation": 4,
+                "person": null,
+                "slug": "petconnect"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 9,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.036Z",
+                "updated_at": "2024-05-06T17:34:37.036Z",
+                "uuid": "b727a1a6-c2a8-4b3f-ac15-7972cdd4bc0c",
+                "photo": "products/fashion_backback.jpg",
+                "name": "SecureHome",
+                "short_description": "A smart home security system that uses AI-driven cameras and sensors to provide enhanced security features.",
+                "full_description": "A smart home security system that uses AI-driven cameras and sensors to provide enhanced security features.",
+                "website": "https://www.sustainablefashionbackpack.com",
+                "visibility": "GLOBAL",
+                "person": 5,
+                "organisation": null,
+                "slug": "securehome"
+            }
+        },
+        {
+            "model": "product_management.product",
+            "pk": 10,
+            "fields": {
+                "created_at": "2024-05-06T17:34:37.039Z",
+                "updated_at": "2024-05-06T17:34:37.039Z",
+                "uuid": "6700a1a9-8bd1-4235-b75e-ff9ba26616d9",
+                "photo": "products/security_camera.jpg",
+                "name": "GigGear",
+                "short_description": "A marketplace for musicians to buy, sell, and rent gear and equipment, integrated with a feature-rich platform for live streaming performances.",
+                "full_description": "A marketplace for musicians to buy, sell, and rent gear and equipment, integrated with a feature-rich platform for live streaming performances.",
+                "website": "https://www.homesecuritycamera.com",
+                "visibility": "GLOBAL",
+                "organisation": 5,
+                "person": null,
+                "slug": "giggear"
+            }
+        },
     {
         "model": "product_management.initiative",
         "pk": 1,

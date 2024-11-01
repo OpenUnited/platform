@@ -6,6 +6,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 from model_utils import FieldTracker
 from treebeard.mp_tree import MP_Node
@@ -63,40 +64,116 @@ class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
 
 
 class Product(ProductMixin, common.AttachmentAbstract):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
+    class Visibility(models.TextChoices):
+        GLOBAL = "GLOBAL", "Global"
+        ORG_ONLY = "ORG_ONLY", "Organisation Only"
+        RESTRICTED = "RESTRICTED", "Restricted"
 
-    def make_private(self):
-        self.is_private = True
-        self.save()
+    person = models.ForeignKey(
+        "talent.Person", 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='owned_products'
+    )
+    organisation = models.ForeignKey(
+        "commerce.Organisation", 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='owned_products'
+    )
+    visibility = models.CharField(
+        max_length=10,
+        choices=Visibility.choices,
+        default=Visibility.ORG_ONLY
+    )
 
-    def make_public(self):
-        self.is_private = False
-        self.save()
+    class Meta:
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['organisation']),
+            models.Index(fields=['person']),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(person__isnull=True, organisation__isnull=False) |
+                    models.Q(person__isnull=False, organisation__isnull=True)
+                ),
+                name='product_single_owner'
+            )
+        ]
 
-    def capability_start(self):
-        return self.product_trees.first()
+    @property
+    def owner(self):
+        """Returns the owner (either Organisation or Person) of the product"""
+        return self.organisation or self.person
+
+    @property
+    def owner_type(self) -> str:
+        """Returns 'organisation' or 'person' depending on owner type"""
+        return 'organisation' if self.organisation else 'person'
+
+    def is_owned_by_organisation(self) -> bool:
+        """Check if product is owned by an organisation"""
+        return self.organisation is not None
+
+    def is_owned_by_person(self) -> bool:
+        """Check if product is owned by an individual person"""
+        return self.person is not None
+
+    def can_user_manage(self, user) -> bool:
+        """Check if a user can manage this product"""
+        from apps.security.services import RoleService
+        
+        if not user or not user.is_authenticated:
+            return False
+
+        if self.is_owned_by_person() and self.person_id == user.person.id:
+            return True
+
+        if self.is_owned_by_organisation():
+            return RoleService.is_organisation_manager(user.person, self.organisation)
+
+        return False
 
     def get_photo_url(self):
+        """Get the product photo URL or default image"""
         return self.photo.url if self.photo else f"{settings.STATIC_URL}images/product-empty.png"
 
-    @staticmethod
-    def check_slug_from_name(product_name: str):
-        """Checks if the given product name already exists. If so, it returns an error message."""
-        slug = slugify(product_name)
+    def clean(self):
+        """Validate that only one owner type is set"""
+        if self.person and self.organisation:
+            raise ValidationError("Product cannot have both person and organisation as owner")
+        if not self.person and not self.organisation:
+            raise ValidationError("Product must have either person or organisation as owner")
 
-        if Product.objects.filter(slug=slug):
-            return f"The name {product_name} is not available currently. Please pick something different."
+    @classmethod
+    def check_slug_from_name(cls, name):
+        """
+        Check if a slug generated from the given name would be unique
+        
+        Args:
+            name: The product name to check
+            
+        Returns:
+            bool: True if slug would be unique, False otherwise
+        """
+        potential_slug = slugify(name)
+        return not cls.objects.filter(slug=potential_slug).exists()
 
-    @receiver(pre_save, sender="product_management.Product")
-    def _pre_save(sender, instance, **kwargs):
-        from .services import ProductService
-
-        instance.video_url = ProductService.convert_youtube_link_to_embed(instance.video_url)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("product_detail", args=(self.slug,))
 
 
 class Initiative(TimeStampMixin, UUIDMixin):

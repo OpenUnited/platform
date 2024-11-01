@@ -14,6 +14,7 @@ from apps.commerce.models import Organisation
 from apps.security.models import ProductRoleAssignment
 from apps.talent.models import BountyClaim, Person
 from apps.utility import utils as global_utils
+from apps.security.services import RoleService
 
 from .models import Bounty, Bug, Challenge, Idea, Initiative, Product, ProductArea, ProductContributorAgreementTemplate
 
@@ -98,84 +99,32 @@ class BugForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
-    organisation = forms.ModelChoiceField(
-        empty_label="Select an organisation",
-        required=False,
-        # TODO: We should not get all the organizations here.
-        # After the organization hierarchy is constructed, we need to filter based on the current user's organizations.
-        queryset=Organisation.objects.all(),
-        to_field_name="name",
-        label="Organisations",
-        widget=forms.Select(
-            attrs={
-                "class": (
-                    "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                    " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                ),
-            }
-        ),
-    )
     make_me_owner = forms.BooleanField(
-        label="Make me the owner",
-        widget=forms.CheckboxInput(
-            attrs={
-                "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
-            }
-        ),
         required=False,
+        label="Make me the personal owner",
+        help_text="The product will be owned by you personally, not by an organisation"
     )
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
-        super(ProductForm, self).__init__(*args, **kwargs)
-        self.fields["content_type"].required = False
-        self.fields["object_id"].required = False
-
-    def clean_name(self):
-        name = self.cleaned_data.get("name")
-        # skip slug validation if name is not changed in update view
-        if self.instance and self.instance.name == name:
-            return name
-
-        if error := Product.check_slug_from_name(name):
-            raise ValidationError(error)
-
-        return name
-
-    def clean(self):
-        cleaned_data = super().clean()
-        make_me_owner = cleaned_data.get("make_me_owner")
-        organisation = cleaned_data.get("organisation")
-
-        if make_me_owner and organisation:
-            self.add_error(
-                "organisation",
-                "A product cannot be owned by a person and an organisation",
-            )
-            return cleaned_data
-
-        if not make_me_owner and not organisation:
-            self.add_error(
-                "organisation",
-                "You have to select an owner",
-            )
-            return cleaned_data
-
-        if make_me_owner:
-            cleaned_data["content_type"] = ContentType.objects.get_for_model(self.request.user.person)
-            cleaned_data["object_id"] = self.request.user.id
-        else:
-            cleaned_data["content_type"] = ContentType.objects.get_for_model(organisation)
-            cleaned_data["object_id"] = organisation.id
-
-        return cleaned_data
+    organisation = forms.ModelChoiceField(
+        queryset=Organisation.objects.none(),
+        required=False,
+        empty_label="Select Organisation"
+    )
 
     class Meta:
         model = Product
-        exclude = [
-            "slug",
-            "capability_start",
+        fields = [
+            'name',
+            'short_description',
+            'full_description',
+            'website',
+            'make_me_owner',
+            'organisation',
+            'photo',
+            'visibility',
+            'detail_url',
+            'video_url'
         ]
+
         widgets = {
             "name": forms.TextInput(
                 attrs={
@@ -211,9 +160,9 @@ class ProductForm(forms.ModelForm):
                     "placeholder": "",
                 }
             ),
-            "is_private": forms.CheckboxInput(
+            "visibility": forms.Select(
                 attrs={
-                    "class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600",
+                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 }
             ),
             "photo": forms.FileInput(
@@ -225,7 +174,7 @@ class ProductForm(forms.ModelForm):
         labels = {
             "detail_url": "Additional URL",
             "video_url": "Video URL",
-            "is_private": "Private",
+            "visibility": "Visibility",
             "content_object": "Owner",
         }
 
@@ -234,8 +183,46 @@ class ProductForm(forms.ModelForm):
             "full_description": "Give as much detail as you want about the product.",
             "website": "Link to the product's website, if any.",
             "video_url": "Link to a video such as Youtube.",
-            "is_private": "Make the product private",
+            "visibility": "Make the product private",
         }
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user and self.user.is_authenticated:
+            managed_orgs = RoleService.get_managed_organisations(self.user.person)
+            self.fields['organisation'].queryset = managed_orgs
+
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        if not Product.check_slug_from_name(name):
+            raise ValidationError(
+                "A product with a similar name already exists. Please choose a different name."
+            )
+        return name
+
+    def clean(self):
+        cleaned_data = super().clean()
+        make_me_owner = cleaned_data.get("make_me_owner")
+        organisation = cleaned_data.get("organisation")
+
+        if make_me_owner and organisation:
+            self.add_error(
+                "organisation",
+                "A product cannot be owned by both you and an organisation"
+            )
+            return cleaned_data
+
+        if not make_me_owner and not organisation:
+            self.add_error(
+                "organisation",
+                "Please either select an organisation or make yourself the owner"
+            )
+            return cleaned_data
+
+        return cleaned_data
 
 
 class OrganisationForm(forms.ModelForm):

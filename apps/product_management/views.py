@@ -20,10 +20,12 @@ from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
 from apps.product_management import forms, utils
 from apps.security.models import ProductRoleAssignment
+from apps.security.services import RoleService
 from apps.talent.forms import PersonSkillFormSet
-from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill
+from apps.talent.models import BountyClaim, BountyDeliveryAttempt, Expertise, Skill, Person
 from apps.talent.utils import serialize_skills
 from apps.utility import utils as global_utils
+from apps.product_management.forms import ProductForm
 
 from .models import (
     Bounty,
@@ -41,9 +43,11 @@ from .models import (
 
 class ProductListView(ListView):
     model = Product
-    context_object_name = "products"
-    queryset = Product.objects.filter(is_private=False).order_by("created_at")
     template_name = "product_management/products.html"
+    context_object_name = "products"
+    queryset = Product.objects.filter(
+        visibility=Product.Visibility.GLOBAL
+    ).order_by("created_at")
     paginate_by = 8
 
     def get_context_data(self, **kwargs):
@@ -679,24 +683,44 @@ class BountyClaimView(LoginRequiredMixin, View):
         )
 
 
-class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, CreateView):
+class CreateProductView(common_mixins.AttachmentMixin, CreateView):
     model = Product
-    form_class = forms.ProductForm
-    template_name = "product_management/create_product.html"
-    login_url = "sign_in"
+    form_class = ProductForm
+    template_name = 'product_management/create_product.html'
 
-    def get_success_url(self):
-        return reverse("product_summary", args=(self.object.slug,))
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['organisations'] = RoleService.get_managed_organisations(self.request.user.person)
+        return context
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        if not self.request.htmx:
-            ProductRoleAssignment.objects.create(
-                person=self.request.user.person,
-                product=form.instance,
-                role=ProductRoleAssignment.ProductRoles.ADMIN,
-            )
-        return response
+        person = Person.objects.get(user=self.request.user)
+        form.instance.created_by = person
+        
+        if form.cleaned_data.get('make_me_owner'):
+            form.instance.person = person
+            form.instance.organisation = None
+        else:
+            organisation = form.cleaned_data.get('organisation')
+            if organisation:
+                if RoleService.is_organisation_manager(person, organisation):
+                    form.instance.organisation = organisation
+                    form.instance.person = None
+                else:
+                    form.add_error('organisation', 'You do not have permission to create products for this organisation')
+                    return self.form_invalid(form)
+        
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('product_detail', kwargs={'product_slug': self.object.slug})
 
 
 class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
@@ -765,12 +789,19 @@ class CreateChallengeView(
         product_slug = self.kwargs.get("product_slug", None)
         product = Product.objects.get(slug=product_slug)
         
+        # Initialize an empty bounty formset properly
+        BountyFormset = forms.BountyFormset
+        bounty_formset = BountyFormset(
+            prefix='bounty',  # Add a prefix to avoid form conflicts
+            initial=[{}]  # Initialize with one empty form
+        )
+        
         context.update({
             "product": product,
             "skills": [serialize_skills(skill) for skill in Skill.get_roots()],
             "bounty_form": forms.BountyForm(),
             "empty_form": PersonSkillFormSet().empty_form,
-            "bounty_formset": forms.BountyFormset(data={"form-TOTAL_FORMS": "0", "form-INITIAL_FORMS": 0})
+            "bounty_formset": bounty_formset  # Use the properly initialized formset
         })
         
         return context
@@ -804,20 +835,24 @@ class CreateChallengeView(
         form.instance.created_by = self.request.user.person
         response = super().form_save(form)
 
-        bounty_formset = forms.BountyFormset(self.request.POST)
+        # Use the proper prefix when processing the bounty formset
+        bounty_formset = forms.BountyFormset(self.request.POST, prefix='bounty')
         if bounty_formset.is_valid():
             for bounty_form in bounty_formset:
-                bounty = bounty_form.save(commit=False)
-                bounty.challenge = form.instance
+                if bounty_form.cleaned_data:  # Only process forms that have data
+                    bounty = bounty_form.save(commit=False)
+                    bounty.challenge = form.instance
 
-                skill_id = bounty_form.cleaned_data.get("skill")
-                bounty.skill = Skill.objects.get(id=skill_id)
-                bounty.save()
+                    skill_id = bounty_form.cleaned_data.get("skill")
+                    if skill_id:  # Only set skill if one was selected
+                        bounty.skill = Skill.objects.get(id=skill_id)
+                        bounty.save()
 
-                expertise_ids = bounty_form.cleaned_data.get("expertise_ids")
-                for expertise in Expertise.objects.filter(id__in=expertise_ids.split(",")):
-                    bounty.expertise.add(expertise)
-                bounty.save()
+                        expertise_ids = bounty_form.cleaned_data.get("expertise_ids")
+                        if expertise_ids:  # Only add expertise if selected
+                            for expertise in Expertise.objects.filter(id__in=expertise_ids.split(",")):
+                                bounty.expertise.add(expertise)
+                            bounty.save()
 
         return response
 
@@ -875,11 +910,17 @@ class DashboardBaseView(LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         person = self.request.user.person
         photo_url = person.get_photo_url()
-        product_queryset = Product.objects.filter(content_type__model="person", object_id=person.id)
-        context.update({"person": person, "photo_url": photo_url, "products": product_queryset})
+        
+        # Get products through RoleService instead of filtering by content_type
+        products = RoleService.get_managed_products(person)
+        
+        context.update({
+            "person": person,
+            "photo_url": photo_url,
+            "products": products
+        })
         return context
 
 
@@ -888,23 +929,28 @@ class DashboardView(DashboardBaseView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         person = context.get("person")
-        active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
-        product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
-            role=ProductRoleAssignment.ProductRoles.CONTRIBUTOR
+        
+        # Get active bounty claims
+        active_bounty_claims = BountyClaim.objects.filter(
+            person=person, 
+            status=BountyClaim.Status.GRANTED
         )
+        
+        # Get all products the person has access to through RoleService
+        products = RoleService.get_managed_products(person)
+        
+        context.update({
+            "active_bounty_claims": active_bounty_claims,
+            "products": products
+        })
 
-        product_ids = product_roles_queryset.values_list("product_id", flat=True)
-        products = Product.objects.filter(id__in=product_ids)
-        context.update({"active_bounty_claims": active_bounty_claims, "products": products})
-
+        # Add specific product if slug provided
         slug = self.kwargs.get("product_slug", "")
         if Product.objects.filter(slug=slug).exists():
             context["product"] = Product.objects.get(slug=slug)
 
         context["default_tab"] = self.kwargs.get("default_tab", 0)
-
         return context
 
 
@@ -913,15 +959,22 @@ class DashboardHomeView(DashboardBaseView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         person = context.get("person")
-        active_bounty_claims = BountyClaim.objects.filter(person=person, status=BountyClaim.Status.GRANTED)
-        product_roles_queryset = ProductRoleAssignment.objects.filter(person=person).exclude(
-            role=ProductRoleAssignment.ProductRoles.CONTRIBUTOR
+        
+        # Get active bounty claims
+        active_bounty_claims = BountyClaim.objects.filter(
+            person=person, 
+            status=BountyClaim.Status.GRANTED
         )
-        product_ids = product_roles_queryset.values_list("product_id", flat=True)
-        products = Product.objects.filter(id__in=product_ids)
-        context.update({"active_bounty_claims": active_bounty_claims, "products": products, "default_tab": 0})
+        
+        # Get ALL products the person has access to
+        products = RoleService.get_user_products(person)
+        
+        context.update({
+            "active_bounty_claims": active_bounty_claims,
+            "products": products,
+            "default_tab": 0
+        })
         return context
 
 
@@ -1306,8 +1359,8 @@ class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         if len(form.cleaned_data.get("expertise_ids")) > 0:
             form.instance.expertise.add(
                 *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
-            )
-        form.instance.save()
+                )
+            form.instance.save()
         return response
 
 
@@ -1349,7 +1402,7 @@ class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
             if expertise_ids:
                 form.instance.expertise.add(
                     *Expertise.objects.filter(id__in=expertise_ids.split(","))
-                )
+                    )
             form.instance.save()
             return response
         except Skill.DoesNotExist:

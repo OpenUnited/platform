@@ -1,5 +1,5 @@
 <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ get_csrf_token(request) }}">
     <div class="space-y-12">
         <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
             <div>
@@ -24,40 +24,40 @@
                 </div>
 
                 <div class="sm:col-span-full">
-                    <div class="sm:col-span-3">
-                        <label for="{{ form.organisation.id_for_label }}"
-                            class="block text-sm font-medium leading-6 text-gray-900">Owner</label>
-                        <div class="mt-2">
-                            <div class="my-2">
-                                {{ form.organisation }}
-                            </div>
-                            <p class="text-xs leading-6 text-red-900">
-                                Don't have an organisation? <a class="font-semibold"
-                                href="{{ url('create-organisation') }}">Create one.</a>
-                            </p>
-
-                            <div class="my-2">
-                                {% if form.organisation.errors %}
-                            <ul class="errorlist">
-                                {% for error in form.organisation.errors %}
-                                <li class="text-xs text-red-600 ">{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                            </div>
-
-                            <div class="my-2"><span>or</span></div>
-                            <div class="relative flex gap-x-3">
-                                <div class="inline-flex items-center">
-                                    {{ form.make_me_owner }}
-                                </div>
-                                <div class="text-sm leading-6">
-                                    <label for="{{ form.make_me_owner.id_for_label }}"
-                                        class="font-medium text-gray-900">{{ form.make_me_owner.label }}</label>
-                                    <p class="text-gray-500">{{ form.make_me_owner.help_text }}</p>
-                                </div>
-                            </div>
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Product Owner</label>
+                    
+                    <div class="relative flex gap-x-3 mt-2">
+                        <div class="flex h-6 items-center">
+                            <input type="checkbox" 
+                                   name="make_me_owner" 
+                                   id="id_make_me_owner" 
+                                   class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                   value="True">
                         </div>
+                        <div class="text-sm leading-6">
+                            <label for="id_make_me_owner" class="font-medium text-gray-900">
+                                Make me the personal owner
+                            </label>
+                            <p class="text-gray-500">The product will be owned by you personally, not by an organisation</p>
+                        </div>
+                    </div>
+
+                    <!-- Add organisation selection if not personal owner -->
+                    <div id="org_selection" class="mt-4">
+                        <label for="id_organisation" class="block text-sm font-medium text-gray-700">Select Organisation</label>
+                        <select name="organisation" 
+                                id="id_organisation" 
+                                class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                            <option value="">Select an organisation...</option>
+                            {% for org in organisations %}
+                                <option value="{{ org.id }}">{{ org.name }}</option>
+                            {% endfor %}
+                            {% if form.organisation.errors %}
+                                {% for error in form.organisation.errors %}
+                                    <div class="text-red-500 text-sm mt-1">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
                     </div>
                 </div>
 
@@ -158,12 +158,12 @@
                     <div class="mt-6 space-y-6">
                         <div class="relative flex gap-x-3">
                             <div class="flex h-6 items-center">
-                                {{ form.is_private }}
+                                {{ form.visibility }}
                             </div>
                             <div class="text-sm leading-6">
-                                <label for="{{ form.is_private.id_for_label }}"
-                                    class="font-medium text-gray-900">{{ form.is_private.label }}</label>
-                                <p class="text-gray-500">{{ form.is_private.help_text }}</p>
+                                <label for="{{ form.visibility.id_for_label }}"
+                                    class="font-medium text-gray-900">{{ form.visibility.label }}</label>
+                                <p class="text-gray-500">{{ form.visibility.help_text }}</p>
                             </div>
                         </div>
                     </div>
@@ -177,3 +177,14 @@
             class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit</button>
     </div>
 </form>
+
+<script>
+document.getElementById('id_make_me_owner').addEventListener('change', function() {
+    const orgSelection = document.getElementById('org_selection');
+    if (this.checked) {
+        orgSelection.style.display = 'none';
+    } else {
+        orgSelection.style.display = 'block';
+    }
+});
+</script>
