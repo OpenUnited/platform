@@ -471,6 +471,13 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
     context_object_name = "challenge"
     template_name = "product_management/challenge_detail.html"
 
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except Challenge.DoesNotExist:
+            messages.error(self.request, "This challenge no longer exists.")
+            raise Http404("Challenge does not exist")
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["BountyStatus"] = Bounty.BountyStatus
