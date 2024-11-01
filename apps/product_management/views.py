@@ -12,6 +12,7 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect, get_object_or_4
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, RedirectView, TemplateView, UpdateView
+from django.http.response import Http404
 
 from apps.canopy import utils as canopy_utils
 from apps.commerce.models import Organisation
@@ -1200,6 +1201,13 @@ class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
     model = Bounty
     template_name = "product_management/bounty_detail.html"
 
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except Bounty.DoesNotExist:
+            messages.error(self.request, "This bounty no longer exists.")
+            raise Http404("Bounty does not exist")
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         data = super().get_context_data(**kwargs)
 
@@ -1271,6 +1279,7 @@ class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_m
         if len(form.cleaned_data.get("expertise_ids")) > 0:
             form.instance.expertise.add(
                 *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
+                )
             )
         form.instance.save()
         return response
