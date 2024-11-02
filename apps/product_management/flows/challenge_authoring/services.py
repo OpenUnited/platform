@@ -80,14 +80,15 @@ class ChallengeAuthoringService:
     MAX_TOTAL_POINTS = 1000
 
     def __init__(self, user, product_slug):
-        self.user = user
-        self.product = get_object_or_404(Product, slug=product_slug)
-        
         if not hasattr(user, 'person') or not user.person:
             raise PermissionDenied("User must have an associated person")
             
+        self.user = user
+        self.product = get_object_or_404(Product, slug=product_slug)
         self.role_service = RoleService()
-        if not self.role_service.is_product_manager(user.person, self.product):
+        
+        # Check if user is product manager
+        if not self.role_service.is_product_manager(self.user.person, self.product):
             raise PermissionDenied("Must be product manager")
 
     def create_challenge(self, challenge_data, bounties_data):

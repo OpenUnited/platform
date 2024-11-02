@@ -352,14 +352,18 @@ class TestChallengeAuthoringView:
 
 class TestChallengeAuthoringService:
     @pytest.fixture(autouse=True)
-    def setup_service(self, mocker):
+    def setup_service_mocks(self, mocker):
         """Setup common service mocks"""
-        mock_role_service = mocker.Mock()
-        mock_role_service.is_product_manager.return_value = True
-        mocker.patch(
+        # Mock RoleService in the services module
+        self.mock_role_service = mocker.patch(
             'apps.product_management.flows.challenge_authoring.services.RoleService',
-            return_value=mock_role_service
+            autospec=True
         )
+        # Create and configure mock instance
+        self.mock_instance = mocker.Mock()
+        self.mock_role_service.return_value = self.mock_instance
+        self.mock_instance.is_product_manager.return_value = True
+        return self.mock_role_service
 
     def test_service_initialization(self, user, product, mocker):
         """Test service initialization with permissions"""
@@ -376,13 +380,22 @@ class TestChallengeAuthoringService:
             product
         )
 
-    def test_service_initialization_permission_denied(self, user, product, mock_role_service):
+    def test_service_initialization_permission_denied(self, user, product):
         """Test service initialization without permissions"""
         # Configure the mock to deny permission
-        mock_role_service.return_value.is_product_manager.return_value = False
+        self.mock_instance.is_product_manager.return_value = False
         
-        with pytest.raises(PermissionDenied):
-            service = ChallengeAuthoringService(user, product.slug)
+        with pytest.raises(PermissionDenied) as exc_info:
+            ChallengeAuthoringService(user, product.slug)
+            
+        assert "Must be product manager" in str(exc_info.value)
+        
+        # Verify the mock was called with correct arguments
+        assert self.mock_instance.is_product_manager.call_count == 1
+        self.mock_instance.is_product_manager.assert_called_with(
+            user.person,
+            product
+        )
 
     @pytest.mark.django_db
     def test_challenge_creation(self, user, product, valid_challenge_data, valid_bounties_data, skills):
