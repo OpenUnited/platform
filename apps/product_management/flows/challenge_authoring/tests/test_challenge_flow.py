@@ -126,15 +126,16 @@ def skills(db):
 def expertise_items(db):
     skill, _ = Skill.objects.get_or_create(
         name="Frontend Development",
-        defaults={'active': True, 'selectable': True}
+        defaults={'selectable': True}
     )
     
     items = []
     for name in ["React", "React Advanced"]:
-        expertise, _ = Expertise.objects.get_or_create(
+        expertise = Expertise.objects.create(
             name=name,
             skill=skill,
-            defaults={'active': True}
+            selectable=True,
+            fa_icon='react'  # Adding a default icon
         )
         items.append(expertise)
     return items
