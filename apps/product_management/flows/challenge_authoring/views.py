@@ -37,9 +37,6 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
             
-        if not hasattr(request.user, 'person') or not request.user.person:
-            return HttpResponseForbidden("User must have an associated person")
-            
         self.product = get_object_or_404(Product, slug=kwargs['product_slug'])
         role_service = RoleService()
         
