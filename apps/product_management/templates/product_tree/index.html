@@ -1,12 +1,12 @@
 {% import "product_tree/components/main/macros/index.html" as tree_macros %}
 
-<div id="product_tree"  class="w-full">
+<div id="product-tree"  class="w-full">
     {% include "product_tree/components/header/index.html" %}
     {% include "product_tree/components/sub_header/index.html" %}
     {% include "product_tree/components/main/empty_result.html" %}
 
     <ul ondrop="drop(event)" draggable="false" class="pl-0" id="">
-        {{ tree_macros.generate_product_area_tree(
+        {{ tree_macros.generate_product-area_tree(
             tree_data, can_modify_product=can_modify_product, slug=product_slug
             )
         }}

@@ -1,4 +1,4 @@
-{% extends 'product_management/product_detail_base.html' %}
+{% extends 'product_management/product-detail_base.html' %}
 
 {% macro generate_summary_structure(data, depth = 0, displayed_items=[]) %}
 {% for item in data %}
@@ -10,7 +10,7 @@
     <dt class="text-sm font-medium leading-6 text-gray-900">
         <span class="flex flex-col">
             <span class="flex flex-wrap items-center font-semibold">
-                <a href="{{ url('capability_detail', args=(product_slug, item.id)) }}"
+                <a href="{{ url('capability-detail', args=(product_slug, item.id)) }}"
                     class="mr-2">{{ item.name }}</a>
             </span>
             <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
@@ -50,7 +50,7 @@
         </button>
         <span class="flex flex-col">
             <span class="flex flex-wrap items-center font-semibold">
-                <a href="{{ url('capability_detail', args=(product_slug, item.id)) }}"
+                <a href="{{ url('capability-detail', args=(product_slug, item.id)) }}"
                     class="mr-2">{{ item.name }}</a>
             </span>
             <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">

@@ -1,9 +1,9 @@
 {% if product_slug %}
     <a class="flex justify-between"
         href={% if can_modify_product %}
-            "{{ url('product_area_update', args=(product_slug, child.id,)) }}"
+            "{{ url('product-area-update', args=(product_slug, child.id,)) }}"
         {% else %}
-            "{{ url('product_area_detail', args=(product_slug, child.id,)) }}"
+            "{{ url('product-area-detail', args=(product_slug, child.id,)) }}"
         {% endif %}> {{ child.name }} </a>
 {% else %}
     {{ child.name }}

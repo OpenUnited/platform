@@ -3,7 +3,7 @@
 <ul role="list" class="divide-y divide-gray-100">
     {% for idea in ideas %}
     <li class="flex flex-col justify-between gap-y-4 py-5">
-        <a href="{{ url('product_idea_detail', args=(product_slug, idea.idea_obj.pk,)) }}">
+        <a href="{{ url('product-idea-detail', args=(product_slug, idea.idea_obj.pk,)) }}">
             <div class="flex flex-col gap-y-2">
                 <div class="flex items-start justify-between gap-x-4 xl:gap-x-6">
                     <h3 class="text-sm font-semibold leading-6 text-gray-900">

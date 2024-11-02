@@ -1,0 +1,8 @@
+{% for skill in skills %}
+    {% if not skill.parent %}
+        <div class="skill-item parent-skill">
+            <!-- Skill tree structure moved to separate template -->
+            {% include "product_management/flows/challenge_authoring/components/skill_tree_item.html" with skill=skill %}
+        </div>
+    {% endif %}
+{% endfor %} 

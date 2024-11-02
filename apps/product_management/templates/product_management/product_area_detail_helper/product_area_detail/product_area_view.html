@@ -1,20 +1,20 @@
 
-{% include "product_management/product_area_detail_helper/product_area_detail/product_area_breadcrumbs.html" %}
+{% include "product_management/product_area_detail_helper/product-area-detail/product-area_breadcrumbs.html" %}
 
 <div class="mt-2.5 mb-4 w-full text-neutral-800 text-xl col-span-full flex items-center">
-    <span>{{ product_area.name }}</span>
+    <span>{{ product-area.name }}</span>
 </div>
 
 <div class="space-y-2.5 text-sm text-black/[0.85] mb-5">
     <div>
-        <p>{{ product_area.description|linebreaks }}</p>
+        <p>{{ product-area.description|linebreaks }}</p>
     </div>
 </div>
 
 
-{% if  product_area.video_link %}
+{% if  product-area.video_link %}
     <div class="flex justify-end w-full h-[320px] sm:h-[340px] mb-5">
-        <iframe width="100%" height="100%" src="{{product_area.video_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+        <iframe width="100%" height="100%" src="{{product-area.video_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
     </div>
 {% endif %}
 
@@ -28,7 +28,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-4">
             {% for child in  children %}
                 {% with index=loop.index0 %}
-                    {% include "product_management/product_area_detail_helper/product_area_detail/card.html" %}
+                    {% include "product_management/product_area_detail_helper/product-area-detail/card.html" %}
                 {% endwith %}
             {% endfor %}
     </div>

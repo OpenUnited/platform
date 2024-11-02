@@ -317,59 +317,42 @@ class ChallengeForm(forms.ModelForm):
 
 
 class BountyForm(forms.ModelForm):
-    skill = forms.CharField(widget=forms.HiddenInput(attrs={"id": "skill_id"}))
-    expertise_ids = forms.CharField(widget=forms.HiddenInput(attrs={"id": "expertise_ids"}), required=False)
+    MIN_POINTS = 1
+    MAX_POINTS = 1000
 
-    @property
-    def is_active(self):
-        return True  # Default to True while we remove references to this field
-
-    def clean_selected_skill_ids(self):
-        skill_id = self.cleaned_data.get("selected_skill_ids")
-        skill_id = json.loads(skill_id)
-
-        if len(skill_id) != 1:
-            raise ValidationError(_("You must select exactly one skill."))
-
-        return skill_id
-
-    def clean_selected_expertise_ids(self):
-        expertise_ids = self.cleaned_data.get("selected_expertise_ids")
-
-        return json.loads(expertise_ids)
+    skill = forms.CharField(
+        widget=forms.HiddenInput(attrs={"id": "%(prefix)s_skill_id"}))
+    expertise_ids = forms.CharField(
+        widget=forms.HiddenInput(attrs={"id": "%(prefix)s_expertise_ids"}),
+        required=False)
 
     class Meta:
         model = Bounty
-        fields = ["title", "description", "points", "status"]
+        fields = ["title", "description", "points"]
 
         widgets = {
             "points": forms.NumberInput(attrs={"class": global_utils.text_field_class_names}),
-            "status": forms.Select(attrs={"class": global_utils.text_field_class_names, "id": "id_bounty_status"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         for key, field in self.fields.items():
             attributes = {
                 "class": global_utils.text_field_class_names,
                 "placeholder": global_utils.placeholder(key),
             }
-            if key in ["description"]:
+            if key == "description":
                 attributes["cols"] = 40
                 attributes["rows"] = 2
 
-            if key not in ["status", "points"]:
+            if key != "points":
                 field.widget.attrs.update(**attributes)
 
-
-BountyFormset = modelformset_factory(
-    Bounty,
-    form=BountyForm,
-    fields=("title", "description", "points", "status"),
-    extra=0,
-    can_delete=True,
-)
+    def clean_points(self):
+        points = self.cleaned_data['points']
+        if points < self.MIN_POINTS or points > self.MAX_POINTS:
+            raise ValidationError(f"Points must be between {self.MIN_POINTS} and {self.MAX_POINTS}")
+        return points
 
 
 class InitiativeForm(forms.ModelForm):

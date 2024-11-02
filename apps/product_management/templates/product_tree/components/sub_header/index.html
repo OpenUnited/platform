@@ -2,11 +2,11 @@
     {% include "product_tree/components/sub_header/search.html" %}
     <div>
         {% if product_slug  %}
-            {% with add_node_url=url('product_area', args=(product_slug,))  %}
+            {% with add_node_url=url('product-area', args=(product_slug,))  %}
                 {% include "product_tree/components/sub_header/add_product_button.html" %}
             {% endwith %}
         {% else %}
-            {% with add_node_url=url('canopy:add_node_root', args=(product_tree.pk,)) %}
+            {% with add_node_url=url('canopy:add-node-root', args=(product-tree.pk,)) %}
                 {% include "product_tree/components/sub_header/add_product_button.html" %}
             {% endwith %}
         {% endif %}

@@ -1,9 +1,9 @@
     <li draggable="false" id="li_node_{{id}}">
         <form method="post" id="form_id_{{id}}"
             {% if product_slug %}
-                hx-post="{{ url('product_area', args=(product_slug,) ) }}"
+                hx-post="{{ url('product-area', args=(product_slug,) ) }}"
             {% else %}
-                hx-post="{{ url('canopy:add_node', args=(product_area.id,) ) }}"
+                hx-post="{{ url('canopy:add-node', args=(product-area.id,) ) }}"
             {% endif %}
             hx-target="#li_node_{{id}}" hx-swap="outerHTML"
         >

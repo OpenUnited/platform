@@ -1,11 +1,11 @@
 
 {% if not product_slug %}
-    <form id="reset_tree" action="{{ url('canopy:reset_tree') }}"></form>
+    <form id="reset_tree" action="{{ url('canopy:reset-tree') }}"></form>
     {% include "product_tree/components/header/edit_tree.html" %}
 
     <div class="flex justify-between w-full mb-2 mt-2">
-        <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product_tree_name">
-            <span onclick="editTreeName(event)" class="mr-2 cursor-pointer text-indigo-500 text-2xl" id="shareable_product_name"> {{product_tree.name}} </span>
+        <h3 class="text-xl font-bold mb-3 text-black mb-2" id="shareable_product-tree_name">
+            <span onclick="editTreeName(event)" class="mr-2 cursor-pointer text-indigo-500 text-2xl" id="shareable_product_name"> {{product-tree.name}} </span>
             {% include "product_tree/components/header/reset_tree.html" %}
         </h3>
     </div>

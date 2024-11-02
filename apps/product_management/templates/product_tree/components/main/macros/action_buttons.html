@@ -6,9 +6,9 @@
           hx-target="#li_{{id}}_ul_child"
           hx-swap="afterbegin"
           {% if product_slug %}
-              hx-get="{{ url('product_area', args=(product_slug,)) }}"
+              hx-get="{{ url('product-area', args=(product_slug,)) }}"
           {% else %}
-              hx-get="{{ url('canopy:add_node', args=(id,))}}"
+              hx-get="{{ url('canopy:add-node', args=(id,))}}"
           {% endif %}
           hx-vals='{"margin_left":"{{margin_left or 0 }}","has_post":"{{True}}", "parent_id":"{{id}}","depth": "{{depth}}" }'>
           <img src="{{ static('images/add.svg') }}" class="" alt="#">
@@ -19,16 +19,16 @@
               hx-target="#li_node_{{id}}"
               trigger="update_node_{{id}}"
               {% if product_slug %}
-                  hx-get="{{ url('product_area_update', args=(product_slug, id,)) }}"
+                  hx-get="{{ url('product-area-update', args=(product_slug, id,)) }}"
               {% else %}
-                  hx-get="{{ url('canopy:update_node', args=(id,))}}"
+                  hx-get="{{ url('canopy:update-node', args=(id,))}}"
               {% endif %}
               hx-vals='{"margin_left":"{{margin_left or 0 }}", "depth": "{{depth}}" }'
               onclick="event.preventDefault()">
           <img src="{{ static('images/edit_icon.svg')}}" class="edit" alt="#">
       </button>
 
-        <button onclick="deleteNode(event, '{{ url('canopy:delete_node',args=(id,))}}', {{id}})">
+        <button onclick="deleteNode(event, '{{ url('canopy:delete-node',args=(id,))}}', {{id}})">
           <img src="{{ static('images/delete.svg')}}" class="" alt="#">
         </button>
     </div>

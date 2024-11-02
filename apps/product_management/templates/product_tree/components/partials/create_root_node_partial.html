@@ -2,9 +2,9 @@
     <li draggable="false" id="li_node_{{id}}" class="ml-0 list-none">
         <form method="post"
             {% if product_slug %}
-              hx-post="{{ url('product_area', args=(product_slug,) ) }}"
+              hx-post="{{ url('product-area', args=(product_slug,) ) }}"
             {% else %}
-                hx-post="{{ url('canopy:add_node_root', args=(tree_id,),) }}"
+                hx-post="{{ url('canopy:add-node-root', args=(tree_id,),) }}"
             {% endif %}
               hx-target="#li_node_{{id}}" hx-swap="outerHTML">
             <div class="p-2 pl-2 pr-2 mt-1 block border border-gray-300 rounded-md text-blue-500 mb-2">

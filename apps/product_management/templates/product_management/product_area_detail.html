@@ -1,7 +1,7 @@
-{% extends 'product_management/product_detail_base_with_macro.html' %}
+{% extends 'product_management/product-detail_base_with_macro.html' %}
 
 {% block title %}Product - Summary{% endblock %}
-{% block product_content %}
+{% block product-content %}
 
 {% if messages %}
 <ul class="messages">
@@ -15,9 +15,9 @@
 {% endif %}
 
 {% if can_modify_product %}
-    {% include  "product_management/product_area_detail_helper/product_area_update.html" %}
+    {% include  "product_management/product_area_detail_helper/product-area-update.html" %}
 {% else %}
-    {% include  "product_management/product_area_detail_helper/product_area_detail/product_area_view.html" %}
+    {% include  "product_management/product_area_detail_helper/product-area-detail/product-area_view.html" %}
 {% endif %}
 
-{% endblock product_content %}
+{% endblock product-content %}

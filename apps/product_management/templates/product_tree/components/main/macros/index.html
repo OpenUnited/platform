@@ -1,9 +1,9 @@
-{% macro generate_product_area_tree(node, can_modify_product=False, slug=None, depth=1) %}
+{% macro generate_product-area_tree(node, can_modify_product=False, slug=None, depth=1) %}
 {% for child in node %}
   <li ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{child.id}}"
       class="w-full list-none"
       data-id="{{child.id}}" {% if can_modify_product %} draggable="true"{% endif %}
-      target_url="{% if slug %} {{ url('product_area_update', args=(slug, child.id,) ) }}  {% else %} {{ url('canopy:update_node', args=(child.id,) ) }} {% endif %}">
+      target_url="{% if slug %} {{ url('product-area-update', args=(slug, child.id,) ) }}  {% else %} {{ url('canopy:update-node', args=(child.id,) ) }} {% endif %}">
             <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
                 <div class="flex justify-between w-full gap-2 group/item inline-flex">
                     <div class="flex justify-start">
@@ -35,7 +35,7 @@
 
             <ul ondrop="drop(event)" class="pl-{{depth * 4}} hidden" id="li_{{child.id}}_ul_child">
                 {% if child["children"] %}
-                        {{ generate_product_area_tree(
+                        {{ generate_product-area_tree(
                                 child["children"],
                                 can_modify_product=can_modify_product,
                                 slug=slug,

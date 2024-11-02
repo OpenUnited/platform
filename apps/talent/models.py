@@ -208,7 +208,10 @@ class Expertise(AncestryMixin):
 
     @classmethod
     def get_roots(cls):
-        return cls.objects.filter(parent=None)
+        return cls.objects.filter(
+            parent=None,
+            selectable=True
+        )
 
     @property
     def get_children(self):
@@ -216,7 +219,10 @@ class Expertise(AncestryMixin):
 
     @staticmethod
     def get_skill_expertise(skill):
-        return Expertise.objects.filter(skill=skill).values("id", "name")
+        return Expertise.objects.filter(
+            skill=skill,
+            selectable=True
+        ).values('id', 'name')
 
     @staticmethod
     def get_all_expertise(parent=None):

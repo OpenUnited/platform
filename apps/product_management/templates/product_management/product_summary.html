@@ -1,7 +1,7 @@
-{% extends 'product_management/product_detail_base_with_macro.html' %}
+{% extends 'product_management/product-detail_base_with_macro.html' %}
 
 {% block title %}Product - Summary{% endblock %}
-{% block product_content %}
+{% block product-content %}
 
 {% include 'toast.html' %}
 
@@ -47,11 +47,11 @@
         <p class="transition-all delay-600 text-red-400 hover:text-red-400/[0.85]">No available challenge is
             found.</p>
         {% elif challenge_count == 1 %}
-        <a href="{{ url('product_challenges', args=(product_slug,)) }}"
+        <a href="{{ url('product-challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
             Active Challenge </a>
         {% else %}
-        <a href="{{ url('product_challenges', args=(product_slug,)) }}"
+        <a href="{{ url('product-challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ challenge_count }}
             Active Challenges</a>
         {% endif %}
@@ -60,7 +60,7 @@
         <h3 class="text-xl text-gray-900 font-bold mb-3">Product Tree</h3>
 
         <div class="">
-              {% include "product_tree/index.html" %}
+              {% include "product-tree/index.html" %}
           </div>
 
     </div>

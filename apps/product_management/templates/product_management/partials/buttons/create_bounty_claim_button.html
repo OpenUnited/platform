@@ -8,7 +8,7 @@
             claim-bounty="true">Claim Bounty</button>
     {% endif %}
 {% elif elem.can_be_claimed %}
-    <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign_in') }}')" class="{{button_class}}">Claim Bounty</button>
+    <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign-in') }}')" class="{{button_class}}">Claim Bounty</button>
 {% endif %}
 
 <script>

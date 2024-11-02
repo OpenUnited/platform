@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <script src="{% static 'js/flows/challenge_authoring/main.js' %}" defer></script>
+    <script src="{% static 'js/flows/challenge_authoring/expertise_selector.js' %}" defer></script>
+    <script src="{% static 'js/flows/challenge_authoring/form_validation.js' %}" defer></script>
+    <script src="{% static 'js/flows/challenge_authoring/bounty_modal.js' %}" type="module"></script>
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/flows/challenge_authoring/bounty_modal.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="challenge-authoring-flow">
+    <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900 mb-6 md:mb-10 lg:pt-[30px]">
+        Create Challenge
+    </h2>
+
+    <div class="flex flex-col sm:flex-row space-y-8 sm:space-y-0 sm:space-x-4 sm:pb-8 lg:pb-12" data-current-step="1">
+        {% include 'components/step_nav.html' %}
+        
+        <form method="post" enctype="multipart/form-data" 
+              class="challenges-steps flex flex-col justify-between grow sm:px-5 lg:px-[34px] sm:py-6 lg:pb-9 lg:pt-[34px] mb-0 sm:border-[3px] border-solid border-[#F4F6F7]"
+              id="challenge-form" novalidate>
+            {% csrf_token %}
+            {{ form.media }}
+
+            <div class="active flex-col space-y-6 sm:space-y-10 lg:space-y-12 mb-8 sm:mb-10" data-step-id="1">
+                {% include 'components/step_1.html' %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="2">
+                {% include 'components/step_2.html' %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="3">
+                {% include 'components/step_3.html' %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="4">
+                {% include 'components/step_4.html' %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="5">
+                {% include 'components/step_5.html' %}
+            </div>
+
+            {% include 'components/form_buttons.html' %}
+        </form>
+    </div>
+
+    {% include 'components/bounty_modal.html' %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+<div class="skill-label flex items-center gap-2 py-1">
+    {% if skill.get_children %}
+        <button type="button" class="toggle-children w-4 h-4 flex items-center justify-center">
+            <svg class="w-3 h-3 transform rotate-0" viewBox="0 0 20 20">
+                <path d="M7 7l6 3-6 3V7z" fill="currentColor"/>
+            </svg>
+        </button>
+    {% else %}
+        <div class="w-4 h-4"></div>
+    {% endif %}
+    
+    <div class="flex items-center">
+        {% if skill.selectable %}
+            <input type="radio" 
+                   name="skill" 
+                   value="{{ skill.id }}"
+                   id="skill_{{ skill.id }}"
+                   class="skill-radio">
+            <label for="skill_{{ skill.id }}" class="ml-2 text-sm">
+                {{ skill.name }}
+            </label>
+        {% else %}
+            <span class="ml-6 text-sm text-gray-600">{{ skill.name }}</span>
+        {% endif %}
+    </div>
+</div>
+
+{% if skill.get_children %}
+    <div class="child-skills hidden ml-6">
+        {% for child in skill.get_children %}
+            <div class="skill-item">
+                {% include "product_management/flows/challenge_authoring/components/skill_tree_item.html" with skill=child %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif> 
