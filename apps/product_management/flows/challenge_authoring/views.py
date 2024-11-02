@@ -37,7 +37,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
             
-        if not hasattr(request.user, 'person'):
+        if not hasattr(request.user, 'person') or not request.user.person:
             return HttpResponseForbidden("User must have an associated person")
             
         self.product = get_object_or_404(Product, slug=kwargs['product_slug'])
@@ -46,7 +46,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
         if not role_service.is_product_manager(request.user.person, self.product):
             return HttpResponseForbidden("Must be product manager")
             
-        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+        return super(View, self).dispatch(request, *args, **kwargs)
         
     def get(self, request, *args, **kwargs):
         return render(request, 'challenge_authoring/main.html')
@@ -97,11 +97,11 @@ class ExpertiseListView(LoginRequiredMixin, View):
             skill = Skill.objects.get(id=skill_id)
             expertise = Expertise.objects.filter(
                 skill=skill,
-                name__in=['React', 'React Advanced']
+                selectable=True
             ).values('id', 'name')
             return JsonResponse({'expertise': list(expertise)})
         except Skill.DoesNotExist:
-            return HttpResponseNotFound('Skill not found')
+            return HttpResponseNotFound()
 
 class BountyModalView(LoginRequiredMixin, View):
     def get(self, request, product_slug):
