@@ -259,13 +259,15 @@ class TestChallengeAuthoringView:
         assert response.status_code == 403
 
     def test_successful_challenge_creation(
-        self, client, user, product, mock_service, valid_challenge_data
+        self, client, user, product, mock_service, valid_challenge_data, mocker
     ):
         """Test successful challenge creation flow"""
         client.force_login(user)
         url = reverse('challenge_create', kwargs={'product_slug': product.slug})
         
-        mock_service.create_challenge.return_value = (True, mocker.Mock(get_absolute_url=lambda: '/test/url'), None)
+        mock_challenge = mocker.Mock()
+        mock_challenge.get_absolute_url.return_value = '/test/url'
+        mock_service.create_challenge.return_value = (True, mock_challenge, None)
         
         response = client.post(
             url,
@@ -328,15 +330,21 @@ class TestChallengeAuthoringView:
         response = client.get(url)
         assert response.status_code == 200
 
-    def test_expertise_list(self, client, user, product, skills):
+    def test_expertise_list(self, client, user, product, expertise_items):
         """Test expertise list retrieval"""
         client.force_login(user)
+        skill = expertise_items[0].skill
         url = reverse('skill_expertise', kwargs={
             'product_slug': product.slug,
-            'skill_id': skills[0].id
+            'skill_id': skill.id
         })
         response = client.get(url)
         assert response.status_code == 200
+        data = response.json()
+        assert 'expertise' in data
+        assert len(data['expertise']) == 2
+        expertise_names = {item['name'] for item in data['expertise']}
+        assert expertise_names == {'React', 'React Advanced'}
 
 class TestChallengeAuthoringService:
     @pytest.fixture(autouse=True)

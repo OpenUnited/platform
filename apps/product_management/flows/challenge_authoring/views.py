@@ -46,7 +46,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
         if not role_service.is_product_manager(request.user.person, self.product):
             return HttpResponseForbidden("Must be product manager")
             
-        return super(View, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
         
     def get(self, request, *args, **kwargs):
         return render(request, 'challenge_authoring/main.html')
@@ -101,7 +101,7 @@ class ExpertiseListView(LoginRequiredMixin, View):
             ).values('id', 'name')
             return JsonResponse({'expertise': list(expertise)})
         except Skill.DoesNotExist:
-            return HttpResponseNotFound()
+            return HttpResponseNotFound('Skill not found')
 
 class BountyModalView(LoginRequiredMixin, View):
     def get(self, request, product_slug):
