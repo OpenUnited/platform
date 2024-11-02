@@ -5,8 +5,7 @@ from unittest.mock import Mock, patch
 
 from apps.security.services import RoleService
 from apps.product_management.models import Product, Challenge, Bounty
-from apps.talent.models import Person
-from apps.skills.models import Skill, Expertise
+from apps.talent.models import Person, Skill, Expertise
 from ..services import ChallengeAuthoringService
 from ..views import ChallengeAuthoringView
 
