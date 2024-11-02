@@ -79,12 +79,14 @@ def invalid_bounties_data():
     ]
 
 @pytest.fixture
-def mock_role_service():
-    with patch('apps.product_management.flows.challenge_authoring.services.RoleService') as mock:
-        instance = mock.return_value
-        # Make is_product_manager return True by default and track calls
-        instance.is_product_manager = Mock(return_value=True)
-        return instance
+def mock_role_service(mocker):
+    """Setup mock role service with proper permission handling"""
+    mock = mocker.patch(
+        'apps.product_management.flows.challenge_authoring.services.RoleService'
+    )
+    mock.return_value.get_managed_products.return_value = Product.objects.all()
+    mock.return_value.get_product_managers.return_value = Person.objects.all()
+    return mock
 
 @pytest.fixture
 def person(db, django_user_model):
@@ -159,7 +161,33 @@ def mock_expertise():
         ]
         return mock_instance
 
+@pytest.fixture
+def product_manager_role(user, product):
+    """Create product manager role for test user"""
+    person = Person.objects.create(
+        user=user,
+        full_name="Test User"
+    )
+    return ProductRoleAssignment.objects.create(
+        person=person,
+        product=product,
+        role=ProductRoleAssignment.ProductRoles.MANAGER
+    )
+
 class TestChallengeAuthoringView:
+    @pytest.fixture(autouse=True)
+    def setup_view_mocks(self, mocker, product):
+        """Setup mocks for all view tests"""
+        self.mock_service = mocker.patch(
+            'apps.product_management.flows.challenge_authoring.views.ChallengeAuthoringService'
+        )
+        # Mock the service methods based on actual implementation
+        mock_instance = self.mock_service.return_value
+        mock_instance.get_managed_products.return_value = Product.objects.filter(id=product.id)
+        mock_instance.get_skills_list.return_value = []
+        mock_instance.get_expertise_for_skill.return_value = {}
+        return self.mock_service
+
     def test_view_requires_authentication(self, client, product):
         """Test that unauthenticated users cannot access the view"""
         url = reverse('challenge_create', kwargs={'product_slug': product.slug})
@@ -311,19 +339,19 @@ class TestChallengeAuthoringService:
             ChallengeAuthoringService(user, product.slug)
 
     @pytest.mark.django_db
-    def test_challenge_creation(self, user, product, valid_challenge_data, valid_bounties_data, skills):
+    def test_challenge_creation(self, user, product, valid_challenge_data, valid_bounties_data, skills, product_manager_role):
         """Test full challenge creation flow"""
         service = ChallengeAuthoringService(user, product.slug)
         
-        # Update bounties data to use actual Skill instances
-        bounties = [{
-            **bounty,
-            'skill': skills[0]  # Use actual Skill instance
-        } for bounty in valid_bounties_data]
+        # Update bounties data to use actual Skill objects
+        valid_bounties_data[0].update({
+            'skill': skills[0],  # Use actual Skill instance
+            'expertise': [e.id for e in Expertise.objects.filter(skill=skills[0])]
+        })
         
         success, challenge, errors = service.create_challenge(
             valid_challenge_data,
-            bounties
+            valid_bounties_data
         )
         
         assert success is True
@@ -563,6 +591,57 @@ class TestChallengeAuthoringService:
             bounties_data
         )
         assert any('Active challenges must have at least one bounty' in error for error in errors)
+
+    def test_get_skills_tree(self, user, product, mock_role_service):
+        """Test hierarchical skills retrieval"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        # Create test data
+        parent_skill = Skill.objects.create(
+            name="Web Development",
+            selectable=True
+        )
+        child_skill = Skill.objects.create(
+            name="Frontend Development",
+            parent=parent_skill,
+            selectable=True
+        )
+        
+        skills_tree = service.get_skills_tree()
+        
+        assert len(skills_tree) == 1  # One root node
+        assert skills_tree[0]['name'] == "Web Development"
+        assert len(skills_tree[0]['children']) == 1
+        assert skills_tree[0]['children'][0]['name'] == "Frontend Development"
+
+    def test_get_expertise_for_skill(self, user, product, skills, mock_role_service):
+        """Test expertise retrieval for a skill with categories"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        # Create test data
+        framework_category = Expertise.objects.create(
+            name="Frameworks",
+            skill=skills[0]
+        )
+        expertise1 = Expertise.objects.create(
+            name="React",
+            parent=framework_category,
+            skill=skills[0],
+            selectable=True
+        )
+        expertise2 = Expertise.objects.create(
+            name="Angular",
+            parent=framework_category,
+            skill=skills[0],
+            selectable=True
+        )
+        
+        expertise_dict = service.get_expertise_for_skill(skills[0].id)
+        
+        assert "Frameworks" in expertise_dict
+        assert len(expertise_dict["Frameworks"]) == 2
+        assert expertise_dict["Frameworks"][0]["name"] in ["React", "Angular"]
+        assert "id" in expertise_dict["Frameworks"][0]
 
 class TestSkillEndpoints:
     """Test cases for skill and expertise API endpoints"""

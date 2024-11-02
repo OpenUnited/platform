@@ -317,35 +317,38 @@ class ChallengeAuthoringService:
 
     def get_skills_tree(self) -> List[Dict]:
         """Get hierarchical skills structure for the challenge form"""
-        skills = Skill.objects.all().select_related('parent')
+        skills = Skill.objects.filter(
+            selectable=True  # Only include selectable skills
+        ).select_related('parent')
         
         skill_tree = []
         skill_dict = {}
         
-        # First pass: create all skill objects
+        # First pass: create all skill objects with their basic data
         for skill in skills:
             skill_data = {
                 'id': skill.id,
                 'name': skill.name,
                 'children': [],
-                'selectable': skill.selectable
+                'selectable': skill.selectable,
+                'parent_id': skill.parent_id if skill.parent else None
             }
             skill_dict[skill.id] = skill_data
             
+            # Add root nodes directly to the tree
             if not skill.parent:
                 skill_tree.append(skill_data)
-                
+        
         # Second pass: establish parent-child relationships
         for skill in skills:
-            if skill.parent:
-                parent_data = skill_dict.get(skill.parent.id)
-                if parent_data:
-                    parent_data['children'].append(skill_dict[skill.id])
-                    
+            if skill.parent_id and skill.parent_id in skill_dict:
+                parent_data = skill_dict[skill.parent_id]
+                parent_data['children'].append(skill_dict[skill.id])
+        
         return skill_tree
 
     def get_expertise_for_skill(self, skill_id: int) -> Dict[str, List[Dict]]:
-        """Get expertise options for a specific skill.
+        """Get expertise options for a specific skill, organized by category.
         
         Args:
             skill_id: ID of the skill to get expertise for
@@ -362,24 +365,26 @@ class ChallengeAuthoringService:
                     {"id": 4, "name": "JavaScript"}
                 ]
             }
-        
-        Note:
-            Only returns selectable expertise entries
         """
         expertises = Expertise.objects.filter(
             skill_id=skill_id,
             selectable=True
-        ).select_related('parent').order_by('parent__name', 'name')
+        ).select_related('parent')
         
         expertise_categories = {}
+        
         for expertise in expertises:
             if expertise.parent:
+                # Use parent name as category
                 category_name = expertise.parent.name
-                expertise_categories.setdefault(category_name, []).append({
+                if category_name not in expertise_categories:
+                    expertise_categories[category_name] = []
+                
+                expertise_categories[category_name].append({
                     'id': expertise.id,
                     'name': expertise.name
                 })
-                
+        
         return expertise_categories
 
     def get_skills_list(self) -> List[Dict]:
@@ -396,12 +401,14 @@ class ChallengeAuthoringService:
 
     def get_expertise_for_skill(self, skill_id: int) -> List[Dict]:
         """Get expertise items for a skill"""
-        expertise_items = Expertise.objects.filter(skill_id=skill_id)
+        expertise_items = Expertise.objects.filter(
+            skill_id=skill_id,
+            selectable=True  # Only return selectable expertise items
+        )
         return [{
             'id': item.id,
             'name': item.name,
-            'fa_icon': item.fa_icon,
-            'selectable': item.selectable
+            'skill_id': item.skill_id
         } for item in expertise_items]
 
     def _get_product(self, product_slug: str) -> Product:
@@ -426,15 +433,21 @@ class ChallengeAuthoringService:
         except Product.DoesNotExist:
             raise Http404("Product not found")
 
-    def create_bounty(self, challenge, bounty_data):
-        expertise_ids = bounty_data.pop('expertise_ids', None)  # Remove from dict
-        bounty = Bounty.objects.create(
-            challenge=challenge,
-            **bounty_data
-        )
-        if expertise_ids:
-            # Handle expertise relationships after creation
-            if isinstance(expertise_ids, str):
-                expertise_ids = [int(id) for id in expertise_ids.split(',')]
-            bounty.expertise.set(expertise_ids)
-        return bounty
+    def create_bounty(self, challenge: Challenge, bounty_data: Dict) -> Tuple[bool, Optional[str]]:
+        """Create a bounty with proper expertise handling"""
+        try:
+            expertise_ids = bounty_data.pop('expertise', [])
+            # Convert skill ID to instance if needed
+            if isinstance(bounty_data['skill'], int):
+                bounty_data['skill'] = Skill.objects.get(id=bounty_data['skill'])
+                
+            bounty = Bounty.objects.create(
+                challenge=challenge,
+                **bounty_data
+            )
+            if expertise_ids:
+                bounty.expertise.set(expertise_ids)
+            return True, None
+        except Exception as e:
+            logger.error(f"Error creating bounty: {str(e)}")
+            return False, str(e)
