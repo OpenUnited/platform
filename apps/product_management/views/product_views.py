@@ -1,5 +1,6 @@
 import uuid
 from typing import Any, Dict
+import logging
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -40,24 +41,58 @@ from apps.product_management.models import (
     ProductContributorAgreementTemplate,
 )
 
+logger = logging.getLogger(__name__)
+
 class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, CreateView):
     model = Product
     form_class = forms.ProductForm
     template_name = "product_management/create_product.html"
-    login_url = "sign_in"
+    login_url = "sign-in"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Verify user has a person profile before proceeding
+        if not hasattr(request.user, 'person') or not request.user.person:
+            messages.error(request, "You need a person profile to create a product")
+            return redirect('home')  # or wherever appropriate
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        logger.info(f"GET request to CreateProductView from user: {request.user}")
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        logger.info(f"POST request to CreateProductView from user: {request.user}")
+        logger.debug(f"POST data: {request.POST}")
+        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse("product_summary", args=(self.object.slug,))
+        return reverse("product-summary", kwargs={"product_slug": self.object.slug})
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        if not self.request.htmx:
-            ProductRoleAssignment.objects.create(
-                person=self.request.user.person,
-                product=form.instance,
-                role=ProductRoleAssignment.ProductRoles.ADMIN,
-            )
-        return response
+        logger.info("Form validation successful")
+        try:
+            response = super().form_valid(form)
+            
+            # Create role assignment for the creator
+            if form.cleaned_data.get('make_me_owner'):
+                ProductRoleAssignment.objects.create(
+                    person=self.request.user.person,
+                    product=form.instance,
+                    role=ProductRoleAssignment.ProductRoles.ADMIN,
+                )
+            return response
+        except Exception as e:
+            logger.error(f"Error in form_valid: {str(e)}", exc_info=True)
+            raise
+
+    def form_invalid(self, form):
+        logger.warning(f"Form validation failed. Errors: {form.errors}")
+        return super().form_invalid(form)
     
 class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
     model = Product
@@ -569,72 +604,8 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["BountyStatus"] = Bounty.BountyStatus
-        challenge = self.object
-        bounties = challenge.bounty_set.all()
-        claim_status = BountyClaim.Status
-
-        extra_data = []
-        user = self.request.user
-        person = user.person if user.is_authenticated else None
-
-        agreement_template = ProductContributorAgreementTemplate.objects.filter(product=challenge.product)
-        if agreement_template.exists():
-            agreement_template = agreement_template.first()
-        else:
-            agreement_template = None
-
-        contributor_agreement_status = False
-        if person:
-            contributor_agreement_status = person.contributor_agreement.filter(
-                agreement_template__product=challenge.product
-            ).exists()
-
-        for bounty in bounties:
-            data = {
-                "bounty": bounty,
-                "current_user_created_claim_request": False,
-                "actions_available": False,
-                "has_claimed": False,
-                "claimed_by": bounty.claimed_by,
-                "show_actions": False,
-                "can_be_claimed": False,
-                "can_be_modified": False,
-                "is_product_admin": False,
-                "created_bounty_claim_request": False,
-                "bounty_claim": None,
-            }
-
-            if person:
-                data["can_be_modified"] = ProductRoleAssignment.objects.filter(
-                    person=person,
-                    product=context["product"],
-                    role=ProductRoleAssignment.ProductRoles.ADMIN,
-                ).exists()
-
-                bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
-
-                if bounty.status == Bounty.BountyStatus.AVAILABLE:
-                    data["can_be_claimed"] = not bounty_claim
-
-                if bounty_claim and bounty_claim.status == claim_status.REQUESTED and not bounty.claimed_by:
-                    data["created_bounty_claim_request"] = True
-                    data["bounty_claim"] = bounty_claim
-
-            else:
-                if bounty.status == Bounty.BountyStatus.AVAILABLE:
-                    data["can_be_claimed"] = True
-
-            data["show_actions"] = (
-                data["can_be_claimed"] or data["can_be_modified"] or data["created_bounty_claim_request"]
-            )
-            data["status"] = bounty.status
-            extra_data.append(data)
-
-        context["bounty_data"] = extra_data
-        context["does_have_permission"] = utils.has_product_modify_permission(user, context.get("product"))
-        context["agreement_status"] = contributor_agreement_status
-        context["agreement_template"] = agreement_template
+        context['product'] = self.object.product
+        context['product_slug'] = self.kwargs['product_slug']
         return context
 
 

@@ -27,7 +27,8 @@ from .views.product_views import (
     CreateProductView,
     UpdateProductView,
     CreateOrganisationView,
-    ProductChallengesView
+    ProductChallengesView,
+    ChallengeDetailView,
 )
 
 from .views.portal_views import (
@@ -72,6 +73,11 @@ from .flows.challenge_authoring.views import (
 urlpatterns = [
     re_path(r"^challenges/.*$", redirect_challenge_to_bounties, name="challenges"),
     path("products/", ProductListView.as_view(), name="products"),
+    path(
+        "product/<str:product_slug>/challenge/<int:pk>/",
+        ChallengeDetailView.as_view(),
+        name="challenge-detail",
+    ),
     path(
         "product/<str:product_slug>/challenge/update/<int:pk>/",
         UpdateChallengeView.as_view(),
@@ -124,9 +130,9 @@ urlpatterns = [
     ),
 ]
 
-# Portal URLs (renamed from Dashboard URLs)
+# Portal URLs
 urlpatterns += [
-    path("portal/", PortalDashboardView.as_view(), name="portal-dashboard"),
+    path("portal/", PortalDashboardView.as_view(), name="portal-home"),
     path(
         "portal/product/<str:product_slug>/<int:default_tab>/",
         PortalDashboardView.as_view(),

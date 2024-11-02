@@ -6,7 +6,7 @@
     {% include "product_tree/components/main/empty_result.html" %}
 
     <ul ondrop="drop(event)" draggable="false" class="pl-0" id="">
-        {{ tree_macros.generate_product-area_tree(
+        {{ tree_macros.generate_product_area_tree(
             tree_data, can_modify_product=can_modify_product, slug=product_slug
             )
         }}

@@ -41,9 +41,8 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
             return context
             
         person = user.person
-        managed_products = RoleService.get_products_with_role(
-            person=person,
-            role=RoleService.PRODUCT_MANAGER
+        managed_products = RoleService.get_managed_products(
+            person=person
         )
         
         context.update({
@@ -244,27 +243,11 @@ class PortalAddProductUserView(PortalBaseView):
         return super().post(request, *args, **kwargs)
 
 class PortalDashboardView(PortalBaseView):
-    """Dashboard view showing overview of managed products."""
-    template_name = "product_management/portal/home.html"
+    template_name = "product_management/portal/main.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if not hasattr(self.request.user, 'person'):
-            return context
-            
-        person = self.request.user.person
-        managed_products = context.get("managed_products", [])
-
-        if product_slug := self.kwargs.get("product_slug"):
-            context["current_product"] = get_object_or_404(
-                managed_products, slug=product_slug
-            )
-            context["portal_url"] = reverse(
-                "portal-product-dashboard", args=(product_slug, 0)
-            )
-        else:
-            context["portal_url"] = reverse("portal-dashboard")
-
+        context["portal_url"] = reverse("portal-home")
         return context
 
 

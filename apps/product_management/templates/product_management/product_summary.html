@@ -1,12 +1,12 @@
-{% extends 'product_management/product-detail_base_with_macro.html' %}
+{% extends 'product_management/product_detail_base_with_macro.html' %}
 
 {% block title %}Product - Summary{% endblock %}
-{% block product-content %}
+{% block product_content %}
 
 {% include 'toast.html' %}
 
 <div class="flex flex-col">
-    <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900">About {{ product.name  }}</h2>
+    <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900">About {{ product.name }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-3">
         <div class="flex flex-col w-full">
             <div class="flex flex-col gap-y-1.5 md:gap-y-2.5 text-sm leading-6 text-gray-700 pr-10 md:pr-0">
@@ -18,7 +18,7 @@
 
                     <!-- TODO: add product owner logic here -->
                     {% if can_modify_product %}
-                    <a href="{{ url('product-dashboard', args=(product.slug, 5)) }}">
+                    <a href="{{ url('portal-product-dashboard', args=(product.slug, 5)) }}">
                         <button type="button"
                             class="w-full rounded-l-md border-0 py-1.5 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                             Edit Settings
@@ -60,7 +60,7 @@
         <h3 class="text-xl text-gray-900 font-bold mb-3">Product Tree</h3>
 
         <div class="">
-              {% include "product-tree/index.html" %}
+              {% include "product_tree/index.html" %}
           </div>
 
     </div>

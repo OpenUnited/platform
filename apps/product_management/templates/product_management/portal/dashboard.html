@@ -53,7 +53,7 @@
                         id="options-menu-item-2">Visit Portfolio</a>
                 </div>
                 <div class="py-1" role="none">
-                    <form id="logout-form" method="post" action="{{ url('log-out') }}">
+                    <form id="logout-form" method="post" action="{{ url('logout') }}">
                         {% csrf_token %}
                         <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log out</button>
                     </form>

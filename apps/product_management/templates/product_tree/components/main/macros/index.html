@@ -1,4 +1,4 @@
-{% macro generate_product-area_tree(node, can_modify_product=False, slug=None, depth=1) %}
+{% macro generate_product_area_tree(node, can_modify_product=False, slug=None, depth=1) %}
 {% for child in node %}
   <li ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{child.id}}"
       class="w-full list-none"
@@ -35,7 +35,7 @@
 
             <ul ondrop="drop(event)" class="pl-{{depth * 4}} hidden" id="li_{{child.id}}_ul_child">
                 {% if child["children"] %}
-                        {{ generate_product-area_tree(
+                        {{ generate_product_area_tree(
                                 child["children"],
                                 can_modify_product=can_modify_product,
                                 slug=slug,

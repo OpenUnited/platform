@@ -67,7 +67,7 @@
                         focus:outline-none" role="menu" aria-orientation="vertical"
                 aria-labelledby="navbar-menu-button" tabindex="-1">
                 <div class="py-1" role="none">
-                    <a href="{{ url('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                    <a href="{{ url('portal-home') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
                         tabindex="-1" id="options-menu-item-0">Dashboard</a>
                     <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
                         class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"
@@ -136,7 +136,7 @@
             </div>
 
             <div class="py-1" role="none">
-                <a href="{{ url('dashboard') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
+                <a href="{{ url('portal-home') }}" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem"
                     tabindex="-1" id="options-menu-item-0">Dashboard</a>
                 <a href="{{ url('profile', args=(request.user.person.pk,) ) }}"
                     class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1"

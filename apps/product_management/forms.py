@@ -99,130 +99,65 @@ class BugForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
-    make_me_owner = forms.BooleanField(
-        required=False,
-        label="Make me the personal owner",
-        help_text="The product will be owned by you personally, not by an organisation"
-    )
+    make_me_owner = forms.BooleanField(required=False)
     organisation = forms.ModelChoiceField(
-        queryset=Organisation.objects.none(),
+        queryset=None,
         required=False,
-        empty_label="Select Organisation"
+        widget=forms.Select(attrs={
+            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6'
+        })
     )
 
     class Meta:
         model = Product
-        fields = [
-            'name',
-            'short_description',
-            'full_description',
-            'website',
-            'make_me_owner',
-            'organisation',
-            'photo',
-            'visibility',
-            'detail_url',
-            'video_url'
-        ]
-
-        widgets = {
-            "name": forms.TextInput(
-                attrs={
-                    "class": global_utils.text_field_class_names,
-                    "autocomplete": "none",
-                    "hx-post": reverse_lazy("create-product"),
-                    "hx-trigger": "input delay:100ms",
-                    "hx-select": "#name-errors",
-                    "hx-target": "#name-errors",
-                    "hx-swap": "innerHTML",
-                }
-            ),
-            "short_description": forms.TextInput(attrs={"class": global_utils.text_field_class_names}),
-            "full_description": forms.Textarea(
-                attrs={
-                    "class": global_utils.text_field_class_names,
-                }
-            ),
-            "website": forms.URLInput(
-                attrs={
-                    "class": global_utils.text_field_class_names,
-                }
-            ),
-            "detail_url": forms.URLInput(
-                attrs={
-                    "class": global_utils.text_field_class_names,
-                    "placeholder": "",
-                }
-            ),
-            "video_url": forms.URLInput(
-                attrs={
-                    "class": global_utils.text_field_class_names,
-                    "placeholder": "",
-                }
-            ),
-            "visibility": forms.Select(
-                attrs={
-                    "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                }
-            ),
-            "photo": forms.FileInput(
-                attrs={
-                    "class": global_utils.text_field_class_names,
-                }
-            ),
-        }
-        labels = {
-            "detail_url": "Additional URL",
-            "video_url": "Video URL",
-            "visibility": "Visibility",
-            "content_object": "Owner",
-        }
-
-        help_texts = {
-            "short_description": "Explain the product in one or two sentences.",
-            "full_description": "Give as much detail as you want about the product.",
-            "website": "Link to the product's website, if any.",
-            "video_url": "Link to a video such as Youtube.",
-            "visibility": "Make the product private",
-        }
+        fields = ["name", "short_description", "full_description", "website", "person", "organisation"]
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
-        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        if self.user and self.user.is_authenticated:
-            managed_orgs = RoleService.get_managed_organisations(self.user.person)
+        if self.request and self.request.user.is_authenticated:
+            managed_orgs = RoleService.get_managed_organisations(self.request.user.person)
             self.fields['organisation'].queryset = managed_orgs
-
-    def clean_name(self):
-        name = self.cleaned_data.get("name")
-        if not Product.check_slug_from_name(name):
-            raise ValidationError(
-                "A product with a similar name already exists. Please choose a different name."
-            )
-        return name
+        
+        # Hide person field from form but keep it in fields
+        self.fields['person'].widget = forms.HiddenInput()
+        self.fields['person'].required = False
 
     def clean(self):
         cleaned_data = super().clean()
-        make_me_owner = cleaned_data.get("make_me_owner")
-        organisation = cleaned_data.get("organisation")
-
-        if make_me_owner and organisation:
-            self.add_error(
-                "organisation",
-                "A product cannot be owned by both you and an organisation"
-            )
-            return cleaned_data
-
-        if not make_me_owner and not organisation:
-            self.add_error(
-                "organisation",
-                "Please either select an organisation or make yourself the owner"
-            )
-            return cleaned_data
-
+        print("DEBUG: Starting clean method")
+        print(f"make_me_owner value: {cleaned_data.get('make_me_owner')}")
+        print(f"organisation value: {cleaned_data.get('organisation')}")
+        
+        if cleaned_data.get('make_me_owner'):
+            print("Setting person in cleaned_data")
+            cleaned_data['person'] = self.request.user.person
+            cleaned_data['organisation'] = None
+        elif cleaned_data.get('organisation'):
+            print("Setting organisation in cleaned_data")
+            cleaned_data['person'] = None
+        else:
+            raise ValidationError("Please either make yourself the owner or select an organization")
+        
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        print("DEBUG: Starting save method")
+        print(f"make_me_owner in save: {self.cleaned_data.get('make_me_owner')}")
+        print(f"person in save: {self.cleaned_data.get('person')}")
+        print(f"organisation in save: {self.cleaned_data.get('organisation')}")
+        
+        # Set the values explicitly
+        instance.person = self.cleaned_data.get('person')
+        instance.organisation = self.cleaned_data.get('organisation')
+        
+        if commit:
+            instance.save()
+            print(f"Saved instance with person: {instance.person} and org: {instance.organisation}")
+        
+        return instance
 
 
 class OrganisationForm(forms.ModelForm):

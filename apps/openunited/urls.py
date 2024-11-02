@@ -3,8 +3,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import RedirectView
+from django.contrib.auth import views as auth_views
 
 from apps.canopy.views import ProductTreeUpdateView, ProductTreeView
+from apps.product_management.views.portal_views import PortalDashboardView
 
 from . import views
 
@@ -44,6 +46,7 @@ urlpatterns += [
     path("product-tree", ProductTreeView.as_view()),
     path("product-tree/", ProductTreeView.as_view(), name="shareable_product_tree"),
     path("product-tree/share/<str:pk>", ProductTreeUpdateView.as_view(), name="update_product_tree"),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
