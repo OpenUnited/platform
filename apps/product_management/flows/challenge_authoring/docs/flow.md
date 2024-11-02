@@ -3,6 +3,34 @@
 ## Overview
 The Challenge creation process implements a modular flow pattern for challenge and bounty creation within a secure, role-based framework. The system uses Django's flow architecture with dedicated forms, services, and views, integrating with the central RoleService for access management.
 
+## Directory Structure
+The flow follows a modular structure with dedicated directories for each component:
+
+### Core Files
+- `__init__.py` - Flow configuration and documentation
+- `forms.py` - Form definitions and validation
+- `services.py` - Business logic, security, and data handling
+- `views.py` - View handling and permission checks
+- `urls.py` - URL routing
+
+### Templates
+Located in `templates/`:
+- `main.html` - Main flow template
+- Components in `templates/components/`:
+  - Step templates (step_1.html through step_5.html)
+  - Navigation (step_nav.html)
+  - Modals and widgets (bounty_modal.html, skill_tree.html)
+
+### Static Files
+Located in `static/`:
+- JavaScript modules in `js/`:
+  - `main.js` - Core flow management
+  - `bounty_modal.js` - Bounty configuration interface
+  - `form_validation.js` - Client-side validation
+  - `expertise_selector.js` - Expertise selection widget
+- Stylesheets in `css/`:
+  - `bounty_modal.css` - Modal-specific styles
+
 ## System Architecture
 
 ### 1. Flow Structure

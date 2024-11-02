@@ -35,7 +35,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, FormView):
         if not hasattr(request.user, 'person'):
             raise PermissionDenied("User profile not found")
             
-        self.product = get_object_or_404(Product, slug=kwargs['product_slug'])
+        self.product = ChallengeAuthoringService.Product.objects.get_object_or_404(slug=kwargs['product_slug'])
         
         if not RoleService.is_product_manager(
             person=request.user.person,
