@@ -24,6 +24,8 @@ Directory Structure:
 ├── urls.py
 ├── docs/
 │   └── flow.md
+├── partials/
+│   └── expertise_options.html  # Server-side expertise selection template
 ├── templates/
 │   ├── main.html
 │   └── components/
@@ -34,14 +36,16 @@ Directory Structure:
 │       ├── step_5.html
 │       ├── step_nav.html
 │       ├── bounty_modal.html
+│       ├── bounty_table.html
+│       ├── form_buttons.html
+│       ├── navigation.html
 │       ├── skill_tree.html
 │       └── skill_tree_item.html
 └── static/
     ├── js/
     │   ├── main.js
     │   ├── bounty_modal.js
-    │   ├── form_validation.js
-    │   └── expertise_selector.js
+    │   └── form_validation.js
     └── css/
         └── bounty_modal.css
 

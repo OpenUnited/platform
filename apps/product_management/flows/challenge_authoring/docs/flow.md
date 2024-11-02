@@ -13,13 +13,16 @@ The flow follows a modular structure with dedicated directories for each compone
 - `views.py` - View handling and permission checks
 - `urls.py` - URL routing
 
-### Templates
-Located in `templates/`:
+### Templates and Partials
+Located in `templates/` and `partials/`:
 - `main.html` - Main flow template
+- `partials/expertise_options.html` - Server-side expertise selection
 - Components in `templates/components/`:
   - Step templates (step_1.html through step_5.html)
-  - Navigation (step_nav.html)
-  - Modals and widgets (bounty_modal.html, skill_tree.html)
+  - Navigation (navigation.html, step_nav.html)
+  - Modals and widgets (bounty_modal.html, bounty_table.html)
+  - UI components (form_buttons.html)
+  - Skill selection (skill_tree.html, skill_tree_item.html)
 
 ### Static Files
 Located in `static/`:
@@ -27,7 +30,6 @@ Located in `static/`:
   - `main.js` - Core flow management
   - `bounty_modal.js` - Bounty configuration interface
   - `form_validation.js` - Client-side validation
-  - `expertise_selector.js` - Expertise selection widget
 - Stylesheets in `css/`:
   - `bounty_modal.css` - Modal-specific styles
 

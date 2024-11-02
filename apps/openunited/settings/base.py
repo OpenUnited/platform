@@ -173,7 +173,10 @@ USE_TZ = True
 if not os.getenv("AWS_STORAGE_BUCKET_NAME"):
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
     STATIC_URL = "static/"
-    STATICFILES_DIRS = [BASE_DIR / "static"]
+    STATICFILES_DIRS = [
+        BASE_DIR / "static",
+        os.path.join(BASE_DIR, 'apps/product_management/flows/challenge_authoring/static'),
+    ]
     MEDIA_URL = "/media/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
