@@ -28,6 +28,7 @@ ACTUAL_APPS = [
     "apps.commerce",
     "apps.canopy",
     "apps.common",
+    "apps.product_management.flows.challenge_authoring",
 ]
 THIRD_PARTIES = [
     "django_htmx",
@@ -175,7 +176,6 @@ if not os.getenv("AWS_STORAGE_BUCKET_NAME"):
     STATIC_URL = "static/"
     STATICFILES_DIRS = [
         BASE_DIR / "static",
-        os.path.join(BASE_DIR, 'apps/product_management/flows/challenge_authoring/static'),
     ]
     MEDIA_URL = "/media/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")

@@ -16,44 +16,40 @@ from .views.product_views import (
     CreateInitiativeView,
     InitiativeDetailView,
     redirect_challenge_to_bounties,
+    CreateBountyView,
+    DeleteBountyView,
+    ContributorAgreementTemplateView,
+    CreateContributorAgreementTemplateView,
     UpdateChallengeView,
     DeleteChallengeView,
     BountyDetailView,
-    CreateBountyView,
-    UpdateBountyView,
-    DeleteBountyView,
     BountyClaimView,
     CreateProductView,
     UpdateProductView,
     CreateOrganisationView,
-    ContributorAgreementTemplateView,
-    CreateContributorAgreementTemplateView,
-    get_expertise,
+    ProductChallengesView
 )
 
 from .views.portal_views import (
     PortalDashboardView,
-    PortalManageBountiesView,
-    PortalBountyClaimRequestsView,
     PortalProductDetailView,
-    PortalProductChallengesView,
     PortalProductChallengeFilterView,
     PortalProductBountiesView,
     PortalProductBountyFilterView,
     PortalReviewWorkView,
     PortalContributorAgreementTemplateListView,
+    DeleteBountyClaimView,
+    PortalManageBountiesView,
+    PortalBountyClaimRequestsView,
     PortalManageUsersView,
     PortalAddProductUserView,
     PortalUpdateProductUserView,
     PortalProductSettingView,
-    DeleteBountyClaimView,
     bounty_claim_actions,
 )
 
 from .views.ideas_and_bugs_views import (
     ProductIdeasAndBugsView,
-    ProductIdeaListView,
-    ProductBugListView,
     CreateProductIdea,
     UpdateProductIdea,
     ProductIdeaDetail,
@@ -61,6 +57,15 @@ from .views.ideas_and_bugs_views import (
     ProductBugDetail,
     UpdateProductBug,
     cast_vote_for_idea,
+    ProductIdeaListView,
+    ProductBugListView,
+)
+
+from .flows.challenge_authoring.views import (
+    ChallengeAuthoringView,
+    SkillsListView,
+    ExpertiseListView,
+    BountyModalView
 )
 
 # URL patterns for challenge and product list views
@@ -86,11 +91,6 @@ urlpatterns = [
         "product/<str:product_slug>/challenge/<int:challenge_id>/bounty/create/",
         CreateBountyView.as_view(),
         name="create-bounty",
-    ),
-    path(
-        "product/<str:product_slug>/challenge/<int:challenge_id>/bounty/update/<int:pk>",
-        UpdateBountyView.as_view(),
-        name="update-bounty",
     ),
     path(
         "product/<str:product_slug>/challenge/<int:challenge_id>/bounty/delete/<int:pk>",
@@ -148,11 +148,6 @@ urlpatterns += [
         name="portal-product-detail",
     ),
     path(
-        "portal/product/<str:product_slug>/challenges/",
-        PortalProductChallengesView.as_view(),
-        name="portal-product-challenges",
-    ),
-    path(
         "portal/product/<str:product_slug>/challenges/filter/",
         PortalProductChallengeFilterView.as_view(),
         name="portal-product-challenge-filter",
@@ -198,9 +193,9 @@ urlpatterns += [
         name="portal-update-product-user",
     ),
     path(
-        "portal/product-setting/<int:pk>/",
+        "portal/product-settings/<int:pk>/",
         PortalProductSettingView.as_view(),
-        name="portal-product-setting",
+        name="portal-product-settings",
     ),
 ]
 
@@ -302,6 +297,27 @@ urlpatterns += [
         ProductRoleAssignmentView.as_view(),
         name="product-people",
     ),
+    # Challenge authoring flow URLs
+    path(
+        "product/<str:product_slug>/flows/challenge-authoring/create/",
+        ChallengeAuthoringView.as_view(),
+        name="challenge_create"
+    ),
+    path(
+        "product/<str:product_slug>/flows/challenge-authoring/skills/",
+        SkillsListView.as_view(),
+        name="challenge_skills"
+    ),
+    path(
+        "product/<str:product_slug>/flows/challenge-authoring/skills/<int:skill_id>/expertise/",
+        ExpertiseListView.as_view(),
+        name="skill_expertise"
+    ),
+    path(
+        "product/<str:product_slug>/flows/challenge-authoring/bounty-modal/",
+        BountyModalView.as_view(),
+        name="bounty_modal"
+    ),
 ]
 
 # Initiative URLs
@@ -339,15 +355,4 @@ urlpatterns += [
         cast_vote_for_idea,
         name="cast-vote-for-idea",
     )
-]
-
-# Expertise URLs
-urlpatterns += [
-    path('get-expertise/', get_expertise, name='get-expertise'),
-]
-
-# Challenge authoring flow
-urlpatterns += [
-    path('product/<str:product_slug>/flows/challenge-authoring/', 
-         include('product_management.flows.challenge_authoring.urls')),
 ]

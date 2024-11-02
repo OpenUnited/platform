@@ -17,62 +17,14 @@ The forms handle:
 """
 
 from django import forms
-from utils.forms import BaseModelForm
+from apps.common.utils import BaseModelForm
+from apps.product_management.models import Challenge
 
 class ChallengeAuthoringForm(BaseModelForm):
-    """
-    Form for the challenge details step.
+    """Form for challenge creation within the challenge authoring flow."""
     
-    This form handles the initial challenge creation step, including
-    basic information, configuration, and optional settings.
-    
-    Fields:
-        title: Challenge title (required)
-        description: Full description (required)
-        short_description: Brief summary (optional)
-        status: Challenge status (required)
-        priority: Challenge priority (required)
-        reward_type: Liquid/Non-liquid points (required)
-        initiative: Related initiative (optional)
-        product_area: Related product area (optional)
-        video_url: YouTube/Vimeo URL (optional)
-    """
-    
-    title = forms.CharField(
-        max_length=255,
-        help_text="The main title of your challenge"
-    )
-    description = forms.CharField(
-        widget=forms.Textarea,
-        help_text="Detailed description of what needs to be done"
-    )
-    short_description = forms.CharField(
-        max_length=140,
-        required=False,
-        help_text="A brief summary of the challenge (optional)"
-    )
-    status = forms.ChoiceField(
-        choices=[
-            ('DRAFT', 'Draft'),
-            ('ACTIVE', 'Active'),
-            ('COMPLETED', 'Completed'),
-            ('ARCHIVED', 'Archived')
-        ]
-    )
-    priority = forms.ChoiceField(
-        choices=[
-            ('HIGH', 'High'),
-            ('MEDIUM', 'Medium'),
-            ('LOW', 'Low')
-        ]
-    )
-    reward_type = forms.ChoiceField(
-        choices=[
-            ('LIQUID', 'Liquid'),
-            ('NON_LIQUID', 'Non-Liquid')
-        ],
-        widget=forms.RadioSelect()
-    )
+    title = forms.CharField(max_length=255)
+    description = forms.CharField(widget=forms.Textarea)
     initiative = forms.ModelChoiceField(
         queryset=None,  # Set in __init__
         required=False
@@ -83,15 +35,11 @@ class ChallengeAuthoringForm(BaseModelForm):
     )
     video_url = forms.URLField(required=False)
 
-    def __init__(self, *args, product=None, **kwargs):
-        """
-        Initialize the form with product context for related fields.
+    class Meta:
+        model = Challenge
+        fields = ['title', 'description', 'initiative', 'product_area', 'video_url']
 
-        Args:
-            product: Product instance for filtering related choices
-            *args: Variable length argument list
-            **kwargs: Arbitrary keyword arguments
-        """
+    def __init__(self, *args, product=None, **kwargs):
         super().__init__(*args, **kwargs)
         if product:
             self.fields['initiative'].queryset = product.initiatives.all()

@@ -1,17 +1,16 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block extra_head %}
     {{ block.super }}
-    <script src="{% static 'js/main.js' %}" defer></script>
-    <script src="{% static 'js/expertise_selector.js' %}" defer></script>
-    <script src="{% static 'js/form_validation.js' %}" defer></script>
-    <script src="{% static 'js/bounty_modal.js' %}" type="module"></script>
+    <script src="{{ static('js/ChallengeFlowCore.js') }}" type="module"></script>
+    <script src="{{ static('js/ChallengeFlowBounties.js') }}" type="module"></script>
+    <script src="{{ static('js/ChallengeFlow.js') }}" type="module"></script>
+    <script src="{{ static('js/BountyModal.js') }}" type="module"></script>
 {% endblock %}
 
 {% block extra_css %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static 'css/bounty_modal.css' %}">
+    <link rel="stylesheet" href="{{ static('css/bounty_modal.css') }}">
 {% endblock %}
 
 {% block content %}

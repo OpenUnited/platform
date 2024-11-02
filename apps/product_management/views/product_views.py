@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import BadRequest
 from django.db import models
 from django.http import Http404, HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -16,9 +16,11 @@ from django.views.generic import (
     RedirectView,
     TemplateView,
     UpdateView,
+    View
 )
 
 from apps.canopy import utils as canopy_utils
+from apps.commerce.models import Organisation
 from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
 from apps.product_management import forms, utils
@@ -28,16 +30,228 @@ from apps.talent.models import BountyClaim, Expertise, Skill
 from apps.talent.utils import serialize_skills
 from apps.utility.utils import serialize_other_type_tree
 
-from .models import (
+from apps.product_management.models import (
     Bounty,
     Challenge,
     Initiative,
     Product,
     ProductArea,
+    ProductContributorAgreement,
     ProductContributorAgreementTemplate,
 )
 
+class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, CreateView):
+    model = Product
+    form_class = forms.ProductForm
+    template_name = "product_management/create_product.html"
+    login_url = "sign_in"
 
+    def get_success_url(self):
+        return reverse("product_summary", args=(self.object.slug,))
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if not self.request.htmx:
+            ProductRoleAssignment.objects.create(
+                person=self.request.user.person,
+                product=form.instance,
+                role=ProductRoleAssignment.ProductRoles.ADMIN,
+            )
+        return response
+    
+class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
+    model = Product
+    form_class = forms.ProductForm
+    template_name = "product_management/update_product.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("update-product", args=(self.object.id,))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        initial = {}
+        
+        # Check if product is owned by the current user
+        if self.object.is_owned_by_person():
+            initial["make_me_owner"] = (self.object.person == self.request.user.person)
+            context["make_me_owner"] = initial["make_me_owner"]
+
+        # Check if product is owned by an organisation
+        if self.object.is_owned_by_organisation():
+            initial["organisation"] = self.object.organisation
+            context["organisation"] = self.object.organisation
+
+        context["form"] = self.form_class(instance=self.object, initial=initial)
+        context["product_instance"] = self.object
+        return context
+
+    def form_valid(self, form):
+        return super().form_save(form)
+    
+class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
+    model = Organisation
+    form_class = forms.OrganisationForm
+    template_name = "product_management/create_organisation.html"
+    success_url = reverse_lazy("create-product")
+    login_url = "sign_in"
+
+    def post(self, request, *args, **kwargs):
+        if self._is_htmx_request(self.request):
+            return super().post(request, *args, **kwargs)
+
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+
+            return redirect(self.success_url)
+
+        return super().post(request, *args, **kwargs)
+
+class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
+    template_name = "product_management/product_challenges.html"
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        product = context["product"]
+        challenges = Challenge.objects.filter(product=product)
+        custom_order = models.Case(
+            models.When(status=Challenge.ChallengeStatus.ACTIVE, then=models.Value(0)),
+            models.When(status=Challenge.ChallengeStatus.BLOCKED, then=models.Value(1)),
+            models.When(status=Challenge.ChallengeStatus.COMPLETED, then=models.Value(2)),
+            models.When(status=Challenge.ChallengeStatus.CANCELLED, then=models.Value(3)),
+        )
+        challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
+        context["challenges"] = challenges
+        context["challenge_status"] = Challenge.ChallengeStatus
+        return context
+
+class UpdateChallengeView(
+    LoginRequiredMixin, common_mixins.AttachmentMixin, HTMXInlineFormValidationMixin, UpdateView
+):
+    model = Challenge
+    form_class = forms.ChallengeForm
+    template_name = "product_management/update_challenge.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["product"] = self.object.product
+        return context
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user.person
+        return super().form_save(form)
+    
+class DeleteChallengeView(LoginRequiredMixin, DeleteView):
+    model = Challenge
+    template_name = "product_management/delete_challenge.html"
+    login_url = "sign_in"
+    success_url = reverse_lazy("challenges")
+
+    def get(self, request, *args, **kwargs):
+        challenge_obj = self.get_object()
+        person = request.user.person
+        if challenge_obj.can_delete_challenge(person) or challenge_obj.created_by == person:
+            Challenge.objects.get(pk=challenge_obj.pk).delete()
+            messages.success(request, "The challenge is successfully deleted!")
+            return redirect(self.success_url)
+        else:
+            messages.error(request, "You do not have rights to remove this challenge.")
+
+            return redirect(
+                reverse(
+                    "challenge_detail",
+                    args=(
+                        challenge_obj.product.slug,
+                        challenge_obj.pk,
+                    ),
+                )
+            )
+
+class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
+
+    model = Bounty
+    template_name = "product_management/bounty_detail.html"
+
+    def get_object(self, queryset=None):
+        try:
+            return super().get_object(queryset)
+        except Bounty.DoesNotExist:
+            messages.error(self.request, "This bounty no longer exists.")
+            raise Http404("Bounty does not exist")
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        data = super().get_context_data(**kwargs)
+
+        bounty = data.get("bounty")
+        challenge = bounty.challenge
+        product = challenge.product
+        user = self.request.user
+
+        can_be_modified = False
+        can_be_claimed = False
+        created_bounty_claim_request = False
+        bounty_claim = None
+        if user.is_authenticated:
+            person = user.person
+            _bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
+
+            if _bounty_claim and _bounty_claim.status == BountyClaim.Status.REQUESTED and not bounty.claimed_by:
+                created_bounty_claim_request = True
+                bounty_claim = _bounty_claim
+
+            if bounty.status == Bounty.BountyStatus.AVAILABLE:
+                can_be_claimed = not _bounty_claim
+
+            can_be_modified = ProductRoleAssignment.objects.filter(
+                person=person,
+                product=product,
+                role=ProductRoleAssignment.ProductRoles.ADMIN,
+            ).exists()
+
+        data.update(
+            {
+                "product": product,
+                "challenge": challenge,
+                "claimed_by": bounty.claimed_by,
+                "bounty_claim": bounty_claim,
+                "show_actions": created_bounty_claim_request or can_be_claimed or can_be_modified,
+                "can_be_claimed": can_be_claimed,
+                "can_be_modified": can_be_modified,
+                "is_product_admin": True,
+                "created_bounty_claim_request": created_bounty_claim_request,
+            }
+        )
+
+        return {"data": data, "attachment_formset": data["attachment_formset"]}
+
+class BountyClaimView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        bounty_id = kwargs.get('pk')
+        bounty = get_object_or_404(Bounty, pk=bounty_id)
+        
+        if not request.user.is_authenticated or not request.user.person:
+            return JsonResponse({'error': 'Authentication required'}, status=401)
+            
+        # Create bounty claim
+        claim = BountyClaim.objects.create(
+            bounty=bounty,
+            person=request.user.person,
+            status=BountyClaim.Status.REQUESTED
+        )
+        
+        return JsonResponse({
+            'status': 'success',
+            'claim_id': claim.id
+        })
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
 class ProductListView(ListView):
     model = Product
     template_name = "product_management/products.html"

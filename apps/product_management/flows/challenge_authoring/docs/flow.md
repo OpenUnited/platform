@@ -27,11 +27,127 @@ Located in `templates/` and `partials/`:
 ### Static Files
 Located in `static/`:
 - JavaScript modules in `js/`:
-  - `main.js` - Core flow management
-  - `bounty_modal.js` - Bounty configuration interface
-  - `form_validation.js` - Client-side validation
+  - `ChallengeFlowCore.js` - Base class with core functionality
+  - `ChallengeFlowBounties.js` - Bounty management functionality
+  - `ChallengeFlow.js` - Main application class
+  - `BountyModal.js` - Modal functionality
 - Stylesheets in `css/`:
-  - `bounty_modal.css` - Modal-specific styles
+  - `bounty-modal.css` - Modal-specific styles
+
+## JavaScript Architecture
+
+### 1. Class Hierarchy
+The flow uses a modular class-based architecture with inheritance:
+
+```javascript
+// Base class
+class ChallengeFlowCore {
+    constructor() {
+        this.currentStep = 1;
+        this.initializeElements();
+        this.bindEvents();
+    }
+    
+    // Core navigation and validation
+    nextStep() { ... }
+    previousStep() { ... }
+    validateStep() { ... }
+}
+
+// Bounty management
+class ChallengeFlowBounties extends ChallengeFlowCore {
+    constructor() {
+        super();
+        this.bounties = [];
+    }
+    
+    // Bounty operations
+    handleBountyAdded() { ... }
+    handleBountyRemoved() { ... }
+    updateBountyTable() { ... }
+}
+
+// Main application class
+class ChallengeFlow extends ChallengeFlowBounties {
+    constructor() {
+        super();
+        this.restoreProgress();
+        this.startAutoSave();
+    }
+    
+    // Form handling and progress management
+    handleSubmit() { ... }
+    saveProgress() { ... }
+    restoreProgress() { ... }
+}
+```
+
+### 2. Module Responsibilities
+
+#### ChallengeFlowCore.js
+- Step navigation and validation
+- Element initialization
+- Event binding
+- Basic error handling
+- Core utility functions
+
+#### ChallengeFlowBounties.js
+- Bounty CRUD operations
+- API interactions for skills/expertise
+- Bounty table management
+- Summary updates
+- Bounty-specific validation
+
+#### ChallengeFlow.js
+- Form submission handling
+- Progress management (save/restore)
+- Advanced error handling
+- Final validation
+- Auto-save functionality
+
+#### BountyModal.js
+- Skill selection interface
+- Expertise configuration
+- Points allocation
+- Event communication with main flow
+- Modal state management
+
+### 3. Event Communication
+```javascript
+// Event emission
+document.dispatchEvent(new CustomEvent('bountyAdded', {
+    detail: bountyData
+}));
+
+// Event handling
+document.addEventListener('bountyAdded', 
+    (e) => this.handleBountyAdded(e.detail));
+```
+
+### 4. Progress Management
+```javascript
+class ChallengeFlow {
+    saveProgress() {
+        const data = {
+            step: this.currentStep,
+            formData: Object.fromEntries(new FormData(this.form)),
+            bounties: this.bounties,
+            lastSaved: new Date().toISOString()
+        };
+        localStorage.setItem('challengeProgress', JSON.stringify(data));
+    }
+
+    restoreProgress() {
+        const saved = localStorage.getItem('challengeProgress');
+        if (saved) {
+            const data = JSON.parse(saved);
+            this.currentStep = data.step;
+            this.bounties = data.bounties;
+            // Restore form data...
+        }
+    }
+}
+```
 
 ## System Architecture
 
@@ -222,9 +338,29 @@ class ChallengeAuthoringView(FormView):
 - User must have appropriate permissions
 
 ### 2. Bounty Validation
-- Points range: 1-1000
+- Points range: 1-1000 per bounty
+- Total points limit: 1000 across all bounties
 - Maximum bounties per challenge: 10
-- Required fields: title, points
+- Required fields: title, points, skill_id, expertise_ids
+
+### Error Messages
+Common validation errors:
+```python
+{
+    'bounties': [
+        'Maximum of 10 bounties allowed per challenge',
+        'Total points across all bounties cannot exceed 1000',
+        'Points must be between 1 and 1000'
+    ]
+}
+```
+
+### Auto-save Feature
+The challenge flow implements automatic progress saving:
+- Saves form data to localStorage every 30 seconds
+- Saves after each bounty addition/removal
+- Restores progress on page reload
+- Clears saved data on successful submission
 
 ## Development Guide
 

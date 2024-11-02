@@ -7,7 +7,7 @@ including creation, updates, voting, and listing functionality.
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView, UpdateView
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -54,6 +54,28 @@ class CreateProductIdea(LoginRequiredMixin, utils.BaseProductDetailView, CreateV
             return redirect("product_ideas_bugs", **kwargs)
 
         return super().post(request, *args, **kwargs)
+    
+class ProductIdeaListView(utils.BaseProductDetailView, ListView):
+    model = Idea
+    template_name = "product_management/product_idea_list.html"
+    context_object_name = "ideas"
+    object_list = []
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return self.model.objects.filter(product=product)
+
+class ProductBugListView(utils.BaseProductDetailView, ListView):
+    model = Bug
+    template_name = "product_management/product_bug_list.html"
+    context_object_name = "bugs"
+    object_list = []
+
+    def get_queryset(self):
+        context = self.get_context_data()
+        product = context.get("product")
+        return self.model.objects.filter(product=product)
 
 class ProductIdeaDetail(utils.BaseProductDetailView, DetailView):
     """Detail view for a product idea."""

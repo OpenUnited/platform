@@ -31,9 +31,11 @@ from typing import Dict, List, Optional, Tuple
 import logging
 import re
 from django.db.models import QuerySet
-from apps.talent.models import Skill, Expertise
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 
-from apps.product_management.models import Challenge, Bounty, Expertise, Product
+from apps.product_management.models import Challenge, Bounty, Product
+from apps.talent.models import Skill, Expertise
 from apps.security.services import RoleService
 
 logger = logging.getLogger(__name__)
@@ -51,6 +53,8 @@ class ChallengeAuthoringService:
         MIN_POINTS (int): Minimum points per bounty (1)
         MAX_POINTS (int): Maximum points per bounty (1000)
         MAX_BOUNTIES (int): Maximum bounties per challenge (10)
+        MAX_POINTS_PER_BOUNTY (int): Maximum points per bounty (1000)
+        MAX_TOTAL_POINTS (int): Maximum total points across all bounties (1000)
     
     Example:
         service = ChallengeAuthoringService(user, 'product-slug')
@@ -72,31 +76,18 @@ class ChallengeAuthoringService:
     MIN_POINTS = 1
     MAX_POINTS = 1000
     MAX_BOUNTIES = 10
+    MAX_POINTS_PER_BOUNTY = 1000
+    MAX_TOTAL_POINTS = 1000
 
-    def __init__(self, user, product_slug: str = None):
-        """
-        Initialize the service with a user and product context.
-
-        Args:
-            user: The authenticated user creating the challenge
-            product_slug (str): Slug identifier for the product
-        """
+    def __init__(self, user, product_slug):
         self.user = user
-        if product_slug:
-            self.product = self._get_product(product_slug)
-            self.role_service = RoleService()
-            if not self._can_create_challenges():
-                raise PermissionDenied
-
-    def _can_create_challenges(self) -> bool:
-        """Check if user has permission to create challenges"""
-        if not hasattr(self.user, 'person'):
-            return False
+        self.product = get_object_or_404(Product, slug=product_slug)
+        
+        if not hasattr(user, 'person'):
+            raise PermissionDenied("User profile not found")
             
-        return self.role_service.is_product_manager(
-            person=self.user.person,
-            product=self.product
-        )
+        if not RoleService.is_product_manager(user.person, self.product):
+            raise PermissionDenied("Must be product manager")
 
     def create_challenge(self, challenge_data: Dict, bounties_data: List[Dict]) -> Tuple[bool, Optional[Challenge], List[str]]:
         """
@@ -255,39 +246,37 @@ class ChallengeAuthoringService:
     def _validate_bounties(self, bounties_data: List[Dict]) -> List[str]:
         """Validates bounty-specific data."""
         errors = []
-        
-        # Check total number of bounties
+        seen_titles = set()  # Initialize the set to track duplicate titles
+
         if len(bounties_data) > self.MAX_BOUNTIES:
-            errors.append(f"Maximum of {self.MAX_BOUNTIES} bounties allowed per challenge")
-            return errors
-        
-        total_points = 0
-        seen_titles = set()
-        
-        for i, bounty in enumerate(bounties_data, 1):
+            errors.append(f'Maximum of {self.MAX_BOUNTIES} bounties allowed per challenge')
+            
+        total_points = sum(bounty.get('points', 0) for bounty in bounties_data)
+        if total_points > self.MAX_TOTAL_POINTS:
+            errors.append(f'Total points across all bounties cannot exceed {self.MAX_TOTAL_POINTS}')
+            
+        for i, bounty in enumerate(bounties_data):
             # Required fields
             if not bounty.get('title'):
-                errors.append(f"Bounty {i}: Title is required")
+                errors.append(f"Bounty {i+1}: Title is required")
             if not bounty.get('description'):
-                errors.append(f"Bounty {i}: Description is required")
+                errors.append(f"Bounty {i+1}: Description is required")
             if not bounty.get('skill'):
-                errors.append(f"Bounty {i}: Skill is required")
+                errors.append(f"Bounty {i+1}: Skill is required")
                 
             # Title validation
             title = bounty.get('title', '')
             if title in seen_titles:
-                errors.append(f"Bounty {i}: Duplicate bounty title")
+                errors.append(f"Bounty {i+1}: Duplicate bounty title")
             seen_titles.add(title)
             
             if len(title) > self.MAX_TITLE_LENGTH:
-                errors.append(f"Bounty {i}: Title must be less than {self.MAX_TITLE_LENGTH} characters")
+                errors.append(f"Bounty {i+1}: Title must be less than {self.MAX_TITLE_LENGTH} characters")
                 
             # Points validation
             points = bounty.get('points', 0)
-            if not isinstance(points, (int, float)) or points < self.MIN_POINTS:
-                errors.append(f"Bounty {i}: Points must be at least {self.MIN_POINTS}")
-            if points > self.MAX_POINTS:
-                errors.append(f"Bounty {i}: Points cannot exceed {self.MAX_POINTS}")
+            if points <= 0 or points > self.MAX_POINTS_PER_BOUNTY:
+                errors.append(f'Points must be between 1 and {self.MAX_POINTS_PER_BOUNTY}')
             total_points += points
             
             # Expertise validation
@@ -295,7 +284,7 @@ class ChallengeAuthoringService:
             if isinstance(expertise_ids, str):
                 expertise_ids = expertise_ids.split(',') if expertise_ids else []
             if not expertise_ids:
-                errors.append(f"Bounty {i}: At least one expertise must be selected")
+                errors.append(f"Bounty {i+1}: At least one expertise must be selected")
             else:
                 # Validate expertise belongs to selected skill
                 skill_id = bounty.get('skill')
@@ -305,7 +294,7 @@ class ChallengeAuthoringService:
                         id__in=expertise_ids
                     ).count()
                     if valid_expertise != len(expertise_ids):
-                        errors.append(f"Bounty {i}: Invalid expertise selection for chosen skill")
+                        errors.append(f"Bounty {i+1}: Invalid expertise selection for chosen skill")
         
         return errors
 
@@ -356,7 +345,27 @@ class ChallengeAuthoringService:
         return skill_tree
 
     def get_expertise_for_skill(self, skill_id: int) -> Dict[str, List[Dict]]:
-        """Get expertise options for a given skill"""
+        """Get expertise options for a specific skill.
+        
+        Args:
+            skill_id: ID of the skill to get expertise for
+            
+        Returns:
+            Dict[str, List[Dict]]: Dictionary of expertise categories and their related expertise
+            Example: {
+                "Frameworks": [
+                    {"id": 1, "name": "Django"},
+                    {"id": 2, "name": "Flask"}
+                ],
+                "Languages": [
+                    {"id": 3, "name": "Python"},
+                    {"id": 4, "name": "JavaScript"}
+                ]
+            }
+        
+        Note:
+            Only returns selectable expertise entries
+        """
         expertises = Expertise.objects.filter(
             skill_id=skill_id,
             selectable=True
@@ -386,22 +395,46 @@ class ChallengeAuthoringService:
         return list(Skill.objects.values('id', 'name').order_by('name'))
 
     def get_expertise_for_skill(self, skill_id: int) -> List[Dict]:
-        """Get expertise options for a specific skill.
+        """Get expertise items for a skill"""
+        expertise_items = Expertise.objects.filter(skill_id=skill_id)
+        return [{
+            'id': item.id,
+            'name': item.name,
+            'fa_icon': item.fa_icon,
+            'selectable': item.selectable
+        } for item in expertise_items]
+
+    def _get_product(self, product_slug: str) -> Product:
+        """
+        Get product by slug and verify user has permission to manage it.
         
         Args:
-            skill_id: ID of the skill to get expertise for
+            product_slug (str): The product's slug identifier
             
         Returns:
-            List[Dict]: List of expertise with their IDs, names and levels
-            Example: [
-                {"id": 1, "name": "React", "level": "BEGINNER"},
-                {"id": 2, "name": "React", "level": "INTERMEDIATE"},
-                {"id": 3, "name": "React", "level": "EXPERT"}
-            ]
+            Product: The product instance if found and user has permission
+            
+        Raises:
+            PermissionDenied: If user lacks product management permission
+            Http404: If product not found
         """
-        return list(
-            Expertise.objects
-            .filter(skill_id=skill_id)
-            .values('id', 'name', 'level')
-            .order_by('level', 'name')
+        try:
+            product = Product.objects.get(slug=product_slug)
+            if not self.role_service.is_product_manager(self.user, product):
+                raise PermissionDenied("User is not a product manager")
+            return product
+        except Product.DoesNotExist:
+            raise Http404("Product not found")
+
+    def create_bounty(self, challenge, bounty_data):
+        expertise_ids = bounty_data.pop('expertise_ids', None)  # Remove from dict
+        bounty = Bounty.objects.create(
+            challenge=challenge,
+            **bounty_data
         )
+        if expertise_ids:
+            # Handle expertise relationships after creation
+            if isinstance(expertise_ids, str):
+                expertise_ids = [int(id) for id in expertise_ids.split(',')]
+            bounty.expertise.set(expertise_ids)
+        return bounty

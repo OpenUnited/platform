@@ -43,17 +43,45 @@ Directory Structure:
 │       └── skill_tree_item.html
 └── static/
     ├── js/
-    │   ├── main.js
-    │   ├── bounty_modal.js
-    │   └── form_validation.js
+    │   ├── ChallengeFlowCore.js     # Core functionality and navigation
+    │   ├── ChallengeFlowBounties.js # Bounty management
+    │   ├── ChallengeFlow.js         # Main class and form handling
+    │   └── BountyModal.js           # Modal functionality
     └── css/
-        └── bounty_modal.css
+        └── bounty-modal.css         # Modal styles
 
 Business Rules:
 - Title length: 10-200 characters
 - Description length: 50-5000 characters
 - Points range: 1-1000 per bounty
 - Maximum 10 bounties per challenge
+
+JavaScript Architecture:
+The flow uses a modular class-based architecture with inheritance:
+
+1. ChallengeFlowCore (ChallengeFlowCore.js)
+   - Base class with core functionality
+   - Step navigation and validation
+   - Element initialization
+   - Event binding
+   - Basic error handling
+
+2. ChallengeFlowBounties (ChallengeFlowBounties.js)
+   - Extends ChallengeFlowCore
+   - Bounty CRUD operations
+   - API interactions for skills/expertise
+   - Bounty table management
+   - Summary updates
+
+3. ChallengeFlow (ChallengeFlow.js)
+   - Main application class
+   - Extends ChallengeFlowBounties
+   - Form submission handling
+   - Progress management (save/restore)
+   - Advanced error handling
+   - Final validation
+
+4. BountyModal
 
 Usage:
     from product_management.flows.challenge_authoring.services import ChallengeAuthoringService

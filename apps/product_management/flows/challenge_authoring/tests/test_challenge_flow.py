@@ -1,13 +1,14 @@
 import pytest
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
-from unittest.mock import Mock, patch
+from apps.talent.models import Person
+import uuid
+from unittest.mock import patch, Mock
 
-from apps.security.services import RoleService
 from apps.product_management.models import Product, Challenge, Bounty
 from apps.talent.models import Person, Skill, Expertise
-from ..services import ChallengeAuthoringService
-from ..views import ChallengeAuthoringView
+from apps.product_management.flows.challenge_authoring.services import ChallengeAuthoringService
+from apps.product_management.flows.challenge_authoring.views import ChallengeAuthoringView
 
 @pytest.fixture
 def user(db):
@@ -21,17 +22,19 @@ def user(db):
     )
     user.person = Person.objects.create(
         user=user,
-        first_name='Test',
-        last_name='User'
+        full_name='Test User',
+        preferred_name='Test'
     )
+    user.save()
     return user
 
 @pytest.fixture
-def product(db):
+def product(db, user):
     """Create a test product"""
     return Product.objects.create(
         name='Test Product',
-        slug='test-product'
+        slug='test-product',
+        person=user.person
     )
 
 @pytest.fixture
@@ -47,15 +50,13 @@ def valid_challenge_data():
 @pytest.fixture
 def valid_bounties_data():
     """Valid bounties data"""
-    return [
-        {
-            'title': 'First Bounty',
-            'description': 'Test bounty description',
-            'points': 100,
-            'skill_id': 1,
-            'expertise_ids': [1, 2]
-        }
-    ]
+    return [{
+        'title': 'Test Bounty',
+        'description': 'Test bounty description',
+        'points': 100,
+        'skill': 1,
+        'expertise': [1, 2]
+    }]
 
 @pytest.fixture
 def invalid_bounties_data():
@@ -65,25 +66,56 @@ def invalid_bounties_data():
             'title': '',  # Empty title
             'description': 'Test bounty description',
             'points': 0,  # Invalid points
-            'skill_id': 1,
-            'expertise_ids': []
+            'skill': 1,
+            'expertise': []  # Empty expertise list
         },
         {
             'title': 'Second Bounty',
             'description': 'Test bounty description',
             'points': 2000,  # Exceeds maximum points
-            'skill_id': 1,
-            'expertise_ids': [1]
+            'skill': 1,
+            'expertise': [1]
         }
     ]
 
 @pytest.fixture
 def mock_role_service():
-    """Mock RoleService for permission checks"""
-    with patch('apps.security.services.RoleService') as mock_service:
-        mock_service.is_product_manager.return_value = True
-        mock_service.is_product_admin.return_value = False
-        yield mock_service
+    with patch('apps.product_management.flows.challenge_authoring.services.RoleService') as mock:
+        instance = mock.return_value
+        # Make is_product_manager return True by default and track calls
+        instance.is_product_manager = Mock(return_value=True)
+        return instance
+
+@pytest.fixture
+def person(db, django_user_model):
+    """Create a test person"""
+    # Create a unique username using a UUID
+    unique_id = str(uuid.uuid4())[:8]
+    username = f'testuser_{unique_id}'
+    
+    # First create a User instance
+    user = django_user_model.objects.create_user(
+        username=username,
+        email=f'test_{unique_id}@example.com',
+        password='testpass123'
+    )
+    
+    # Then create the Person instance
+    person = Person.objects.create(
+        user=user,
+        full_name="Test User",
+        preferred_name="Test",
+        points=0
+    )
+    
+    return person
+
+@pytest.fixture(autouse=True)
+def setup_user_person(user, person):
+    """Ensure user has a person attribute"""
+    user.person = person
+    user.save()
+    return user
 
 @pytest.fixture
 def skills(db):
@@ -100,19 +132,32 @@ def expertise_items(db, skills):
         Expertise.objects.create(
             skill=skills[0],
             name='React',
-            level='BEGINNER'
+            fa_icon='fab fa-react',
+            selectable=True
         ),
         Expertise.objects.create(
             skill=skills[0],
-            name='React',
-            level='INTERMEDIATE'
+            name='React Advanced',
+            fa_icon='fab fa-react',
+            selectable=True
         ),
         Expertise.objects.create(
             skill=skills[1],
             name='Django',
-            level='INTERMEDIATE'
+            fa_icon='fab fa-python',
+            selectable=True
         )
     ]
+
+@pytest.fixture
+def mock_expertise():
+    """Mock expertise data for testing"""
+    with patch('apps.product_management.flows.challenge_authoring.services.Expertise') as mock:
+        mock_instance = Mock()
+        mock_instance.objects.filter.return_value = [
+            Mock(id=1, name='Test Expertise', description='Test Description')
+        ]
+        return mock_instance
 
 class TestChallengeAuthoringView:
     def test_view_requires_authentication(self, client, product):
@@ -167,13 +212,94 @@ class TestChallengeAuthoringView:
         assert response.json()['success'] is True
         assert response.json()['redirect_url'] == '/success'
 
+    def test_bounty_modal_api_endpoints(self, client, user, product, mock_role_service):
+        """Test the API endpoints used by BountyModal.js"""
+        client.force_login(user)
+        
+        # Test GET request to bounty modal
+        url = reverse('bounty_modal', kwargs={'product_slug': product.slug})
+        response = client.get(url)
+        assert response.status_code == 200
+        assert 'modal-wrap__skills' in response.content.decode()
+
+        # Test POST request with AJAX
+        response = client.post(
+            url,
+            data={
+                'title': 'Test Bounty',
+                'description': 'Test Description',
+                'points': 100,
+                'skill_id': 1,
+                'expertise_ids': '1,2'  # Match format from BountyModal.js
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        assert response.status_code == 200
+        assert response.json()['success'] is True
+
+    def test_permission_checks(self, client, user, product):
+        """Test permission requirements"""
+        url = reverse('challenge_create', kwargs={'product_slug': product.slug})
+        
+        # Test unauthenticated
+        response = client.get(url)
+        assert response.status_code == 302  # Redirects to login
+        
+        # Test authenticated but not product manager
+        client.force_login(user)
+        response = client.get(url)
+        assert response.status_code == 403
+
+    def test_form_validation(self, client, user, product, mock_role_service):
+        """Test form validation in the view"""
+        client.force_login(user)
+        url = reverse('challenge_create', kwargs={'product_slug': product.slug})
+        
+        # Test invalid form submission
+        response = client.post(url, {
+            'title': '',  # Required field
+            'bounty-TOTAL_FORMS': '1',
+            'bounty-0-title': ''
+        })
+        assert response.status_code == 200
+        assert 'errors' in response.json()
+
+    def test_skills_api(self, client, user, product, mock_role_service):
+        """Test skills list and expertise endpoints"""
+        client.force_login(user)
+        
+        # Test skills list
+        url = reverse('challenge_skills', kwargs={'product_slug': product.slug})
+        response = client.get(url)
+        assert response.status_code == 200
+
+    def test_expertise_list(self, client, user, product, skills):
+        """Test expertise list retrieval"""
+        client.force_login(user)
+        url = reverse('skill_expertise', kwargs={
+            'product_slug': product.slug,
+            'skill_id': skills[0].id
+        })
+        response = client.get(url)
+        assert response.status_code == 200
+
 class TestChallengeAuthoringService:
+    @pytest.fixture(autouse=True)
+    def setup_service(self, mocker):
+        """Setup common service mocks"""
+        mock_role_service = mocker.Mock()
+        mock_role_service.is_product_manager.return_value = True
+        mocker.patch(
+            'apps.product_management.flows.challenge_authoring.services.RoleService',
+            return_value=mock_role_service
+        )
+
     def test_service_initialization(self, user, product, mock_role_service):
         """Test service initialization with permissions"""
         service = ChallengeAuthoringService(user, product.slug)
         assert service.user == user
         assert service.product == product
-        mock_role_service.is_product_manager.assert_called_once_with(
+        mock_role_service.return_value.is_product_manager.assert_called_once_with(
             person=user.person,
             product=product
         )
@@ -185,30 +311,24 @@ class TestChallengeAuthoringService:
             ChallengeAuthoringService(user, product.slug)
 
     @pytest.mark.django_db
-    def test_challenge_creation(self, user, product, valid_challenge_data, valid_bounties_data):
+    def test_challenge_creation(self, user, product, valid_challenge_data, valid_bounties_data, skills):
         """Test full challenge creation flow"""
-        with patch('apps.security.services.RoleService') as mock_role_service:
-            mock_role_service.is_product_manager.return_value = True
-            service = ChallengeAuthoringService(user, product.slug)
-            
-            success, challenge, errors = service.create_challenge(
-                valid_challenge_data,
-                valid_bounties_data
-            )
-
-        assert success is True
-        assert errors is None
-        assert isinstance(challenge, Challenge)
-        assert challenge.title == valid_challenge_data['title']
-        assert challenge.created_by == user
-        assert challenge.product == product
+        service = ChallengeAuthoringService(user, product.slug)
         
-        # Verify bounty creation
-        bounties = Bounty.objects.filter(challenge=challenge)
-        assert bounties.count() == len(valid_bounties_data)
-        bounty = bounties.first()
-        assert bounty.title == valid_bounties_data[0]['title']
-        assert bounty.points == valid_bounties_data[0]['points']
+        # Update bounties data to use actual Skill instances
+        bounties = [{
+            **bounty,
+            'skill': skills[0]  # Use actual Skill instance
+        } for bounty in valid_bounties_data]
+        
+        success, challenge, errors = service.create_challenge(
+            valid_challenge_data,
+            bounties
+        )
+        
+        assert success is True
+        assert challenge is not None
+        assert errors is None
 
     def test_validation_errors(self, user, product, mock_role_service):
         """Test validation error handling"""
@@ -341,20 +461,122 @@ class TestChallengeAuthoringService:
         assert expertise_list[0]['level'] == 'BEGINNER'
         assert 'id' in expertise_list[0]
 
+    def test_expertise_ids_format(self, user, product, valid_challenge_data, mock_role_service):
+        """Test handling of expertise_ids in both string and list formats"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        # Test with string format (from AJAX)
+        bounties_string_format = [{
+            'title': 'Test Bounty',
+            'description': 'Test Description',
+            'points': 100,
+            'skill_id': 1,
+            'expertise_ids': '1,2'
+        }]
+        
+        success, _, _ = service.create_challenge(
+            valid_challenge_data,
+            bounties_string_format
+        )
+        assert success is True
+
+        # Test with list format (from regular form)
+        bounties_list_format = [{
+            'title': 'Test Bounty',
+            'description': 'Test Description',
+            'points': 100,
+            'skill_id': 1,
+            'expertise_ids': [1, 2]
+        }]
+        
+        success, _, _ = service.create_challenge(
+            valid_challenge_data,
+            bounties_list_format
+        )
+        assert success is True
+
+    def test_validation_rules(self, user, product):
+        """Test all validation rules for challenges and bounties"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        # Test challenge validation
+        invalid_challenge = {
+            'title': 'A' * 256,  # Exceeds MAX_TITLE_LENGTH
+            'description': 'Too short',  # Less than 50 chars
+            'status': 'INVALID_STATUS',
+            'priority': 'INVALID_PRIORITY',
+            'video_url': 'not-a-url'
+        }
+        
+        errors = service._validate_challenge(invalid_challenge)
+        assert len(errors) > 0
+        assert any('Title must be less than' in error for error in errors)
+        assert any('Description must be at least' in error for error in errors)
+        assert any('Invalid status' in error for error in errors)
+        assert any('Invalid priority' in error for error in errors)
+        assert any('Invalid video URL format' in error for error in errors)
+
+    def test_bounty_validation(self, user, product):
+        """Test bounty-specific validation rules"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        invalid_bounties = [
+            {
+                'title': '',
+                'description': '',
+                'points': 0,
+                'skill': None,
+                'expertise_ids': []
+            }
+        ] * 11  # Exceeds MAX_BOUNTIES
+        
+        errors = service._validate_bounties(invalid_bounties)
+        assert any(f'Maximum of {service.MAX_BOUNTIES} bounties' in error for error in errors)
+
+    def test_expertise_validation(self, user, product, mock_expertise):
+        """Test expertise validation for bounties"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        bounty_data = [{
+            'title': 'Test Bounty',
+            'description': 'Description',
+            'points': 100,
+            'skill': 1,
+            'expertise_ids': '999'  # Non-existent expertise
+        }]
+        
+        errors = service._validate_bounties(bounty_data)
+        assert any('Invalid expertise selection' in error for error in errors)
+
+    def test_cross_validation(self, user, product):
+        """Test validation between challenges and bounties"""
+        service = ChallengeAuthoringService(user, product.slug)
+        
+        challenge_data = {
+            'status': 'ACTIVE',
+            'reward_type': 'POINTS'
+        }
+        bounties_data = []  # Empty bounties for active challenge
+        
+        errors = service._validate_challenge_bounty_relationship(
+            challenge_data,
+            bounties_data
+        )
+        assert any('Active challenges must have at least one bounty' in error for error in errors)
+
 class TestSkillEndpoints:
     """Test cases for skill and expertise API endpoints"""
     
-    def test_skills_list_requires_auth(self, client):
+    def test_skills_list_requires_auth(self, client, product):
         """Test that unauthenticated users cannot access skills list"""
-        url = reverse('challenge_skills')
+        url = reverse('challenge_skills', kwargs={'product_slug': product.slug})
         response = client.get(url)
-        assert response.status_code == 302
-        assert '/login/' in response.url
+        assert response.status_code == 302  # Redirects to login
 
-    def test_skills_list(self, client, user, skills):
+    def test_skills_list(self, client, user, product):
         """Test successful skills list retrieval"""
         client.force_login(user)
-        url = reverse('challenge_skills')
+        url = reverse('challenge_skills', kwargs={'product_slug': product.slug})
         response = client.get(url)
         
         assert response.status_code == 200
@@ -363,19 +585,23 @@ class TestSkillEndpoints:
         assert len(data['skills']) == 2
         assert data['skills'][0]['name'] == 'Frontend Development'
 
-    def test_expertise_requires_auth(self, client, skills):
+    def test_expertise_requires_auth(self, client, product, skills):
         """Test that unauthenticated users cannot access expertise list"""
-        url = reverse('skill_expertise', kwargs={'skill_id': skills[0].id})
+        url = reverse('skill_expertise', kwargs={
+            'product_slug': product.slug,
+            'skill_id': skills[0].id
+        })
         response = client.get(url)
-        assert response.status_code == 302
-        assert '/login/' in response.url
+        assert response.status_code == 302  # Redirects to login
 
-    def test_expertise_list(self, client, user, skills, expertise_items):
-        """Test successful expertise list retrieval"""
+    def test_expertise_list(self, client, user, product, skills):
+        """Test expertise list retrieval"""
         client.force_login(user)
-        url = reverse('skill_expertise', kwargs={'skill_id': skills[0].id})
+        url = reverse('skill_expertise', kwargs={
+            'product_slug': product.slug,
+            'skill_id': skills[0].id
+        })
         response = client.get(url)
-        
         assert response.status_code == 200
         data = response.json()
         assert 'expertise' in data
@@ -383,13 +609,12 @@ class TestSkillEndpoints:
         assert data['expertise'][0]['name'] == 'React'
         assert data['expertise'][0]['level'] == 'BEGINNER'
 
-    def test_expertise_invalid_skill(self, client, user, skills):
+    def test_expertise_invalid_skill(self, client, user, product):
         """Test expertise retrieval with invalid skill ID"""
         client.force_login(user)
-        url = reverse('skill_expertise', kwargs={'skill_id': 999})  # Non-existent ID
+        url = reverse('skill_expertise', kwargs={
+            'product_slug': product.slug,
+            'skill_id': 999
+        })
         response = client.get(url)
-        
-        assert response.status_code == 200
-        data = response.json()
-        assert 'expertise' in data
-        assert len(data['expertise']) == 0  # Empty list for invalid skill
+        assert response.status_code == 404

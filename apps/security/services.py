@@ -156,14 +156,11 @@ class RoleService:
 
     @staticmethod
     def is_product_manager(person: Person, product: Product) -> bool:
-        """Check if person is a manager or admin for the product"""
+        """Check if person is a manager for the product"""
         return RoleService.has_product_role(
             person,
             product,
-            [
-                ProductRoleAssignment.ProductRoles.ADMIN,
-                ProductRoleAssignment.ProductRoles.MANAGER
-            ]
+            ProductRoleAssignment.ProductRoles.MANAGER
         )
 
     @staticmethod
