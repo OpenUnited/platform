@@ -78,10 +78,15 @@ def invalid_bounties_data():
 
 @pytest.fixture
 def mock_role_service(mocker):
-    mock = mocker.patch('apps.product_management.flows.challenge_authoring.views.RoleService')
-    instance = mock.return_value
-    instance.is_product_manager.return_value = True  # Default to True
-    return instance
+    # Mock the RoleService class itself
+    mock_service_class = mocker.patch('apps.product_management.flows.challenge_authoring.views.RoleService')
+    # Create a mock instance
+    mock_instance = mocker.Mock()
+    # Set the instance as the return value of the class
+    mock_service_class.return_value = mock_instance
+    # Set default return value for is_product_manager
+    mock_instance.is_product_manager.return_value = True
+    return mock_service_class
 
 @pytest.fixture
 def person(db, django_user_model):
@@ -124,19 +129,21 @@ def skills(db):
 
 @pytest.fixture
 def expertise_items(db, skills):
-    # Clear existing expertise
+    """Create test expertise items"""
+    # Clear any existing expertise for the test skill
     Expertise.objects.filter(skill=skills[0]).delete()
     
-    items = []
+    # Create new expertise items
+    expertise_list = []
     for name in ["React", "React Advanced"]:
         expertise = Expertise.objects.create(
             name=name,
-            skill=skills[0],  # Use the Frontend Development skill
+            skill=skills[0],
             selectable=True,
             fa_icon='react'
         )
-        items.append(expertise)
-    return items
+        expertise_list.append(expertise)
+    return expertise_list
 
 @pytest.fixture
 def mock_expertise(mocker):
@@ -371,7 +378,9 @@ class TestChallengeAuthoringService:
 
     def test_service_initialization_permission_denied(self, user, product, mock_role_service):
         """Test service initialization without permissions"""
-        mock_role_service.is_product_manager.return_value = False
+        # Configure the mock to deny permission
+        mock_role_service.return_value.is_product_manager.return_value = False
+        
         with pytest.raises(PermissionDenied):
             ChallengeAuthoringService(user, product.slug)
 

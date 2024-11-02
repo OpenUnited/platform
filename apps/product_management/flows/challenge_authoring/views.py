@@ -33,14 +33,22 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
     template_name = 'main.html'
     login_url = '/login/'
     
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.product = get_object_or_404(Product, slug=kwargs.get('product_slug'))
+        self.role_service = RoleService()
+
     def dispatch(self, request, *args, **kwargs):
+        # First check authentication (handled by LoginRequiredMixin)
         if not request.user.is_authenticated:
-            return redirect_to_login(request.get_full_path())
+            return self.handle_no_permission()
             
-        self.product = get_object_or_404(Product, slug=kwargs['product_slug'])
-        role_service = RoleService()
-        
-        if not role_service.is_product_manager(request.user.person, self.product):
+        # Then check for person
+        if not hasattr(request.user, 'person') or not request.user.person:
+            return HttpResponseForbidden("User must have an associated person")
+            
+        # Finally check product manager role
+        if not self.role_service.is_product_manager(request.user.person, self.product):
             return HttpResponseForbidden("Must be product manager")
             
         return super().dispatch(request, *args, **kwargs)
