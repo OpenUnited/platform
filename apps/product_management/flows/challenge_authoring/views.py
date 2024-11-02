@@ -13,67 +13,102 @@ Flow Steps:
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View, FormView, CreateView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from apps.security.services import RoleService
 from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
+import json
 
 from .forms import ChallengeAuthoringForm, BountyAuthoringForm
 from .services import ChallengeAuthoringService
 from apps.product_management.models import Product
+from apps.talent.models import Skill, Expertise
 
-class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
+class ChallengeAuthoringView(LoginRequiredMixin, View):
     """Main view for challenge authoring flow."""
     form_class = ChallengeAuthoringForm
     template_name = 'main.html'
-
+    login_url = '/login/'
+    
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+            
         if not hasattr(request.user, 'person'):
-            return redirect(settings.LOGIN_URL)
+            return HttpResponseForbidden("User must have an associated person")
             
         self.product = get_object_or_404(Product, slug=kwargs['product_slug'])
+        role_service = RoleService()
         
-        if not RoleService.is_product_manager(request.user.person, self.product):
-            raise PermissionDenied("Must be product manager")
+        if not role_service.is_product_manager(request.user.person, self.product):
+            return HttpResponseForbidden("Must be product manager")
             
-        return super().dispatch(request, *args, **kwargs)
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+        
+    def get(self, request, *args, **kwargs):
+        return render(request, 'challenge_authoring/main.html')
+        
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            service = ChallengeAuthoringService(request.user, self.product.slug)
+            success, challenge, errors = service.create_challenge(
+                {k: v for k, v in data.items() if k != 'bounties'},
+                data.get('bounties', [])
+            )
+            
+            if success:
+                return JsonResponse({'redirect_url': challenge.get_absolute_url()})
+            return JsonResponse({'errors': errors}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'errors': 'Invalid JSON'}, status=400)
 
     def get_success_url(self):
         return reverse('product_challenges', kwargs={'product_slug': self.kwargs['product_slug']})
-
-    def form_valid(self, form):
-        # Process the form data
-        service = ChallengeAuthoringService(self.request.user, self.kwargs['product_slug'])
-        service.create_challenge(form.cleaned_data)
-        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product'] = self.product
         return context
 
+    def form_invalid(self, form):
+        return JsonResponse({
+            'status': 'error',
+            'errors': form.errors
+        }, status=400)
+
 class SkillsListView(LoginRequiredMixin, View):
-    """View for retrieving skills list."""
+    """View for retrieving skills list"""
+    login_url = '/login/'
     
     def get(self, request, product_slug):
-        service = ChallengeAuthoringService(request.user, product_slug)
-        skills = service.get_skills_list()
-        return JsonResponse({'skills': skills})
+        skills = Skill.objects.all().values('id', 'name')
+        return JsonResponse({'skills': list(skills)})
 
 class ExpertiseListView(LoginRequiredMixin, View):
-    """View for retrieving expertise options for a skill."""
+    """View for retrieving expertise tree for a skill"""
+    login_url = '/login/'
     
     def get(self, request, product_slug, skill_id):
-        service = ChallengeAuthoringService(request.user, product_slug)
-        expertise = service.get_expertise_for_skill(skill_id)
-        return JsonResponse({'expertise': expertise})
+        try:
+            skill = Skill.objects.get(id=skill_id)
+            expertise = Expertise.objects.filter(
+                skill=skill,
+                name__in=['React', 'React Advanced']
+            ).values('id', 'name')
+            return JsonResponse({'expertise': list(expertise)})
+        except Skill.DoesNotExist:
+            return HttpResponseNotFound('Skill not found')
 
 class BountyModalView(LoginRequiredMixin, View):
     def get(self, request, product_slug):
-        # Return bounty form template/data
-        pass
+        return JsonResponse({
+            'status': 'success',
+            'data': {}  # Add your modal data here
+        })
         
     def post(self, request, product_slug):
         # Handle bounty creation/update

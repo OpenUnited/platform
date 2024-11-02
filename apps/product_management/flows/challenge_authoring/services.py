@@ -84,50 +84,54 @@ class ChallengeAuthoringService:
         self.product = get_object_or_404(Product, slug=product_slug)
         
         if not hasattr(user, 'person'):
-            raise PermissionDenied("User profile not found")
+            raise PermissionDenied("User must have an associated person")
             
-        if not RoleService.is_product_manager(user.person, self.product):
+        self.role_service = RoleService()
+        if not self.role_service.is_product_manager(user.person, self.product):
             raise PermissionDenied("Must be product manager")
 
-    def create_challenge(self, challenge_data: Dict, bounties_data: List[Dict]) -> Tuple[bool, Optional[Challenge], List[str]]:
-        """
-        Creates a challenge with its associated bounties.
-
-        Args:
-            challenge_data (Dict): Challenge fields and values
-            bounties_data (List[Dict]): List of bounty data dictionaries
-
-        Returns:
-            Tuple containing:
-            - bool: Success status
-            - Optional[Challenge]: Created challenge or None
-            - List[str]: Error messages if any
-        """
+    def create_challenge(self, challenge_data, bounties_data):
+        errors = {}
+        
+        # Validate challenge data
+        if not challenge_data.get('title'):
+            errors['title'] = ['Title is required']
+        if not challenge_data.get('description'):
+            errors['description'] = ['Description is required']
+        if challenge_data.get('status') not in ['draft', 'published']:
+            errors['status'] = ['Invalid status']
+            
+        # Validate bounties
+        if bounties_data:
+            bounty_errors = []
+            total_points = sum(b.get('points', 0) for b in bounties_data)
+            
+            if total_points > 1000:
+                bounty_errors.append('Total points cannot exceed 1000')
+                
+            for bounty in bounties_data:
+                if not Skill.objects.filter(id=bounty.get('skill_id')).exists():
+                    bounty_errors.append(f"Invalid skill ID: {bounty.get('skill_id')}")
+                    
+            if bounty_errors:
+                errors['bounties'] = bounty_errors
+                
+        if errors:
+            return False, None, errors
+            
         try:
             with transaction.atomic():
-                # Create the challenge
-                challenge = Challenge.objects.create(
-                    **challenge_data,
-                    created_by=self.user.person,
-                    product=self.product
-                )
-                
-                # Create associated bounties
-                if bounties_data:
-                    self._create_bounties(challenge, bounties_data)
-                
-                logger.info(
-                    f"Challenge {challenge.id} created successfully by user {self.user.id}"
-                )
-                return True, challenge, []
-
-        except ValidationError as e:
-            logger.error(f"Validation error in challenge creation: {str(e)}")
-            return False, None, e.messages
-
+                challenge = Challenge.objects.create(**challenge_data)
+                for bounty_data in bounties_data:
+                    expertise_ids = bounty_data.pop('expertise_ids', [])
+                    bounty = Bounty.objects.create(
+                        challenge=challenge,
+                        **bounty_data
+                    )
+                    bounty.expertise.set(expertise_ids)
+                return True, challenge, None
         except Exception as e:
-            logger.error(f"Error in challenge creation: {str(e)}")
-            return False, None, [str(e)]
+            return False, None, {'error': str(e)}
 
     def _create_bounties(self, challenge: Challenge, bounties_data: List[Dict]):
         """Creates bounties associated with the challenge."""
@@ -347,69 +351,25 @@ class ChallengeAuthoringService:
         
         return skill_tree
 
-    def get_expertise_for_skill(self, skill_id: int) -> Dict[str, List[Dict]]:
-        """Get expertise options for a specific skill, organized by category.
-        
-        Args:
-            skill_id: ID of the skill to get expertise for
-            
-        Returns:
-            Dict[str, List[Dict]]: Dictionary of expertise categories and their related expertise
-            Example: {
-                "Frameworks": [
-                    {"id": 1, "name": "Django"},
-                    {"id": 2, "name": "Flask"}
-                ],
-                "Languages": [
-                    {"id": 3, "name": "Python"},
-                    {"id": 4, "name": "JavaScript"}
-                ]
-            }
-        """
-        expertises = Expertise.objects.filter(
-            skill_id=skill_id,
-            selectable=True
+    def get_expertise_for_skill(self, skill_id):
+        expertise_items = Expertise.objects.filter(
+            skill_id=skill_id
         ).select_related('parent')
         
-        expertise_categories = {}
-        
-        for expertise in expertises:
-            if expertise.parent:
-                # Use parent name as category
-                category_name = expertise.parent.name
-                if category_name not in expertise_categories:
-                    expertise_categories[category_name] = []
-                
-                expertise_categories[category_name].append({
-                    'id': expertise.id,
-                    'name': expertise.name
-                })
-        
-        return expertise_categories
+        return [
+            {
+                'id': item.id,
+                'name': item.name,
+                'parent_id': item.parent_id
+            }
+            for item in expertise_items
+        ]
 
-    def get_skills_list(self) -> List[Dict]:
-        """Get all available skills.
-        
-        Returns:
-            List[Dict]: List of skills with their IDs and names
-            Example: [
-                {"id": 1, "name": "Frontend Development"},
-                {"id": 2, "name": "Backend Development"}
-            ]
-        """
-        return list(Skill.objects.values('id', 'name').order_by('name'))
-
-    def get_expertise_for_skill(self, skill_id: int) -> List[Dict]:
-        """Get expertise items for a skill"""
-        expertise_items = Expertise.objects.filter(
-            skill_id=skill_id,
-            selectable=True  # Only return selectable expertise items
-        )
-        return [{
-            'id': item.id,
-            'name': item.name,
-            'skill_id': item.skill_id
-        } for item in expertise_items]
+    def get_skills_list(self):
+        return [
+            {'id': skill.id, 'name': skill.name}
+            for skill in Skill.objects.all()
+        ]
 
     def _get_product(self, product_slug: str) -> Product:
         """
@@ -436,11 +396,7 @@ class ChallengeAuthoringService:
     def create_bounty(self, challenge: Challenge, bounty_data: Dict) -> Tuple[bool, Optional[str]]:
         """Create a bounty with proper expertise handling"""
         try:
-            expertise_ids = bounty_data.pop('expertise', [])
-            # Convert skill ID to instance if needed
-            if isinstance(bounty_data['skill'], int):
-                bounty_data['skill'] = Skill.objects.get(id=bounty_data['skill'])
-                
+            expertise_ids = bounty_data.pop('expertise_ids', [])
             bounty = Bounty.objects.create(
                 challenge=challenge,
                 **bounty_data
@@ -450,4 +406,23 @@ class ChallengeAuthoringService:
             return True, None
         except Exception as e:
             logger.error(f"Error creating bounty: {str(e)}")
-            return False, str(e)
+            raise
+
+    def validate_challenge_data(self, challenge_data, bounties_data):
+        errors = {}
+        
+        if not challenge_data.get('title'):
+            errors['title'] = ['Title is required']
+        if not challenge_data.get('description'):
+            errors['description'] = ['Description is required']
+        if challenge_data.get('status') not in ['draft', 'published']:
+            errors['status'] = ['Invalid status']
+            
+        if len(bounties_data) > 10:
+            errors['bounties'] = ['Maximum 10 bounties allowed']
+            
+        total_points = sum(b.get('points', 0) for b in bounties_data)
+        if total_points > 1000:
+            errors['bounties'] = ['Total points cannot exceed 1000']
+            
+        return not bool(errors), errors
