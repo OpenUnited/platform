@@ -33,23 +33,25 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
     template_name = 'main.html'
     login_url = '/login/'
     
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.product = get_object_or_404(Product, slug=kwargs.get('product_slug'))
-        self.role_service = RoleService()
-
     def dispatch(self, request, *args, **kwargs):
-        # First check authentication (handled by LoginRequiredMixin)
+        # Check authentication first (LoginRequiredMixin handles this)
         if not request.user.is_authenticated:
             return self.handle_no_permission()
             
-        # Then check for person
+        # Check for person
         if not hasattr(request.user, 'person') or not request.user.person:
             return HttpResponseForbidden("User must have an associated person")
             
-        # Finally check product manager role
-        if not self.role_service.is_product_manager(request.user.person, self.product):
-            return HttpResponseForbidden("Must be product manager")
+        # Get product and check manager role
+        try:
+            self.product = get_object_or_404(Product, slug=kwargs.get('product_slug'))
+            role_service = RoleService()
+            
+            if not role_service.is_product_manager(request.user.person, self.product):
+                return HttpResponseForbidden("Must be product manager")
+                
+        except Http404:
+            return HttpResponseNotFound("Product not found")
             
         return super().dispatch(request, *args, **kwargs)
         
@@ -100,13 +102,15 @@ class ExpertiseListView(LoginRequiredMixin, View):
     def get(self, request, product_slug, skill_id):
         try:
             skill = Skill.objects.get(id=skill_id)
-            expertise = Expertise.objects.filter(
-                skill=skill,
-                selectable=True
-            ).values('id', 'name')
-            return JsonResponse({'expertise': list(expertise)})
         except Skill.DoesNotExist:
-            return HttpResponseNotFound('Skill not found')
+            return HttpResponseNotFound("Skill not found")
+            
+        expertise = Expertise.objects.filter(
+            skill=skill,
+            selectable=True
+        ).order_by('name').values('id', 'name')
+        
+        return JsonResponse({'expertise': list(expertise)})
 
 class BountyModalView(LoginRequiredMixin, View):
     def get(self, request, product_slug):

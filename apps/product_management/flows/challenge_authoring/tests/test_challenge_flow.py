@@ -76,17 +76,13 @@ def invalid_bounties_data():
         }
     ]
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def mock_role_service(mocker):
-    # Mock the RoleService class itself
-    mock_service_class = mocker.patch('apps.product_management.flows.challenge_authoring.views.RoleService')
-    # Create a mock instance
-    mock_instance = mocker.Mock()
-    # Set the instance as the return value of the class
-    mock_service_class.return_value = mock_instance
-    # Set default return value for is_product_manager
-    mock_instance.is_product_manager.return_value = True
-    return mock_service_class
+    """Mock RoleService for all tests"""
+    mock = mocker.patch('apps.product_management.flows.challenge_authoring.views.RoleService', autospec=True)
+    instance = mock.return_value
+    instance.is_product_manager.return_value = True  # Default to True
+    return mock
 
 @pytest.fixture
 def person(db, django_user_model):
@@ -130,19 +126,21 @@ def skills(db):
 @pytest.fixture
 def expertise_items(db, skills):
     """Create test expertise items"""
-    # Clear any existing expertise for the test skill
-    Expertise.objects.filter(skill=skills[0]).delete()
+    skill = skills[0]  # Frontend Development skill
+    
+    # Clear existing expertise
+    Expertise.objects.filter(skill=skill).delete()
     
     # Create new expertise items
     expertise_list = []
     for name in ["React", "React Advanced"]:
         expertise = Expertise.objects.create(
             name=name,
-            skill=skills[0],
-            selectable=True,
-            fa_icon='react'
+            skill=skill,
+            selectable=True
         )
         expertise_list.append(expertise)
+    
     return expertise_list
 
 @pytest.fixture
@@ -241,10 +239,11 @@ class TestChallengeAuthoringView:
         assert response.status_code == 302
         assert '/login/' in response.url
 
-    def test_view_requires_person(self, client, user, product):
+    def test_view_requires_person(self, client, user, product, mock_role_service):
         """Test that users without person object cannot access the view"""
         user.person = None
         user.save()
+        mock_role_service.return_value.is_product_manager.return_value = False
         client.force_login(user)
         url = reverse('challenge_create', kwargs={'product_slug': product.slug})
         response = client.get(url)
@@ -290,7 +289,7 @@ class TestChallengeAuthoringView:
         response = client.get(url)
         assert response.status_code == 200
 
-    def test_permission_checks(self, client, user, product):
+    def test_permission_checks(self, client, user, product, mock_role_service):
         """Test permission requirements"""
         url = reverse('challenge_create', kwargs={'product_slug': product.slug})
         
@@ -299,6 +298,7 @@ class TestChallengeAuthoringView:
         assert response.status_code == 302  # Redirects to login
         
         # Test authenticated but not product manager
+        mock_role_service.return_value.is_product_manager.return_value = False
         client.force_login(user)
         response = client.get(url)
         assert response.status_code == 403
@@ -347,8 +347,8 @@ class TestChallengeAuthoringView:
         assert 'expertise' in data
         expertise_list = data['expertise']
         assert len(expertise_list) == 2
-        names = {e['name'] for e in expertise_list}
-        assert names == {'React', 'React Advanced'}
+        names = sorted(e['name'] for e in expertise_list)
+        assert names == ["React", "React Advanced"]
 
 class TestChallengeAuthoringService:
     @pytest.fixture(autouse=True)
@@ -382,7 +382,7 @@ class TestChallengeAuthoringService:
         mock_role_service.return_value.is_product_manager.return_value = False
         
         with pytest.raises(PermissionDenied):
-            ChallengeAuthoringService(user, product.slug)
+            service = ChallengeAuthoringService(user, product.slug)
 
     @pytest.mark.django_db
     def test_challenge_creation(self, user, product, valid_challenge_data, valid_bounties_data, skills):
@@ -659,27 +659,30 @@ class TestSkillEndpoints:
         response = client.get(url)
         assert response.status_code == 302  # Redirects to login
 
-    def test_expertise_list(self, client, user, product, skills):
+    def test_expertise_list(self, client, user, product, expertise_items, skills):
         """Test expertise list retrieval"""
         client.force_login(user)
+        skill = skills[0]  # Frontend Development skill
         url = reverse('skill_expertise', kwargs={
             'product_slug': product.slug,
-            'skill_id': skills[0].id
+            'skill_id': skill.id
         })
+        
         response = client.get(url)
         assert response.status_code == 200
         data = response.json()
         assert 'expertise' in data
-        assert len(data['expertise']) == 2  # Two React expertise levels
-        assert data['expertise'][0]['name'] == 'React'
-        assert data['expertise'][0]['level'] == 'BEGINNER'
+        expertise_list = data['expertise']
+        assert len(expertise_list) == 2
+        names = sorted(e['name'] for e in expertise_list)
+        assert names == ["React", "React Advanced"]
 
     def test_expertise_invalid_skill(self, client, user, product):
         """Test expertise retrieval with invalid skill ID"""
         client.force_login(user)
         url = reverse('skill_expertise', kwargs={
             'product_slug': product.slug,
-            'skill_id': 999
+            'skill_id': 99999  # Non-existent ID
         })
         response = client.get(url)
         assert response.status_code == 404

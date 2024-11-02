@@ -83,7 +83,7 @@ class ChallengeAuthoringService:
         self.user = user
         self.product = get_object_or_404(Product, slug=product_slug)
         
-        if not hasattr(user, 'person'):
+        if not hasattr(user, 'person') or not user.person:
             raise PermissionDenied("User must have an associated person")
             
         self.role_service = RoleService()
