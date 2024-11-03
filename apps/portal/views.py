@@ -25,7 +25,7 @@ from apps.capabilities.product_management.models import (
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.capabilities.talent.models import BountyClaim, BountyDeliveryAttempt
 from apps.capabilities.security.services import RoleService
-from apps.capabilities.product_management import forms
+from apps.portal.forms import PortalProductForm, PortalProductRoleAssignmentForm
 from apps.common import mixins as common_mixins
 
 
@@ -41,11 +41,13 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
             return context
             
         person = user.person
-        managed_products = RoleService.get_managed_products(
-            person=person
-        )
+        # Get all products user has access to
+        user_products = RoleService.get_user_products(person=person)
+        # Get products where user has management rights
+        managed_products = RoleService.get_managed_products(person=person)
         
         context.update({
+            "products": user_products,  # Add this for all accessible products
             "managed_products": managed_products,
             "person": person,
         })
@@ -70,33 +72,36 @@ def bounty_claim_actions(request, pk):
     return redirect(reverse("portal:product-bounties", args=(instance.bounty.challenge.product.slug,)))
 
 
-class PortalProductSettingView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
+class PortalProductSettingView(UpdateView, PortalBaseView, common_mixins.AttachmentMixin):
     model = Product
-    form_class = forms.ProductForm
+    form_class = PortalProductForm
     template_name = "product_settings.html"
     login_url = "sign_in"
+    slug_url_kwarg = 'product_slug'
+    slug_field = 'slug'
 
-    def get_success_url(self):
-        return reverse("portal:product-settings", args=(self.object.id,))
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data()
+        
+        if request.htmx:
+            # If it's an HTMX request, return just the form content
+            return render(request, self.template_name, context)
+        else:
+            # Add required context for main.html
+            context.update({
+                'products': Product.objects.all(),  # or your filtered queryset
+                'person': request.user.person if hasattr(request.user, 'person') else None,
+            })
+            return render(request, 'main.html', context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        initial = {}
-        
-        # Check if product is owned by current user
-        if self.object.is_owned_by_person():
-            initial_make_me_owner = self.object.person_id == self.request.user.person.id
-            initial = {"make_me_owner": initial_make_me_owner}
-            context["make_me_owner"] = initial_make_me_owner
-
-        # Check if product is owned by an organisation
-        if self.object.is_owned_by_organisation():
-            initial = {"organisation": self.object.organisation}
-            context["organisation"] = self.object.organisation
-
-        context["form"] = self.form_class(instance=self.object, initial=initial)
-        context["product_instance"] = self.object
+        context['product'] = self.object
         return context
+
+    def get_success_url(self):
+        return reverse("portal:product-settings", args=(self.object.slug,))
 
     def form_valid(self, form):
         return super().form_save(form)
@@ -125,7 +130,7 @@ class PortalManageBountiesView(PortalBaseView, TemplateView):
     
 class PortalUpdateProductUserView(PortalBaseView):
     model = ProductRoleAssignment
-    form_class = forms.ProductRoleAssignmentForm
+    form_class = PortalProductRoleAssignmentForm
     template_name = "update_product_user.html"
     login_url = "sign_in"
     context_object_name = "product_role_assignment"
@@ -137,7 +142,7 @@ class PortalUpdateProductUserView(PortalBaseView):
 
         slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=slug)
-        product_users = RoleService.get_product_role_assignments(product=product)
+        product_users = RoleService.get_product_members(product=product)
 
         context["product"] = product
         context["product_users"] = product_users
@@ -148,7 +153,7 @@ class PortalUpdateProductUserView(PortalBaseView):
         product_role_assignment = ProductRoleAssignment.objects.get(pk=kwargs.get("pk"))
         product = Product.objects.get(slug=kwargs.get("product_slug"))
 
-        form = forms.ProductRoleAssignmentForm(request.POST, instance=product_role_assignment)
+        form = PortalProductRoleAssignmentForm(request.POST, instance=product_role_assignment)
 
         if form.is_valid():
             person = form.cleaned_data['person']
@@ -186,7 +191,7 @@ class PortalManageUsersView(PortalBaseView, TemplateView):
         slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=slug)
 
-        product_users = RoleService.get_product_role_assignments(product=product)
+        product_users = RoleService.get_product_members(product=product)
 
         context["product"] = product
         context["product_users"] = product_users
@@ -195,7 +200,7 @@ class PortalManageUsersView(PortalBaseView, TemplateView):
 
 
 class PortalAddProductUserView(PortalBaseView):
-    form_class = forms.ProductRoleAssignmentForm
+    form_class = PortalProductRoleAssignmentForm
     template_name = "add_product_user.html"
     login_url = "sign_in"
 
@@ -214,7 +219,7 @@ class PortalAddProductUserView(PortalBaseView):
         slug = self.kwargs.get("product_slug")
         product = Product.objects.get(slug=slug)
 
-        product_users = RoleService.get_product_role_assignments(product=product)
+        product_users = RoleService.get_product_members(product=product)
 
         context["product"] = product
         context["product_users"] = product_users
@@ -242,28 +247,12 @@ class PortalAddProductUserView(PortalBaseView):
 
         return super().post(request, *args, **kwargs)
 
-class PortalDashboardView(PortalBaseView):
+class PortalDashboardView(PortalBaseView, TemplateView):
     template_name = "main.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Get products for the current user
-        person = self.request.user.person
-        
-        # Get products from RoleService (since you're using it elsewhere)
-        products = RoleService.get_managed_products(person=person)
-        
-        # Add to context
-        context.update({
-            "portal_url": reverse("portal:home"),
-            "products": products,
-            "default_tab": kwargs.get('default_tab', 1),
-            "active_bounty_claims": BountyClaim.objects.filter(
-                person=person,
-                status__in=[BountyClaim.Status.GRANTED, BountyClaim.Status.REQUESTED]
-            )
-        })
+        context['content_template'] = 'dashboard.html'
         return context
 
 
@@ -397,27 +386,15 @@ class PortalProductChallengeFilterView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class PortalProductDetailView(PortalBaseView):
+class PortalProductDetailView(PortalBaseView, TemplateView):
     """Detailed view of a product in the portal overview."""
-    template_name = "product_detail.html"
+    template_name = "main.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product_slug = self.kwargs.get("product_slug")
-        default_tab = self.kwargs.get("default_tab", 1)
-
-        # Get the product object
-        product = get_object_or_404(Product, slug=product_slug)
-        
-        context.update({
-            "portal_url": reverse("portal:product-detail", args=(product_slug, default_tab)),
-            "default_tab": default_tab,
-            "product_slug": product_slug,
-            "product": product,
-            "product_challenges": product.challenge_set.all(),
-            "product_bounties": Bounty.objects.filter(challenge__product=product),
-        })
-        
+        context['product'] = get_object_or_404(Product, slug=kwargs.get('product_slug'))
+        context['default_tab'] = kwargs.get('default_tab', 0)
+        context['content_template'] = 'product_detail.html'
         return context
 
 

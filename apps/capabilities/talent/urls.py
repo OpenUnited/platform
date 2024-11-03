@@ -6,7 +6,7 @@ from .views import (
     CreateFeedbackView,
     DeleteFeedbackView,
     GetExpertiseView,
-    TalentPortfolio,
+    TalentShowcase,
     UpdateFeedbackView,
     UpdateProfileView,
     get_current_expertise,
@@ -17,7 +17,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("portfolio/<str:username>", TalentPortfolio.as_view(), name="portfolio"),
+    path("showcase/<str:username>/", TalentShowcase.as_view(), name="showcase"),
     path("profile/<int:pk>/", UpdateProfileView.as_view(), name="profile"),
     path("get-skills/", get_skills, name="get_skills"),
     path("get-current-skills/", get_current_skills, name="get_current_skills"),

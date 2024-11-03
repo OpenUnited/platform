@@ -4,7 +4,7 @@
     </div>
 
     <form enctype="multipart/form-data"
-        hx-post="{{ url('product-setting', args=(product.id,)) }}"
+        hx-post="{{ url('portal:product-settings', args=(product.slug,)) }}"
         hx-trigger="submit"
         hx-indicator="#loading-spinner"
         >
@@ -42,7 +42,7 @@
                                 </div>
                                 <p class="text-xs leading-6 text-red-900">
                                     Don't have an organisation? <a class="font-semibold"
-                                    href="{{ url('create-organisation') }}">Create one.</a>
+                                    href="{{ url('product_management:create-organisation') }}">Create one.</a>
                                 </p>
 
                                 <div class="my-2">
@@ -165,15 +165,24 @@
                 <div class="max-w-2xl space-y-10 md:col-span-2">
                     <fieldset>
                         <div class="mt-6 space-y-6">
-                            <div class="relative flex gap-x-3">
-                                <div class="flex h-6 items-center">
-                                    {{ form.is_private }}
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.visibility.id_for_label }}" 
+                                       class="block text-sm font-medium leading-6 text-gray-900">
+                                    Visibility
+                                </label>
+                                <div class="mt-2">
+                                    {{ form.visibility }}
                                 </div>
-                                <div class="text-sm leading-6">
-                                    <label for="{{ form.is_private.id_for_label }}"
-                                        class="font-medium text-gray-900">{{ form.is_private.label }}</label>
-                                    <p class="text-gray-500">{{ form.is_private.help_text }}</p>
+                                <p class="mt-3 text-sm leading-6 text-gray-500">
+                                    Choose who can see this product
+                                </p>
+                                {% if form.visibility.errors %}
+                                <div class="mt-2">
+                                    {% for error in form.visibility.errors %}
+                                    <p class="text-sm text-red-600">{{ error }}</p>
+                                    {% endfor %}
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </fieldset>

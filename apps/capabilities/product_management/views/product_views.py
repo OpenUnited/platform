@@ -24,8 +24,16 @@ from django.views.generic import (
 from apps.canopy import utils as canopy_utils
 from apps.capabilities.commerce.models import Organisation
 from apps.common import mixins as common_mixins
-from apps.common.mixins import HTMXInlineFormValidationMixin
-from apps.capabilities.product_management import forms, utils
+from .. import utils  # for BaseProductDetailView
+from ..forms import (
+    BountyForm,
+    ContributorAgreementTemplateForm,
+    OrganisationForm,
+    ChallengeForm,
+    ProductAreaForm,
+    ProductForm,
+    InitiativeForm
+)
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.capabilities.security.services import RoleService
 from apps.capabilities.talent.forms import PersonSkillFormSet
@@ -43,62 +51,39 @@ from apps.capabilities.product_management.models import (
     ProductContributorAgreementTemplate,
 )
 
+from ..forms import ProductForm
+from .. import utils
+
 logger = logging.getLogger(__name__)
 
-class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, CreateView):
+class CreateProductView(LoginRequiredMixin, CreateView):
     model = Product
-    form_class = forms.ProductForm
-    template_name = "product_management/create_product.html"
-    login_url = "sign-in"
-
-    def dispatch(self, request, *args, **kwargs):
-        # Verify user has a person profile before proceeding
-        if not hasattr(request.user, 'person') or not request.user.person:
-            messages.error(request, "You need a person profile to create a product")
-            return redirect('home')  # or wherever appropriate
-        return super().dispatch(request, *args, **kwargs)
+    form_class = ProductForm
+    template_name = 'product_management/create_product.html'
+    success_url = reverse_lazy('portal:dashboard')  # Adjust this to your needs
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['request'] = self.request
+        kwargs['person'] = self.request.user.person
         return kwargs
 
-    def get(self, request, *args, **kwargs):
-        logger.info(f"GET request to CreateProductView from user: {request.user}")
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        logger.info(f"POST request to CreateProductView from user: {request.user}")
-        logger.debug(f"POST data: {request.POST}")
-        return super().post(request, *args, **kwargs)
-
-    def get_success_url(self):
-        return reverse("product-summary", kwargs={"product_slug": self.object.slug})
-
     def form_valid(self, form):
-        logger.info("Form validation successful")
-        try:
-            response = super().form_valid(form)
-            
-            # Create role assignment for the creator
-            if form.cleaned_data.get('make_me_owner'):
-                RoleService.assign_product_role(
-                    person=self.request.user.person,
-                    product=form.instance,
-                    role=ProductRoleAssignment.ProductRoles.ADMIN,
-                )
-            return response
-        except Exception as e:
-            logger.error(f"Error in form_valid: {str(e)}", exc_info=True)
-            raise
+        response = super().form_valid(form)
+        product = self.object
+        
+        if form.cleaned_data.get('make_me_owner'):
+            # Make the current user the owner
+            RoleService.assign_product_role(
+                person=self.request.user.person,
+                product=product,
+                role='Admin'  # Or whatever your highest role is
+            )
+        
+        return response
 
-    def form_invalid(self, form):
-        logger.warning(f"Form validation failed. Errors: {form.errors}")
-        return super().form_invalid(form)
-    
 class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
     model = Product
-    form_class = forms.ProductForm
+    form_class = ProductForm
     template_name = "product_management/update_product.html"
     login_url = "sign_in"
 
@@ -126,9 +111,9 @@ class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Updat
     def form_valid(self, form):
         return super().form_save(form)
     
-class CreateOrganisationView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
+class CreateOrganisationView(LoginRequiredMixin, common_mixins.HTMXInlineFormValidationMixin, CreateView):
     model = Organisation
-    form_class = forms.OrganisationForm
+    form_class = OrganisationForm
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy("create-product")
     login_url = "sign_in"
@@ -164,10 +149,10 @@ class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
         return context
 
 class UpdateChallengeView(
-    LoginRequiredMixin, common_mixins.AttachmentMixin, HTMXInlineFormValidationMixin, UpdateView
+    LoginRequiredMixin, common_mixins.AttachmentMixin, common_mixins.HTMXInlineFormValidationMixin, UpdateView
 ):
     model = Challenge
-    form_class = forms.ChallengeForm
+    form_class = ChallengeForm
     template_name = "product_management/update_challenge.html"
     login_url = "sign_in"
 
@@ -461,7 +446,7 @@ class ProductInitiativesView(utils.BaseProductDetailView, TemplateView):
 
 class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
     model = ProductArea
-    form_class = forms.ProductAreaForm
+    form_class = ProductAreaForm
     template_name = "product_tree/components/partials/create_node_partial.html"
 
     def get_template_names(self):
@@ -502,7 +487,7 @@ class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
 class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     template_name = "product_management/product_area_detail.html"
     model = ProductArea
-    form_class = forms.ProductAreaForm
+    form_class = ProductAreaForm
 
     def get_success_url(self):
         product_slug = self.get_context_data()["product"].slug
@@ -521,7 +506,7 @@ class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.Attachmen
         product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
         challenges = Challenge.objects.filter(product_area=product_area)
 
-        form = forms.ProductAreaForm(instance=product_area, can_modify_product=product_perm)
+        form = ProductAreaForm(instance=product_area, can_modify_product=product_perm)
         context = super().get_context_data(**kwargs)
         new_context = {
             "product": product,
@@ -613,7 +598,7 @@ class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentM
 
 
 class CreateInitiativeView(LoginRequiredMixin, utils.BaseProductDetailView, CreateView):
-    form_class = forms.InitiativeForm
+    form_class = InitiativeForm
     template_name = "product_management/create_initiative.html"
     login_url = "sign_in"
 
@@ -660,7 +645,7 @@ class InitiativeDetailView(utils.BaseProductDetailView, DetailView):
 
 class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, CreateView):
     model = Bounty
-    form_class = forms.BountyForm
+    form_class = BountyForm
     template_name = "product_management/create_bounty.html"
     login_url = "sign_in"
 
@@ -744,7 +729,7 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
     
 class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
     model = Bounty
-    form_class = forms.BountyForm
+    form_class = BountyForm
     template_name = "product_management/update_bounty.html"
     login_url = "sign_in"
 
@@ -806,9 +791,9 @@ def bounty_claim_actions(request, pk):
     return redirect(reverse("portal-product-bounties", args=(instance.bounty.challenge.product.slug,)))
 
 
-class CreateContributorAgreementTemplateView(LoginRequiredMixin, HTMXInlineFormValidationMixin, CreateView):
+class CreateContributorAgreementTemplateView(LoginRequiredMixin, common_mixins.AttachmentMixin, common_mixins.HTMXInlineFormValidationMixin, CreateView):
     model = ProductContributorAgreementTemplate
-    form_class = forms.ContributorAgreementTemplateForm
+    form_class = ContributorAgreementTemplateForm
     template_name = "product_management/create_contributor_agreement_template.html"
     login_url = "sign_in"
 

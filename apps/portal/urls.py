@@ -93,7 +93,7 @@ urlpatterns = [
         name="update-product-user",
     ),
     path(
-        "product-settings/<int:pk>/",
+        "product/<str:product_slug>/settings/",
         PortalProductSettingView.as_view(),
         name="product-settings",
     ),

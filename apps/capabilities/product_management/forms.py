@@ -98,68 +98,6 @@ class BugForm(forms.ModelForm):
         }
 
 
-class ProductForm(forms.ModelForm):
-    make_me_owner = forms.BooleanField(required=False)
-    organisation = forms.ModelChoiceField(
-        queryset=None,
-        required=False,
-        widget=forms.Select(attrs={
-            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6'
-        })
-    )
-
-    class Meta:
-        model = Product
-        fields = ["name", "short_description", "full_description", "website", "person", "organisation"]
-
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
-        super().__init__(*args, **kwargs)
-        
-        if self.request and self.request.user.is_authenticated:
-            managed_orgs = RoleService.get_managed_organisations(self.request.user.person)
-            self.fields['organisation'].queryset = managed_orgs
-        
-        # Hide person field from form but keep it in fields
-        self.fields['person'].widget = forms.HiddenInput()
-        self.fields['person'].required = False
-
-    def clean(self):
-        cleaned_data = super().clean()
-        print("DEBUG: Starting clean method")
-        print(f"make_me_owner value: {cleaned_data.get('make_me_owner')}")
-        print(f"organisation value: {cleaned_data.get('organisation')}")
-        
-        if cleaned_data.get('make_me_owner'):
-            print("Setting person in cleaned_data")
-            cleaned_data['person'] = self.request.user.person
-            cleaned_data['organisation'] = None
-        elif cleaned_data.get('organisation'):
-            print("Setting organisation in cleaned_data")
-            cleaned_data['person'] = None
-        else:
-            raise ValidationError("Please either make yourself the owner or select an organization")
-        
-        return cleaned_data
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        print("DEBUG: Starting save method")
-        print(f"make_me_owner in save: {self.cleaned_data.get('make_me_owner')}")
-        print(f"person in save: {self.cleaned_data.get('person')}")
-        print(f"organisation in save: {self.cleaned_data.get('organisation')}")
-        
-        # Set the values explicitly
-        instance.person = self.cleaned_data.get('person')
-        instance.organisation = self.cleaned_data.get('organisation')
-        
-        if commit:
-            instance.save()
-            print(f"Saved instance with person: {instance.person} and org: {instance.organisation}")
-        
-        return instance
-
-
 class OrganisationForm(forms.ModelForm):
     class Meta:
         model = Organisation
@@ -506,18 +444,62 @@ class ContributorAgreementTemplateForm(forms.ModelForm):
         }
 
 
-class ProductRoleAssignmentForm(forms.ModelForm):
+class ProductForm(forms.ModelForm):
+    make_me_owner = forms.BooleanField(
+        required=False,
+        initial=True,
+        label='Make me the owner of this product'
+    )
+    
     class Meta:
-        model = ProductRoleAssignment
-        fields = ["person", "role"]
+        model = Product
+        fields = [
+            'name',
+            'short_description',
+            'full_description',
+            'website',
+            'organisation'
+        ]
+        
         widgets = {
-            "role": forms.Select(
+            'name': forms.TextInput(
                 attrs={
-                    "class": (
-                        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-                        " focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    'class': (
+                        'block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300'
+                        ' focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
                     ),
-                },
-                choices=ProductRoleAssignment.ProductRoles.choices,
+                    'placeholder': 'Product Name'
+                }
             ),
+            # ... other widget definitions remain the same ...
         }
+
+    def __init__(self, *args, person: Person = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Make fields optional if they should be
+        self.fields['organisation'].required = False
+        self.fields['website'].required = False
+        
+        if person:
+            # Get organizations where user has management rights
+            managed_orgs = RoleService.get_managed_organisations(person)
+            self.fields['organisation'].queryset = managed_orgs
+
+            if not managed_orgs.exists():
+                # If user has no managed orgs, they must create as personal product
+                self.fields['organisation'].disabled = True
+                self.fields['make_me_owner'].initial = True
+                self.fields['make_me_owner'].disabled = True
+            else:
+                # For each org in the queryset, verify if user is admin/manager
+                for org in managed_orgs:
+                    if RoleService.is_organisation_manager(person, org):
+                        # User can create products for this org
+                        self.fields['make_me_owner'].disabled = False
+                        break
+                else:
+                    # If no admin/manager rights found, force personal product
+                    self.fields['organisation'].disabled = True
+                    self.fields['make_me_owner'].initial = True
+                    self.fields['make_me_owner'].disabled = True

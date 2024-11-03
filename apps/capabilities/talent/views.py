@@ -199,9 +199,9 @@ def list_skill_and_expertise(request):
     return JsonResponse([], safe=False)
 
 
-class TalentPortfolio(TemplateView):
+class TalentShowcase(TemplateView):
     User = get_user_model()
-    template_name = "talent/portfolio.html"
+    template_name = "talent/showcase.html"
 
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(self.User, username=username)
@@ -244,6 +244,9 @@ class TalentPortfolio(TemplateView):
         }
         return self.render_to_response(context)
 
+    def get_success_url(self):
+        return reverse("showcase", args=(self.object.recipient.get_username(),))
+
 
 def status_and_points(request):
     return HttpResponse("TODO")
@@ -256,7 +259,7 @@ class CreateFeedbackView(LoginRequiredMixin, CreateView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+        return reverse("showcase", args=(self.object.recipient.get_username(),))
 
     def _get_recipient_from_url(self):
         recipient_username = self.request.headers.get("Referer").split("/")[-1]
@@ -298,7 +301,7 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+        return reverse("showcase", args=(self.object.recipient.get_username(),))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -334,7 +337,7 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
     login_url = "sign_in"
 
     def get_success_url(self):
-        return reverse("portfolio", args=(self.object.recipient.get_username(),))
+        return reverse("showcase", args=(self.object.recipient.get_username(),))
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

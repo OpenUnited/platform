@@ -2,7 +2,7 @@
     <div class="mt-5 px-4 sm:px-6 lg:px-8">
         <div id="manage-bounties-tabs" class="mt-2 mb-4">
             <div class="relative">
-                <a href="#" hx-get="{{ url('add-product-user', args=(product.slug,)) }}"
+                <a href="#" hx-get="{{ url('portal:manage-users', args=(product.slug,)) }}"
                     hx-target="#product-user-content" hx-swap="innerHTML" hx-push-url="false"
                 >
                     <button

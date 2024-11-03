@@ -116,7 +116,7 @@ class Person(TimeStampMixin):
         return self.products.all()
 
     def get_absolute_url(self):
-        return reverse("portfolio", args=(self.user.username,))
+        return reverse("showcase", args=(self.user.username,))
 
     def delete_photo(self) -> None:
         path = self.photo.path
