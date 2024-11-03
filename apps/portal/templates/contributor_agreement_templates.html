@@ -1,10 +1,10 @@
 <div class="relative pb-10">
-    <a href="{{ url('create-contributor-agreement-template', args=(product.slug,)) }}">
+    <a href="{{ url('portal:create-agreement-template', args=(product.slug,)) }}">
         <button
             type="button"
             class="absolute right-0 items-center justify-center rounded-md bg-blue-400 px-3 py-2
                 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-blue-500">
-            Add Contributor Agreement Template
+            Create New Agreement Template
         </button>
     </a>
 </div>

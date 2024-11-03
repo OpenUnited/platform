@@ -16,6 +16,7 @@ from .views import (
     DeleteBountyClaimView,
     PortalProductChallengesView,
     bounty_claim_actions,
+    CreateAgreementTemplateView,
 )
 
 app_name = 'portal'
@@ -38,14 +39,19 @@ urlpatterns = [
         name="bounty-requests",
     ),
     path(
-        "product/<str:product_slug>/tab/<int:default_tab>/",
+        "product/<str:slug>/",
         PortalProductDetailView.as_view(),
         name="product-detail",
     ),
     path(
+        "product/<str:product_slug>/tab/<str:default_tab>/",
+        PortalProductDetailView.as_view(),
+        name="product-detail-tab",
+    ),
+    path(
         "product/<str:product_slug>/challenges/",
         PortalProductChallengesView.as_view(),
-        name="dashboard-product-challenges",
+        name="portal-product-challenges",
     ),
     path(
         "product/<str:product_slug>/challenges/filter/",
@@ -55,7 +61,7 @@ urlpatterns = [
     path(
         "product/<str:product_slug>/bounties/",
         PortalProductBountiesView.as_view(),
-        name="product-bounties",
+        name="portal-product-bounties",
     ),
     path(
         "bounties/action/<int:pk>/",
@@ -70,12 +76,12 @@ urlpatterns = [
     path(
         "product/<str:product_slug>/review-work",
         PortalReviewWorkView.as_view(),
-        name="review-work",
+        name="portal-review-work",
     ),
     path(
         "product/<str:product_slug>/contributor-agreement-templates",
         PortalContributorAgreementTemplateListView.as_view(),
-        name="contributor-agreement-templates",
+        name="portal-contributor-agreement-templates",
     ),
     path(
         "product/<str:product_slug>/user-management",
@@ -101,5 +107,10 @@ urlpatterns = [
         "bounty-claim/delete/<int:pk>",
         DeleteBountyClaimView.as_view(),
         name="delete-bounty-claim",
+    ),
+    path(
+        "product/<str:product_slug>/agreements/create/",
+        CreateAgreementTemplateView.as_view(),
+        name="create-agreement-template",
     ),
 ]

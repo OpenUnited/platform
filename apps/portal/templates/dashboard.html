@@ -76,12 +76,10 @@
                 <div class="flex-1 truncate px-4 py-2 text-sm">
                     <a href="{{ product.get_absolute_url() }}"
                         class="font-medium text-gray-900 hover:text-gray-600">{{ product.name }}</a>
-                    <!-- Get the following information from the database -->
-                    <p class="text-gray-500">12 People</p>
-
-                    <a hx-get="{{ url('portal:product-detail', args=(product.slug, default_tab|default(1))) }}" hx-target="#dashboard-tabs"
-                        hx-swap="innerHTML" class="cursor-pointer font-medium text-gray-900 hover:text-gray-600"
-                        id="manage-product-{{product.id}}">{{ product.name }}</a>
+                    <a href="{{ url('portal:product-detail', args=(product.slug,)) }}"
+                       class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">
+                        {{ product.name }}
+                    </a>
                 </div>
             </div>
         </li>
@@ -174,14 +172,4 @@
     <p>Currently, there are no active bounties.</p>
     {% endif %}
 </div>
-
-<script>
-{% if product %}
-setTimeout(function() {
-    htmx.trigger("#manage-product-{{product.id}}", "click");
-}, 500);
-{% else %}
-document.getElementById("dashboard-tabs").classList.remove("hidden");
-{% endif %}
-</script>
 

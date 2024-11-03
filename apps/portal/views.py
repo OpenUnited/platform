@@ -6,27 +6,30 @@ including the portal overview, work review, bounty management, and contributor a
 """
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, TemplateView, DeleteView, UpdateView
+from django.views.generic import ListView, TemplateView, DeleteView, UpdateView, View, DetailView, CreateView
 from django.shortcuts import get_object_or_404, render, redirect
 from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.db.models import Count, Q
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, BadRequest
 from django.contrib import messages
 from django.http import HttpResponseBadRequest
-from django.core.exceptions import BadRequest
+from django.views.generic.edit import UpdateView
 
 from apps.capabilities.product_management.models import (
     Product,
     ProductContributorAgreementTemplate,
     Bounty,
     Challenge,
+    FileAttachment
 )
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.capabilities.talent.models import BountyClaim, BountyDeliveryAttempt
 from apps.capabilities.security.services import RoleService
-from apps.portal.forms import PortalProductForm, PortalProductRoleAssignmentForm
+from apps.portal.forms import PortalProductForm, PortalProductRoleAssignmentForm, ProductSettingsForm
 from apps.common import mixins as common_mixins
+from apps.common.mixins import AttachmentMixin
+from apps.capabilities.product_management.forms import ProductForm
 
 
 class PortalBaseView(LoginRequiredMixin, TemplateView):
@@ -72,44 +75,39 @@ def bounty_claim_actions(request, pk):
     return redirect(reverse("portal:product-bounties", args=(instance.bounty.challenge.product.slug,)))
 
 
-class PortalProductSettingView(UpdateView, PortalBaseView, common_mixins.AttachmentMixin):
-    model = Product
-    form_class = PortalProductForm
+class PortalProductSettingView(LoginRequiredMixin, AttachmentMixin, DetailView):
     template_name = "product_settings.html"
-    login_url = "sign_in"
+    model = Product
     slug_url_kwarg = 'product_slug'
-    slug_field = 'slug'
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        context = self.get_context_data()
-        
-        if request.htmx:
-            # If it's an HTMX request, return just the form content
-            return render(request, self.template_name, context)
-        else:
-            # Add required context for main.html
-            context.update({
-                'products': Product.objects.all(),  # or your filtered queryset
-                'person': request.user.person if hasattr(request.user, 'person') else None,
-            })
-            return render(request, 'main.html', context)
+    context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = self.object
+        form = ProductForm(instance=self.object)
+        context.update({
+            'form': form,
+            'detail_url': self.object.get_absolute_url(),
+        })
         return context
 
-    def get_success_url(self):
-        return reverse("portal:product-settings", args=(self.object.slug,))
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = PortalProductForm(request.POST, request.FILES, instance=self.object)
+        attachment_formset = self.get_attachment_formset()
 
-    def form_valid(self, form):
-        return super().form_save(form)
+        if form.is_valid() and attachment_formset.is_valid():
+            form.save()
+            attachment_formset.save()
+            return redirect(self.object.get_absolute_url())
 
-    def form_invalid(self, form):
-        print(form.errors)  # Consider using proper logging instead of print
-        return super().form_invalid(form)
-    
+        context = {
+            'form': form,
+            'product': self.object,
+            'attachment_formset': attachment_formset,
+            'detail_url': self.object.get_absolute_url()
+        }
+        return render(request, self.template_name, context)
+
 
 class PortalManageBountiesView(PortalBaseView, TemplateView):
     template_name = "my_bounties.html"
@@ -352,50 +350,63 @@ class PortalProductChallengesView(LoginRequiredMixin, ListView):
         product_slug = self.kwargs.get("product_slug")
         return Challenge.objects.filter(product__slug=product_slug).order_by("-created_at")
 
-class PortalProductChallengeFilterView(LoginRequiredMixin, TemplateView):
-    """View for filtering and displaying challenges in the portal."""
-    template_name = "challenge_table.html"
-    login_url = "sign_in"
-
-    def get(self, request, *args, **kwargs):
-        context = {}
-        queryset = Challenge.objects.filter(
-            product__slug=kwargs.get("product_slug")
-        ).annotate(
-            total_bounties=Count("bounty", filter=Q(bounty__is_active=True))
-        )
-
-        if query_parameter := request.GET.get("q"):
-            for q in query_parameter.split(" "):
-                q = q.split(":")
-                key = q[0]
-                if key == "sort":
-                    value = q[1]
-
-                    if value == "bounties-asc":
-                        queryset = queryset.order_by("total_bounties")
-                    elif value == "bounties-desc":
-                        queryset = queryset.order_by("-total_bounties")
-
-        if query_parameter := request.GET.get("search-challenge"):
-            queryset = Challenge.objects.filter(
-                title__icontains=query_parameter
-            )
-
-        context.update({"challenges": queryset})
+class PortalProductChallengeFilterView(View):
+    template_name = 'manage_challenges.html'
+    
+    def get(self, request, product_slug):
+        product = get_object_or_404(Product, slug=product_slug)
+        search_query = request.GET.get('search-challenge', '')
+        sort = request.GET.get('sort', '')
+        
+        challenges = product.challenges.all()
+        
+        if search_query:
+            challenges = challenges.filter(title__icontains=search_query)
+            
+        if sort == 'created-desc':
+            challenges = challenges.order_by('-created_at')
+        elif sort == 'created-asc':
+            challenges = challenges.order_by('created_at')
+            
+        context = {
+            'product': product,
+            'challenges': challenges,
+        }
+        
         return render(request, self.template_name, context)
 
 
-class PortalProductDetailView(PortalBaseView, TemplateView):
-    """Detailed view of a product in the portal overview."""
-    template_name = "main.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product'] = get_object_or_404(Product, slug=kwargs.get('product_slug'))
-        context['default_tab'] = kwargs.get('default_tab', 0)
-        context['content_template'] = 'product_detail.html'
-        return context
+class PortalProductDetailView(LoginRequiredMixin, View):
+    def get(self, request, slug):
+        product = get_object_or_404(Product, slug=slug)
+        tab = request.GET.get('tab', 'challenges')
+        products = Product.objects.all()
+        
+        context = {
+            'product': product,
+            'current_product': product,
+            'products': products,
+            'active_tab': tab,
+        }
+        
+        # Add tab-specific context
+        if tab == 'settings':
+            form = ProductSettingsForm(instance=product)
+            context['form'] = form
+        
+        # Map tabs to their template names
+        tab_templates = {
+            'challenges': 'challenge_table.html',
+            'bounty-claim-requests': 'bounty_claim_requests.html',
+            'review-work': 'review_work.html',
+            'contribution-agreements': 'contributor_agreement_templates.html',
+            'user-management': 'manage_users.html',
+            'settings': 'product_settings.html'
+        }
+        
+        context['tab_template'] = tab_templates.get(tab, 'challenge_table.html')
+        
+        return render(request, 'product_detail.html', context)
 
 
 class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
@@ -439,3 +450,46 @@ class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
             )
 
         return super().post(request, *args, **kwargs)
+
+def product_detail(request, slug, tab):
+    context = {
+        'product': get_object_or_404(Product, slug=slug),
+        'default_tab': tab,
+        'content_template': 'product_detail.html'  # or whatever your content template is
+    }
+    
+    # Add any other context data you need
+    if hasattr(request.user, 'person'):
+        context['person'] = request.user.person
+        
+    # Get all products user has access to
+    user_products = RoleService.get_user_products(person=context['person'])
+    context['products'] = user_products
+    
+    if request.headers.get('HX-Request'):
+        # Return just the content template
+        return render(request, 'product_detail.html', context)
+    
+    # Return the full portal layout
+    return render(request, 'main.html', context)
+
+def get(self, request):
+    context = {
+        'person': getattr(request.user, 'person', None),
+        'products': Product.objects.filter(owner=request.user),
+        'content_template': 'dashboard.html'
+    }
+    return render(request, 'main.html', context)
+
+class CreateAgreementTemplateView(LoginRequiredMixin, CreateView):
+    template_name = 'create_agreement_template.html'
+    # Add your model and form class here
+    # model = ContributorAgreementTemplate
+    # form_class = ContributorAgreementTemplateForm
+    
+    def get_success_url(self):
+        return reverse('portal:product-detail', args=[self.kwargs['product_slug']]) + '?tab=agreements'
+    
+    def form_valid(self, form):
+        form.instance.product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        return super().form_valid(form)
