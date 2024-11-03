@@ -139,7 +139,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "security.User"
+AUTH_USER_MODEL = 'security.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -202,7 +202,7 @@ AUTHENTICATION_BACKENDS = []
 AUTH_PROVIDER = os.getenv("AUTH_PROVIDER", "django")
 if AUTH_PROVIDER == "django":
     AUTHENTICATION_BACKENDS += [
-        "apps.security.backends.EmailOrUsernameModelBackend",
+        "apps.capabilities.security.backends.EmailOrUsernameModelBackend",
     ]
 
 elif AUTH_PROVIDER == "AzureAD":
@@ -211,7 +211,6 @@ elif AUTH_PROVIDER == "AzureAD":
     ]
 else:
     raise ValueError("Invalid value for AUTH_PROVIDER. Supported values are 'django' or 'AzureAD'.")
-
 # social auth config
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_USER_MODEL = "security.User"

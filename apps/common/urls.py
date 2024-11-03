@@ -6,7 +6,6 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
 from apps.canopy.views import ProductTreeUpdateView, ProductTreeView
-from apps.capabilities.product_management.views.portal_views import PortalDashboardView
 
 from . import views
 

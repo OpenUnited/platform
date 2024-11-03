@@ -173,7 +173,7 @@ class Product(ProductMixin, common.AttachmentAbstract):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("portal-product-detail", args=(self.slug, 1))
+        return reverse("portal:product-detail", args=(self.slug, 1))
 
 
 class Initiative(TimeStampMixin, UUIDMixin):
@@ -185,10 +185,8 @@ class Initiative(TimeStampMixin, UUIDMixin):
 
     name = models.TextField()
     product = models.ForeignKey(
-        Product, 
-        on_delete=models.CASCADE, 
-        blank=True, 
-        null=True,
+        'Product',
+        on_delete=models.CASCADE,
         related_name='initiatives'
     )
     description = models.TextField(blank=True, null=True)

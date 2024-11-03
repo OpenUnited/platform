@@ -73,7 +73,7 @@ def bounty_claim_actions(request, pk):
 class PortalProductSettingView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
     model = Product
     form_class = forms.ProductForm
-    template_name = "portal/product_settings.html"
+    template_name = "product_settings.html"
     login_url = "sign_in"
 
     def get_success_url(self):
@@ -107,7 +107,7 @@ class PortalProductSettingView(LoginRequiredMixin, common_mixins.AttachmentMixin
     
 
 class PortalManageBountiesView(PortalBaseView, TemplateView):
-    template_name = "portal/my_bounties.html"
+    template_name = "my_bounties.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -126,7 +126,7 @@ class PortalManageBountiesView(PortalBaseView, TemplateView):
 class PortalUpdateProductUserView(PortalBaseView):
     model = ProductRoleAssignment
     form_class = forms.ProductRoleAssignmentForm
-    template_name = "portal/update_product_user.html"
+    template_name = "update_product_user.html"
     login_url = "sign_in"
     context_object_name = "product_role_assignment"
 
@@ -168,7 +168,7 @@ class PortalUpdateProductUserView(PortalBaseView):
 class PortalBountyClaimRequestsView(LoginRequiredMixin, ListView):
     model = BountyClaim
     context_object_name = "bounty_claims"
-    template_name = "portal/bounty_claim_requests.html"
+    template_name = "bounty_claim_requests.html"
     login_url = "sign_in"
 
     def get_queryset(self):
@@ -179,7 +179,7 @@ class PortalBountyClaimRequestsView(LoginRequiredMixin, ListView):
         )
 
 class PortalManageUsersView(PortalBaseView, TemplateView):
-    template_name = "portal/manage_users.html"
+    template_name = "manage_users.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -196,7 +196,7 @@ class PortalManageUsersView(PortalBaseView, TemplateView):
 
 class PortalAddProductUserView(PortalBaseView):
     form_class = forms.ProductRoleAssignmentForm
-    template_name = "portal/add_product_user.html"
+    template_name = "add_product_user.html"
     login_url = "sign_in"
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -243,7 +243,7 @@ class PortalAddProductUserView(PortalBaseView):
         return super().post(request, *args, **kwargs)
 
 class PortalDashboardView(PortalBaseView):
-    template_name = "portal/main.html"
+    template_name = "main.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -271,7 +271,7 @@ class PortalReviewWorkView(LoginRequiredMixin, ListView):
     """View for reviewing submitted work in the portal."""
     model = BountyDeliveryAttempt
     context_object_name = "bounty_deliveries"
-    template_name = "portal/review_work.html"
+    template_name = "review_work.html"
     login_url = "sign_in"
 
 
@@ -280,7 +280,7 @@ class PortalContributorAgreementTemplateListView(LoginRequiredMixin, ListView):
     model = ProductContributorAgreementTemplate
     context_object_name = "contributor_agreement_templates"
     login_url = "sign_in"
-    template_name = "portal/contributor_agreement_templates.html"
+    template_name = "contributor_agreement_templates.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -299,7 +299,7 @@ class PortalContributorAgreementTemplateListView(LoginRequiredMixin, ListView):
 
 class PortalProductBountyFilterView(LoginRequiredMixin, TemplateView):
     """View for filtering and displaying bounties in the portal."""
-    template_name = "portal/product_bounties.html"
+    template_name = "product_bounties.html"
     login_url = "sign_in"
 
     def get(self, request, *args, **kwargs):
@@ -334,7 +334,7 @@ class PortalProductBountyFilterView(LoginRequiredMixin, TemplateView):
 class PortalProductBountiesView(LoginRequiredMixin, ListView):
     """View for managing product bounties in the portal."""
     model = BountyClaim
-    template_name = "portal/product_bounties.html"
+    template_name = "product_bounties.html"
     context_object_name = "bounty_claims"
     login_url = "sign_in"
 
@@ -349,7 +349,7 @@ class PortalProductBountiesView(LoginRequiredMixin, ListView):
 
 class PortalProductChallengeFilterView(LoginRequiredMixin, TemplateView):
     """View for filtering and displaying challenges in the portal."""
-    template_name = "portal/product_challenges.html"
+    template_name = "product_challenges.html"
     login_url = "sign_in"
 
     def get(self, request, *args, **kwargs):
@@ -383,7 +383,7 @@ class PortalProductChallengeFilterView(LoginRequiredMixin, TemplateView):
 
 class PortalProductDetailView(PortalBaseView):
     """Detailed view of a product in the portal overview."""
-    template_name = "portal/product_detail.html"
+    template_name = "product_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

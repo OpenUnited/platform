@@ -32,24 +32,6 @@ from .views.product_views import (
     ProductDetailView,
 )
 
-from .views.portal_views import (
-    PortalDashboardView,
-    PortalProductDetailView,
-    PortalProductChallengeFilterView,
-    PortalProductBountiesView,
-    PortalProductBountyFilterView,
-    PortalReviewWorkView,
-    PortalContributorAgreementTemplateListView,
-    DeleteBountyClaimView,
-    PortalManageBountiesView,
-    PortalBountyClaimRequestsView,
-    PortalManageUsersView,
-    PortalAddProductUserView,
-    PortalUpdateProductUserView,
-    PortalProductSettingView,
-    bounty_claim_actions,
-)
-
 from .views.ideas_and_bugs_views import (
     ProductIdeasAndBugsView,
     CreateProductIdea,

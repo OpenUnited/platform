@@ -33,6 +33,9 @@ class User(AbstractUser, TimeStampMixin):
     def __str__(self):
         return f"{self.username} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
 
+    class Meta:
+        app_label = 'security'
+
 
 class SignUpRequest(TimeStampMixin):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)

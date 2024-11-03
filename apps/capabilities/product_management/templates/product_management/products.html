@@ -58,7 +58,7 @@
                     </p>
                     <p class="text-sm text-gray-900">
                         <a href="/{{ product.slug }}/initiatives">
-                            {{ product.initiative_set.all()|count }} available initiatives
+                            {{ product.initiatives.all()|count if product.initiatives is defined else 0 }} available initiatives
                         </a>
                     </p>
                 </div>
