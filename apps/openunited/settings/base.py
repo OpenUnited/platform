@@ -21,6 +21,7 @@ if allowed_hosts := os.environ.get("DJANGO_ALLOWED_HOSTS"):
     ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
 ACTUAL_APPS = [
+    "apps.portal",
     "apps.product_management",
     "apps.security",
     "apps.talent",

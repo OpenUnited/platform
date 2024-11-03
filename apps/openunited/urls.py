@@ -6,7 +6,7 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
 from apps.canopy.views import ProductTreeUpdateView, ProductTreeView
-from apps.product_management.views.portal_views import PortalDashboardView
+from apps.capabilities.product_management.views.portal_views import PortalDashboardView
 
 from . import views
 
@@ -47,6 +47,8 @@ urlpatterns += [
     path("product-tree/", ProductTreeView.as_view(), name="shareable_product_tree"),
     path("product-tree/share/<str:pk>", ProductTreeUpdateView.as_view(), name="update_product_tree"),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('portal/', include('apps.portal.urls', namespace='portal')),
+    path('', include('apps.flows.challenge_authoring.urls', namespace='challenge_authoring')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

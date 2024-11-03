@@ -34,9 +34,9 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from apps.product_management.models import Challenge, Bounty, Product
-from apps.talent.models import Skill, Expertise
-from apps.security.services import RoleService
+from apps.capabilities.product_management.models import Challenge, Bounty, Product
+from apps.capabilities.talent.models import Skill, Expertise
+from apps.capabilities.security.services import RoleService
 
 logger = logging.getLogger(__name__)
 

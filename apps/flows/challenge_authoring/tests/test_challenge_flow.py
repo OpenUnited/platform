@@ -6,10 +6,10 @@ from django.http import HttpResponse
 from django.db import transaction
 import json
 
-from apps.talent.models import Skill, Expertise, Person
-from apps.product_management.models import Product, Challenge, Bounty
-from apps.security.models import ProductRoleAssignment
-from apps.product_management.flows.challenge_authoring.services import ChallengeAuthoringService
+from apps.capabilities.talent.models import Skill, Expertise, Person
+from apps.capabilities.product_management.models import Product, Challenge, Bounty
+from apps.capabilities.security.models import ProductRoleAssignment
+from apps.capabilities.product_management.flows.challenge_authoring.services import ChallengeAuthoringService
 
 @pytest.fixture
 def user(db):

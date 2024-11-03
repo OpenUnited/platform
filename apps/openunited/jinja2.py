@@ -7,7 +7,7 @@ from django.middleware.csrf import get_token
 from django.utils.safestring import mark_safe
 from jinja2 import Environment
 
-from apps.talent.templatetags.custom_filters import expertise_filter, get_ids
+from apps.capabilities.talent.templatetags.custom_filters import expertise_filter, get_ids
 
 
 def environment(**options):

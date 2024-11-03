@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import generic
 
 from apps.canopy import utils
-from apps.product_management import models as mgt
+from apps.capabilities.product_management import models as mgt
 
 
 def introduction(request):

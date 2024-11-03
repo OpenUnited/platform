@@ -16,14 +16,14 @@ from django.views.generic import View
 from django.http import Http404, JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from apps.security.services import RoleService
+from apps.capabilities.security.services import RoleService
 from django.conf import settings
 import json
 
 from .forms import ChallengeAuthoringForm, BountyAuthoringForm
 from .services import ChallengeAuthoringService
-from apps.product_management.models import Product, FileAttachment, Challenge
-from apps.talent.models import Skill, Expertise
+from apps.capabilities.product_management.models import Product, FileAttachment, Challenge
+from apps.capabilities.talent.models import Skill, Expertise
 from apps.common.forms import AttachmentFormSet
 
 class ChallengeAuthoringView(LoginRequiredMixin, View):

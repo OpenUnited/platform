@@ -5,7 +5,7 @@ from django.apps import apps
 import pytest
 from model_bakery import baker
 
-from apps.product_management.models import Initiative, Product
+from apps.capabilities.product_management.models import Initiative, Product
 
 
 @pytest.fixture(autouse=True)

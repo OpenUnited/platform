@@ -3,7 +3,7 @@ from celery.utils.log import get_task_logger
 
 from apps.engagement.models import EmailNotification, Notification
 from apps.openunited.utils import send_sendgrid_email
-from apps.talent.models import Person
+from apps.capabilities.talent.models import Person
 
 
 def _forward_notification(notification_types, event_type, params):

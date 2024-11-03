@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 from apps.common import utils as common_utils
-from apps.product_management import forms as mgt_forms, models as mgt
+from apps.capabilities.product_management import forms as mgt_forms, models as mgt
 
 adjectives = [
     "Magnificent",

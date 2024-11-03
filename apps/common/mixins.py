@@ -3,7 +3,7 @@ class AttachmentMixin:
     attachment_formset_class = None
 
     def get_attachment_model(self):
-        from apps.product_management.models import FileAttachment
+        from apps.capabilities.product_management.models import FileAttachment
 
         return FileAttachment
 
@@ -55,7 +55,7 @@ class PersonSearchMixin:
         return super().get_template_names()
 
     def get_person_model(self):
-        from apps.talent.models import Person
+        from apps.capabilities.talent.models import Person
 
         return Person
 

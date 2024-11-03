@@ -18,7 +18,7 @@ The forms handle:
 
 from django import forms
 from apps.common.utils import BaseModelForm
-from apps.product_management.models import Challenge, ProductArea, Initiative
+from apps.capabilities.product_management.models import Challenge, ProductArea, Initiative
 
 class ChallengeAuthoringForm(BaseModelForm):
     """Form for challenge creation within the challenge authoring flow."""

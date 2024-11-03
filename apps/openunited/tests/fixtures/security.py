@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 import pytest
 from model_bakery import baker
 
-from apps.security.models import ProductRoleAssignment
+from apps.capabilities.security.models import ProductRoleAssignment
 
 
 @pytest.fixture(autouse=True)
