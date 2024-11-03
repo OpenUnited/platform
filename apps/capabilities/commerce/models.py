@@ -2,7 +2,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
 from django.db import models
 
-from apps.openunited.mixins import TimeStampMixin, UUIDMixin
+from apps.common.mixins import TimeStampMixin, UUIDMixin
 from apps.capabilities.product_management.models import Product
 
 from . import utils

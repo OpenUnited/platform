@@ -11,7 +11,7 @@ LOW = "Low"
 
 
 def forward_fun(apps, schema_editor):
-    Challenge = apps.get_model("product_management.Challenge")
+    Challenge = apps.capabilities.get_model("product_management.Challenge")
     for challenge in Challenge.objects.all():
         if challenge.priority in [0, "0"]:
             challenge.priority = HIGH

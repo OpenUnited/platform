@@ -14,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from treebeard.mp_tree import MP_Node
 
 from apps.common.models import AttachmentAbstract
-from apps.openunited.mixins import AncestryMixin, TimeStampMixin, UUIDMixin
+from apps.common.mixins import AncestryMixin, TimeStampMixin, UUIDMixin
 
 
 class Person(TimeStampMixin):

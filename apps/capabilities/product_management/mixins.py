@@ -4,7 +4,7 @@ from django.utils.text import slugify
 
 from django_lifecycle import BEFORE_CREATE, BEFORE_SAVE, LifecycleModelMixin, hook
 
-from apps.openunited.mixins import TimeStampMixin, UUIDMixin
+from apps.common.mixins import TimeStampMixin, UUIDMixin
 
 
 class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):

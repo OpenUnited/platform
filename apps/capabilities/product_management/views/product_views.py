@@ -23,7 +23,7 @@ from django.views.generic import (
 from apps.canopy import utils as canopy_utils
 from apps.capabilities.commerce.models import Organisation
 from apps.common import mixins as common_mixins
-from apps.openunited.mixins import HTMXInlineFormValidationMixin
+from apps.common.mixins import HTMXInlineFormValidationMixin
 from apps.capabilities.product_management import forms, utils
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.capabilities.security.services import RoleService

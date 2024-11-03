@@ -1,4 +1,4 @@
-from apps.openunited.settings.base import *
+from apps.common.settings.base import *
 
 DEBUG = True
 SECRET_KEY = "Test secret"

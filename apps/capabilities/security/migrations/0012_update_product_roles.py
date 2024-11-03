@@ -1,13 +1,13 @@
 from django.db import migrations
 
 def migrate_roles_forward(apps, schema_editor):
-    ProductRoleAssignment = apps.get_model('security', 'ProductRoleAssignment')
+    ProductRoleAssignment = apps.capabilities.get_model('security', 'ProductRoleAssignment')
     
     # Update 'Contributor' to 'Member'
     ProductRoleAssignment.objects.filter(role='Contributor').update(role='Member')
 
 def migrate_roles_backward(apps, schema_editor):
-    ProductRoleAssignment = apps.get_model('security', 'ProductRoleAssignment')
+    ProductRoleAssignment = apps.capabilities.get_model('security', 'ProductRoleAssignment')
     
     # Revert 'Member' back to 'Contributor'
     ProductRoleAssignment.objects.filter(role='Member').update(role='Contributor')

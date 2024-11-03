@@ -5,7 +5,7 @@ import django.db.models.deletion
 
 
 def forward_func(apps, schema_editor):
-    apps.get_model("talent.PersonSkill").objects.all().delete()
+    apps.capabilities.get_model("talent.PersonSkill").objects.all().delete()
 
 
 class Migration(migrations.Migration):

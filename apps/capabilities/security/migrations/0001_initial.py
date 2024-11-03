@@ -117,7 +117,7 @@ class Migration(migrations.Migration):
                 "abstract": False,
             },
             managers=[
-                ("objects", apps.security.managers.UserManager()),
+                ("objects", apps.capabilities.security.managers.UserManager()),
             ],
         ),
         migrations.CreateModel(

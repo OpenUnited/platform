@@ -5,8 +5,8 @@ def fix_product_ownership(apps, schema_editor):
     """
     Fix product ownership to ensure single owner
     """
-    Product = apps.get_model('product_management', 'Product')
-    ProductRoleAssignment = apps.get_model('security', 'ProductRoleAssignment')
+    Product = apps.capabilities.get_model('product_management', 'Product')
+    ProductRoleAssignment = apps.capabilities.get_model('security', 'ProductRoleAssignment')
     
     # Fix products with both owners
     products_with_both = Product.objects.filter(

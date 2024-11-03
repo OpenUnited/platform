@@ -20,13 +20,13 @@ ALLOWED_HOSTS = []
 if allowed_hosts := os.environ.get("DJANGO_ALLOWED_HOSTS"):
     ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
-ACTUAL_APPS = [
+PLATFORM_APPS = [
     "apps.portal",
-    "apps.product_management",
-    "apps.security",
-    "apps.talent",
+    "apps.capabilities.product_management",
+    "apps.capabilities.security",
+    "apps.capabilities.talent",
     "apps.engagement",
-    "apps.commerce",
+    "apps.capabilities.commerce",
     "apps.canopy",
     "apps.common",
     "apps.flows.challenge_authoring",
@@ -51,7 +51,7 @@ BUILTIN_APPS = [
     "django.contrib.staticfiles",
 ]
 
-INSTALLED_APPS = BUILTIN_APPS + ACTUAL_APPS + THIRD_PARTIES
+INSTALLED_APPS = BUILTIN_APPS + PLATFORM_APPS + THIRD_PARTIES
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -66,7 +66,7 @@ MIDDLEWARE = [
 ]
 
 
-ROOT_URLCONF = "apps.openunited.urls"
+ROOT_URLCONF = "apps.common.urls"
 
 
 TEMPLATES = [
@@ -75,7 +75,7 @@ TEMPLATES = [
         "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
-            "environment": "apps.openunited.jinja2.environment",
+            "environment": "apps.common.jinja2.environment",
             "match_extension": ".html",
             "match_regex": r"^(?!admin/|registration/|debug_toolbar/).*",
             # Can be set to "jinja2.Undefined" or any other subclass.
@@ -124,7 +124,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "apps.openunited.wsgi.application"
+WSGI_APPLICATION = "apps.common.wsgi.application"
 
 
 # Database
@@ -237,7 +237,7 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.user.get_username",
     "social_core.pipeline.social_auth.associate_by_email",
     "social_core.pipeline.user.create_user",
-    "talent.pipelines.create_person",
+    "apps.capabilities.talent.pipelines.create_person",
     "social_core.pipeline.social_auth.associate_user",
     "social_core.pipeline.social_auth.load_extra_data",
     "social_core.pipeline.user.user_details",

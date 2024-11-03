@@ -10,6 +10,8 @@
 # echo "----------------------------------------------------------"
 # nohup python manage.py makemigrations
 
+export DJANGO_SETTINGS_MODULE=apps.common.settings.development
+
 # Apply database migrations
 echo "Apply database migrations"
 echo "----------------------------------------------------------"

@@ -2,7 +2,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from apps.engagement.models import EmailNotification, Notification
-from apps.openunited.utils import send_sendgrid_email
+from apps.common.utils import send_sendgrid_email
 from apps.capabilities.talent.models import Person
 
 

@@ -42,7 +42,7 @@ After that, run the following commands:
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt
-export DJANGO_SETTINGS_MODULE=apps.openunited.settings.development
+export DJANGO_SETTINGS_MODULE=apps.common.settings.development
 ```
 
 For end-to-end tests, the OpenUnited platform uses Playwright. If you don't have Playwright installed, please do so. See [installing Playwright](https://playwright.dev/docs/intro)
@@ -60,9 +60,9 @@ Then navigate to: http://localhost:8000/ in your browser.
 
 #### Customizations
 
-If you want to extend your local development, create a `local.py` in `openunited/settings`. Import `base.py` or `development.py` and make sure to export it:
+If you want to extend your local development, create a `local.py` in `apps/common/settings`. Import `base.py` or `development.py` and make sure to export it:
 
-`export DJANGO_SETTINGS_MODULE=apps.openunited.settings.local`
+`export DJANGO_SETTINGS_MODULE=apps.common.settings.local`
 
 *It is advised to put this line into your bash configuration.*
 
@@ -113,7 +113,7 @@ You can also pull the image of PostgreSQL. It is assumed that you have Docker in
 
 Make sure you have docker install on your machine.
 
-```
+```bash
 cp .env.example .env
 cp docker.env.example docker.env
 

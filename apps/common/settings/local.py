@@ -1,4 +1,4 @@
-from apps.openunited.settings.base import *
+from apps.common.settings.base import *
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 

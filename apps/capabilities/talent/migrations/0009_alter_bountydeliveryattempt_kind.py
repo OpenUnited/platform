@@ -8,7 +8,7 @@ REJECTED = "Rejected"
 
 
 def forward_func(apps, schema_editor):
-    BountyDeliveryAttempt = apps.get_model("talent.BountyDeliveryAttempt")
+    BountyDeliveryAttempt = apps.capabilities.get_model("talent.BountyDeliveryAttempt")
     for attempt in BountyDeliveryAttempt.objects.all():
         if attempt.kind in ["0", 0]:
             attempt.kind = NEW

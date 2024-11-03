@@ -35,8 +35,8 @@ class Migration(migrations.Migration):
                 (
                     "currency_of_payment",
                     models.IntegerField(
-                        choices=[(1, "USD"), (2, "EUR"), (3, "GBP")],
-                        default=apps.commerce.utils.CurrencyTypes["USD"],
+                        choices=apps.capabilities.commerce.utils.CurrencyTypes.choices,
+                        default=apps.capabilities.commerce.utils.CurrencyTypes["USD"],
                     ),
                 ),
                 ("price_per_point_in_cents", models.IntegerField()),
@@ -46,8 +46,8 @@ class Migration(migrations.Migration):
                 (
                     "payment_type",
                     models.IntegerField(
-                        choices=[(1, "NONE"), (2, "ONLINE"), (3, "OFFLINE")],
-                        default=apps.commerce.utils.PaymentTypes["ONLINE"],
+                        choices=apps.capabilities.commerce.utils.PaymentTypes.choices,
+                        default=apps.capabilities.commerce.utils.PaymentTypes["ONLINE"],
                     ),
                 ),
             ],
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                             (4, "QUEEN_BEE"),
                             (5, "BEE_KEEPER"),
                         ],
-                        default=apps.commerce.utils.CommunityStatusOptions["DRONE"],
+                        default=apps.capabilities.commerce.utils.CommunityStatusOptions["DRONE"],
                     ),
                 ),
                 (
@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
             ],
@@ -162,7 +162,7 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
             ],
@@ -226,7 +226,7 @@ class Migration(migrations.Migration):
                             (2, "COMPLETE"),
                             (3, "CANCELLED"),
                         ],
-                        default=apps.commerce.utils.LifecycleStatusOptions["NEW"],
+                        default=apps.capabilities.commerce.utils.LifecycleStatusOptions["NEW"],
                     ),
                 ),
             ],
@@ -253,14 +253,14 @@ class Migration(migrations.Migration):
                     "payment_type",
                     models.IntegerField(
                         choices=[(1, "NONE"), (2, "ONLINE"), (3, "OFFLINE")],
-                        default=apps.commerce.utils.PaymentTypes["ONLINE"],
+                        default=apps.capabilities.commerce.utils.PaymentTypes["ONLINE"],
                     ),
                 ),
                 (
                     "currency_of_payment",
                     models.IntegerField(
                         choices=[(1, "USD"), (2, "EUR"), (3, "GBP")],
-                        default=apps.commerce.utils.CurrencyTypes["USD"],
+                        default=apps.capabilities.commerce.utils.CurrencyTypes["USD"],
                     ),
                 ),
                 ("amount_paid_in_cents", models.PositiveBigIntegerField()),
@@ -351,14 +351,14 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
                 (
                     "credit_reason",
                     models.IntegerField(
                         choices=[(1, "GRANT"), (2, "SALE")],
-                        default=apps.commerce.utils.OrganisationAccountCreditReasons["GRANT"],
+                        default=apps.capabilities.commerce.utils.OrganisationAccountCreditReasons["GRANT"],
                     ),
                 ),
             ],
@@ -388,7 +388,7 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
                 (
@@ -446,7 +446,7 @@ class Migration(migrations.Migration):
                     "currency_of_payment",
                     models.IntegerField(
                         choices=[(1, "USD"), (2, "EUR"), (3, "GBP")],
-                        default=apps.commerce.utils.CurrencyTypes["USD"],
+                        default=apps.capabilities.commerce.utils.CurrencyTypes["USD"],
                     ),
                 ),
                 ("subtotal_in_cents", models.PositiveBigIntegerField()),
@@ -467,7 +467,7 @@ class Migration(migrations.Migration):
                             (2, "COMPLETE"),
                             (3, "CANCELLED"),
                         ],
-                        default=apps.commerce.utils.LifecycleStatusOptions["NEW"],
+                        default=apps.capabilities.commerce.utils.LifecycleStatusOptions["NEW"],
                     ),
                 ),
             ],
@@ -544,7 +544,7 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
             ],
@@ -575,7 +575,7 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
             ],
@@ -606,7 +606,7 @@ class Migration(migrations.Migration):
                     "type_of_points",
                     models.IntegerField(
                         choices=[(1, "NONLIQUID"), (2, "LIQUID")],
-                        default=apps.commerce.utils.PointTypes["NONLIQUID"],
+                        default=apps.capabilities.commerce.utils.PointTypes["NONLIQUID"],
                     ),
                 ),
             ],
@@ -637,7 +637,7 @@ class Migration(migrations.Migration):
                     "currency_of_payment",
                     models.IntegerField(
                         choices=[(1, "USD"), (2, "EUR"), (3, "GBP")],
-                        default=apps.commerce.utils.CurrencyTypes["USD"],
+                        default=apps.capabilities.commerce.utils.CurrencyTypes["USD"],
                     ),
                 ),
                 ("price_per_point_in_cents", models.IntegerField()),
@@ -648,7 +648,7 @@ class Migration(migrations.Migration):
                     "payment_type",
                     models.IntegerField(
                         choices=[(1, "NONE"), (2, "ONLINE"), (3, "OFFLINE")],
-                        default=apps.commerce.utils.PaymentTypes["ONLINE"],
+                        default=apps.capabilities.commerce.utils.PaymentTypes["ONLINE"],
                     ),
                 ),
                 (
@@ -660,7 +660,7 @@ class Migration(migrations.Migration):
                             (3, "CANCELLED"),
                             (4, "REFUNDED"),
                         ],
-                        default=apps.commerce.utils.PaymentStatusOptions["PENDING"],
+                        default=apps.capabilities.commerce.utils.PaymentStatusOptions["PENDING"],
                     ),
                 ),
                 (
@@ -671,7 +671,7 @@ class Migration(migrations.Migration):
                             (2, "COMPLETE"),
                             (3, "CANCELLED"),
                         ],
-                        default=apps.commerce.utils.LifecycleStatusOptions["NEW"],
+                        default=apps.capabilities.commerce.utils.LifecycleStatusOptions["NEW"],
                     ),
                 ),
                 (

@@ -1,1 +1,1 @@
-from apps.openunited.tests.conftest import *
+from apps.common.tests.conftest import *

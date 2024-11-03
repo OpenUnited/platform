@@ -1,5 +1,5 @@
 from apps.common.forms import AttachmentFormSet
-from apps.openunited.tests.conftest import *
+from apps.common.tests.conftest import *
 from apps.capabilities.product_management.models import Bounty, Challenge, FileAttachment
 
 
