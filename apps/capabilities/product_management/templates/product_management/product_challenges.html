@@ -11,7 +11,7 @@
 }%}
 
 <div class="relative sm:rounded-lg flex flex-col">
-    <a class="mb-6 float-right w-max self-end" href="{{ url('challenge_create', args=(product.slug,)) }}">
+    <a class="mb-6 float-right w-max self-end" href="{{ url('challenge_authoring:create', args=(product.slug,)) }}">
         <button type="button"
             class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">
             Create Challenge
@@ -23,7 +23,7 @@
         {% for challenge in challenges %}
         <li class="overflow-hidden rounded-xl border border-gray-200 flex flex-col">
             <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 px-6 py-4">
-                <div class="text-sm font-medium leading-6 text-gray-900"><a href="{{ url('challenge_detail', args=(product_slug, challenge.id)) }}">{{ challenge.title }}</a></div>
+                <div class="text-sm font-medium leading-6 text-gray-900"><a href="{{ url('product_management:challenge-detail', args=(product_slug, challenge.id)) }}">{{ challenge.title }}</a></div>
             </div>
             <div class="divide-y divide-gray-100 px-6 text-sm leading-6 flex flex-col justify-between h-full">
                 <div class="flex py-3 text-gray-500">

@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import BadRequest
 from django.db import models
+from django.forms import ValidationError
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -699,6 +700,91 @@ class DeleteBountyView(LoginRequiredMixin, DeleteView):
         )
         return redirect(success_url)
 
+class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
+    model = BountyClaim
+    login_url = "sign_in"
+    success_url = reverse_lazy("dashboard-bounty-requests")
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        instance = BountyClaim.objects.get(pk=self.object.pk)
+        if instance.status == BountyClaim.Status.REQUESTED:
+            instance.status = BountyClaim.Status.CANCELLED
+            instance.save()
+            messages.success(request, "The bounty claim is successfully deleted.")
+        else:
+            messages.error(
+                request,
+                "Only the active claims can be deleted. The bounty claim did not deleted.",
+            )
+
+        return redirect(self.success_url)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        instance = BountyClaim.objects.get(pk=self.object.pk)
+        if instance.status == BountyClaim.Status.REQUESTED:
+            instance.status = BountyClaim.Status.CANCELLED
+            instance.save()
+
+        context = self.get_context_data()
+        context["bounty"] = self.object.bounty
+        context["elem"] = instance
+
+        template_name = self.request.POST.get("from")
+        if template_name == "bounty_detail_table.html":
+            return render(
+                request,
+                "product_management/partials/buttons/create_bounty_claim_button.html",
+                context,
+            )
+
+        return super().post(request, *args, **kwargs)
+    
+class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
+    model = Bounty
+    form_class = forms.BountyForm
+    template_name = "product_management/update_bounty.html"
+    login_url = "sign_in"
+
+    def get_success_url(self):
+        challenge = self.object.challenge
+        return reverse("challenge_detail", args=(challenge.product.slug, challenge.pk))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["challenge"] = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
+        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
+        context["empty_form"] = PersonSkillFormSet().empty_form
+
+        return context
+
+    def form_valid(self, form):
+        try:
+            form.instance.challenge = form.cleaned_data.get("challenge")
+            skill = form.cleaned_data.get("skill")
+            
+            if not skill:
+                raise ValidationError("Skill is required")
+            
+            # If skill is already a Skill object, use it directly
+            if isinstance(skill, Skill):
+                form.instance.skill = skill
+            # If skill is an ID (string or integer), get the Skill object
+            else:
+                form.instance.skill = Skill.objects.get(id=skill)
+                
+            response = super().form_save(form)
+            expertise_ids = form.cleaned_data.get("expertise_ids")
+            if expertise_ids:
+                form.instance.expertise.add(
+                    *Expertise.objects.filter(id__in=expertise_ids.split(","))
+                )
+            form.instance.save()
+            return response
+        except Skill.DoesNotExist:
+            form.add_error('skill', 'Selected skill does not exist')
+            return self.form_invalid(form)
 
 def bounty_claim_actions(request, pk):
     instance = BountyClaim.objects.get(pk=pk)

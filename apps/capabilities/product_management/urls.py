@@ -29,6 +29,8 @@ from .views.product_views import (
     CreateOrganisationView,
     ProductChallengesView,
     ChallengeDetailView,
+    DeleteBountyClaimView,
+    UpdateBountyView,
     ProductDetailView,
 )
 
@@ -44,6 +46,8 @@ from .views.ideas_and_bugs_views import (
     ProductIdeaListView,
     ProductBugListView,
 )
+
+app_name = 'product_management'
 
 # URL patterns for challenge and product list views
 urlpatterns = [
@@ -123,7 +127,7 @@ urlpatterns += [
         ProductChallengesView.as_view(),
         name="product-challenges",
     ),
-    path("bounties", BountyListView.as_view(), name="bounties"),
+    path("bounties", BountyListView.as_view(), name="bounty-list"),
     path(
         "product/<str:product_slug>/bounties",
         ProductBountyListView.as_view(),
@@ -199,6 +203,11 @@ urlpatterns += [
         ProductRoleAssignmentView.as_view(),
         name="product-people",
     ),
+    path(
+        'product/<str:product_slug>/ideas-bugs/',
+        ProductIdeasAndBugsView.as_view(),
+        name='product-ideas-bugs'
+    ),
 ]
 
 # Initiative URLs
@@ -236,4 +245,18 @@ urlpatterns += [
         cast_vote_for_idea,
         name="cast-vote-for-idea",
     )
+]
+
+# Additional URLs
+urlpatterns += [
+    path(
+        'delete/bounty/claim/',
+        DeleteBountyClaimView.as_view(),
+        name='delete-bounty-claim'
+    ),
+    path(
+        'update/bounty/',
+        UpdateBountyView.as_view(),
+        name='update-bounty'
+    ),
 ]

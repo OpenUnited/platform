@@ -37,7 +37,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product-summary', args=(product_slug,) )}}"
+                                        <a href="{{ url('product_management:product-summary', args=(product_slug,) )}}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif %}
                                             Summary
@@ -48,7 +48,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product-initiatives', args=(product_slug,)) }}"
+                                        <a href="{{ url('product_management:product-initiatives', args=(product_slug,)) }}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif %}
                                             Initiatives
@@ -70,7 +70,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product-ideas-bugs', args=(product_slug,)) }}"
+                                        <a href="{{ url('product_management:product-ideas-bugs', args=(product_slug,)) }}"
                                             class=" text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex
                                             gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif %}
@@ -113,7 +113,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product-summary', args=(product_slug,) )}}"
+                                <a href="{{ url('product_management:product-summary', args=(product_slug,) )}}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif %}
                                     Summary
@@ -147,7 +147,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product-initiatives', args=(product_slug,))}}"
+                                <a href="{{ url('product_management:product-initiatives', args=(product_slug,))}}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif %}
                                     Initiatives
@@ -171,7 +171,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product-ideas-bugs', args=(product_slug,)) }}"
+                                <a href="{{ url('product_management:product-ideas-bugs', args=(product_slug,)) }}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif %}
                                     Ideas & Bugs
@@ -213,7 +213,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product-summary', args=(product_slug,) )}}"
+                                <a href="{{ url('product_management:product-summary', args=(product_slug,) )}}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif %}
                                     Summary
@@ -247,7 +247,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product-initiatives', args=(product_slug,))}}"
+                                <a href="{{ url('product_management:product-initiatives', args=(product_slug,))}}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif %}
                                     Initiatives
@@ -269,7 +269,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product-ideas-bugs', args=(product_slug,)) }}"
+                                <a href="{{ url('product_management:product-ideas-bugs', args=(product_slug,)) }}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif %}
                                     Ideas & Bugs
