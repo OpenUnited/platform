@@ -1,0 +1,37 @@
+<table class="min-w-full divide-y divide-gray-300">
+    <thead class="bg-gray-50">
+        <tr>
+            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Title
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Reward
+                Type
+            </th>
+            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created By
+            </th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200 bg-white">
+        {% for challenge in challenges %}
+        <tr>
+            <td class="max-w-xs px-3 py-4 text-sm text-gray-500">
+                <a href="{{ challenge.get_absolute_url() }}"
+                    class="font-medium text-blue-600 hover:underline">{{ challenge.title }}</a></td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ challenge.status }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                {{ challenge.reward_type }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                <a href="{{ challenge.created_by.get_absolute_url() }}" class="flex items-center ml-4">
+                    <img class="inline h-6 w-6 max-w-none rounded-full ring-2 ring-white"
+                        src="{{ challenge.created_by.get_photo_url() }}" alt="{{ challenge.created_by.get_short_name() }}">
+                    <span class="ml-1.5">{{ challenge.created_by.get_full_name() }}</span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
