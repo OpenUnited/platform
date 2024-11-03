@@ -12,20 +12,19 @@ Flow Steps:
 """
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import View, FormView, CreateView
-from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
-from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import View
+from django.http import Http404, JsonResponse, HttpResponseForbidden, HttpResponseNotFound
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-from django.core.exceptions import PermissionDenied
 from apps.security.services import RoleService
 from django.conf import settings
-from django.contrib.auth.views import redirect_to_login
 import json
 
 from .forms import ChallengeAuthoringForm, BountyAuthoringForm
 from .services import ChallengeAuthoringService
-from apps.product_management.models import Product
+from apps.product_management.models import Product, FileAttachment, Challenge
 from apps.talent.models import Skill, Expertise
+from apps.common.forms import AttachmentFormSet
 
 class ChallengeAuthoringView(LoginRequiredMixin, View):
     """Main view for challenge authoring flow."""
@@ -42,13 +41,14 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
         if not hasattr(request.user, 'person') or not request.user.person:
             return HttpResponseForbidden("User must have an associated person")
             
-        # Get product and check manager role
+        # Get product and check manager OR admin role
         try:
             self.product = get_object_or_404(Product, slug=kwargs.get('product_slug'))
             role_service = RoleService()
             
-            if not role_service.is_product_manager(request.user.person, self.product):
-                return HttpResponseForbidden("Must be product manager")
+            if not (role_service.is_product_manager(request.user.person, self.product) or 
+                   role_service.is_product_admin(request.user.person, self.product)):
+                return HttpResponseForbidden("Must be product manager or admin")
                 
         except Http404:
             return HttpResponseNotFound("Product not found")
@@ -56,22 +56,40 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
         return super().dispatch(request, *args, **kwargs)
         
     def get(self, request, *args, **kwargs):
-        return render(request, 'challenge_authoring/main.html')
+        context = {
+            'product': self.product,
+            'form': self.form_class(product=self.product),
+            'attachment_formset': AttachmentFormSet(queryset=FileAttachment.objects.none())
+        }
+        return render(request, 'main.html', context)
         
     def post(self, request, *args, **kwargs):
-        try:
-            data = json.loads(request.body)
-            service = ChallengeAuthoringService(request.user, self.product.slug)
-            success, challenge, errors = service.create_challenge(
-                {k: v for k, v in data.items() if k != 'bounties'},
-                data.get('bounties', [])
-            )
+        form = self.form_class(request.POST, product=self.product)
+        attachment_formset = AttachmentFormSet(
+            request.POST, 
+            request.FILES,
+            queryset=FileAttachment.objects.none()
+        )
+        
+        if form.is_valid() and attachment_formset.is_valid():
+            challenge = form.save(commit=False)
+            challenge.product = self.product
+            challenge.save()
             
-            if success:
-                return JsonResponse({'redirect_url': challenge.get_absolute_url()})
-            return JsonResponse({'errors': errors}, status=400)
-        except json.JSONDecodeError:
-            return JsonResponse({'errors': 'Invalid JSON'}, status=400)
+            # Save attachments
+            attachments = attachment_formset.save(commit=False)
+            for attachment in attachments:
+                attachment.challenge = challenge
+                attachment.save()
+                
+            return redirect(challenge.get_absolute_url())
+            
+        context = {
+            'product': self.product,
+            'form': form,
+            'attachment_formset': attachment_formset
+        }
+        return render(request, 'main.html', context)
 
     def get_success_url(self):
         return reverse('product_challenges', kwargs={'product_slug': self.kwargs['product_slug']})

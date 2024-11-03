@@ -26,6 +26,7 @@ from apps.common import mixins as common_mixins
 from apps.openunited.mixins import HTMXInlineFormValidationMixin
 from apps.product_management import forms, utils
 from apps.security.models import ProductRoleAssignment
+from apps.security.services import RoleService
 from apps.talent.forms import PersonSkillFormSet
 from apps.talent.models import BountyClaim, Expertise, Skill
 from apps.talent.utils import serialize_skills
@@ -80,7 +81,7 @@ class CreateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Creat
             
             # Create role assignment for the creator
             if form.cleaned_data.get('make_me_owner'):
-                ProductRoleAssignment.objects.create(
+                RoleService.assign_product_role(
                     person=self.request.user.person,
                     product=form.instance,
                     role=ProductRoleAssignment.ProductRoles.ADMIN,
@@ -767,4 +768,19 @@ class ContributorAgreementTemplateView(DetailView):
                 "pk": self.object.pk,
             }
         )
+        return context
+
+
+class ProductDetailView(DetailView, TemplateView):
+    template_name = "product_management/product/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        default_tab = self.kwargs.get("default_tab", 1)
+        
+        context.update({
+            "default_tab": default_tab,
+            # Add any other context data needed for product layout
+        })
+        
         return context

@@ -28,7 +28,7 @@ ACTUAL_APPS = [
     "apps.commerce",
     "apps.canopy",
     "apps.common",
-    "apps.product_management.flows.challenge_authoring",
+    "apps.flows.challenge_authoring",
 ]
 THIRD_PARTIES = [
     "django_htmx",

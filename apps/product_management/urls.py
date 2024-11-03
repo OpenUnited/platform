@@ -29,6 +29,7 @@ from .views.product_views import (
     CreateOrganisationView,
     ProductChallengesView,
     ChallengeDetailView,
+    ProductDetailView,
 )
 
 from .views.portal_views import (
@@ -60,13 +61,6 @@ from .views.ideas_and_bugs_views import (
     cast_vote_for_idea,
     ProductIdeaListView,
     ProductBugListView,
-)
-
-from .flows.challenge_authoring.views import (
-    ChallengeAuthoringView,
-    SkillsListView,
-    ExpertiseListView,
-    BountyModalView
 )
 
 # URL patterns for challenge and product list views
@@ -303,27 +297,6 @@ urlpatterns += [
         ProductRoleAssignmentView.as_view(),
         name="product-people",
     ),
-    # Challenge authoring flow URLs
-    path(
-        "product/<str:product_slug>/flows/challenge-authoring/create/",
-        ChallengeAuthoringView.as_view(),
-        name="challenge_create"
-    ),
-    path(
-        "product/<str:product_slug>/flows/challenge-authoring/skills/",
-        SkillsListView.as_view(),
-        name="challenge_skills"
-    ),
-    path(
-        "product/<str:product_slug>/flows/challenge-authoring/skills/<int:skill_id>/expertise/",
-        ExpertiseListView.as_view(),
-        name="skill_expertise"
-    ),
-    path(
-        "product/<str:product_slug>/flows/challenge-authoring/bounty-modal/",
-        BountyModalView.as_view(),
-        name="bounty_modal"
-    ),
 ]
 
 # Initiative URLs
@@ -362,3 +335,6 @@ urlpatterns += [
         name="cast-vote-for-idea",
     )
 ]
+
+# Add this to your main urls.py:
+# path('', include('apps.flows.challenge_authoring.urls', namespace='challenge_authoring')),

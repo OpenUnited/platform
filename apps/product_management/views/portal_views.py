@@ -247,7 +247,23 @@ class PortalDashboardView(PortalBaseView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["portal_url"] = reverse("portal-home")
+        
+        # Get products for the current user
+        person = self.request.user.person
+        
+        # Get products from RoleService (since you're using it elsewhere)
+        products = RoleService.get_managed_products(person=person)
+        
+        # Add to context
+        context.update({
+            "portal_url": reverse("portal-home"),
+            "products": products,
+            "default_tab": kwargs.get('default_tab', 1),
+            "active_bounty_claims": BountyClaim.objects.filter(
+                person=person,
+                status__in=[BountyClaim.Status.GRANTED, BountyClaim.Status.REQUESTED]
+            )
+        })
         return context
 
 
@@ -372,19 +388,20 @@ class PortalProductDetailView(PortalBaseView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product_slug = self.kwargs.get("product_slug")
-        managed_products = context.get("managed_products", [])
+        default_tab = self.kwargs.get("default_tab", 1)
 
-        try:
-            current_product = managed_products.get(slug=product_slug)
-        except Product.DoesNotExist:
-            raise PermissionDenied(
-                "You don't have permission to access this product's portal"
-            )
-
+        # Get the product object
+        product = get_object_or_404(Product, slug=product_slug)
+        
         context.update({
-            "current_product": current_product,
-            "portal_url": reverse("portal-product", args=(product_slug,)),
+            "portal_url": reverse("portal-product-detail", args=(product_slug, default_tab)),
+            "default_tab": default_tab,
+            "product_slug": product_slug,
+            "product": product,
+            "product_challenges": product.challenge_set.all(),
+            "product_bounties": Bounty.objects.filter(challenge__product=product),
         })
+        
         return context
 
 

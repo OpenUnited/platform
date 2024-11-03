@@ -51,7 +51,7 @@
                         id="options-menu-item-2">Visit Portfolio</a>
                 </div>
                 <div class="py-1" role="none">
-                    <form id="logout-form" method="post" action="{{ url('log-out') }}">
+                    <form id="logout-form" method="post" action="{{ url('logout') }}">
                         {% csrf_token %}
                         <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log out</button>
                     </form>
@@ -112,12 +112,11 @@
                     hx-target="#manage-product-content"
                     hx-on="htmx:configRequest: event.detail.path = this.value"
                 >
-                    <option selected value="{{ url('dashboard-product-challenges', args=(product.slug,)) }}">Challenges</option>
-                    <option value="{{ url('dashboard-product-bounties', args=(product.slug,)) }}">Bounty Claim Requests</option>
-                    <option value="{{ url('dashboard-review-work', args=(product.slug,)) }}">Review Work</option>
-                    <option value="{{ url('dashboard-contributor-agreement-templates', args=(product.slug,)) }}">Contribution Agreements</option>
-                    <option value="{{ url('manage-users', args=(product.slug,)) }}">User Management</option>
-                    <option value="{{ url('product-setting', args=(product.id,)) }}">Product Setting</option>
+                    <option selected value="{{ url('portal-product-detail', args=(product.slug, default_tab)) }}">Overview</option>
+                    <option value="{{ url('portal-product-challenge-filter', args=(product.slug,)) }}">Challenges</option>
+                    <option value="{{ url('portal-product-bounties', args=(product.slug,)) }}">Bounties</option>
+                    <option value="{{ url('portal-manage-users', args=(product.slug,)) }}">Users</option>
+                    <option value="{{ url('portal-product-settings', args=(product.pk,)) }}">Settings</option>
                 </select>
             </div>
             <!-- Tabs at small breakpoint and up -->
@@ -129,41 +128,35 @@
                                 add .border-indigo-500 .text-indigo-600
                                 remove .hover:border-gray-300 .hover:text-gray-700" class="-mb-px flex space-x-8">
                     <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                    <a hx-get="{{ url('dashboard-product-challenges', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('portal-product-detail', args=(product.slug, default_tab)) }}"
                         hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
                         class="cursor-pointer border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
                         aria-current="page" id="product-tab-0">
-                        Challenges
+                        Overview
                     </a>
-                    <a hx-get="{{ url('dashboard-product-bounties', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('portal-product-challenge-filter', args=(product.slug,)) }}"
                         hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
                         class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
                         id="product-tab-1">
-                        Bounty Claim Requests
+                        Challenges
                     </a>
-                    <a hx-get="{{ url('dashboard-review-work', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('portal-product-bounties', args=(product.slug,)) }}"
                         hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
                         class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
                         id="product-tab-2">
-                        Review Work
+                        Bounties
                     </a>
-                    <a hx-get="{{ url('dashboard-contributor-agreement-templates', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('portal-manage-users', args=(product.slug,)) }}"
                         hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
                         class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
                         id="product-tab-3">
-                        Contribution Agreements
+                        Users
                     </a>
-                    <a hx-get="{{ url('manage-users', args=(product.slug,)) }}"
+                    <a hx-get="{{ url('portal-product-settings', args=(product.pk,)) }}"
                         hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
                         class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
                         id="product-tab-4">
-                        User Management
-                    </a>
-                    <a hx-get="{{ url('product-setting', args=(product.id,)) }}"
-                        hx-target="#manage-product-content" hx-swap="innerHTML" hx-indicator="#loading-spinner" hx-push-url="true"
-                        class="cursor-pointer border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
-                        id="product-tab-5">
-                        Product Setting
+                        Settings
                     </a>
                 </nav>
             </div>

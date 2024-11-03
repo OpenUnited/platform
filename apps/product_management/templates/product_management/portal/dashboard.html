@@ -2,7 +2,7 @@
 <div class="hidden lg:block">
     <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <div class="min-w-0 flex-1">
-            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Dashboard</h1>
+            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Portal - Dashboard</h1>
         </div>
 
         <div class="relative inline-block px-3 text-left">
@@ -80,9 +80,9 @@
                     <!-- Get the following information from the database -->
                     <p class="text-gray-500">12 People</p>
 
-                    <a hx-get="{{ url('dashboard-product-detail', args=(product.slug, default_tab)) }}" hx-target="#dashboard-tabs"
+                    <a hx-get="{{ url('portal-product-detail', args=(product.slug, default_tab|default(1))) }}" hx-target="#dashboard-tabs"
                         hx-swap="innerHTML" class="cursor-pointer font-medium text-gray-900 hover:text-gray-600"
-                        id="manage-product-{{product.id}}">Manage Product</a>
+                        id="manage-product-{{product.id}}">{{ product.name }}</a>
                 </div>
             </div>
         </li>

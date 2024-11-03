@@ -140,7 +140,7 @@
                                             d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    Product Management Portal
+                                    Manage Products
                                 </button>
                                 <!-- Expandable link section, show/hide based on state. -->
                                 <ul _="on click from <a/> in me
@@ -152,7 +152,7 @@
                                     {% for product in products %}
                                     <li>
                                         <!-- TODO: Maybe this anchor tag can be converted to a button -->
-                                        <a hx-get="{{ url('dashboard-product-detail', args=(product.slug, default_tab)) }}"
+                                        <a hx-get="{{ url('portal-product-detail', args=(product.slug, 1)) }}"
                                             hx-target="#dashboard-tabs" hx-swap="innerHTML"
                                             class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
                                     </li>
@@ -242,7 +242,7 @@
                                     d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Product Management Portal
+                            Manage Products
                         </button>
                         <!-- Expandable link section, show/hide based on state. -->
                         <ul _="on click from <a/> in me
@@ -254,7 +254,7 @@
                             {% for product in products %}
                             <li>
                                 <!-- TODO: Maybe this anchor tag can be converted to a button -->
-                                <a hx-get="{{ url('dashboard-product-detail', args=(product.slug, 0)) }}"
+                                <a hx-get="{{ url('portal-product-detail', args=(product.slug, 1)) }}"
                                     hx-target="#dashboard-tabs" hx-swap="innerHTML"
                                     class="cursor-pointer hover:bg-gray-50 block rounded-md py-2 pr-2 pl-9 text-sm leading-6 text-gray-700">{{ product.name }}</a>
                             </li>

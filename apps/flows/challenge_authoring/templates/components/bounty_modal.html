@@ -45,7 +45,7 @@
                     <div class="col-span-full">
                         <label class="block text-sm font-medium leading-6 text-gray-900">Skills</label>
                         <div class="skill-tree mt-1 p-3 border rounded-md max-h-[300px] overflow-y-auto">
-                            {% include "product_management/flows/challenge_authoring/components/skill_tree.html" %}
+                            {% include "components/skill_tree.html" %}
                         </div>
                     </div>
 
@@ -69,7 +69,7 @@
 
 <!-- Remove inline script and add module import -->
 <script type="module">
-    import { showModal, closeModal } from "{% static 'js/flows/challenge_authoring/bounty_modal.js' %}";
+    import { showModal, closeModal } from "{{ static('js/flows/challenge_authoring/bounty_modal.js') }}";
     
     // Make functions available globally for button onclick handlers
     window.showModal = showModal;
@@ -77,4 +77,4 @@
 </script>
 
 <!-- Move styles to external CSS file -->
-<link rel="stylesheet" href="{% static 'css/flows/challenge_authoring/bounty_modal.css' %}">
+<link rel="stylesheet" href="{{ static('css/flows/challenge_authoring/bounty_modal.css') }}">
