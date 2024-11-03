@@ -14,6 +14,7 @@ from .views import (
     PortalUpdateProductUserView,
     PortalProductSettingView,
     DeleteBountyClaimView,
+    PortalProductChallengesView,
     bounty_claim_actions,
 )
 
@@ -40,6 +41,11 @@ urlpatterns = [
         "product/<str:product_slug>/tab/<int:default_tab>/",
         PortalProductDetailView.as_view(),
         name="product-detail",
+    ),
+    path(
+        "product/<str:product_slug>/challenges/",
+        PortalProductChallengesView.as_view(),
+        name="dashboard-product-challenges",
     ),
     path(
         "product/<str:product_slug>/challenges/filter/",

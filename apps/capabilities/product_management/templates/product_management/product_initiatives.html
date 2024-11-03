@@ -1,14 +1,14 @@
-{% extends 'product_management/product-detail_base.html' %}
+{% extends 'product_management/product_detail_base.html' %}
 
 {% block title %}Product - Initiatives{% endblock %}
-{% block product-content %}
+{% block product_content %}
 
 <div class="flex flex-col">
     <div class="flex sm:items-center sm:justify-between flex-col sm:flex-row">
         <div class="flex items-center mb-4 sm:mb-0">
             <h2 class="text-xl tracking-tight text-gray-900">Explore {{ initiatives|length }} Initiatives</h2>
         </div>
-        <a href="{{ url('create-initiative', args=(product_slug,)) }}">
+        <a href="{{ url('product_management:create-initiative', args=(product_slug,)) }}">
             <button type="button"
                 class="appearance-none w-fit flex items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all hover:bg-gray-50">
                 <span class="flex items-center justify-center shrink-0 w-3.5 h-3.5 mr-2">
@@ -49,7 +49,7 @@
                     {% endfor %}
                 </div>
                 <div class="mt-auto space-y-3 flex flex-col">
-                    <a href="{{ url('initiative-detail', args=(product_slug, initiative.id,)) }}"
+                    <a href="{{ url('product_management:initiative-detail', args=(product_slug, initiative.id,)) }}"
                         class="text-base text-black transition-all hover:text-blue-400">
                         {{ initiative.name }}
                     </a>

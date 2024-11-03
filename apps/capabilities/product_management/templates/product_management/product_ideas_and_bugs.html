@@ -1,23 +1,23 @@
-{% extends 'product_management/product-detail_base.html' %}
+{% extends 'product_management/product_detail_base.html' %}
 
 {% block title %}Product - Ideas & Bugs{% endblock %}
-{% block product-content %}
+{% block product_content %}
 
 <!-- TODO: fix the color on ideas and bugs -->
 <div class="border-b border-gray-200 flex items-center justify-between grow w-full">
     <nav class="-mb-px flex space-x-3 md:space-x-8">
-        <a id="ideas-link" hx-get="{{ url('product-idea-list', args=(product_slug,)) }}"
+        <a id="ideas-link" hx-get="{{ url('product_management:product-idea-list', args=(product_slug,)) }}"
             hx-target="#ideas_and_bugs_content" hx-swap="innerHTML"
-            _="on click set { innerText: 'Add Idea', href: '{{ url("add-product-idea", args=(product_slug,)) }}' } on #idea-bug-button"
+            _="on click set { innerText: 'Add Idea', href: '{{ url("product_management:add-product-idea", args=(product_slug,)) }}' } on #idea-bug-button"
             class="cursor-pointer text-blue-500 flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium
             border-blue-400 hover:border-blue-600 hover:text-blue-600">
             Ideas
             <span
                 class="bg-gray-100 text-blue-500 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ ideas|length }}</span>
         </a>
-        <a id="bugs-link" hx-get="{{ url('product-bug-list', args=(product_slug,)) }}"
+        <a id="bugs-link" hx-get="{{ url('product_management:product-bug-list', args=(product_slug,)) }}"
             hx-target="#ideas_and_bugs_content" hx-swap="innerHTML"
-            _="on click set { innerText: 'Add Bug', href: '{{ url("add-product-bug", args=(product_slug,)) }}' } on #idea-bug-button"
+            _="on click set { innerText: 'Add Bug', href: '{{ url("product_management:add-product-bug", args=(product_slug,)) }}' } on #idea-bug-button"
             class="cursor-pointer text-gray-500 flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium
             hover:border-gray-600 hover:text-gray-600">
             Bugs
@@ -25,13 +25,13 @@
                 class="bg-gray-100 text-gray-500 ml-1 md:ml-3 rounded-full py-0.5 px-1.5 md:px-2.5 text-xs font-medium inline-block">{{ bugs|length }}</span>
         </a>
     </nav>
-    <a href="{{ url('add-product-idea', args=(product_slug,)) }}" id="idea-bug-button"
+    <a href="{{ url('product_management:add-product-idea', args=(product_slug,)) }}" id="idea-bug-button"
         class="appearance-none w-fit flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-blue-900 shadow-sm ring-1 ring-inset ring-blue-300 transition-all hover:bg-blue-50">
         Add Idea</a>
 </div>
 
 <div id="ideas_and_bugs_content">
-    {% include 'product_management/product-idea-list.html' %}
+    {% include 'product_management/product_idea_list.html' %}
 </div>
 
 <script>

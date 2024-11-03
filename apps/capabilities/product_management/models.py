@@ -173,7 +173,7 @@ class Product(ProductMixin, common.AttachmentAbstract):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("portal:product-detail", args=(self.slug, 1))
+        return reverse("portal:product-summary", args=(self.slug,))
 
 
 class Initiative(TimeStampMixin, UUIDMixin):

@@ -346,10 +346,26 @@ class PortalProductBountiesView(LoginRequiredMixin, ListView):
             status=BountyClaim.Status.REQUESTED,
         )
 
+class PortalProductChallengesView(LoginRequiredMixin, ListView):
+    model = Challenge
+    context_object_name = "challenges"
+    login_url = "sign_in"
+    template_name = "manage_challenges.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        slug = self.kwargs.get("product_slug")
+        context.update({"product": Product.objects.get(slug=slug)})
+        return context
+
+    def get_queryset(self):
+        product_slug = self.kwargs.get("product_slug")
+        return Challenge.objects.filter(product__slug=product_slug).order_by("-created_at")
 
 class PortalProductChallengeFilterView(LoginRequiredMixin, TemplateView):
     """View for filtering and displaying challenges in the portal."""
-    template_name = "product_challenges.html"
+    template_name = "challenge_table.html"
     login_url = "sign_in"
 
     def get(self, request, *args, **kwargs):

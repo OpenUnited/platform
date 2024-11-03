@@ -18,7 +18,7 @@
 
                     <!-- TODO: add product owner logic here -->
                     {% if can_modify_product %}
-                    <a href="{{ url('portal-product-dashboard', args=(product.slug, 5)) }}">
+                    <a href="{{ url('portal:product-dashboard', args=(product.slug, 5)) }}">
                         <button type="button"
                             class="w-full rounded-l-md border-0 py-1.5 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                             Edit Settings
@@ -47,11 +47,11 @@
         <p class="transition-all delay-600 text-red-400 hover:text-red-400/[0.85]">No available challenge is
             found.</p>
         {% elif challenge_count == 1 %}
-        <a href="{{ url('product-challenges', args=(product_slug,)) }}"
+        <a href="{{ url('product_management:product-challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">1
             Active Challenge </a>
         {% else %}
-        <a href="{{ url('product-challenges', args=(product_slug,)) }}"
+        <a href="{{ url('product_management:product-challenges', args=(product_slug,)) }}"
             class="transition-all delay-600 text-blue-400 hover:text-blue-400/[0.85]">{{ challenge_count }}
             Active Challenges</a>
         {% endif %}

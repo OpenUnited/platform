@@ -1,18 +1,18 @@
-{% extends 'product_management/product-detail_base.html' %}
+{% extends 'product_management/product_detail_base.html' %}
 
 {% block title %}Product - People{% endblock %}
-{% block product-content %}
+{% block product_content %}
 
-{% set grouped_product-people = product-people|groupby('role')|reverse %}
+{% set grouped_product_people = product_people|groupby('role')|reverse %}
 
 <div class="flex flex-col divide-y divide-slate-900/5">
-    {% for role, product-people in grouped_product-people %}
+    {% for role, product_people in grouped_product_people %}
     <div class="flex flex-col py-[30px] first:pt-0">
         <div class="flex items-center text-xl tracking-tight text-gray-900">
-            {{ role }} - {{ product-people|length }}
+            {{ role }} - {{ product_people|length }}
         </div>
         <div class="mt-[30px] grid gap-x-4 gap-y-12 grid-cols-1 md:grid-cols-2">
-            {% for product_person in product-people %}
+            {% for product_person in product_people %}
 
             <div class="flex items-start">
                 <div class="w-16 h-16 mr-2.5 flex items-center justify-center">

@@ -77,7 +77,7 @@
         </div>
         <div
             class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-3 sm:space-y-0 sm:space-x-reverse md:mt-0 md:flex-row md:space-x-3">
-            <a href="{{ url('product-detail', args=(product.slug,)) }}">
+            <a href="{{ url('portal:product-detail', args=(product.slug, default_tab)) }}">
                 <button type="button"
                     class="inline-flex items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Visit Product Detail Page

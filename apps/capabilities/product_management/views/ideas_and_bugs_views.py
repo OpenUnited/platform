@@ -18,7 +18,7 @@ from apps.capabilities.product_management.forms import IdeaForm, BugForm
 
 class ProductIdeasAndBugsView(utils.BaseProductDetailView, TemplateView):
     """Combined view for displaying both ideas and bugs for a product."""
-    template_name = "product_management/product_ideas_bugs.html"
+    template_name = "product_management/product_ideas_and_bugs.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

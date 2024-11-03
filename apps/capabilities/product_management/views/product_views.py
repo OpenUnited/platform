@@ -304,10 +304,11 @@ class ProductListView(ListView):
         return context
 
 
-class ProductRedirectView(utils.BaseProductDetailView, RedirectView):
+class ProductRedirectView(RedirectView):
     def get(self, request, *args, **kwargs):
-        url = reverse("product_summary", kwargs=kwargs)
-        return redirect(url)
+        kwargs = {"product_slug": kwargs.get("product_slug")}
+        url = reverse("product_management:product-summary", kwargs=kwargs)
+        return HttpResponseRedirect(url)
 
 
 class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
