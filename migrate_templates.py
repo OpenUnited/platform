@@ -1,90 +1,141 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Dict, List
-import argparse
+import filecmp
+import django
+from datetime import datetime
 
-class TemplateMigrator:
-    def __init__(self, source_dir: Path, dest_dir: Path, dry_run: bool = False):
-        self.source_dir = source_dir
-        self.dest_dir = dest_dir
-        self.dry_run = dry_run
-        self.changes: Dict[str, List[str]] = {
-            'copy': [],
-            'backup': []
-        }
+# Setup Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'apps.common.settings.development')
+django.setup()
 
-    def backup_templates(self) -> None:
-        if self.dest_dir.exists():
-            backup_dir = self.dest_dir.parent / f"{self.dest_dir.name}_backup"
-            if not self.dry_run:
-                shutil.copytree(self.dest_dir, backup_dir, dirs_exist_ok=True)
-            self.changes['backup'].append(f"Backed up {self.dest_dir} to {backup_dir}")
+def migrate_templates():
+    # Define paths
+    source_dir = Path('apps/templates/product_management')
+    target_dir = Path('apps/capabilities/product_management/templates/product_management')
+    backup_dir = Path(f'template_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}')
 
-    def copy_templates(self) -> None:
-        for root, _, files in os.walk(self.source_dir):
-            rel_path = Path(root).relative_to(self.source_dir)
-            dest_path = self.dest_dir / rel_path
+    if not source_dir.exists():
+        print(f"Source directory {source_dir} does not exist!")
+        return
+
+    # Create backup directory
+    backup_dir.mkdir(exist_ok=True)
+    
+    # Create target directory if it doesn't exist
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    moved_files = []
+    skipped_files = []
+    errors = []
+
+    # First, create a backup of both directories
+    print("\nCreating backups...")
+    if source_dir.exists():
+        shutil.copytree(source_dir, backup_dir / 'source_templates')
+    if target_dir.exists():
+        shutil.copytree(target_dir, backup_dir / 'target_templates')
+
+    # Process each file in source directory
+    print("\nMigrating templates...")
+    for source_file in source_dir.rglob('*'):
+        if source_file.is_file():
+            # Calculate relative path
+            rel_path = source_file.relative_to(source_dir)
+            target_file = target_dir / rel_path
             
-            for file in files:
-                if file.endswith('.html'):
-                    src_file = Path(root) / file
-                    dest_file = dest_path / file
-                    
-                    if not self.dry_run:
-                        os.makedirs(dest_path, exist_ok=True)
-                        shutil.copy2(src_file, dest_file)
-                    
-                    self.changes['copy'].append(f"Copy {src_file} -> {dest_file}")
+            try:
+                # Create target subdirectories if needed
+                target_file.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Check if target file exists and is different
+                if target_file.exists():
+                    if filecmp.cmp(source_file, target_file, shallow=False):
+                        print(f"Skipping identical file: {rel_path}")
+                        skipped_files.append(str(rel_path))
+                        continue
+                    else:
+                        print(f"Updating different file: {rel_path}")
+                else:
+                    print(f"Copying new file: {rel_path}")
+                
+                # Copy file to new location
+                shutil.copy2(source_file, target_file)
+                moved_files.append(str(rel_path))
+                
+                # Delete source file
+                source_file.unlink()
+                
+            except Exception as e:
+                error_msg = f"Error processing {rel_path}: {str(e)}"
+                print(f"ERROR: {error_msg}")
+                errors.append(error_msg)
 
-    def migrate(self) -> Dict[str, List[str]]:
-        """Execute the migration and return a list of changes"""
-        if not self.source_dir.exists():
-            raise FileNotFoundError(f"Source directory {self.source_dir} does not exist")
-
-        self.backup_templates()
-        self.copy_templates()
-        return self.changes
-
-def main():
-    parser = argparse.ArgumentParser(description='Migrate Django templates')
-    parser.add_argument('--dry-run', action='store_true', 
-                      help='Show what would be done without making changes')
-    args = parser.parse_args()
-
-    # Get the project root directory
-    project_root = Path(__file__).parent
-    source_dir = project_root / 'converted_templates'
-    dest_dir = project_root / 'apps' / 'templates'
-
+    # Remove empty directories in source
     try:
-        migrator = TemplateMigrator(source_dir, dest_dir, dry_run=args.dry_run)
-        changes = migrator.migrate()
-
-        # Print summary of changes
-        print("\nTemplate Migration Summary:")
-        print("=" * 50)
-        
-        if changes['backup']:
-            print("\nBackups:")
-            for change in changes['backup']:
-                print(f"  • {change}")
-
-        if changes['copy']:
-            print("\nFiles to be copied:")
-            for change in changes['copy']:
-                print(f"  • {change}")
-
-        if args.dry_run:
-            print("\nDRY RUN: No changes were made")
-        else:
-            print("\nMigration completed successfully!")
-
+        if source_dir.exists():
+            for dir_path in sorted([p for p in source_dir.rglob('*') if p.is_dir()], reverse=True):
+                if not any(dir_path.iterdir()):
+                    dir_path.rmdir()
+            if not any(source_dir.iterdir()):
+                source_dir.rmdir()
     except Exception as e:
-        print(f"Error: {e}")
-        return 1
+        print(f"Error cleaning up directories: {str(e)}")
 
-    return 0
+    # Write report
+    report = {
+        'timestamp': datetime.now().isoformat(),
+        'source_dir': str(source_dir),
+        'target_dir': str(target_dir),
+        'backup_dir': str(backup_dir),
+        'moved_files': moved_files,
+        'skipped_files': skipped_files,
+        'errors': errors
+    }
 
-if __name__ == "__main__":
-    exit(main())
+    with open(backup_dir / 'migration_report.txt', 'w') as f:
+        f.write("Template Migration Report\n")
+        f.write("======================\n\n")
+        f.write(f"Timestamp: {report['timestamp']}\n")
+        f.write(f"Source: {report['source_dir']}\n")
+        f.write(f"Target: {report['target_dir']}\n")
+        f.write(f"Backup: {report['backup_dir']}\n\n")
+        
+        f.write(f"Moved Files ({len(moved_files)}):\n")
+        for file in moved_files:
+            f.write(f"  - {file}\n")
+        
+        f.write(f"\nSkipped Files ({len(skipped_files)}):\n")
+        for file in skipped_files:
+            f.write(f"  - {file}\n")
+        
+        f.write(f"\nErrors ({len(errors)}):\n")
+        for error in errors:
+            f.write(f"  - {error}\n")
+
+    # Print summary
+    print("\nMigration Complete!")
+    print(f"Moved: {len(moved_files)} files")
+    print(f"Skipped: {len(skipped_files)} files")
+    print(f"Errors: {len(errors)} files")
+    print(f"\nBackup created at: {backup_dir}")
+    print("See migration_report.txt in backup directory for details")
+
+    if errors:
+        print("\nWARNING: Some errors occurred during migration!")
+        print("Please check the migration report for details.")
+
+if __name__ == '__main__':
+    # Ask for confirmation
+    print("This script will:")
+    print("1. Copy templates from apps/templates/product_management/")
+    print("   to apps/capabilities/product_management/templates/product_management/")
+    print("2. Create a backup of both directories")
+    print("3. Delete the original templates from apps/templates/product_management/")
+    
+    confirm = input("\nDo you want to continue? (y/n): ")
+    
+    if confirm.lower() == 'y':
+        migrate_templates()
+    else:
+        print("Migration cancelled.")

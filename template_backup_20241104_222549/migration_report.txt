@@ -1,0 +1,105 @@
+Template Migration Report
+======================
+
+Timestamp: 2024-11-04T22:25:49.229845
+Source: apps/templates/product_management
+Target: apps/capabilities/product_management/templates/product_management
+Backup: template_backup_20241104_222549
+
+Moved Files (88):
+  - update_product.html
+  - create_bounty.html
+  - create_capability.html
+  - product_summary.html
+  - initiative_detail.html
+  - create_product.html
+  - product_idea_list.html
+  - challenge_detail.html
+  - product_bug_detail.html
+  - update_product_idea.html
+  - update_challenge.html
+  - add_product_idea.html
+  - products.html
+  - contributor_agreement_template_detail.html
+  - product_detail_base.html
+  - create_organisation.html
+  - product_idea_form.html
+  - update_bounty.html
+  - create_organisation_form.html
+  - create_initiative.html
+  - add_product_bug.html
+  - product_bug_list.html
+  - product_challenges.html
+  - product_tree.html
+  - update_product_bug.html
+  - bounty_detail.html
+  - product_bounties.html
+  - product_bug_form.html
+  - product_area_detail.html
+  - capability_detail.html
+  - product_ideas_and_bugs.html
+  - summary_structure.html
+  - product_people.html
+  - product_detail_base_with_macro.html
+  - product_initiatives.html
+  - create_contributor_agreement_template.html
+  - product_idea_detail.html
+  - create_challenge.html
+  - forms/initiative_form.html
+  - forms/bounty_form.html
+  - forms/contributor_agreement_template_form.html
+  - forms/bounty_attachments.html
+  - forms/challenge_form.html
+  - forms/bounty_empty_attachment.html
+  - forms/capability_form.html
+  - forms/product_form.html
+  - forms/update_challenge_form.html
+  - forms/partials/challenge_step_4.html
+  - forms/partials/challenge_bounty_modal.html
+  - forms/partials/skill_tree.html
+  - forms/partials/challenge_step_2.html
+  - forms/partials/challenge_step_1.html
+  - forms/partials/expertise_options.html
+  - bounty/list.html
+  - bounty/helper/pagination.html
+  - bounty/helper/filters.html
+  - bounty/helper/macros_fun.html
+  - bounty/helper/card.html
+  - bounty/helper/small_card.html
+  - bounty/helper/skill_expertise_tree.html
+  - bounty/helper/header.html
+  - bounty/helper/filters/skill.html
+  - bounty/helper/filters/desktop_filter.html
+  - bounty/helper/filters/status.html
+  - bounty/helper/filters/mobile_filter.html
+  - bounty/helper/filters/expertise.html
+  - bounty/partials/expertise.html
+  - bounty/partials/list_partials.html
+  - includes/summary_structure.html
+  - product_area_detail_helper/product_area_update.html
+  - product_area_detail_helper/challenge_main.html
+  - product_area_detail_helper/filter_modal.html
+  - product_area_detail_helper/empty_form.html
+  - product_area_detail_helper/challenge_list.html
+  - product_area_detail_helper/challenge_card.html
+  - product_area_detail_helper/product_area_detail/product_area_view.html
+  - product_area_detail_helper/product_area_detail/card.html
+  - product_area_detail_helper/product_area_detail/product_area_breadcrumbs.html
+  - partials/initiative_challenge_table.html
+  - partials/breadcrumbs_bounty_detail.html
+  - partials/breadcrumbs_contributor_agreement_template.html
+  - partials/bounty_detail_table.html
+  - partials/breadcrumbs_initiative_detail.html
+  - partials/breadcrumbs_challenge_detail.html
+  - partials/challenge_filter_partial.html
+  - partials/buttons/dropdown_actions.html
+  - partials/buttons/delete_bounty_claim_button.html
+  - partials/buttons/create_bounty_claim_button.html
+
+Skipped Files (4):
+  - delete_attachment.html
+  - forms/partials/challenge_step_5.html
+  - forms/partials/challenge_step_3.html
+  - forms/partials/challenge_step_nav.html
+
+Errors (0):

@@ -1,22 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'base.html'  %}
+{% load static %}
 
-{% block title %}Create a Bounty{% endblock %}
+{% block title   %}Create a Bounty{% endblock  %}
 
-{% block media %}
+{% block media   %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.css" />
-{% endblock %}
+{% endblock  %}
 
 
-{% block content %}
+{% block content   %}
 
-{% with bounty_attachment_formset=bounty_attachment_formset, type='create' %}
-{% include 'product_management/forms/bounty_form.html' %}
-{% endwith %}
+{% with bounty_attachment_formset=bounty_attachment_formset, type='create'  %}
+{% include 'product_management/forms/bounty_form.html'  %}
+{% endwith  %}
 
-{% endblock %}
+{% endblock  %}
 
-{% block scripts %}
+{% block scripts   %}
 <script src="https://cdn.jsdelivr.net/npm/treeselectjs@0.9.2/dist/treeselectjs.umd.js"></script>
-<script src="{{ static('scripts/tree-select.js') }}"></script>
-{% endblock %}
+<script src="{% static 'scripts/tree-select.js' %}"></script>
+{% endblock  %}

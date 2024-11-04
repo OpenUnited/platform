@@ -1,0 +1,37 @@
+{{ attachment_formset.management_form }}
+
+{% if read_only == not defined or read_only == False %}
+    {% with can_write=True %}
+        <!-- Write mode content -->
+        {% if attachment_formset.total_form_count > 0 %}
+            <!-- Display existing attachments -->
+            {% for form in attachment_formset %}
+                {{ form }}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% else %}
+    {% with can_write=False %}
+        <!-- Read-only mode content -->
+        {% if attachment_formset.total_form_count > 0 %}
+            <!-- Display existing attachments -->
+            {% for form in attachment_formset %}
+                {{ form }}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endif %}
+
+{% if can_write or attachment_formset.total_form_count > 0 %}
+    <label for="drop-area" class="block text-sm font-medium leading-6 text-gray-900 mb-2">Attachments</label>
+    {% if can_write %}
+        <div id="drop-area" class="border-dashed border-2 border-gray-300 rounded-md p-4 text-center">
+            <label for="attachments-input" class="cursor-pointer">
+                <span class="text-gray-500">Drag and drop files here or</span>
+                <br>
+                <span class="text-indigo-600 font-medium">Click to select files</span>
+            </label>
+            <input type="file" class="hidden" name="attachments[]" multiple id="attachments-input" accept=".pdf,.PNG,.GIF,.JPG,.JPEG">
+        </div>
+    {% endif %}
+{% endif %}

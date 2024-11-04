@@ -1,0 +1,7 @@
+{% for item in data %}
+    {# Your existing structure rendering logic here #}
+    {{ item.name }}
+    {% if item.descendants %}
+        {% generate_summary_structure item.descendants depth|add:1 displayed_items %}
+    {% endif %}
+{% endfor %} 

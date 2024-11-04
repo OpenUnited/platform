@@ -1,7 +1,7 @@
-{% extends 'product_management/product_detail_base.html' %}
+{% extends 'product_management/product_detail_base.html'  %}
 
-{% block title %}Product - Challenges{% endblock %}
-{% block product_content %}
+{% block title   %}Product - Challenges{% endblock  %}
+{% block product_content   %}
 {% set TYPES_COLORS = {
     challenge_status.DRAFT: "bg-gray-50 text-gray-700 border-gray-700", 
     challenge_status.BLOCKED: "bg-yellow-50 text-yellow-700 border-yellow-700" ,
@@ -11,7 +11,7 @@
 }%}
 
 <div class="relative sm:rounded-lg flex flex-col">
-    <a class="mb-6 float-right w-max self-end" href="{{ url('challenge_authoring:create', args=(product.slug,)) }}">
+    <a class="mb-6 float-right w-max self-end" href="{% url challenge_authoring:create product.slug,   %}">
         <button type="button"
             class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">
             Create Challenge
@@ -23,25 +23,25 @@
         {% for challenge in challenges %}
         <li class="overflow-hidden rounded-xl border border-gray-200 flex flex-col">
             <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 px-6 py-4">
-                <div class="text-sm font-medium leading-6 text-gray-900"><a href="{{ url('product_management:challenge-detail', args=(product_slug, challenge.id)) }}">{{ challenge.title }}</a></div>
+                <div class="text-sm font-medium leading-6 text-gray-900"><a href="{% url product_management:challenge-detail product_slug, challenge.id   %}">{{ challenge.title  }}</a></div>
             </div>
             <div class="divide-y divide-gray-100 px-6 text-sm leading-6 flex flex-col justify-between h-full">
                 <div class="flex py-3 text-gray-500">
-                    {{ challenge.get_short_description() }}
+                    {{ challenge|call:get_short_description  }}
                 </div>
                 <div class="flex justify-end gap-x-4 py-3">
                     <div class="flex items-start gap-2">
                         <span class="bg-gray-200 rounded-[16px] py-1 px-2 text-xs text-gray-700">
-                            {{ challenge.priority }}
+                            {{ challenge.priority  }}
                         </span>
-                        <div class="rounded-[16px] py-1 px-2 text-xs font-medium border {{ TYPES_COLORS[challenge.status] }}">
-                            {{ challenge.status }}
+                        <div class="rounded-[16px] py-1 px-2 text-xs font-medium border {{ TYPES_COLORS[challenge.status]  }}">
+                            {{ challenge.status  }}
                         </div>
                     </div>
                 </div>
             </div>
         </li>
-        {% endfor %}
+        {% endfor  %}
     </ul>
 
 
@@ -50,7 +50,7 @@
 
     <p>This product has no active challenges</p>
 
-    {% endif %}
+    {% endif  %}
 </div>
 
-{% endblock %}
+{% endblock  %}

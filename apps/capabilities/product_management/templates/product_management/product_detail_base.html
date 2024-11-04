@@ -1,13 +1,7 @@
 {% extends 'base.html' %}
+{% load dict_filters %}
 
-{% set url_segment = request.path.split('/') %}
-{% set last_segment = url_segment[-1] %}
-
-{% set TYPES_PAGE = {"summary":"Summary", "initiatives":"Initiatives", "bounties": "Bounties",
-                    "challenges":"Challenges","tree":"Product Tree", "ideas-and-bugs":"Ideas & Bugs",
-                    "people":"People"} %}
-
-{% block content %}
+{% block content   %}
 
 <div class="lg:flex flex-grow w-full">
     <div class="relative z-50 lg:hidden" style="display: none;" role="dialog" aria-modal="true">
@@ -27,65 +21,65 @@
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
                     <div class="flex shrink-0 items-center">
-                        <img class="h-16 w-auto rounded-full overflow-hidden" src="{{ product.get_photo_url() }}" alt="Product Logo">
+                        <img class="h-16 w-auto rounded-full overflow-hidden" src="{{ product_photo_url }}" alt="Product Logo">
                     </div>
                     <nav class="flex flex-1 flex-col">
                         <div class="flex flex-1 flex-col gap-y-7">
                             <ul role="list" class="-mx-2 space-y-1">
                                 <li>
-                                    {% if last_segment == "summary" %}
+                                    {% if last_segment  == "summary" %}
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product_management:product-summary', args=(product_slug,) )}}"
+                                        <a href="{% url 'product_management:product-summary' product_slug %}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                            {% endif %}
+                                            {% endif  %}
                                             Summary
                                         </a>
                                 </li>
                                 <li>
-                                    {% if last_segment == "initiatives" %}
+                                    {% if last_segment  == "initiatives" %}
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product_management:product-initiatives', args=(product_slug,)) }}"
+                                        <a href="{% url 'product_management:product-initiatives' product_slug %}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                            {% endif %}
+                                            {% endif  %}
                                             Initiatives
                                         </a>
                                 </li>
                                 <li>
-                                    {% if last_segment == "challenges" %}
+                                    {% if last_segment  == "challenges" %}
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product_management:product-challenges', args=(product_slug,)) }}"
+                                        <a href="{% url 'product_management:product-challenges' product_slug %}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                            {% endif %}
+                                            {% endif  %}
                                             Challenges
                                         </a>
                                 </li>
                                 <li>
-                                    {% if last_segment == "ideas-and-bugs" %}
+                                    {% if last_segment  == "ideas-and-bugs" %}
                                     <a href=""
                                         class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product_management:product-ideas-bugs', args=(product_slug,)) }}"
+                                        <a href="{% url 'product_management:product-ideas-bugs' product_slug %}"
                                             class=" text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex
                                             gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                            {% endif %}
+                                            {% endif  %}
                                             Ideas & Bugs
                                         </a>
                                 </li>
 
                                 <li>
-                                    {% if last_segment == "people" %}
+                                    {% if last_segment  == "people" %}
                                     <a href=""
                                         class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{{ url('product_management:product-people', args=(product_slug,)) }}"
+                                        <a href="{% url 'product_management:product-people' product_slug %}"
                                             class="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                            {% endif %}
+                                            {% endif  %}
                                             People
                                         </a>
                                 </li>
@@ -103,91 +97,91 @@
         <div class="flex grow flex-col gap-y-5 overflow-y-auto lg:border-r border-gray-200 bg-white lg:px-6">
             <div class="hidden lg:flex shrink-0 items-center">
                 <img class="h-20 w-auto rounded-full overflow-hidden"
-                    src="{{ product.get_photo_url() }}" alt="Product Logo">
+                    src="{{ product.get_photo_url }}" alt="Product Logo">
             </div>
             <nav class="hidden flex-1 flex-col sm:flex">
                 <div class="flex flex-1 flex-col gap-y-7">
                     <ul role="list" class="lg:-mx-2 lg:space-y-1 flex flex-row lg:flex-col pb-2 lg:pb-0">
                         <li>
-                            {% if last_segment == "summary" %}
+                            {% if last_segment  == "summary" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-summary', args=(product_slug,) )}}"
+                                <a href="{% url 'product_management:product-summary' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
+                                    {% endif  %}
                                     Summary
                                 </a>
                         </li>
                         <li>
-                            {% if last_segment == "bounties" %}
+                            {% if last_segment  == "bounties" %}
                                 <a href=""
                                     class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                             {% else %}
-                                <a href="{{ url('product_management:product-bounties', args=(product_slug, ) )}}"
+                                <a href="{% url 'product_management:product-bounties' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Bounties
-                                </a>
+                                {% endif  %}
+                                Bounties
+                            </a>
                         </li>
 
                         <li>
-                            {% if last_segment == "tree" %}
+                            {% if last_segment  == "tree" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-tree', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-tree' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Product Tree
-                                </a>
+                                {% endif  %}
+                                Product Tree
+                            </a>
                         </li>
                         <li>
-                            {% if last_segment == "initiatives" %}
+                            {% if last_segment  == "initiatives" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-initiatives', args=(product_slug,))}}"
+                                <a href="{% url 'product_management:product-initiatives' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Initiatives
-                                </a>
+                                {% endif  %}
+                                Initiatives
+                            </a>
                         </li>
                         <li>
-                            {% if last_segment == "challenges" %}
+                            {% if last_segment  == "challenges" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-challenges', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-challenges' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Challenges
-                                </a>
-                        </li>
-
-
-                        <li>
-                            {% if last_segment == "ideas-and-bugs" %}
-                            <a href=""
-                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                {% else %}
-                                <a href="{{ url('product_management:product-ideas-bugs', args=(product_slug,)) }}"
-                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Ideas & Bugs
-                                </a>
+                                {% endif  %}
+                                Challenges
+                            </a>
                         </li>
 
+
                         <li>
-                            {% if last_segment == "people" %}
+                            {% if last_segment  == "ideas-and-bugs" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-people', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-ideas-bugs' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    People
-                                </a>
+                                {% endif  %}
+                                Ideas & Bugs
+                            </a>
+                        </li>
+
+                        <li>
+                            {% if last_segment  == "people" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{% url 'product_management:product-people' product_slug %}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% endif  %}
+                                People
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -196,7 +190,7 @@
                 <button
                     class="flex gap-2 px-3.5 py-2.5 justify-center text-gray-700 bg-white border border-gray-300 focus:bg-white font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center"
                     type="button" data-dropdown-toggle="dropdown">
-                    <span>{{TYPES_PAGE[last_segment]}}</span>
+                    <span>{{ TYPES_PAGE|get_item:last_segment }}</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -209,83 +203,83 @@
                     id="dropdown">
                     <ul class="py-1 min-w-[200px]" aria-labelledby="dropdown">
                         <li>
-                            {% if last_segment == "summary" %}
+                            {% if last_segment  == "summary" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-summary', args=(product_slug,) )}}"
+                                <a href="{% url 'product_management:product-summary' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Summary
-                                </a>
+                                {% endif  %}
+                                Summary
+                            </a>
                         </li>
                         <li>
-                            {% if last_segment == "bounties" %}
+                            {% if last_segment  == "bounties" %}
                                 <a href=""
                                     class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                             {% else %}
-                                <a href="{{ url('product_management:product-bounties', args=(product_slug, ) )}}"
+                                <a href="{% url 'product_management:product-bounties' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Bounties
-                                </a>
+                                {% endif  %}
+                                Bounties
+                            </a>
                         </li>
 
                         <li>
-                            {% if last_segment == "tree" %}
+                            {% if last_segment  == "tree" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-tree', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-tree' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Product Tree
-                                </a>
+                                {% endif  %}
+                                Product Tree
+                            </a>
                         </li>
                         <li>
-                            {% if last_segment == "initiatives" %}
+                            {% if last_segment  == "initiatives" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-initiatives', args=(product_slug,))}}"
+                                <a href="{% url 'product_management:product-initiatives' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Initiatives
-                                </a>
+                                {% endif  %}
+                                Initiatives
+                            </a>
                         </li>
                         <li>
-                            {% if last_segment == "challenges" %}
+                            {% if last_segment  == "challenges" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-challenges', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-challenges' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Challenges
-                                </a>
+                                {% endif  %}
+                                Challenges
+                            </a>
                         </li>
                         <li>
-                            {% if last_segment == "ideas-and-bugs" %}
+                            {% if last_segment  == "ideas-and-bugs" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-ideas-bugs', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-ideas-bugs' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    Ideas & Bugs
-                                </a>
+                                {% endif  %}
+                                Ideas & Bugs
+                            </a>
                         </li>
 
                         <li>
-                            {% if last_segment == "people" %}
+                            {% if last_segment  == "people" %}
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{{ url('product_management:product-people', args=(product_slug,)) }}"
+                                <a href="{% url 'product_management:product-people' product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
-                                    {% endif %}
-                                    People
-                                </a>
+                                {% endif  %}
+                                People
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -295,10 +289,10 @@
 
     <section class="pb-10 pt-3 lg:pt-10 lg:flex-1 w-full lg:max-w-[calc(100%_-_288px)]">
         <div class="px-0 sm:px-6 xl:px-8" id="product-content_container">
-            {% block product_content %}{% endblock %}
+            {% block product_content   %}{% endblock  %}
         </div>
     </section>
 </div>
 
 <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
-{% endblock %}
+{% endblock  %}

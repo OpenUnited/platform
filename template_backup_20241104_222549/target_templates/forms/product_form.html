@@ -1,0 +1,144 @@
+<div class="max-w-2xl mx-auto">
+    <form method="post" enctype="multipart/form-data" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        
+        <div class="px-4 py-6 sm:p-8">
+            <div class="space-y-6">
+                <h2 class="text-base font-semibold leading-7 text-gray-900">Create Product</h2>
+                <p class="mt-1 text-sm leading-6 text-gray-600">
+                    Provide the basic information about your product.
+                </p>
+
+                <!-- Name field -->
+                <div class="sm:col-span-4">
+                    <label for="{{ form.name.id }}" class="block text-sm font-medium leading-6 text-gray-900">
+                        Product Name
+                    </label>
+                    <div class="mt-2">
+                        {{ form.name.as_widget(attrs={
+                            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                            'placeholder': 'Enter product name'
+                        }) }}
+                    </div>
+                    {% if form.name.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.name.errors[0] }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Short Description field -->
+                <div class="sm:col-span-4">
+                    <label for="{{ form.short_description.id }}" class="block text-sm font-medium leading-6 text-gray-900">
+                        Short Description
+                    </label>
+                    <div class="mt-2">
+                        {{ form.short_description.as_widget(attrs={
+                            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                            'placeholder': 'Brief description of your product'
+                        }) }}
+                    </div>
+                    {% if form.short_description.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.short_description.errors[0] }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Full Description field -->
+                <div>
+                    <label for="{{ form.full_description.id }}" class="block text-sm font-medium leading-6 text-gray-900">
+                        Full Description
+                    </label>
+                    <div class="mt-2">
+                        {{ form.full_description.as_widget(attrs={
+                            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                            'rows': '3',
+                            'placeholder': 'Detailed description of your product'
+                        }) }}
+                    </div>
+                    {% if form.full_description.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.full_description.errors[0] }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Website field -->
+                <div class="sm:col-span-4">
+                    <label for="{{ form.website.id }}" class="block text-sm font-medium leading-6 text-gray-900">
+                        Website
+                    </label>
+                    <div class="mt-2">
+                        {{ form.website.as_widget(attrs={
+                            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                            'placeholder': 'https://'
+                        }) }}
+                    </div>
+                    {% if form.website.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.website.errors[0] }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Ownership Section -->
+                <div class="border-t border-gray-900/10 pt-8">
+                    <fieldset>
+                        <legend class="text-sm font-semibold leading-6 text-gray-900">Product Ownership</legend>
+                        <div class="mt-6 space-y-6">
+                            <div class="relative flex gap-x-3">
+                                {{ form.make_me_owner.as_widget(attrs={
+                                    'class': 'h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600'
+                                }) }}
+                                <div class="text-sm leading-6">
+                                    <label for="{{ form.make_me_owner.id }}" class="font-medium text-gray-900">
+                                        Make me the owner
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-300"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="bg-white px-2 text-gray-500">OR</span>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.organisation.id }}" class="block text-sm font-medium leading-6 text-gray-900">
+                                    Select Organization
+                                </label>
+                                <div class="mt-2">
+                                    {{ form.organisation.as_widget(attrs={
+                                        'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6'
+                                    }) }}
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        {% if form._errors and '__all__' in form._errors %}
+            <div class="rounded-md bg-red-50 p-4 mt-4 mx-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <div class="text-sm text-red-700">
+                            {{ form._errors['__all__'][0] }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+            <button type="button" class="text-sm font-semibold leading-6 text-gray-900">
+                Cancel
+            </button>
+            <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Create Product
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,94 +1,98 @@
-{% extends 'base.html' %}
+{% extends 'base.html'  %}
+{% load static %}
 
-{% block title %}Bounty Detail{% endblock %}
-{% set product=data.product %}
-{% set challenge=data.challenge %}
-{% set bounty=data.bounty %}
+{% block title   %}Bounty Detail{% endblock  %}
 
-{% block content %}
-{% include 'product_management/partials/breadcrumbs_bounty_detail.html' %}
+{% block content   %}
+    {% with product=data.product   %}
+        {% with challenge=data.challenge   %}
+            {% with bounty=data.bounty   %}
+                {% include 'product_management/partials/breadcrumbs_bounty_detail.html'  %}
 
-<div class="grid md:grid-cols-6 sm:grid-cols-2 gap-2">
-    <div class="lg:col-span-5 md:col-span-5 sm:col-span-2">
-        <div>
-            <div class="flex justify-between">
-                <h1 class="text-xl font-medium mb-4">{{ bounty.title }}</h1>
-            </div>
-            <div class="my-4">
-                <span class="text-gray-400 block text-sm my-1">Created at:
-                    {{ bounty.created_at.strftime('%b %d, %Y') }}</span>
-                <span class="text-gray-400 block text-sm my-1">Updated at:
-                    {{ bounty.updated_at.strftime('%b %d, %Y') }}</span>
-            </div>
-        </div>
-        <p class="text-md pr-10">
-            {{ bounty.description|linebreaksbr|safe }}
-        </p>
-
-
-
-        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {% with read_only=True %}
-                    {% include "attachments.html" %}
-                {% endwith %}
-            </dd>
-        </div>
-
-    </div>
-    <div class="md:col-span-1 lg:col-span-1 sm:col-span-full text-sm">
-        <div class="text-sm grid grid-cols-1 gap-4">
-            {% if data.show_actions %}
-                <div class="mt-2">
-                    <h1 class="font-medium text-gray-400">Actions</h1>
-                    {% with elem=data %}
-                        {% include "product_management/partials/buttons/dropdown_actions.html" %}
-                    {% endwith %}
-                </div>
-            {% elif bounty.claimed_by %}
-                <div>
-                    <h1 class="font-medium text-gray-400">Assignee</h1>
-                    <a href="{{ bounty.claimed_by.get_absolute_url() }}"
-                        class="font-medium text-blue-600 hover:underline">{{ bounty.claimed_by }}</a>
-                </div>
-            {% endif %}
-
-
-            <div>
-                <h1 class="font-medium text-gray-400">Status</h1>
-                <p>{{ bounty.status }}</p>
-            </div>
-
-            <div class="col-span-full mb-2">
-                <h1 class="font-medium text-gray-400">Expertise</h1>
-                <div class="flex flex-wrap">
-                    {% for exp in bounty.expertise.all() %}
-                        <div class="inline-block mt-1.5 mr-1.5 mb-1.5 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
-                            <div class="flex items-center text-xs font-semibold leading-6">
-                                <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
-                                    {% set expertise_icon_path = 'images/skills/' ~ exp ~ '.svg' %}
-                                    <img src="{{ static(expertise_icon_path)}}" class="w-full h-full object-contain object-center" alt="#">
-                                </span>
-                                {{ exp }}
+                <div class="grid md:grid-cols-6 sm:grid-cols-2 gap-2">
+                    <div class="lg:col-span-5 md:col-span-5 sm:col-span-2">
+                        <div>
+                            <div class="flex justify-between">
+                                <h1 class="text-xl font-medium mb-4">{{ bounty.title  }}</h1>
+                            </div>
+                            <div class="my-4">
+                                <span class="text-gray-400 block text-sm my-1">Created at:
+                                    {{ bounty.created_at|date:"M d, Y" }}</span>
+                                <span class="text-gray-400 block text-sm my-1">Updated at:
+                                    {{ bounty.updated_at|date:"M d, Y" }}</span>
                             </div>
                         </div>
-                    {% endfor %}
+                        <p class="text-md pr-10">
+                            {{ bounty.description|linebreaksbr|safe  }}
+                        </p>
+
+
+
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dd class="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                {% with read_only=True  %}
+                                    {% include "attachments.html"  %}
+                                {% endwith  %}
+                            </dd>
+                        </div>
+
+                    </div>
+                    <div class="md:col-span-1 lg:col-span-1 sm:col-span-full text-sm">
+                        <div class="text-sm grid grid-cols-1 gap-4">
+                            {% if data.show_actions %}
+                                <div class="mt-2">
+                                    <h1 class="font-medium text-gray-400">Actions</h1>
+                                    {% with elem=data  %}
+                                        {% include "product_management/partials/buttons/dropdown_actions.html"  %}
+                                    {% endwith  %}
+                                </div>
+                            {% elif bounty.claimed_by  %}
+                                <div>
+                                    <h1 class="font-medium text-gray-400">Assignee</h1>
+                                    <a href="{{ bounty.claimed_by.get_absolute_url }}"
+                                        class="font-medium text-blue-600 hover:underline">{{ bounty.claimed_by  }}</a>
+                                </div>
+                            {% endif  %}
+
+
+                            <div>
+                                <h1 class="font-medium text-gray-400">Status</h1>
+                                <p>{{ bounty.status  }}</p>
+                            </div>
+
+                            <div class="col-span-full mb-2">
+                                <h1 class="font-medium text-gray-400">Expertise</h1>
+                                <div class="flex flex-wrap">
+                                    {% for exp in expertise_list %}
+                                        <div class="inline-block mt-1.5 mr-1.5 mb-1.5 py-1 px-2 rounded-[100px] bg-gray-50 text-gray-900 cursor-pointer transition-all hover:bg-gray-50/[0.1] border border-solid border-[#e4e8f1]">
+                                            <div class="flex items-center text-xs font-semibold leading-6">
+                                                <span class="flex shrink-0 items-center justify-center w-4 h-4 mr-1">
+                                                    {% with expertise_icon_path='images/skills/'|add:exp|add:'.svg' %}
+                                                        <img src="{% static expertise_icon_path %}" class="w-full h-full object-contain object-center" alt="#">
+                                                    {% endwith %}
+                                                </span>
+                                                {{ exp }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h1 class="font-medium text-gray-400">Skill</h1>
+                                <span
+                                    class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 my-2">{{ bounty.skill.name  }}</span>
+                            </div>
+
+                            <div>
+                                <h1 class="font-medium text-gray-400">Points</h1>
+                                <p class="my-2">{{ bounty.points  }}</p>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div>
-                <h1 class="font-medium text-gray-400">Skill</h1>
-                <span
-                    class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700 my-2">{{ bounty.skill.name }}</span>
-            </div>
-
-            <div>
-                <h1 class="font-medium text-gray-400">Points</h1>
-                <p class="my-2">{{ bounty.points }}</p>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-{% endblock %}
+            {% endwith %}
+        {% endwith %}
+    {% endwith %}
+{% endblock  %}

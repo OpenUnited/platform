@@ -1,0 +1,58 @@
+{% extends 'base_html.html'  %}
+
+{% block title   %}Solve real-world challenges on open products | OpenUnited{% endblock  %}
+
+{% block header   %}
+{% include 'header_full.html'  %}
+{% endblock  %}
+
+{% block content   %}
+
+<div class="relative isolate w-full flex flex-col h-full grow xl:justify-center">
+    <svg class="absolute inset-x-0 top-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+        aria-hidden="true">
+        <defs>
+            <pattern id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84" width="200" height="200" x="50%" y="-1"
+                patternUnits="userSpaceOnUse">
+                <path d="M.5 200V.5H200" fill="none" />
+            </pattern>
+        </defs>
+        <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
+            <path d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z"
+                stroke-width="0" />
+        </svg>
+        <rect width="100%" height="100%" stroke-width="0" fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)" />
+    </svg>
+    <div class="overflow-hidden">
+        <div class="mx-auto w-full max-w-7xl pb-24 sm:pb-32 pt-4 sm:pt-20 sm:px-6 lg:px-0 xl:px-8 lg:pt-14">
+            <div class="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+                <div class="w-full max-w-xl lg:shrink-0">
+                    <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Build Together.</h1>
+                    <p class="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">Solve real-world challenges on open products. Build a rich, public showcase of your work as a product manager, software developer and more.</p>
+                    <div class="mt-10 flex flex-col sm:flex-row sm:items-center gap-y-4 sm:gap-y-0 sm:gap-x-6">
+                        <a href="{% url 'product_management:bounty-list' %}"
+                            class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit">Claim a Bounty</a>
+                        <a href="{% url 'about' %}" class="text-sm font-semibold leading-6 text-gray-900">Learn more about OpenUnited <span aria-hidden="true">→</span></a>
+                    </div>
+                </div>
+                <div class="flex justify-end w-full h-[320px] sm:h-[340px] mt-10 lg:mt-0">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/urIf0Ld9adE?si=yYjPW11_h-frTcVL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The following will actives later stages of the development. -->
+<!-- TODO: replace the javascript in the following file with hyperscript -->
+
+<!--
+{% if request.user.is_authenticated and not request.user.person.completed_profile %}
+{% include 'complete_profile_pop_up.html'  %}
+{% endif  %} -->
+
+{% endblock  %}
+
+{% block footer   %}
+{% include 'footer.html'  %}
+{% endblock  %}

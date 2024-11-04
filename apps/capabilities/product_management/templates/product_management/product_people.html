@@ -1,15 +1,15 @@
-{% extends 'product_management/product_detail_base.html' %}
+{% extends 'product_management/product_detail_base.html'  %}
 
-{% block title %}Product - People{% endblock %}
-{% block product_content %}
+{% block title   %}Product - People{% endblock  %}
+{% block product_content   %}
 
-{% set grouped_product_people = product_people|groupby('role')|reverse %}
+{% with grouped_product_people = product_people|groupby('role')|reverse   %}
 
 <div class="flex flex-col divide-y divide-slate-900/5">
     {% for role, product_people in grouped_product_people %}
     <div class="flex flex-col py-[30px] first:pt-0">
         <div class="flex items-center text-xl tracking-tight text-gray-900">
-            {{ role }} - {{ product_people|length }}
+            {{ role  }} - {{ product_people|length  }}
         </div>
         <div class="mt-[30px] grid gap-x-4 gap-y-12 grid-cols-1 md:grid-cols-2">
             {% for product_person in product_people %}
@@ -17,16 +17,16 @@
             <div class="flex items-start">
                 <div class="w-16 h-16 mr-2.5 flex items-center justify-center">
                     <img class="w-full h-full rounded-full object-cover object-center"
-                        src="{{ product_person.person.get_photo_url() }}" alt="Profile Photo">
+                        src="{{ product_person.person|call:get_photo_url  }}" alt="Profile Photo">
                 </div>
                 <div class="flex flex-col grow">
                     <h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900 mb-1">
-                        {{ product_person.person.get_full_name() }}</h3>
-                    <p class="text-base leading-7 text-gray-600">{{ product_person.person.current_position }}</p>
+                        {{ product_person.person|call:get_full_name  }}</h3>
+                    <p class="text-base leading-7 text-gray-600">{{ product_person.person.current_position  }}</p>
                     <ul role="list" class="mt-[14px] flex gap-x-6">
                         {% if product_person.person.twitter_link %}
                         <li>
-                            <a href="{{ product_person.person.twitter_link }}"
+                            <a href="{{ product_person.person.twitter_link  }}"
                                 class="text-gray-400 transition-all hover:text-gray-500">
                                 <span class="sr-only">Twitter</span>
                                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -35,10 +35,10 @@
                                 </svg>
                             </a>
                         </li>
-                        {% endif %}
+                        {% endif  %}
                         {% if product_person.person.linkedin_link %}
                         <li>
-                            <a href="{{ product_person.person.linkedin_link }}"
+                            <a href="{{ product_person.person.linkedin_link  }}"
                                 class="text-gray-400 transition-all hover:text-gray-500">
                                 <span class="sr-only">LinkedIn</span>
                                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -48,14 +48,14 @@
                                 </svg>
                             </a>
                         </li>
-                        {% endif %}
+                        {% endif  %}
                     </ul>
                 </div>
             </div>
-            {% endfor %}
+            {% endfor  %}
         </div>
     </div>
-    {% endfor %}
+    {% endfor  %}
 </div>
 
-{% endblock %}
+{% endblock  %}

@@ -1,16 +1,16 @@
 <form method="post">
-    {% csrf_token %}
+    {% csrf_token  %}
 
     <div>
-        <label for="{{ form.title.id_for_label }}"
-            class="block my-2 text-sm font-medium leading-6 text-gray-900">{{ form.title.label }}</label>
-        {{ form.title  }}
+        <label for="{{ form.title.id_for_label  }}"
+            class="block my-2 text-sm font-medium leading-6 text-gray-900">{{ form.title.label  }}</label>
+        {{ form.title   }}
     </div>
 
     <div>
-        <label for="{{ form.description.id_for_label }}"
-            class="block my-2 text-sm font-medium leading-6 text-gray-900">{{ form.description.label }}</label>
-        {{ form.description }}
+        <label for="{{ form.description.id_for_label  }}"
+            class="block my-2 text-sm font-medium leading-6 text-gray-900">{{ form.description.label  }}</label>
+        {{ form.description  }}
     </div>
 
 

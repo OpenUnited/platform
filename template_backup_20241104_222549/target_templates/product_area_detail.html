@@ -1,0 +1,23 @@
+{% extends 'product_management/product-detail_base_with_macro.html' %}
+
+{% block title %}Product - Summary{% endblock %}
+{% block product-content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+      {% with message=message %}
+        {% include "product_management/tree_helper/alert.html" %}
+      {% endwith %}
+
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if can_modify_product %}
+    {% include  "product_management/product_area_detail_helper/product-area-update.html" %}
+{% else %}
+    {% include  "product_management/product_area_detail_helper/product-area-detail/product-area_view.html" %}
+{% endif %}
+
+{% endblock product-content %}

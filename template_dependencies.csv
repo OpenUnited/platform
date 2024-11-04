@@ -1,0 +1,419 @@
+Template,Dependencies
+enterprise_customers.html,"templatetag:static, templatetag:load, base_html.html, footer.html, header_without_discord.html"
+product_detail.html,
+chapter-1.html,base.html
+navbar.html,"templatetag:static, templatetag:load"
+header_full.html,"templatetag:static, templatetag:load, navbar.html"
+home.html,"header_full.html, base_html.html, complete_profile_pop_up.html, footer.html"
+video_player_modal.html,
+about.html,"templatetag:static, templatetag:load, base_html.html, footer.html, header_without_discord.html"
+base_html.html,"templatetag:static, templatetag:load, video_player_modal.html"
+base.html,"templatetag:static, templatetag:load, base_html.html, footer.html, header_without_discord.html"
+header_without_discord.html,"templatetag:static, templatetag:load, navbar.html"
+404.html,"templatetag:static, templatetag:load"
+logo.html,"templatetag:static, templatetag:load"
+selectable_dropdown.html,
+main.html,"components/step_1.html, components/step_2.html, components/form_buttons.html, components/bounty_modal.html, base.html, components/step_4.html, components/step_5.html, components/step_nav.html, components/step_3.html"
+footer.html,
+complete_profile_pop_up.html,
+toast.html,
+privacy_policy.html,"header_without_discord.html, base_html.html, footer.html"
+attachments.html,
+header.html,"templatetag:static, templatetag:load, navbar.html"
+introduction.html,base.html
+terms_of_use.html,"header_without_discord.html, base_html.html, footer.html"
+filters/skill.html,product_management/bounty/helper/macros_fun.html
+filters/desktop_filter.html,"product_management/bounty/helper/filters/expertise.html, product_management/bounty/helper/filters/skill.html, product_management/bounty/helper/filters/status.html"
+filters/status.html,
+filters/mobile_filter.html,"product_management/bounty/helper/filters/expertise.html, product_management/bounty/helper/filters/skill.html, product_management/bounty/helper/filters/status.html"
+filters/expertise.html,product_management/bounty/helper/macros_fun.html
+portal/base.html,"templatetag:static, templatetag:load, portal/components/sidebar.html, portal/components/mobile_header.html"
+portal/dashboard.html,
+portal/products/detail.html,"include, portal/base.html"
+portal/products/settings.html,
+portal/products/users/update.html,selectable_dropdown.html
+portal/products/users/manage.html,
+portal/products/users/add.html,selectable_dropdown.html
+portal/challenges/manage.html,product_management/dashboard/challenge_table.html
+portal/challenges/components/table.html,
+portal/agreements/templates.html,
+portal/bounties/claims.html,
+portal/bounties/manage.html,"portal/base.html, portal/bounties/components/table.html"
+portal/bounties/my_bounties.html,bounty_claim_requests.html
+portal/bounties/components/table.html,
+portal/components/mobile_header.html,
+portal/components/sidebar.html,
+portal/components/attachments.html,
+portal/work/review.html,"portal/work/components/table.html, portal/base.html"
+portal/work/components/table.html,
+products/detail.html,"include, portal/base.html"
+products/settings.html,"templatetag:static, templatetag:load"
+forms/initiative_form.html,"templatetag:static, templatetag:load"
+forms/bounty_form.html,"templatetag:static, templatetag:load, talent/helper/macro_fun.html, talent/helper/expertises.html, attachments.html"
+forms/contributor_agreement_template_form.html,"templatetag:static, templatetag:load"
+forms/bounty_attachments.html,
+forms/challenge_form.html,"product_management/forms/partials/challenge_step_4.html, templatetag:load, templatetag:static, product_management/forms/partials/challenge_step_nav.html, product_management/forms/partials/challenge_bounty_modal.html, product_management/forms/partials/challenge_step_1.html, product_management/forms/partials/challenge_step_2.html, product_management/forms/partials/challenge_step_5.html, talent/helper/macro_fun.html, product_management/forms/partials/challenge_step_3.html"
+forms/bounty_empty_attachment.html,
+forms/capability_form.html,"templatetag:static, templatetag:load"
+forms/product_form.html,
+forms/update_challenge_form.html,"attachments.html, templatetag:load, templatetag:static"
+buttons/dropdown_actions.html,product_management/partials/buttons/create_bounty_claim_button.html
+buttons/delete_bounty_claim_button.html,
+buttons/create_bounty_claim_button.html,
+product_tree/index.html,"product_tree/components/main/empty_result.html, product_tree/components/sub_header/index.html, product_tree/components/header/index.html"
+product_tree/components/sub_header/index.html,"product_tree/components/sub_header/tooltip.html, product_tree/components/sub_header/add_product_button.html, product_tree/components/sub_header/search.html"
+product_tree/components/sub_header/tooltip.html,
+product_tree/components/sub_header/search.html,
+product_tree/components/sub_header/add_product_button.html,
+product_tree/components/main/empty_result.html,
+product_tree/components/main/macros/drag.html,
+product_tree/components/main/macros/tree_name.html,
+product_tree/components/main/macros/index.html,"product_tree/components/main/macros/tree_name.html, product_tree/components/main/macros/video.html, product_tree/components/main/macros/expand_button.html, product_tree/components/main/macros/action_buttons.html, product_tree/components/main/macros/drag.html"
+product_tree/components/main/macros/video.html,
+product_tree/components/main/macros/action_buttons.html,
+product_tree/components/main/macros/expand_button.html,
+product_tree/components/partials/partial_update_node.html,product_management/tree_helper/edit_button.html
+product_tree/components/partials/create_node_partial.html,
+product_tree/components/partials/create_root_node_partial.html,
+product_tree/components/partials/add_node_partial.html,
+product_tree/components/partials/update_node_partial.html,
+product_tree/components/header/edit_tree.html,
+product_tree/components/header/index.html,"product_tree/components/header/reset_tree.html, product_tree/components/header/edit_tree.html"
+product_tree/components/header/reset_tree.html,
+security/base_security.html,footer.html
+security/logout.html,
+security/sign_in/sign_in_form.html,
+security/sign_in/password_reset_required.html,"logo.html, security/base_security.html"
+security/sign_in/sign_in.html,"security/sign_in/sign_in_form.html, logo.html, security/base_security.html"
+security/password_reset/password_reset_done.html,"logo.html, security/base_security.html"
+security/password_reset/password_reset.html,"logo.html, security/password_reset/password_reset_form.html, security/base_security.html"
+security/password_reset/password_reset_confirm.html,"logo.html, security/base_security.html"
+security/password_reset/password_reset_form.html,
+security/password_reset/password_reset_complete.html,
+security/sign_up/sign_up_step_1.html,
+security/sign_up/sign_up_step_0.html,
+security/sign_up/sign_up_form.html,"security/sign_up/sign_up_step_0.html, security/sign_up/sign_up_step_1.html, security/sign_up/sign_up_step_2.html"
+security/sign_up/sign_up.html,"logo.html, security/sign_up/sign_up_form.html, security/base_security.html"
+security/sign_up/sign_up_step_2.html,
+sign_in/sign_in_form.html,"templatetag:static, templatetag:load"
+sign_in/password_reset_required.html,"templatetag:static, templatetag:load, logo.html, security/base_security.html"
+sign_in/sign_in.html,"templatetag:static, security/sign_in/sign_in_form.html, templatetag:load, security/base_security.html, logo.html"
+product_area_detail/product_area_view.html,"product_management/product_area_detail_helper/product-area-detail/product-area_breadcrumbs.html, attachments.html, product_management/product_area_detail_helper/product-area-detail/card.html"
+product_area_detail/card.html,
+product_area_detail/product_area_breadcrumbs.html,
+bounty/list.html,"product_management/bounty/helper/filters.html, toast.html, product_management/bounty/partials/list_partials.html, base.html"
+sub_header/index.html,"product_tree/components/sub_header/tooltip.html, product_tree/components/sub_header/add_product_button.html, product_tree/components/sub_header/search.html"
+sub_header/tooltip.html,
+sub_header/search.html,
+sub_header/add_product_button.html,
+challenges/manage.html,product_management/dashboard/challenge_table.html
+product_area_detail_helper/product_area_update.html,attachments.html
+product_area_detail_helper/challenge_main.html,"product_management/product_area_detail_helper/filter_modal.html, product_management/product_area_detail_helper/challenge_list.html"
+product_area_detail_helper/filter_modal.html,
+product_area_detail_helper/empty_form.html,
+product_area_detail_helper/challenge_list.html,product_management/product_area_detail_helper/challenge_card.html
+product_area_detail_helper/challenge_card.html,
+agreements/templates.html,
+bounties/claims.html,
+bounties/manage.html,"portal/base.html, portal/bounties/components/table.html"
+bounties/my_bounties.html,bounty_claim_requests.html
+macros/drag.html,
+macros/tree_name.html,
+macros/index.html,"product_tree/components/main/macros/tree_name.html, product_tree/components/main/macros/video.html, product_tree/components/main/macros/expand_button.html, product_tree/components/main/macros/action_buttons.html, product_tree/components/main/macros/drag.html"
+macros/video.html,"templatetag:static, templatetag:load"
+macros/action_buttons.html,"templatetag:static, templatetag:load"
+macros/expand_button.html,
+components/form_buttons.html,
+components/skill_tree.html,components/skill_tree_item.html
+components/bounty_modal.html,components/skill_tree.html
+components/mobile_header.html,"templatetag:static, templatetag:load"
+components/table.html,
+components/step_1.html,
+components/step_2.html,
+components/step_3.html,
+components/skill_tree_item.html,product_management/flows/challenge_authoring/components/skill_tree_item.html
+components/step_4.html,attachments.html
+components/bounty_table.html,
+components/step_nav.html,
+components/sidebar.html,"templatetag:static, templatetag:load"
+components/attachments.html,
+components/step_5.html,
+components/navigation.html,
+product_management/update_product.html,"product_management/forms/product-form.html, base.html"
+product_management/create_bounty.html,"product_management/forms/bounty_form.html, base.html"
+product_management/create_capability.html,"product_management/forms/capability_form.html, base.html"
+product_management/product_summary.html,"product_tree/index.html, toast.html, product_management/product_detail_base_with_macro.html"
+product_management/initiative_detail.html,"product_management/partials/initiative_challenge_table.html, toast.html, product_management/partials/breadcrumbs_initiative-detail.html, base.html"
+product_management/create_product.html,"product_management/forms/product_form.html, base.html"
+product_management/delete_attachment.html,
+product_management/product_idea_list.html,
+product_management/challenge_detail.html,"product_management/partials/breadcrumbs_challenge-detail.html, product_management/partials/bounty_detail_table.html, toast.html, base.html"
+product_management/product_bug_detail.html,product_management/product-detail_base.html
+product_management/update_product_idea.html,"product_management/product-detail_base.html, product_management/product_idea_form.html"
+product_management/update_challenge.html,"product_management/forms/update_challenge_form.html, base.html"
+product_management/add_product_idea.html,"product_management/product_detail_base.html, product_management/product_idea_form.html"
+product_management/products.html,base.html
+product_management/contributor_agreement_template_detail.html,"product_management/partials/breadcrumbs_contributor_agreement_template.html, toast.html, base.html"
+product_management/product_detail_base.html,base.html
+product_management/create_organisation.html,"product_management/create_organisation_form.html, toast.html, base.html"
+product_management/product_idea_form.html,
+product_management/update_bounty.html,"product_management/forms/bounty_form.html, base.html"
+product_management/create_organisation_form.html,
+product_management/create_initiative.html,"product_management/forms/initiative_form.html, base.html"
+product_management/add_product_bug.html,"product_management/product-detail_base.html, product_management/product_bug_form.html"
+product_management/product_bug_list.html,
+product_management/product_challenges.html,product_management/product_detail_base.html
+product_management/product_tree.html,"product_tree/index.html, product_management/product_detail_base_with_macro.html"
+product_management/update_product_bug.html,"product_management/product-detail_base.html, product_management/product_bug_form.html"
+product_management/bounty_detail.html,"attachments.html, product_management/partials/breadcrumbs_bounty_detail.html, product_management/partials/buttons/dropdown_actions.html, base.html"
+product_management/product_bounties.html,"product_management/product_detail_base.html, product_management/bounty/partials/list_partials.html, product_management/bounty/helper/filters.html"
+product_management/product_bug_form.html,
+product_management/product_area_detail.html,"product_management/product_area_detail_helper/product-area-update.html, product_management/product-detail_base_with_macro.html, product_management/product_area_detail_helper/product-area-detail/product-area_view.html, product_management/tree_helper/alert.html"
+product_management/capability_detail.html,base.html
+product_management/product_ideas_and_bugs.html,"product_management/product_idea_list.html, product_management/product_detail_base.html"
+product_management/summary_structure.html,
+product_management/product_people.html,product_management/product_detail_base.html
+product_management/product_detail_base_with_macro.html,product_management/product_detail_base.html
+product_management/product_initiatives.html,product_management/product_detail_base.html
+product_management/create_contributor_agreement_template.html,"product_management/forms/contributor_agreement_template_form.html, base.html"
+product_management/product_idea_detail.html,product_management/product-detail_base.html
+product_management/create_challenge.html,"product_management/forms/challenge_form.html, base.html"
+product_management/forms/initiative_form.html,
+product_management/forms/bounty_form.html,"attachments.html, talent/helper/expertises.html"
+product_management/forms/contributor_agreement_template_form.html,
+product_management/forms/bounty_attachments.html,
+product_management/forms/challenge_form.html,"product_management/forms/partials/challenge_step_4.html, product_management/forms/partials/challenge_step_nav.html, product_management/forms/partials/challenge_bounty_modal.html, product_management/forms/partials/challenge_step_1.html, product_management/forms/partials/challenge_step_2.html, product_management/forms/partials/challenge_step_5.html, product_management/forms/partials/challenge_step_3.html"
+product_management/forms/bounty_empty_attachment.html,
+product_management/forms/capability_form.html,
+product_management/forms/product_form.html,
+product_management/forms/update_challenge_form.html,attachments.html
+product_management/forms/partials/challenge_step_5.html,
+product_management/forms/partials/challenge_step_4.html,attachments.html
+product_management/forms/partials/challenge_bounty_modal.html,
+product_management/forms/partials/skill_tree.html,
+product_management/forms/partials/challenge_step_3.html,
+product_management/forms/partials/challenge_step_2.html,
+product_management/forms/partials/challenge_step_1.html,
+product_management/forms/partials/challenge_step_nav.html,
+product_management/forms/partials/expertise_options.html,
+product_management/bounty/list.html,"product_management/bounty/helper/filters.html, toast.html, product_management/bounty/partials/list_partials.html, base.html"
+product_management/bounty/helper/pagination.html,
+product_management/bounty/helper/filters.html,"product_management/bounty/helper/filters/desktop_filter.html, product_management/bounty/helper/filters/mobile_filter.html"
+product_management/bounty/helper/macros_fun.html,
+product_management/bounty/helper/card.html,
+product_management/bounty/helper/small_card.html,product_management/partials/buttons/dropdown_actions.html
+product_management/bounty/helper/skill_expertise_tree.html,product_management/bounty/helper/skill_expertise_tree.html
+product_management/bounty/helper/header.html,"toast.html, base.html"
+product_management/bounty/helper/filters/skill.html,
+product_management/bounty/helper/filters/desktop_filter.html,"product_management/bounty/helper/filters/expertise.html, product_management/bounty/helper/filters/skill.html, product_management/bounty/helper/filters/status.html"
+product_management/bounty/helper/filters/status.html,
+product_management/bounty/helper/filters/mobile_filter.html,"product_management/bounty/helper/filters/expertise.html, product_management/bounty/helper/filters/skill.html, product_management/bounty/helper/filters/status.html"
+product_management/bounty/helper/filters/expertise.html,
+product_management/bounty/partials/expertise.html,product_management/bounty/helper/filters/expertise.html
+product_management/bounty/partials/list_partials.html,"product_management/bounty/helper/card.html, product_management/bounty/helper/pagination.html"
+product_management/includes/summary_structure.html,product_management/includes/summary_structure.html
+product_management/product_area_detail_helper/product_area_update.html,attachments.html
+product_management/product_area_detail_helper/challenge_main.html,"product_management/product_area_detail_helper/filter_modal.html, product_management/product_area_detail_helper/challenge_list.html"
+product_management/product_area_detail_helper/filter_modal.html,
+product_management/product_area_detail_helper/empty_form.html,
+product_management/product_area_detail_helper/challenge_list.html,product_management/product_area_detail_helper/challenge_card.html
+product_management/product_area_detail_helper/challenge_card.html,
+product_management/product_area_detail_helper/product_area_detail/product_area_view.html,"product_management/product_area_detail_helper/product-area-detail/product-area_breadcrumbs.html, attachments.html, product_management/product_area_detail_helper/product-area-detail/card.html"
+product_management/product_area_detail_helper/product_area_detail/card.html,
+product_management/product_area_detail_helper/product_area_detail/product_area_breadcrumbs.html,
+product_management/partials/initiative_challenge_table.html,
+product_management/partials/breadcrumbs_bounty_detail.html,
+product_management/partials/breadcrumbs_contributor_agreement_template.html,
+product_management/partials/bounty_detail_table.html,product_management/bounty/helper/small_card.html
+product_management/partials/breadcrumbs_initiative_detail.html,
+product_management/partials/breadcrumbs_challenge_detail.html,
+product_management/partials/challenge_filter_partial.html,
+product_management/partials/buttons/dropdown_actions.html,product_management/partials/buttons/create_bounty_claim_button.html
+product_management/partials/buttons/delete_bounty_claim_button.html,
+product_management/partials/buttons/create_bounty_claim_button.html,
+work/review.html,"portal/work/components/table.html, portal/base.html"
+users/update.html,selectable_dropdown.html
+users/manage.html,
+users/add.html,selectable_dropdown.html
+unauthenticated_tree/index.html,"product_tree/index.html, base.html"
+templates/enterprise_customers.html,"templatetag:static, templatetag:load, base_html.html, footer.html, header_without_discord.html"
+templates/product_detail.html,
+templates/chapter-1.html,base.html
+templates/navbar.html,"templatetag:static, templatetag:load"
+templates/header_full.html,"templatetag:static, templatetag:load, navbar.html"
+templates/home.html,"header_full.html, base_html.html, complete_profile_pop_up.html, footer.html"
+templates/video_player_modal.html,
+templates/about.html,"templatetag:static, templatetag:load, base_html.html, footer.html, header_without_discord.html"
+templates/base_html.html,"templatetag:static, templatetag:load, video_player_modal.html"
+templates/base.html,"templatetag:static, templatetag:load, base_html.html, footer.html, header_without_discord.html"
+templates/header_without_discord.html,"templatetag:static, templatetag:load, navbar.html"
+templates/404.html,"templatetag:static, templatetag:load"
+templates/logo.html,"templatetag:static, templatetag:load"
+templates/selectable_dropdown.html,
+templates/main.html,"templatetag:static, templatetag:load, components/step_1.html, components/step_2.html, components/form_buttons.html, components/bounty_modal.html, base.html, components/step_4.html, components/step_5.html, components/step_nav.html, components/step_3.html"
+templates/footer.html,
+templates/complete_profile_pop_up.html,
+templates/toast.html,
+templates/privacy_policy.html,"header_without_discord.html, base_html.html, footer.html"
+templates/attachments.html,
+templates/header.html,"templatetag:static, templatetag:load, navbar.html"
+templates/introduction.html,base.html
+templates/terms_of_use.html,"header_without_discord.html, base_html.html, footer.html"
+password_reset/password_reset_done.html,"templatetag:static, templatetag:load, logo.html, security/base_security.html"
+password_reset/password_reset.html,"templatetag:static, templatetag:load, security/base_security.html, logo.html, security/password_reset/password_reset_form.html"
+password_reset/password_reset_confirm.html,"templatetag:static, templatetag:load, logo.html, security/base_security.html"
+password_reset/password_reset_form.html,"templatetag:static, templatetag:load"
+password_reset/password_reset_complete.html,
+main/empty_result.html,"templatetag:static, templatetag:load"
+helper/skills.html,"talent/helper/macro_fun.html, talent/helper/expertises.html"
+helper/macro_fun.html,
+helper/pagination.html,
+helper/social_links.html,"templatetag:static, templatetag:load"
+helper/filters.html,"product_management/bounty/helper/filters/desktop_filter.html, product_management/bounty/helper/filters/mobile_filter.html"
+helper/macros_fun.html,
+helper/card.html,
+helper/profile_info.html,
+helper/small_card.html,product_management/partials/buttons/dropdown_actions.html
+helper/empty_form.html,"talent/helper/macro_fun.html, talent/helper/expertises.html"
+helper/expertises.html,talent/helper/macro_fun.html
+helper/header.html,"toast.html, base.html"
+apps/portal/table.html,
+apps/flows/challenge_authoring/partials/expertise_options.html,
+sign_up/sign_up_step_1.html,"templatetag:static, templatetag:load"
+sign_up/sign_up_step_0.html,"templatetag:static, templatetag:load"
+sign_up/sign_up_form.html,"security/sign_up/sign_up_step_0.html, security/sign_up/sign_up_step_1.html, security/sign_up/sign_up_step_2.html"
+sign_up/sign_up.html,"templatetag:static, templatetag:load, security/base_security.html, security/sign_up/sign_up_form.html, logo.html"
+sign_up/sign_up_step_2.html,"templatetag:static, templatetag:load"
+partials/initiative_challenge_table.html,
+partials/delete_feedback_form.html,
+partials/partial_update_node.html,product_management/tree_helper/edit_button.html
+partials/create_node_partial.html,
+partials/challenge_step_5.html,
+partials/challenge_step_4.html,attachments.html
+partials/breadcrumbs_bounty_detail.html,
+partials/challenge_bounty_modal.html,
+partials/skill_tree.html,
+partials/challenge_step_3.html,
+partials/feedback_form.html,talent/partials/star_rating.html
+partials/breadcrumbs_contributor_agreement_template.html,
+partials/challenge_step_2.html,
+partials/create_root_node_partial.html,
+partials/bounty_detail_table.html,product_management/bounty/helper/small_card.html
+partials/challenge_step_1.html,"templatetag:static, templatetag:load"
+partials/add_node_partial.html,product_tree/components/main/macros/index.html
+partials/expertise.html,product_management/bounty/helper/filters/expertise.html
+partials/yellow_star.html,
+partials/partial_expertises.html,talent/helper/macro_fun.html
+partials/update_node_partial.html,
+partials/challenge_step_nav.html,
+partials/list_partials.html,"product_management/bounty/helper/card.html, product_management/bounty/helper/pagination.html"
+partials/breadcrumbs_initiative_detail.html,
+partials/expertise_options.html,
+partials/breadcrumbs_challenge_detail.html,
+partials/star_rating.html,
+partials/challenge_filter_partial.html,
+partials/horizontal_dropdown_dots.html,
+partials/showcase_achievements.html,
+partials/dropdown_search.html,
+partials/gray_star.html,
+header/edit_tree.html,
+header/index.html,"product_tree/components/header/reset_tree.html, product_tree/components/header/edit_tree.html"
+header/reset_tree.html,
+talent/showcase.html,"talent/partials/gray_star.html, toast.html, talent/partials/showcase_achievements.html, base.html, talent/partials/yellow_star.html"
+talent/profile.html,"talent/profile_picture.html, talent/helper/skills.html, talent/helper/profile_info.html, talent/helper/social_links.html, base.html"
+talent/bounty_delivery_attempt_detail.html,"attachments.html, base.html"
+talent/bounty_claim_attempt.html,"attachments.html, base.html"
+talent/profile_picture.html,
+talent/helper/skills.html,talent/helper/expertises.html
+talent/helper/macro_fun.html,
+talent/helper/social_links.html,
+talent/helper/profile_info.html,
+talent/helper/empty_form.html,talent/helper/expertises.html
+talent/helper/expertises.html,
+talent/partials/delete_feedback_form.html,
+talent/partials/feedback_form.html,talent/partials/star_rating.html
+talent/partials/yellow_star.html,
+talent/partials/partial_expertises.html,
+talent/partials/star_rating.html,
+talent/partials/profile_form.html,
+talent/partials/horizontal_dropdown_dots.html,
+talent/partials/showcase_achievements.html,
+talent/partials/gray_star.html,
+registration/password_reset_done.html,"admin/base_site.html, templatetag:load, templatetag:i18n"
+registration/password_change_form.html,"templatetag:static, templatetag:load, admin/base_site.html, admin/color_theme_toggle.html, templatetag:i18n"
+registration/password_reset_email.html,"templatetag:load, templatetag:i18n"
+registration/password_reset_confirm.html,"admin/base_site.html, templatetag:load, templatetag:i18n, templatetag:static"
+registration/password_reset_form.html,"admin/base_site.html, templatetag:load, templatetag:i18n, templatetag:static"
+registration/logged_out.html,"admin/base_site.html, templatetag:load, templatetag:i18n"
+registration/password_reset_complete.html,"admin/base_site.html, templatetag:load, templatetag:i18n"
+registration/password_change_done.html,"admin/color_theme_toggle.html, admin/base_site.html, templatetag:load, templatetag:i18n"
+admin/delete_selected_confirmation.html,"templatetag:static, templatetag:load, templatetag:admin_urls, admin/includes/object_delete_summary.html, admin/base_site.html, templatetag:l10n, templatetag:i18n"
+admin/change_list_object_tools.html,"templatetag:load, templatetag:i18n, templatetag:admin_urls"
+admin/delete_confirmation.html,"templatetag:static, templatetag:load, templatetag:admin_urls, admin/includes/object_delete_summary.html, admin/base_site.html, templatetag:i18n"
+admin/actions.html,"templatetag:load, templatetag:i18n"
+admin/color_theme_toggle.html,"templatetag:load, templatetag:i18n"
+admin/change_list_results.html,"templatetag:load, templatetag:i18n"
+admin/index.html,"templatetag:static, templatetag:load, templatetag:log, admin/base_site.html, templatetag:i18n, admin/app_list.html"
+admin/pagination.html,"templatetag:load, templatetag:i18n, templatetag:admin_list"
+admin/base.html,"templatetag:static, templatetag:load, admin/color_theme_toggle.html, templatetag:i18n, admin/nav_sidebar.html"
+admin/date_hierarchy.html,
+admin/invalid_setup.html,"admin/base_site.html, templatetag:load, templatetag:i18n"
+admin/app_index.html,"admin/index.html, templatetag:load, templatetag:i18n"
+admin/500.html,"admin/base_site.html, templatetag:load, templatetag:i18n"
+admin/object_history.html,"admin/base_site.html, templatetag:load, templatetag:i18n, templatetag:admin_urls"
+admin/404.html,"admin/base_site.html, templatetag:load, templatetag:i18n"
+admin/login.html,"admin/base_site.html, templatetag:load, templatetag:i18n, templatetag:static"
+admin/change_list.html,"templatetag:static, templatetag:load, templatetag:admin_urls, admin/base_site.html, templatetag:i18n, templatetag:admin_list"
+admin/popup_response.html,"templatetag:static, templatetag:load, templatetag:i18n"
+admin/change_form_object_tools.html,"templatetag:load, templatetag:i18n, templatetag:admin_urls"
+admin/app_list.html,"templatetag:load, templatetag:i18n"
+admin/submit_line.html,"templatetag:load, templatetag:i18n, templatetag:admin_urls"
+admin/search_form.html,"templatetag:static, templatetag:load, templatetag:i18n"
+admin/prepopulated_fields_js.html,"templatetag:static, templatetag:load"
+admin/change_form.html,"templatetag:static, templatetag:load, templatetag:admin_urls, include, admin/base_site.html, admin/includes/fieldset.html, templatetag:admin_modify, templatetag:i18n"
+admin/nav_sidebar.html,"admin/app_list.html, templatetag:load, templatetag:i18n"
+admin/base_site.html,"admin/color_theme_toggle.html, admin/base.html"
+admin/filter.html,"templatetag:load, templatetag:i18n"
+admin/auth/user/change_password.html,"templatetag:static, templatetag:load, templatetag:admin_urls, admin/base_site.html, templatetag:i18n"
+admin/auth/user/add_form.html,"templatetag:load, templatetag:i18n, admin/change_form.html"
+admin/includes/object_delete_summary.html,"templatetag:load, templatetag:i18n"
+admin/includes/fieldset.html,
+admin/edit_inline/stacked.html,"admin/includes/fieldset.html, templatetag:load, templatetag:i18n, templatetag:admin_urls"
+admin/edit_inline/tabular.html,"templatetag:static, templatetag:load, templatetag:admin_urls, templatetag:admin_modify, templatetag:i18n"
+admin/widgets/many_to_many_raw_id.html,admin/widgets/foreign_key_raw_id.html
+admin/widgets/radio.html,django/forms/widgets/multiple_input.html
+admin/widgets/url.html,django/forms/widgets/input.html
+admin/widgets/foreign_key_raw_id.html,django/forms/widgets/input.html
+admin/widgets/clearable_file_input.html,django/forms/widgets/attrs.html
+admin/widgets/split_datetime.html,include
+admin/widgets/related_widget_wrapper.html,"templatetag:static, templatetag:load, templatetag:i18n"
+auth/widgets/read_only_password_hash.html,django/forms/widgets/attrs.html
+django_extensions/widgets/foreignkey_searchinput.html,"templatetag:load, templatetag:i18n"
+formtools/preview.html,"templatetag:load, templatetag:i18n, base.html"
+formtools/form.html,"templatetag:load, templatetag:i18n, base.html"
+formtools/wizard/wizard_form.html,"templatetag:load, templatetag:i18n"
+django_filters/rest_framework/form.html,"templatetag:load, templatetag:i18n"
+django_filters/rest_framework/crispy_form.html,"templatetag:load, templatetag:crispy_forms_tags, templatetag:i18n"
+django_filters/widgets/multiwidget.html,include
+debug_toolbar/redirect.html,"templatetag:static, templatetag:load, templatetag:i18n"
+debug_toolbar/base.html,"templatetag:static, templatetag:load, templatetag:i18n, debug_toolbar/includes/panel_content.html, debug_toolbar/includes/panel_button.html"
+debug_toolbar/panels/signals.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/profiling.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/sql_explain.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/staticfiles.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/cache.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/template_source.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/headers.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/sql.html,"templatetag:l10n, templatetag:load, templatetag:i18n"
+debug_toolbar/panels/timer.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/templates.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/history.html,"templatetag:static, templatetag:load, debug_toolbar/panels/history_tr.html, templatetag:i18n"
+debug_toolbar/panels/versions.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/request_variables.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/sql_select.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/settings.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/history_tr.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/panels/request.html,"templatetag:load, templatetag:i18n, debug_toolbar/panels/request_variables.html"
+debug_toolbar/panels/sql_profile.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/includes/panel_button.html,"templatetag:load, templatetag:i18n"
+debug_toolbar/includes/panel_content.html,"templatetag:static, templatetag:load"

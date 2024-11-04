@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'base.html'  %}
+{% load static %}
 
-{% block title %}Create a Challenge{% endblock %}
+{% block title   %}Create a Challenge{% endblock  %}
 
-{% block page_scripts %}
-<script src="{{ static('scripts/challenge-steps.js') }}"></script>
-{% endblock %}
+{% block page_scripts   %}
+<script src="{% static 'scripts/challenge-steps.js' %}"></script>
+{% endblock  %}
 
-{% block content %}
+{% block content   %}
 
-{% include 'product_management/forms/challenge_form.html' %}
+{% include 'product_management/forms/challenge_form.html'  %}
 
-{% endblock %}
+{% endblock  %}

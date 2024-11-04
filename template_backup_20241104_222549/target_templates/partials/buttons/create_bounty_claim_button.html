@@ -1,0 +1,21 @@
+{% if request.user.is_authenticated %}
+    {% if elem.can_be_claimed %}
+        <button
+            hx-post="{{ url('bounty-claim', args=(elem.bounty.pk,)) }}"
+            class="{{button_class}}"
+            id="claim_request_{{bounty.pk}}"
+            hx-swap="afterend" hx-target="#ulDropdownMenu_{{elem.bounty.pk}}"
+            claim-bounty="true">Claim Bounty</button>
+    {% endif %}
+{% elif elem.can_be_claimed %}
+    <button onclick="authPopUp(event, '{{ url('sign-up') }}', '{{ url('sign-in') }}')" class="{{button_class}}">Claim Bounty</button>
+{% endif %}
+
+<script>
+    document.addEventListener("htmx:afterRequest", function(event) {
+        if (event.target.id=="claim_request_{{bounty.pk}}" && event.detail.successful) {
+            document.getElementById("dropdownHoverButton_{{bounty.pk}}").classList.remove("hidden")
+            document.getElementById("claim_request_{{bounty.pk}}").classList.add("hidden")
+        }
+    });
+</script>

@@ -1,0 +1,25 @@
+{% for item in items %}
+{% if item not in displayed_items %}
+<div class="nested-item flex flex-col {% if depth > 1 %}pl-4 lg:pl-8{% endif %}">
+    <div class="nested-item__label flex items-start py-1.5 border-t border-solid border-gray-100">
+        <button type="button" 
+            class="{% if not item.descendants.exists %}opacity-0 pointer-events-none{% endif %} nested-item__label-icon h-[22px] w-4 mr-1 flex items-center justify-center shrink-0 rounded-full focus:outline-none focus:ring-0 p-0.5 appearance-none">
+            <!-- Button content -->
+        </button>
+        <span class="flex flex-col flex-1">
+            <span class="flex items-center">
+                <a href="{% url 'capability-detail' product_slug item.id %}" class="mr-2">{{ item.name }}</a>
+            </span>
+            <span class="flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+                {{ item.description }}
+            </span>
+        </span>
+    </div>
+    {% if item.descendants.exists %}
+    <div class="nested-item__child hidden">
+        {% include "product_management/includes/summary_structure.html" with items=item.descendants.all depth=depth|add:1 displayed_items=displayed_items %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endfor %} 

@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- tailwind version 3.3.2 -->
+    <link rel="stylesheet" href="{% static 'styles/tailwind.css' %}">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+
+    <!-- Favicon stuff -->
+    <link rel="icon" href="{{ static ('images/favicon/favicon.ico')  }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ static ('images/favicon/apple-touch-icon.png')  }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ static ('images/favicon/favicon-32x32.png')  }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ static ('images/favicon/favicon-16x16.png')  }}">
+    <link rel="manifest" href="{{ static ('images/favicon/site.webmanifest')  }}">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <link href="{% static 'plugin/alert/css/alertify.min.css' %}" rel="stylesheet">
+    <link rel="icon" href="{{ static ('images/favicon/favicon.ico')  }}">
+
+
+    <!--This is the right place-->
+    <script src="{% static 'scripts/read_more.js' %}"></script>
+
+    {% block media   %}{% endblock  %}
+
+    <title>{% block title   %}{% endblock  %}</title>
+
+</head>
+
+<body>
+    {% block header   %}{% endblock  %}
+
+    <main class="mx-auto flex flex-col w-full max-w-7xl px-4 py-6 lg:px-8 flex-1 relative z-[1]">
+        {% block content   %}{% endblock  %}
+    </main>
+
+    {% block footer   %}{% endblock  %}
+
+
+    <script src="{% static 'plugin/hyperscript/js/_hyperscript.min.js' %}"></script>
+    <script src="{% static 'plugin/htmx/js/htmx.min.js' %}"></script>
+    <script src="{% static 'plugin/font-awesome/js/all.min.js' %}"></script>
+
+    {% block scripts   %}{% endblock  %}
+
+    {% block page_scripts   %}
+    {% endblock  %}
+
+    {% include "video_player_modal.html"  %}
+
+    </body>
+
+</html>

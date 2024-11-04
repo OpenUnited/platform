@@ -1,0 +1,28 @@
+<form enctype="multipart/form-data" class="container" method="post" id="product-form">
+    {% csrf_token %}
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {% for field in form %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">{{field.label}}
+                    {% if field.field.required %}
+                        <span style="color: red;" class="required">*</span>
+                    {% endif %}
+                </label>
+
+
+                {{field}}
+                {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+        <!--File attachment plugin-->
+        {% include "attachments.html" %}
+
+    <button type="submit" class="w-full bg-gray-700 text-white py-2 mt-3 px-4 rounded focus:outline-none focus:bg-gray-600">Save</button>
+</form>
