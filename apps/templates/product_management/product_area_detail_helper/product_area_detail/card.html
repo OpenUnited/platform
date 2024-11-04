@@ -1,0 +1,28 @@
+
+<div class="bg-white space-y-3 p-2 rounded-lg shadow border-gray-2 border border-solid border-gray grid grid-cols-3 md:grid-cols-3 gap-4">
+    <div class="col-span-full">
+        <a class="text-indigo-500"
+            href="{{ url 'product-area-detail' product_slug, child.id,  }}">
+            {{ child.name  }}
+        </a>
+
+        <div class="space-y-2.5 text-sm text-black/[0.85]">
+            <p class="mt-1 text-gray-500" id="id_description_{{ index }}">{{ child.description  }}</p>
+        </div>
+
+        <button id="read_more_btn_{{ index }}" onclick="readMoreFunction({{ index }})" class="text-indigo-500 hover:text-indigo-700 focus:outline-none mt-2">
+            Read More
+        </button>
+    </div>
+
+</div>
+
+<script>
+    var data = {
+        "index":"{{ index }}",
+        "textElementId":"id_description_{{ index }}",
+        "visibleWords":10,
+    }
+    preSetup(data)
+
+</script>

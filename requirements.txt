@@ -27,7 +27,6 @@ django-extensions==3.2.3
 django-filter==23.5
 django-formtools==2.4.1
 django-htmx==1.17.3
-django-jinja==2.10.2
 django-js-asset==2.2.0
 django-lifecycle==1.2.3
 django-model-utils==4.5.1
@@ -41,7 +40,6 @@ gunicorn==21.1.0
 identify==2.6.1
 idna==3.10
 iniconfig==2.0.0
-Jinja2==3.1.2
 jmespath==1.0.1
 jsonformat==0.0.11
 kombu==5.4.2

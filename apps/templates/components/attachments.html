@@ -1,0 +1,23 @@
+<div class="attachments-container">
+    {{ attachment_formset.management_form  }}
+    
+    {% for form in attachment_formset %}
+        <div class="attachment-form mb-4">
+            {{ form.id  }}
+            <div class="flex items-center gap-x-3">
+                <div class="flex-grow">
+                    {{ form.file  }}
+                </div>
+                {% if form.instance.pk %}
+                    <div class="flex-none">
+                        {{ form.DELETE  }}
+                        <label for="{{ form.DELETE.id_for_label  }}" class="text-sm text-red-600">Delete</label>
+                    </div>
+                {% endif  %}
+            </div>
+            {% if form.file.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ form.file.errors  }}</p>
+            {% endif  %}
+        </div>
+    {% endfor  %}
+</div> 

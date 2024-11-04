@@ -1,0 +1,21 @@
+<tr class="border-b border-gray-200">
+  <td class="py-2">
+    <input accept=".pdf,.PNG,.GIF,.JPG,.JPEG"  class="shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none w-4/5 py-2 px-3" type="file" name="attachments-{{ index  }}-file" id="id_attachments-{{ index  }}-file">
+  </td>
+
+  <td class="py-2">
+    <input type="text" placeholder="Title..." maxlength="300" class="shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="attachments-{{ index  }}-title" id="id_attachments-{{ index  }}-title">
+  </td>
+
+  <td class="py-2">
+      <textarea  cols="40" rows="2" placeholder="Description..." class="shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="attachments-{{ index  }}-description" id="id_attachments-{{ index  }}-description"></textarea>
+  </td>
+
+  <td class="py-3  text-left">
+    <input type="checkbox" class="hidden"  name="attachments-{{ index  }}-DELETE" id="id_attachments-{{ index  }}-DELETE">
+    <button type="button" id="id_attachments-{{ index  }}-button"  class="bg-red-700 text-white py-1 px-2 rounded-full" onclick="removeClosestRow(this)">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+  </td>
+
+</tr>

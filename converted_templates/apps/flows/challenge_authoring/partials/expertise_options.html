@@ -3,25 +3,25 @@
         <label class="block text-sm font-medium text-gray-700 mb-2">Select Required Expertise</label>
         {% for category, expertises in expertise_categories.items %}
             <div class="mb-4">
-                <h4 class="text-sm font-medium text-gray-600 mb-2">{{ category  }}</h4>
+                <h4 class="text-sm font-medium text-gray-600 mb-2">{{ category   }}</h4>
                 <div class="space-y-2">
                     {% for expertise in expertises %}
                         <div class="flex items-center">
                             <input type="checkbox" 
-                                   id="expertise_{{ expertise.id  }}" 
+                                   id="expertise_{{ expertise.id   }}" 
                                    name="expertise" 
-                                   value="{{ expertise.id  }}"
+                                   value="{{ expertise.id   }}"
                                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                            <label for="expertise_{{ expertise.id  }}" 
+                            <label for="expertise_{{ expertise.id   }}" 
                                    class="ml-2 block text-sm text-gray-900">
-                                {{ expertise.name  }}
+                                {{ expertise.name   }}
                             </label>
                         </div>
-                    {% endfor  %}
+                    {% endfor   %}
                 </div>
             </div>
-        {% endfor  %}
+        {% endfor   %}
     </div>
 {% else %}
     <p class="text-sm text-gray-500 mt-2">Please select a skill first to see available expertise options.</p>
-{% endif  %} 
+{% endif   %} 

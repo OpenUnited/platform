@@ -6,14 +6,11 @@ django-cors-headers==4.3.1
 django-extensions==3.2.3
 django-filter==23.5
 django-formtools==2.4.1
-django-jinja==2.10.2
 
 django-tinymce==4.0.0
 django-treebeard==4.7
 fastapi==0.101.0
 gunicorn==21.1.0
-htmx==0.0.0
-Jinja2==3.1.2
 Pillow==10.0.0
 psycopg2-binary==2.9.6
 requests==2.31.0

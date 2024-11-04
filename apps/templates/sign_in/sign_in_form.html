@@ -1,0 +1,76 @@
+{% if auth_provider  == "django" %}
+<form class="space-y-6 mb-0" method="POST">
+    {% csrf_token  %}
+    {% with non_field_errors = form|call:non_field_errors   %}
+    {% if non_field_errors| length %}
+    <div
+        class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+        <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
+            <img src="{{ static 'images/error.svg'  }}" alt="Error Icon">
+        </span>
+        {% for error in non_field_errors %}
+        <p>{{ error  }}</p>
+        {% endfor  %}
+    </div>
+    {% endif  %}
+    <div>
+        <label for="{{ form.username_or_email.id_for_username  }}"
+            class="block text-sm font-medium leading-6 text-gray-900">
+            {{ form.username_or_email.label  }}
+        </label>
+        <div class="mt-2">
+            {{ form.username_or_email  }}
+        </div>
+    </div>
+
+    <div>
+        <label for="{{ form.password.id_for_password  }}" class="block text-sm font-medium leading-6 text-gray-900">
+            {{ form.password.label  }}
+        </label>
+        <div class="mt-2">
+            {{ form.password  }}
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            {{ form.remember_me  }}
+            <span class="text-sm ml-2">Remember me</span>
+        </div>
+
+        <div class="text-sm leading-6">
+            <a href="{{ url 'password_reset'  }}"
+                class="font-medium transition-all text-[#1890ff] hover:text-text-[#1890ff] hover:underline underline-offset-2">
+                Forgot password?
+            </a>
+        </div>
+    </div>
+    <div>
+        <button type="submit" id="sign-in-button"
+            class="flex w-full justify-center rounded-md bg-[#1890ff] px-3 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm transition-all hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1890ff]">
+            Sign in to your account
+        </button>
+    </div>
+
+    <p class="text-left text-sm text-gray-500">
+        Don’t have an account yet?
+        <a href="{{ url 'sign-up'  }}?next={{ next  }}"
+            class="font-medium leading-6 text-[#1890ff] transition-all hover:text-text-[#1890ff] hover:underline underline-offset-2">
+            Sign up here
+        </a>
+    </p>
+
+</form>
+{% elif auth_provider  == "AzureAD"  %}
+<div>
+    <a href="{{ url 'social:begin' 'azuread-oauth2',  }}">
+        <button type="button" class="flex w-full justify-center rounded-md px-3 py-2.5 text-sm font-semibold leading-6
+                        bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none
+                        focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex
+                        items-center me-2 mb-2 text-sm">
+            <img class="mr-2" src="{{ static 'images/microsoft-icon.svg'  }}" alt="Microsoft Icon">
+            Sign in to your account with Microsoft
+        </button>
+    </a>
+</div>
+{% endif  %}

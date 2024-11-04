@@ -185,15 +185,31 @@ class TemplateConverter:
         
         return content
 
+    def _convert_function_calls(self, content: str) -> str:
+        """Convert Jinja2 function calls to Django template syntax"""
+        # Convert method calls with parentheses to filters
+        content = re.sub(
+            r'\.([a-zA-Z_]+)\(\)',
+            r'|\1',
+            content
+        )
+        return content
+
     def convert_template(self, content: str) -> str:
         """Convert template content from Jinja2 to Django template syntax"""
-        content = self._convert_url_patterns(content)
-        content = self._convert_template_tags(content)
-        content = self._convert_set_statements(content)
+        # Apply all conversion patterns
+        for pattern, replacement in self.conversion_patterns.items():
+            if callable(replacement):
+                content = re.sub(pattern, replacement, content)
+            else:
+                content = re.sub(pattern, replacement, content)
+        
+        # Apply additional conversions
         content = self._convert_function_calls(content)
-        content = self._convert_comparisons(content)
         content = self._convert_macro_syntax(content)
-        content = self._fix_unclosed_tags(content)
+        content = self._convert_blocks(content)
+        content = self._convert_control_structures(content)
+        content = self._convert_static_tags(content)
         
         return content
 

@@ -1,0 +1,95 @@
+{% extends 'base.html'  %}
+
+{% block title   %}Homepage - Products Listed{% endblock  %}
+{% block content   %}
+
+<div class="flex flex-col">
+
+    <div class="flex items-center justify-between w-full mb-12">
+        <div class="flex items-center space-x-8 tabs-top">
+            <a href="{{ url 'bounties'  }}"
+                class="active font-semibold py-3 text-sm inline-flex relative -mb-px text-gray-900 border-b-2 border-solid border-transparent">
+                Bounties
+            </a>
+            <a href=""
+                class="font-semibold py-3 text-sm inline-flex relative -mb-px text-[#1890ff] border-b-2 border-solid border-[#1890ff]">Products</a>
+        </div>
+        <!-- <button type="button"
+            class="appearance-none ml-auto bg-[#1890ff] text-sm font-semibold leading-6 transition-all delay-600 rounded px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 cursor-pointer btn-modal__open">
+            Filter
+        </button> -->
+        <a href="{{ url 'create-product'  }}">
+            <button type="button"
+                class="rounded-md bg-indigo-50 ml-2 px-3.5 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100">Create
+                a Product</button>
+        </a>
+    </div>
+
+    <ul role="list" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {% for product in products %}
+        <li class="overflow-hidden rounded-xl border border-gray-200">
+            <div class="bg-gray-400/30">
+                {% if product.video_url %}
+                <iframe src="{{ product.video_url  }}" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+                {% else %}
+                <div class="bg-cover bg-no-repeat w-[300px] h-[150px]">
+                    <img src="{{ product|call:get_photo_url  }}" alt="Product Photo"></div>
+                {% endif  %}
+            </div>
+            <div class="flex flex-1 flex-col space-y-2 p-4">
+                <h3 class="text-sm font-medium text-gray-900">
+                    <a href="/{{ product.slug  }}/summary">
+                        {{ product.name  }}
+                    </a>
+                </h3>
+                <p class="text-sm text-gray-500">
+                    {{ product.short_description  }}
+                </p>
+                <div>
+                    <p class="text-sm text-gray-900 flex items-center gap-x-1">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggMUM0LjEzNDM4IDEgMSA0LjEzNDM4IDEgOEMxIDExLjg2NTYgNC4xMzQzOCAxNSA4IDE1QzExLjg2NTYgMTUgMTUgMTEuODY1NiAxNSA4QzE1IDQuMTM0MzggMTEuODY1NiAxIDggMVpNMTEuMDIzNCA1LjcxNDA2TDcuNzMyODEgMTAuMjc2NkM3LjY4NjgyIDEwLjM0MDggNy42MjYxOSAxMC4zOTMxIDcuNTU1OTUgMTAuNDI5MUM3LjQ4NTcxIDEwLjQ2NTIgNy40MDc4NyAxMC40ODQxIDcuMzI4OTEgMTAuNDg0MUM3LjI0OTk0IDEwLjQ4NDEgNy4xNzIxMSAxMC40NjUyIDcuMTAxODYgMTAuNDI5MUM3LjAzMTYyIDEwLjM5MzEgNi45NzA5OSAxMC4zNDA4IDYuOTI1IDEwLjI3NjZMNC45NzY1NiA3LjU3NjU2QzQuOTE3MTkgNy40OTM3NSA0Ljk3NjU2IDcuMzc4MTMgNS4wNzgxMiA3LjM3ODEzSDUuODEwOTRDNS45NzAzMSA3LjM3ODEzIDYuMTIxODcgNy40NTQ2OSA2LjIxNTYyIDcuNTg1OTRMNy4zMjgxMiA5LjEyOTY5TDkuNzg0MzggNS43MjM0NEM5Ljg3ODEzIDUuNTkzNzUgMTAuMDI4MSA1LjUxNTYyIDEwLjE4OTEgNS41MTU2MkgxMC45MjE5QzExLjAyMzQgNS41MTU2MiAxMS4wODI4IDUuNjMxMjUgMTEuMDIzNCA1LjcxNDA2WiIgZmlsbD0iIzM4OUUwRCIvPgo8L3N2Zz4K"
+                            class="check-circle-icon" alt="status">
+                        <a href="/{{ product.slug  }}/challenges">
+                            <!-- Filter the available challenges -->
+                            {{ product.challenge_set.filter(status=challenge_status.ACTIVE)|count  }} active challenges
+                        </a>
+                    </p>
+                    <p class="text-sm text-gray-900">
+                        <a href="/{{ product.slug  }}/initiatives">
+                            {{ product.initiatives|call:all|count if product.initiatives is defined else 0  }} available initiatives
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </li>
+        {% endfor  %}
+    </ul>
+
+    <!-- Pagination -->
+    <div class="flex mx-auto gap-x-2 mt-10">
+
+        {% if page_obj|call:has_previous %}
+        <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
+                href="?page={{ page_obj|call:previous_page_number  }}">&laquo;</a></div>
+        {% endif  %}
+
+        {% for i in paginator.page_range %}
+        {% if page_obj.number  == i %}
+        <div class=" flex items-center justify-center w-8 h-8  text-md bg-blue-400 rounded-md text-white">{{ i  }}</div>
+        {% else %}
+        <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
+                href="?page={{ i  }}">{{ i  }}</a></div>
+        {% endif  %}
+        {% endfor  %}
+
+        {% if page_obj|call:has_next %}
+        <div class=" flex items-center justify-center w-8 h-8 text-md hover:text-blue-400"><a
+                href="?page={{ page_obj|call:next_page_number  }}">&raquo;</a></div>
+        {% endif  %}
+    </div>
+
+</div>
+
+{% endblock  %}

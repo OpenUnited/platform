@@ -1,0 +1,39 @@
+{% extends 'base.html'  %}
+
+{% block content   %}
+
+<div class="flex justify-center">
+    <form id="reset_tree" action="{{ url 'canopy:reset_tree'  }}"></form>
+
+    <div id="product_tree"  class="w-full sm:w-full md:w-3/5 flex flex-col">
+        {% with product_tree=product_tree  %}
+            {% include "product_tree/index.html"  %}
+        {% endwith  %}
+
+
+        <!-- Container to hold the new form -->
+        <div id="form_container" class="w-full"></div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener("htmx:afterRequest", function(event) {
+        if (event.target.id == "shareable_product_tree"){
+            if (event.detail.successful){
+                document.getElementById("shareable_product_tree").classList.add("hidden")
+                console.log(JSON.parse(event.detail.xhr.response).name)
+                document.getElementById("shareable_product_name").innerHTML = JSON.parse(event.detail.xhr.response).name
+                document.getElementById("shareable_product_tree_name").classList.remove("hidden")
+            }
+            else{
+                document.getElementById("shareable_product_tree_error").innerHTML = JSON.parse(event.detail.xhr.response).error
+            }
+        }
+    });
+
+
+
+</script>
+{% endblock content   %}

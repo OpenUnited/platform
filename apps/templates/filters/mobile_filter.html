@@ -1,0 +1,75 @@
+<a href="#" onclick="openModal(event)" class="block sm:hidden text-sm font-semibold leading-6 transition-all delay-600 rounded bg-indigo-600 px-3.5 py-1.5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Filter</a>
+
+    <div id="search_modal" class="fixed hidden inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 sm:hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold">Filter</h2>
+                <button class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal()">
+                    <i class="fas fa-times h-6 w-6"></i>
+                </button>
+            </div>
+            <form hx-get="{{ url 'product_management:bounty-list'  }}" id="filter_form_mobile" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML" >
+                {% with id="id_status_mobile"  %}
+                    {% include "product_management/bounty/helper/filters/status.html"  %}
+                {% endwith  %}
+
+                {% with id="id_skill_mobile"  %}
+                    {% include "product_management/bounty/helper/filters/skill.html"  %}
+                {% endwith  %}
+
+                <div class="mr-4 mt-4 mb-4" id="expertise_container_mobile">
+                    {% with id="id_expertise"  %}
+                        {% include "product_management/bounty/helper/filters/expertise.html"  %}
+                    {% endwith  %}
+                </div>
+
+                <span class="hidden mt-5"><strong id="item_found_count"></strong> items found</span>
+
+                <div class="mr-4 mt-4">
+                      <button onclick="closeModal()" class="mt-6 py-1.5 px-2 w-full bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 rounded-md transition duration-300">Apply Filters</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener("htmx:afterRequest", function(event) {
+        if (event.detail.successful){
+            if (event.target.getAttribute("target_id")  == "id_skill_mobile" && event.detail.successful) {
+                const responseData = JSON.parse(event.detail.xhr.response);
+                document.querySelector("#item_list_container").innerHTML = responseData.list_html;
+                document.querySelector("#expertise_container_mobile").innerHTML = responseData.expertise_html;
+                document.querySelector("#item_found_count").innerHTML = responseData.item_found_count;
+                document.querySelector("#item_found_count").closest("span").classList.remove("hidden")
+                event.target.setAttribute("target_id", "none-skill")
+                event.target.setAttribute("target_id", "none-skill")
+                event.target.setAttribute("hx-vals", "");
+            }
+            else if (event.target.id == "filter_form_mobile"){
+                document.querySelector("#item_found_count").innerHTML = document.getElementById("li_list_container").querySelectorAll("li").length
+                document.querySelector("#item_found_count").closest("span").classList.remove("hidden")
+            }
+        }
+    });
+
+    document.getElementById("id_skill_mobile").addEventListener("change", function(event) {
+        const data = {
+            target: "skill",
+        };
+        const closestForm = event.target.closest("form")
+        closestForm.setAttribute("hx-vals", JSON.stringify(data));
+        closestForm.setAttribute("target_id", "id_skill_mobile");
+
+    });
+
+    function openModal(event) {
+        event|call:preventDefault;
+        document.getElementById('search_modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        event|call:preventDefault;
+        document.getElementById('search_modal').classList.add('hidden');
+    }
+</script>

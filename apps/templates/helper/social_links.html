@@ -1,0 +1,69 @@
+<div class="flex flex-col">
+    <div class="text-lg text-black/[0.85] inline-flex font-semibold">Links</div>
+    <div class="text-sm">Add your social links here:</div>
+
+    <div class="space-y-[14px] mt-[14px] container-website max-w-[380px] md:max-w-[742px] w-full">
+        <div
+            class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+            <div class="grow">
+                <div class="relative h-9 flex items-center w-full">
+                    <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+  shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                        <img src="{{ static 'images/github-icon.svg'  }}" alt="GitHub Icon">
+                    </div>
+                    {{ form.github_link  }}
+                </div>
+            </div>
+        </div>
+
+
+        <div
+            class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+            <div class="grow">
+                <div class="relative h-9 flex items-center w-full">
+                    <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+  shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                        <img src="{{ static 'images/twitter-icon.svg'  }}" alt="GitHub Icon">
+                    </div>
+                    {{ form.twitter_link  }}
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+            <div class="grow">
+                <div class="relative h-9 flex items-center w-full">
+                    <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+  shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                        <img src="{{ static 'images/linkedin-icon.svg'  }}" alt="GitHub Icon">
+                    </div>
+                    {{ form.linkedin_link  }}
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="row-website flex flex-col md:flex-row md:items-center w-full space-y-4 md:space-y-0 md:space-x-6">
+            <div class="grow">
+                <div class="relative h-9 flex items-center w-full">
+                    <div class="py-2.5 w-[40px] px-3 h-full rounded-l-sm bg-neutral-50 text-sm text-black/[0.85]
+  shadow-[0px_-1px_0px_0px_#D9D9D9_inset,_0px_1px_0px_0px_#D9D9D9_inset,_1px_0px_0px_0px_#D9D9D9_inset]">
+                        <img src="{{ static 'images/website-icon.svg'  }}" alt="GitHub Icon">
+                    </div>
+                    {{ form.website_link  }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="flex items-center pl-4 border mt-5 border-gray-200 rounded">
+        {{ form.send_me_bounties  }}
+        <label for="{{ form.send_me_bounties.id_for_label  }}"
+            class="w-full py-4 ml-2 text-sm font-medium text-gray-900">{{ form.send_me_bounties.label  }}</label>
+    </div>
+    <div class="mt-8 md:mt-14 flex items-center space-x-4 md:space-x-7">
+        <input type="submit" value="Save"
+            class="min-w-[96px] appearance-none w-fit md:min-w-[96px] bg-indigo-500 text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 cursor-pointer">
+    </div>
+</div>

@@ -1,0 +1,20 @@
+{% extends "portal/base.html"  %}
+
+{% block content   %}
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center mt-3">
+        <div class="sm:flex-auto">
+            <h1 class="text-xl font-semibold text-gray-900">Bounties</h1>
+            <p class="mt-2 text-md text-gray-700">A list of bounty claim requests from the contributors.</p>
+        </div>
+    </div>
+    
+    <div class="mt-8 flow-root">
+        {% if bounty_claims %}
+            {% include "portal/bounties/components/table.html"  %}
+        {% else %}
+            <p class="mt-5 italic ml-2">No bounties found for this product.</p>
+        {% endif  %}
+    </div>
+</div>
+{% endblock  %}

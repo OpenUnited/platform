@@ -1,0 +1,43 @@
+{% load static  %}
+
+<!DOCTYPE html>
+<html class="h-full bg-gray-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title   %}OpenUnited Portal{% endblock  %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'portal/css/styles.css'  %}">
+    
+    <!-- Additional Styles -->
+    {% block extra_css   %}{% endblock  %}
+</head>
+<body class="h-full">
+    <div class="min-h-full">
+        <!-- Sidebar -->
+        {% include "portal/components/sidebar.html"  %}
+
+        <!-- Mobile header -->
+        {% include "portal/components/mobile_header.html"  %}
+
+        <!-- Main content -->
+        <div class="lg:pl-64">
+            <main class="flex-1">
+                {% block content   %}{% endblock  %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="{% static 'portal/js/core.js'  %}"></script>
+    
+    <!-- Additional Scripts -->
+    {% block extra_js   %}
+    <script src="{% static 'portal/js/bounties.js'  %}"></script>
+    {% endblock  %}
+</body>
+</html> 

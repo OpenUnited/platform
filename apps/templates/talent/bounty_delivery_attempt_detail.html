@@ -1,0 +1,77 @@
+{% extends 'base.html'  %}
+
+{% block title   %}Work Submission Review{% endblock  %}
+
+{% block content   %}
+
+<div>
+    <div class="grid grid-cols-2 gap-4 px-4 sm:px-0">
+        <div>
+            <h3 class="text-base font-semibold leading-7 text-gray-900">Work Submission Details</h3>
+            <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Bounty delivery details</p>
+        </div>
+        <div class="ml-auto">
+            {% if is_product_admin %}
+                <form method="post">
+                    {% csrf_token  %}
+                    <a href="{{ url 'bounty-delivery-attempt-detail' object.bounty_claim.bounty.challenge.product.slug, object.bounty_claim.bounty.challenge.id, object.bounty_claim.bounty.id, object.pk,  }}">
+                        <button type="submit" name="bounty-delivery-action" value="approve-bounty-claim-delivery"
+                            class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Accept</button>
+                    </a>
+                    <a href="{{ url 'bounty-delivery-attempt-detail' object.bounty_claim.bounty.challenge.product.slug, object.bounty_claim.bounty.challenge.id, object.bounty_claim.bounty.id, object.pk,  }}">
+                        <button type="submit" name="bounty-delivery-action" value="reject-bounty-claim-delivery"
+                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Reject</button>
+                    </a>
+                </form>
+            {% endif  %}
+        </div>
+    </div>
+    <div class="mt-6 border-t border-gray-100">
+        <dl class="divide-y divide-gray-100">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Assignee</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ object.person  }}</dd>
+            </div>
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Expected Delivery Date</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {{ object.bounty_claim.expected_finish_date|date  }}
+                </dd>
+            </div>
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Actual Delivery Date</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {{ object.created_at|date  }}
+                </dd>
+            </div>
+
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Bounty Title</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {{ object.bounty_claim.bounty.title  }}</dd>
+            </div>
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Bounty Description</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {{ object.bounty_claim.bounty.description  }}</dd>
+            </div>
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Challenge Description</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {{ object.bounty_claim.bounty.challenge.description  }}</dd>
+            </div>
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt class="text-sm font-medium leading-6 text-gray-900">Delivery Message</dt>
+                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ object.delivery_message  }}
+                </dd>
+            </div>
+            {% with read_only=True  %}
+                {% include "attachments.html"  %}
+            {% endwith  %}
+        </dl>
+    </div>
+</div>
+
+
+
+{% endblock  %}

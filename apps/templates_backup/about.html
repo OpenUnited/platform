@@ -1,0 +1,80 @@
+{% extends 'base_html.html' %}
+
+{% block title %}About OpenUnited{% endblock %}
+
+{% block header %}
+
+{% include 'header_without_discord.html' %}
+
+{% endblock %}
+
+{% block content %}
+
+<h1 class="text-4xl font-bold mb-6">About OpenUnited</h1>
+
+<!-- Who We Are -->
+<section class="py-6">
+    <h2 class="text-3xl font-semibold mb-4">Product Management x Talent Marketplace, in one platform!</h2>
+    <p class="text-lg mb-4">We aspire to:
+        <ol class="list-decimal space-y-2 pl-5 mb-4">
+            <li class="text-lg">Power the co-creation of valuable digital products, at scale.</li>
+            <li class="text-lg">Connect digital talent with new opportunities for collaboration and growth.</li>
+        </ol>
+    </p>
+    <p class="text-lg mb-4">The public instance of our platform at openunited.com aims to enable millions of contributors - from Nigeria to Nicaragua - to develop digital products together, demonstrating skills and building valuable showcases of verified work in the process.</p>
+    <p class="text-lg mb-4">OpenUnited aligns and incentivises talented contributors of all kinds, to collaborate in digital product development.</p>
+    <p class="text-lg mb-4">Products, challenges and initiatives are clearly explained and it is simple and compelling to contribute. The platform includes review processes, ratings and other mechanisms that promote excellent outcomes for all stakeholders.</p>
+    <p class="text-lg mb-4">As bounties are successfully completed, contributors build a rich showcase and earn points that boost status and provide other benefits.</p>
+</section>
+
+<!-- Our Mission -->
+<section class="py-6">
+    <h2 class="text-3xl font-semibold mb-4">Our Mission</h2>
+    <p class="text-lg mb-4">At OpenUnited, we believe that by developing together, we can achieve unparalleled outcomes. We’re here to disrupt the status quo and redefine the landscape of collaborative digital product development.</p>
+</section>
+
+<!-- For Contributors -->
+<section class="py-6">
+    <h2 class="text-3xl font-semibold mb-4">For Contributors</h2>
+    <p class="text-lg mb-4">Solve real-world challenges on open products. Build a rich, public showcase of your work as a product manager, software developer and more.</p>
+    <!-- Benefits of Contributing -->
+    <h3 class="text-2xl font-medium mb-3">Benefits of Contributing</h3>
+    <ul class="list-disc space-y-2 mb-4 pl-5">
+        <li class="text-lg">(Im)prove your skills: showcase your contributions on a global stage and develop new skills.</li>
+        <li class="text-lg">Invent the future together: expand your network and have fun co-creating real digital products.</li>
+        <li class="text-lg">Monetise your skills: OpenUnited offers numerous opportunities to profit from your knowledge and insights.</li>
+    </ul>
+
+    <!-- How to Get Started -->
+    <h3 class="text-2xl font-medium mb-3">How to Get Started</h3>
+    <ol class="list-decimal space-y-2 pl-5 mb-4">
+        <li class="text-lg">Sign up on our platform.</li>
+        <li class="text-lg">Browse through products and challenges.</li>
+        <li class="text-lg">Claim and complete bounties, and celebrate your achievements with the world.</li>
+    </ol>
+</section>
+
+<!-- For Enterprise Customers -->
+<section class="py-6">
+    <h2 class="text-3xl font-semibold mb-4">For Enterprise Customers</h2>
+    <!-- Why Choose OpenUnited -->
+    <h3 class="text-2xl font-medium mb-3">Product Management x Talent Marketplace, in one platform.</h3>
+    <div class="mt-10 flex flex-col sm:flex-row sm:items-center gap-y-4 sm:gap-y-0 sm:gap-x-6">
+        <a href="{{ static('pdf/OpenUnited-Flyer-v2.4.pdf') }}" target="_blank" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center text-left w-fit">Download Brochure</a>
+    </div>
+    <p class="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
+        <p class="text-lg mb-4">The same OpenUnited platform that powers openunited.com is also available to enterprise customers wanting to unlock significant value with existing talent.</p>
+        <p class="text-lg mb-4">Deployed within your company, the OpenUnited platform can be leveraged as a fully branded internal product management and talent marketplace platform, transcending organisational and geographic boundaries.</p>
+        <p class="text-lg mb-4">Unlock significant value by capturing and developing the untapped potential of your employees, channelling this previously lost value into the asynchronous co-creation of digital products.</p>
+        <p class="text-lg mb-4">Provide opportunities for individuals to find meaningful new challenges, develop new skills, and to create new connections in your company.</p>
+        <p class="text-lg mb-4">Boost the happiness and retention of your employees whilst developing valuable new assets, with OpenUnited.</p>
+    </p>
+</section>
+
+{% endblock %}
+
+{% block footer %}
+
+{% include 'footer.html' %}
+
+{% endblock %}

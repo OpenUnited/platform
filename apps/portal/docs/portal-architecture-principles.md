@@ -19,9 +19,33 @@ The Portal app follows a set of pragmatic architectural principles focused on si
 - Keep services focused and composable
 
 ### 3. Template Structure
-- Use Jinja2 templates following Django conventions
+- Use Django templates, following Django conventions
 - Organize templates by feature domain
 - Keep components reusable and well-structured
+
+For example, when building a user management feature:
+
+    templates/portal/users/
+    ├── list.html          # Shows all users
+    ├── detail.html        # Shows single user profile
+    ├── edit.html          # Edit user form
+    └── components/        # User-specific components
+        ├── user_card.html # Reusable user profile card
+        └── filters.html   # User list filtering controls
+
+This organization keeps all user-related templates together, making it easy to:
+- Find and modify related templates
+- Maintain consistent styling and behavior
+- Reuse common components within the feature
+- Add new user-related templates in a logical location
+
+Bad practice would be mixing features together like:
+
+    templates/portal/
+    ├── list_users.html
+    ├── list_products.html
+    ├── user_detail.html
+    ├── product_detail.html
 
 ### 4. Frontend Architecture
 - Use TailwindCSS and TailwindUI for styling
@@ -39,7 +63,7 @@ The Portal app follows a set of pragmatic architectural principles focused on si
 The portal app follows a standard Django app structure with clear separation of concerns:
 
     apps/portal/
-    ├── templates/          # Jinja2 templates
+    ├── templates/          # Django templates
     │   └── portal/        # Namespace for portal templates
     │       ├── base.html  # Base template
     │       ├── components/# Reusable UI components

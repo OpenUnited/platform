@@ -1,0 +1,12 @@
+{% if can_modify_product %}
+    <button
+        onclick="event|call:preventDefault"
+        hx-swap="afterend"
+        hx-get="{{ add_node_url }}"
+        hx-target="#form_container"
+        class="group text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white relative">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        <span class="opacity-0 w-[160px]  bg-black text-white text-center text-xs rounded py-2 px-2 absolute z-10 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2">Add
+            Product Area</span>
+    </button>
+{% endif  %}

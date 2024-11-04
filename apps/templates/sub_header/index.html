@@ -1,0 +1,16 @@
+<div class="flex justify-between w-full mb-2 mt-2">
+    {% include "product_tree/components/sub_header/search.html"  %}
+    <div>
+        {% if product_slug %}
+            {% with add_node_url=url 'product_management:product-area' product_slug,   %}
+                {% include "product_tree/components/sub_header/add_product_button.html"  %}
+            {% endwith  %}
+        {% else %}
+            {% with add_node_url=url 'canopy:add-node-root' product-tree.pk,  %}
+                {% include "product_tree/components/sub_header/add_product_button.html"  %}
+            {% endwith  %}
+        {% endif  %}
+
+        {% include "product_tree/components/sub_header/tooltip.html"  %}
+    </div>
+</div>
