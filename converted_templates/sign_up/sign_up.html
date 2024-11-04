@@ -15,7 +15,7 @@
 <div class="flex flex-col-reverse lg:flex-row grow items-center justify-center py-8 lg:py-14 sm:gap-8">
     <div class="w-full lg:w-1/2">
         <div class="flex items-center justify-center w-full h-[320px] lg:h-auto">
-            <img src="{{ static 'images/sign-up-preview.png'  }}"
+            <img src="{% static 'images/sign-up-preview.png' %}"
                 class="w-full h-full object-cover lg:object-contain object-center sm:rounded-lg"
                 alt="Sign Up Preview Image">
         </div>
@@ -45,7 +45,7 @@
                                 {% if current_step > 0 %}
                                 <div
                                     class="w-full h-full rounded-full border-2 border-solid border-[#1890FF] flex items-center justify-center">
-                                    <img src="{{ static 'images/check.svg'  }}" alt="Check Icon">
+                                    <img src="{% static 'images/check.svg' %}" alt="Check Icon">
                                 </div>
                                 {% endif  %}
                             </div>
@@ -75,7 +75,7 @@
                                 {% if current_step > 1 %}
                                 <div
                                     class="w-full h-full rounded-full border-2 border-solid border-[#1890FF] flex items-center justify-center">
-                                    <img src="{{ static 'images/check.svg'  }}" alt="Check Icon">
+                                    <img src="{% static 'images/check.svg' %}" alt="Check Icon">
                                 </div>
                                 {% endif  %}
                             </div>
@@ -106,7 +106,7 @@
                                 {% if current_step > 2 %}
                                 <div
                                     class="done w-full h-full rounded-full border-2 border-solid border-[#1890FF] flex items-center justify-center">
-                                    <img src="{{ static 'images/check.svg'  }}" alt="Check Icon">
+                                    <img src="{% static 'images/check.svg' %}" alt="Check Icon">
                                 </div>
                                 {% endif  %}
                             </div>
@@ -121,7 +121,7 @@
 
                 <p class="mt-6 text-left text-sm text-gray-500">
                     Already Have an Account?
-                    <a href="{{ url 'sign_in'  }}"
+                    <a href="{% url 'sign_in' %}"
                         class="font-medium leading-6 text-[#1890ff] transition-all hover:text-text-[#1890ff] hover:underline underline-offset-2">Sign
                         In</a>
                 </p>
@@ -133,5 +133,5 @@
 {% endblock  %}
 
 {% block extra_js   %}
-<script type="module" src="{{ static 'scripts/event-listeners.js'  }}"></script>
+<script type="module" src="{% static 'scripts/event-listeners.js' %}"></script>
 {% endblock  %}

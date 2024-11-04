@@ -2,11 +2,11 @@
     <div class="md:grid md:gap-6">
         <!-- Loading Spinner -->
         <div id="loading-spinner" class="flex justify-center items-center my-6 htmx-indicator">
-            <img src="{{ static 'images/loading.svg'  }}" width="32" height="32" />
+            <img src="{% static 'images/loading.svg' %}" width="32" height="32" />
         </div>
 
         <!-- Form -->
-        <form method="POST" action="{{ url 'portal:product-settings' product.slug,  }}" class="space-y-6">
+        <form method="POST" action="{% url portal:product-settings product.slug,   %}" class="space-y-6">
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token  }}">
             
             <!-- Ownership Type -->

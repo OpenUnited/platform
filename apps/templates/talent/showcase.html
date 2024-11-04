@@ -33,7 +33,7 @@
                                 <div class="mb-1 text-sm font-medium leading-6 text-gray-900">Privileges:</div>
                                 <div class="text-sm text-gray-500">{{ person|call:get_points_privileges  }}</div>
                             </div>
-                            <a href="{{ url 'status-and-points'  }}"
+                            <a href="{% url 'status-and-points' %}"
                                 class="text-xs mt-1.5 text-blue-400 transition-all underline-offset-2 underline hover:no-underline">
                                 Learn more about Status & Points
                             </a>
@@ -59,7 +59,7 @@
                     {% if person.location %}
                     <div class="flex items-center text-[#4b5563] text-sm transition-all">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
-                            <img src="{{ static 'images/geo.svg'  }}" alt="Geolocation Icon">
+                            <img src="{% static 'images/geo.svg' %}" alt="Geolocation Icon">
                         </span>
                         {{ person.location  }}
                     </div>
@@ -68,7 +68,7 @@
                     <a href="{{ person.linkedin_link }}"
                         class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
-                            <img src="{{ static 'images/ln.svg'  }}" alt="Linkedin Icon">
+                            <img src="{% static 'images/ln.svg' %}" alt="Linkedin Icon">
                         </span>
                         {{ person_linkedin_link  }}
                     </a>
@@ -77,7 +77,7 @@
                     <a href="{{ person.website_link  }}"
                         class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
-                            <img src="{{ static 'images/link.svg'  }}" alt="Link Icon">
+                            <img src="{% static 'images/link.svg' %}" alt="Link Icon">
                         </span>
                         {{ person.website_link  }}
                     </a>
@@ -86,7 +86,7 @@
                     <a href="{{ person.twitter_link  }}"
                         class="flex items-center text-[#4b5563] text-sm transition-all hover:text-blue-400">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-2">
-                            <img src="{{ static 'images/twitter.svg'  }}" alt="Twitter Icon">
+                            <img src="{% static 'images/twitter.svg' %}" alt="Twitter Icon">
                         </span>
                         {{ person_twitter_link  }}
                     </a>
@@ -97,7 +97,7 @@
         </div>
         <div class="grow border border-solid border-[#d0d7de] px-4 py-5 sm:p-6 bg-white rounded-md mt-[54px]">
             {% if not request.user.is_authenticated %}
-                <a href="{{ url 'sign-up'  }}">
+                <a href="{% url 'sign-up' %}">
                     <button type="button"
                         class="ml-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px]
                                 border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">
@@ -161,7 +161,7 @@
                         <div class="grid grid-cols-12 gap-1 table-row-1 {% if loop.index0 >= page_size %}hidden{% endif  %}">
                             <div
                                 class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
-                                <a href="{{ url 'product_detail' challenge.product.slug,  }}"
+                                <a href="{% url product_detail challenge.product.slug,   %}"
                                     class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name  }}</a>
                             </div>
                             <div class="col-span-6 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
@@ -204,7 +204,7 @@
                             <div class="grid grid-cols-12 gap-1 table-row-2 {% if loop.index0 >= page_size %}hidden{% endif  %}">
                                 <div
                                     class="col-span-4 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm relative group">
-                                    <a href="{{ url 'product_detail' challenge.product.slug,  }}"
+                                    <a href="{% url product_detail challenge.product.slug,   %}"
                                         class="text-blue-400 transition-all underline-offset-2 underline hover:no-underline relative z-[2]">{{ challenge.product.name  }}</a>
                                 </div>
                                 <div class="col-span-8 border-b border-solid border-[#e4e8f1] py-2 px-2.5 text-sm group">
@@ -279,7 +279,7 @@
                     {% endif  %}
                     {% if can_leave_feedback %}
                     <div class="mt-9">
-                        <button type="submit" hx-get="{{ url 'create-feedback'  }}" hx-target="#feedback-modal"
+                        <button type="submit" hx-get="{% url 'create-feedback' %}" hx-target="#feedback-modal"
                             hx-swap="innerHTML"
                             class="mx-auto py-1.5 px-3 flex items-center justify-center text-center mb-4 w-full max-w-[200px]
                         border border-solid border-blue-400 text-sm rounded-md bg-blue-400/[0.1] hover:bg-blue-400/[0.2] transition-all cursor-pointer text-blue-500">

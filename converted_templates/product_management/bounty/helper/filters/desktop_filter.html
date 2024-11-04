@@ -1,5 +1,5 @@
 
-<form hx-get="{{ url 'product_management:bounty-list'  }}" class="hidden sm:block" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML" >
+<form hx-get="{% url 'product_management:bounty-list' %}" class="hidden sm:block" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML" >
     <div class="flex items-end">
         {% with id="id_status"  %}
             {% include "product_management/bounty/helper/filters/status.html"  %}

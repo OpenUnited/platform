@@ -1,5 +1,5 @@
 <li  class="list-none">
-    <a hx-post="{{ url 'delete-bounty-claim' bounty_claim.pk,  }}"
+    <a hx-post="{% url delete-bounty-claim bounty_claim.pk,   %}"
         class="block px-4 py-2 text-indigo-500 hover:bg-indigo-500 dark:hover:bg-indigo-500 dark:hover:text-white"
         hx-swap="outerHTML" hx-target="this" hx-vals='{"from": "bounty_detail_table.html"}' hx-confirm="Are you sure to cancel your bounty claim request?">
         Cancel Request

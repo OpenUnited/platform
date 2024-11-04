@@ -4,7 +4,7 @@
         <p class="mt-2 text-sm text-gray-700">A list of all the bounty claims you requested.</p>
     </div>
     <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <a href="{{ url 'portal:manage-bounties'  }}"
+        <a href="{% url 'portal:manage-bounties' %}"
             class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Browse
             Challenges</a>
     </div>
@@ -46,7 +46,7 @@
                                 class="whitespace-nowrap py-4 text-center text-sm font-medium sm:pr-6 lg:pr-8 cursor-pointer">
                                 {% if bounty_claim.status  == "Granted" %}
                                 {% with challenge = bounty_claim.bounty.challenge   %}
-                                <a href="{{ url 'create-bounty-delivery-attempt' challenge.product.slug, challenge.id, bounty_claim.bounty.id,  }}?id={{ bounty_claim.id  }}"
+                                <a href="{% url create-bounty-delivery-attempt challenge.product.slug, challenge.id, bounty_claim.bounty.id,   %}?id={{ bounty_claim.id  }}"
                                     class="text-indigo-600 hover:text-indigo-900">Submit Work</a>
                                 {% elif bounty_claim.status  == "Requested"  %}
                                 <a href="#" 

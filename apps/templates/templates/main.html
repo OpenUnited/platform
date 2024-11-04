@@ -2,15 +2,15 @@
 
 {% block extra_head   %}
     {{ block.super  }}
-    <script src="{{ static 'js/ChallengeFlowCore.js'  }}" type="module"></script>
-    <script src="{{ static 'js/ChallengeFlowBounties.js'  }}" type="module"></script>
-    <script src="{{ static 'js/ChallengeFlow.js'  }}" type="module"></script>
-    <script src="{{ static 'js/BountyModal.js'  }}" type="module"></script>
+    <script src="{% static 'js/ChallengeFlowCore.js' %}" type="module"></script>
+    <script src="{% static 'js/ChallengeFlowBounties.js' %}" type="module"></script>
+    <script src="{% static 'js/ChallengeFlow.js' %}" type="module"></script>
+    <script src="{% static 'js/BountyModal.js' %}" type="module"></script>
 {% endblock  %}
 
 {% block extra_css   %}
     {{ block.super  }}
-    <link rel="stylesheet" href="{{ static 'css/bounty_modal.css'  }}">
+    <link rel="stylesheet" href="{% static 'css/bounty_modal.css' %}">
 {% endblock  %}
 
 {% block content   %}

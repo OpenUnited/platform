@@ -2,25 +2,25 @@
     <div class="mx-auto max-w-7xl overflow-hidden px-6 pt-6 lg:px-8">
         <nav class="-mb-6 grid grid-cols-2 sm:grid-cols-1 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
             <div class="pb-6">
-                <a href="{{ url 'about'  }}"
+                <a href="{% url 'about' %}"
                     class="text-sm leading-6 text-gray-600 transition-all delay-600 hover:text-gray-900">About</a>
             </div>
             <div class="pb-6">
-                <a href="{{ url 'canopy:introduction'  }}"
+                <a href="{% url 'canopy:introduction' %}"
                     class="text-sm leading-6 text-gray-600 transition-all delay-600 hover:text-gray-900">Canopy</a>
             </div>
             <div class="pb-6">
-                <a href="{{ url 'enterprise-customers'  }}"
+                <a href="{% url 'enterprise-customers' %}"
                     class="text-sm leading-6 text-gray-600 transition-all delay-600 hover:text-gray-900">Enterprise
                     Customers</a>
             </div>
             <div class="pb-6">
-                <a href="{{ url 'privacy-policy'  }}"
+                <a href="{% url 'privacy-policy' %}"
                     class="text-sm leading-6 text-gray-600 transition-all delay-600 hover:text-gray-900">Privacy
                     Policy</a>
             </div>
             <div class="pb-6">
-                <a href="{{ url 'terms-of-use'  }}"
+                <a href="{% url 'terms-of-use' %}"
                     class="text-sm leading-6 text-gray-600 transition-all delay-600 hover:text-gray-900">Terms
                     of Use</a>
             </div>

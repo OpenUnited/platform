@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- tailwind version 3.3.2 -->
-    <link rel="stylesheet" href="{{ static 'styles/tailwind.css'  }}">
+    <link rel="stylesheet" href="{% static 'styles/tailwind.css' %}">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <link rel="stylesheet" href="{{ static 'styles/styles.css'  }}">
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
 
     <!-- Favicon stuff -->
     <link rel="icon" href="{{ static ('images/favicon/favicon.ico')  }}">
@@ -18,12 +18,12 @@
     <link rel="manifest" href="{{ static ('images/favicon/site.webmanifest')  }}">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-    <link href="{{ static 'plugin/alert/css/alertify.min.css' }}" rel="stylesheet">
+    <link href="{% static 'plugin/alert/css/alertify.min.css' %}" rel="stylesheet">
     <link rel="icon" href="{{ static ('images/favicon/favicon.ico')  }}">
 
 
     <!--This is the right place-->
-    <script src="{{ static 'scripts/read_more.js'  }}"></script>
+    <script src="{% static 'scripts/read_more.js' %}"></script>
 
     {% block media   %}{% endblock  %}
 
@@ -41,9 +41,9 @@
     {% block footer   %}{% endblock  %}
 
 
-    <script src="{{ static 'plugin/hyperscript/js/_hyperscript.min.js'  }}"></script>
-    <script src="{{ static 'plugin/htmx/js/htmx.min.js'  }}"></script>
-    <script src="{{ static 'plugin/font-awesome/js/all.min.js'  }}"></script>
+    <script src="{% static 'plugin/hyperscript/js/_hyperscript.min.js' %}"></script>
+    <script src="{% static 'plugin/htmx/js/htmx.min.js' %}"></script>
+    <script src="{% static 'plugin/font-awesome/js/all.min.js' %}"></script>
 
     {% block scripts   %}{% endblock  %}
 

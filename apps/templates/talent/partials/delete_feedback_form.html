@@ -19,7 +19,7 @@
                                         class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">No</button>
                                 </div>
                                 <div class="grid-col-1">
-                                    <button type="button" hx-post="{{ url 'delete-feedback' feedback.pk,  }}"
+                                    <button type="button" hx-post="{% url delete-feedback feedback.pk,   %}"
                                         hx-target="body" _="on click add .hidden to #feedback-form-modal"
                                         class="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Yes</button>
                                 </div>

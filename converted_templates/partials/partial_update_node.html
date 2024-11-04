@@ -1,4 +1,4 @@
-    <form method="post" action="{{ url 'canopy:update-node' product-area.id,  }}">
+    <form method="post" action="{% url canopy:update-node product-area.id,   %}">
         {% csrf_token  %}
         <div class="flex justify-start">
             <button onclick="toggleVisibility(event)" class="invisible">

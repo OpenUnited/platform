@@ -1,5 +1,5 @@
 <div class="relative pb-10">
-    <a href="{{ url 'portal:create-agreement-template' product.slug,  }}">
+    <a href="{% url portal:create-agreement-template product.slug,   %}">
         <button
             type="button"
             class="absolute right-0 items-center justify-center rounded-md bg-blue-400 px-3 py-2
@@ -43,7 +43,7 @@
                 {{ contributor_agreement.created_at|date  }}
             </td>
             <td>
-                <a href="{{ url 'contributor-agreement-template-detail' product.slug, contributor_agreement.id,  }}"
+                <a href="{% url contributor-agreement-template-detail product.slug, contributor_agreement.id,   %}"
                     class="font-medium text-sm text-blue-600 hover:underline">
                     View
                 </a>

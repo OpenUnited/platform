@@ -22,7 +22,7 @@
     <ul  id="ulDropdownMenu_{{ bounty.pk }}" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownHoverButton_{{ bounty.pk }}">
         <li>
         {% if elem.created_bounty_claim_request %}
-        <a href="#" hx-post="{{ url 'delete-bounty-claim' elem.bounty_claim.pk,  }}"
+        <a href="#" hx-post="{% url delete-bounty-claim elem.bounty_claim.pk,   %}"
             class="{{ li_class }}"
             hx-swap="outerHTML" hx-target="this" hx-vals='{"from": "bounty_detail_table.html"}' hx-confirm="Are you sure to cancel your bounty claim request?">
             Cancel Request
@@ -32,11 +32,11 @@
 
         {% if can_be_modified %}
             <li>
-                <a href="{{ url 'update-bounty' challenge.product.slug, challenge.id, bounty.id,  }}"
+                <a href="{% url update-bounty challenge.product.slug, challenge.id, bounty.id,   %}"
                         class="{{ li_class }}">Edit</a>
             </li>
             <li>
-                <a hx-get="{{ url 'delete-bounty' challenge.product.slug, challenge.id, bounty.id,  }}"
+                <a hx-get="{% url delete-bounty challenge.product.slug, challenge.id, bounty.id,   %}"
                     hx-confirm="Are you sure to delete this bounty?" hx-target="body" hx-swap="innerHTML"
                     hx-push-url="true"
                     class="{{ li_class }} text-red-500">Delete
@@ -59,7 +59,7 @@
         if (event.detail.elt.getAttribute('claim-bounty')) {
             event|call:preventDefault;
             {% if agreement_template %}
-            claimConfirm(event, "{{ url 'contributor-agreement-template-detail' bounty.challenge.product.slug, agreement_template.id  }}")
+            claimConfirm(event, "{% url contributor-agreement-template-detail bounty.challenge.product.slug, agreement_template.id   %}")
             {% else %}
             claimConfirm(event, "#")
             {% endif  %}

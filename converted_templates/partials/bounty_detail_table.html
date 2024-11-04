@@ -14,7 +14,7 @@
 
 {% if does_have_permission %}
 <p>
-    <a class="inline-block" href=" {{ url 'create-bounty' challenge.product.slug, challenge.pk,  }}">
+    <a class="inline-block" href=" {% url create-bounty challenge.product.slug, challenge.pk,   %}">
         <button class="p-4 rounded-md bg-indigo-600 mt-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             type="button">Add Bounty</button>
     </a>
@@ -26,7 +26,7 @@
 
 {% if does_have_permission %}
 <p>
-    <a class="inline-block" href=" {{ url 'create-bounty' challenge.product.slug, challenge.pk,  }}">
+    <a class="inline-block" href=" {% url create-bounty challenge.product.slug, challenge.pk,   %}">
         <button class="p-4 rounded-md bg-indigo-600 mt-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             type="button">
             Create a bounty for this</button>

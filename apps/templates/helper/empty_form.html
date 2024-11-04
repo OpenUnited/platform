@@ -7,7 +7,7 @@
         <i class="fa-solid fa-trash-can text-gray-500"></i>
     </button>
     <div class="mt-4">
-        <select id="id_skills-{{ index }}-skill" hx-get="{{ url 'profile' pk, }}" hx-vals='{"index":"{{ index }}"}'
+        <select id="id_skills-{{ index }}-skill" hx-get="{% url profile pk,  %}" hx-vals='{"index":"{{ index }}"}'
                 name="skills-{{ index }}-skill" hx-trigger="change" hx-target="#ul_expertise_{{ index }}"
                 class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                 {{ macros_fun.skill_filter_tree(skills, None, True)  }}

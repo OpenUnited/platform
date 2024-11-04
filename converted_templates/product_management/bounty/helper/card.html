@@ -5,7 +5,7 @@
     <div class="flex w-full items-center justify-between space-x-6 p-6">
       <div class="flex-1 truncate">
         <div class="flex items-center space-x-3 justify-between">
-          <a href="{{ url 'product_management:bounty-detail' product.slug, challenge.id, bounty.id,  }}"
+          <a href="{% url product_management:bounty-detail product.slug, challenge.id, bounty.id,   %}"
             class="truncate text-sm font-medium text-gray-900">{{ bounty.title  }}</a>
         </div>
         <p class="mt-1 truncate text-sm text-gray-500">{{ bounty.description  }}</p>
@@ -43,7 +43,7 @@
 
         {% if bounty.status == "Available" %}
             <div class="-ml-px flex w-0 flex-1">
-              <a href="{{ url 'product_management:challenge-detail' product.slug, challenge.pk }}"
+              <a href="{% url product_management:challenge-detail product.slug, challenge.pk  %}"
                 class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
                 <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
                 <svg class="h-6 w-6 text-gray-400 fill-gray-400" fill="" width="20" height="20" viewBox="0 0 100 100"
@@ -83,7 +83,7 @@
           </button>
           {% endif  %}
           <div class="flex-1">
-            <a class="text-indigo-500 text-sm w-full block text-end" href="{{ url 'product_management:product-detail' product.slug,  }}">{{ product.name  }}</a>
+            <a class="text-indigo-500 text-sm w-full block text-end" href="{% url product_management:product-detail product.slug,   %}">{{ product.name  }}</a>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
           <div>
             {% if challenge.initiative %}
             <a class="text-indigo-500 text-sm w-full block text-end"
-                href="{{ url 'product_management:initiative-detail' product.slug, challenge.initiative.pk,  }}">
+                href="{% url product_management:initiative-detail product.slug, challenge.initiative.pk,   %}">
                 {{ challenge.initiative.name  }}
             </a>
             {% else %}
@@ -115,7 +115,7 @@
       <div class="flex justify-between py-2">
         <div class="truncate text-sm font-medium text-gray-900">Challenge</div>
         <div>
-          <a href="{{ url 'product_management:challenge-detail' product.slug, challenge.pk  }}"
+          <a href="{% url product_management:challenge-detail product.slug, challenge.pk   %}"
             class="text-indigo-500 text-sm w-full block text-end max-w-[210px]">{{ challenge.title  }}</a>
         </div>
       </div>

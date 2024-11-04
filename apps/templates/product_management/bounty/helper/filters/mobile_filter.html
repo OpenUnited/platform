@@ -8,7 +8,7 @@
                     <i class="fas fa-times h-6 w-6"></i>
                 </button>
             </div>
-            <form hx-get="{{ url 'product_management:bounty-list'  }}" id="filter_form_mobile" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML" >
+            <form hx-get="{% url 'product_management:bounty-list' %}" id="filter_form_mobile" hx-target="#item_list_container" hx-trigger="change" hx-swap="innerHTML" >
                 {% with id="id_status_mobile"  %}
                     {% include "product_management/bounty/helper/filters/status.html"  %}
                 {% endwith  %}

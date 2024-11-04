@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- tailwind version 3.3.2 -->
-    <link rel="stylesheet" href="{{ static 'styles/tailwind.css'  }}">
+    <link rel="stylesheet" href="{% static 'styles/tailwind.css' %}">
 
     <!-- Favicon stuff -->
     <link rel="icon" href="{{ static ('images/favicon/favicon.ico')  }}">
@@ -31,12 +31,12 @@
                         <a href="/" class="sm:w-full lg:w-auto my-2 border inline-block rounded md py-4 px-8 text-center bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Take me there!</a>
                 </div>
                 <div>
-                    <img src="{{ static 'images/404-2.png'  }}">
+                    <img src="{% static 'images/404-2.png' %}">
                 </div>
             </div>
         </div>
         <div>
-            <img src="{{ static 'images/404-1.png'  }}">
+            <img src="{% static 'images/404-1.png' %}">
         </div>
     </div>
 </body>

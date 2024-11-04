@@ -15,12 +15,12 @@
         </li>
         {% if request.user.person  == feedback.provider %}
         <li>
-            <button type="button" hx-get="{{ url 'update-feedback' feedback.id,  }}" hx-target="#feedback-modal"
+            <button type="button" hx-get="{% url update-feedback feedback.id,   %}" hx-target="#feedback-modal"
                 hx-swap="innerHTML" _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id  }}"
                 class="block px-4 py-2 hover:bg-gray-100">Edit</button>
         </li>
         <li>
-            <button type="button" hx-get="{{ url 'delete-feedback' feedback.id,  }}" hx-target="#feedback-modal"
+            <button type="button" hx-get="{% url delete-feedback feedback.id,   %}" hx-target="#feedback-modal"
                 hx-swap="innerHTML" _="on click add .hidden to #dropdown-dots-horizontal-{{ feedback.id  }}"
                 class="block px-4 py-2 hover:bg-gray-100">Delete</button>
         </li>

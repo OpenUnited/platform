@@ -15,7 +15,7 @@
                     <div
                         class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
-                            <img src="{{ static 'images/error.svg'  }}" alt="Error Icon">
+                            <img src="{% static 'images/error.svg' %}" alt="Error Icon">
                         </span>
                         {% for error in form|call:non_field_errors %}
                         <p>{{ error  }}</p>
@@ -61,7 +61,7 @@
                                         class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2
                                             text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset
                                             focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        hx-get="{{ url 'get-expertise'  }}" hx-vals=''
+                                        hx-get="{% url 'get-expertise' %}" hx-vals=''
                                         hx-trigger="change" hx-target="#ul_expertise_0">
                                         {{ macros_fun.skill_filter_tree(skills, [], True)  }}
                                     </select>

@@ -5,7 +5,7 @@
             data-video="{{ child.video_link  }}"
             onclick="event|call:preventDefault; openVideoModal('{{ child.video_link  }}')"
         >
-            <img src="{{ static 'images/play.svg'  }}" class="btn-video__open w-[14px] h-[15px]" alt="#"
+            <img src="{% static 'images/play.svg' %}" class="btn-video__open w-[14px] h-[15px]" alt="#"
                 onclick="event|call:preventDefault;"
             >
             <span class="btn-video__open text-dark text-sm ml-[9px] font-normal font-medium">

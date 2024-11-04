@@ -1,6 +1,6 @@
 
 {% if not product_slug %}
-    <form id="reset_tree" action="{{ url 'canopy:reset-tree'  }}"></form>
+    <form id="reset_tree" action="{% url 'canopy:reset-tree' %}"></form>
     {% include "product_tree/components/header/edit_tree.html"  %}
 
     <div class="flex justify-between w-full mb-2 mt-2">
