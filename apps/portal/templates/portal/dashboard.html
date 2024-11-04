@@ -1,0 +1,67 @@
+<!-- Page title & actions -->
+<div class="min-h-full">
+    <!-- Page header -->
+    <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Portal - Dashboard</h1>
+        </div>
+        <div class="mt-4 flex sm:mt-0 sm:ml-4">
+            <!-- Add any action buttons here if needed -->
+        </div>
+    </div>
+
+    <!-- Products section -->
+    <div class="mt-6 px-4 sm:px-6 lg:px-8">
+        <h2 class="text-xl font-medium text-gray-900">My Products</h2>
+        <div class="mt-4">
+            {% if products %}
+                <ul role="list" class="divide-y divide-gray-200">
+                    {% for product in products %}
+                        <li class="py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        {{ product.name }}
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate">
+                                        {{ product.short_description }}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-500">No products available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Active Bounty Claims section -->
+    <div class="mt-8 px-4 sm:px-6 lg:px-8">
+        <h2 class="text-xl font-medium text-gray-900">Active Bounty Claims</h2>
+        <div class="mt-4">
+            {% if active_bounty_claims %}
+                <ul role="list" class="divide-y divide-gray-200">
+                    {% for claim in active_bounty_claims %}
+                        <li class="py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        {{ claim.bounty.title }}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Status: {{ claim.status }}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-500">No active bounty claims.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+

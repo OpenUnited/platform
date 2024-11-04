@@ -1,0 +1,81 @@
+<div class="sm:flex sm:items-center mt-3">
+    <div class="sm:flex-auto">
+        <p class="mt-2 text-md text-gray-700">A list of challenges created for this product.</p>
+    </div>
+</div>
+<div class="mt-8 flow-root">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 mb-4">
+        <div class="w-full md:w-1/2">
+            <form action="{{ url('portal:product-challenge-filter', args=(product.slug,)) }}" method="GET">
+                <input type="search" name="search-challenge"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2"
+                    placeholder="Search">
+            </form>
+        </div>
+        <div class="col-start-1 row-start-1 py-4">
+            <div class="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-8">
+                <div class="relative inline-block">
+                    <div class="flex">
+                        <button type="button" _="on click toggle .hidden on #sortButton"
+                            class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                            id="menu-button" aria-expanded="false" aria-haspopup="true">
+                            Sort
+                            <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!--
+            Dropdown menu, show/hide based on menu state.
+
+            Entering: "transition ease-out duration-100"
+              From: "transform opacity-0 scale-95"
+              To: "transform opacity-100 scale-100"
+            Leaving: "transition ease-in duration-75"
+              From: "transform opacity-100 scale-100"
+              To: "transform opacity-0 scale-95"
+          -->
+                    <div id="sortButton"
+                        class="hidden absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div _="on mouseenter from <a/> in me
+                                    remove .bg-gray-100 from <a/> in me
+                                    tell the target
+                                        add .bg-gray-100
+                                end
+                                on mouseleave from <a/> in me
+                                    tell the target
+                                        remove .bg-gray-100
+                                on click from <a/> in me
+                                    remove .font-medium .text-gray-900 from <a /> in me
+                                    tell the target
+                                        add .font-medium .text-gray-900
+                                    wait 100ms
+                                    add .hidden to #sortButton
+                                end" class="py-1" role="none">
+                            <a href="{{ url('portal:product-challenge-filter', args=(product.slug,)) }}?sort=created-desc"
+                                class="cursor-pointer text-gray-500 block px-4 py-2 text-sm">Newest</a>
+                            <a href="{{ url('portal:product-challenge-filter', args=(product.slug,)) }}?sort=created-asc"
+                                class="cursor-pointer text-gray-500 block px-4 py-2 text-sm">Oldest</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div id="challenge-table" class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            {% if challenges %}
+            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                {% include 'product_management/dashboard/challenge_table.html' %}
+            </div>
+            {% else %}
+            <p>No challenge is created for this product.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

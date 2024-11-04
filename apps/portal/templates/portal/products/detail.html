@@ -1,0 +1,42 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-semibold text-gray-900 py-4">{{ product.name }}</h2>
+
+    <!-- Tab Navigation -->
+    <nav class="border-b border-gray-200">
+        <div class="flex -mb-px">
+            <a href="{{ url('portal:product-detail', args=(product.slug,)) }}?tab=challenges"
+               class="{% if active_tab == 'challenges' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium">
+                Challenges
+            </a>
+            <a href="{{ url('portal:product-detail', args=(product.slug,)) }}?tab=bounty-claim-requests"
+               class="{% if active_tab == 'bounty-claim-requests' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium">
+                Bounty Claim Requests
+            </a>
+            <a href="{{ url('portal:product-detail', args=(product.slug,)) }}?tab=review-work"
+               class="{% if active_tab == 'review-work' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium">
+                Review Work
+            </a>
+            <a href="{{ url('portal:product-detail', args=(product.slug,)) }}?tab=contribution-agreements"
+               class="{% if active_tab == 'contribution-agreements' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium">
+                Contribution Agreements
+            </a>
+            <a href="{{ url('portal:product-detail', args=(product.slug,)) }}?tab=user-management"
+               class="{% if active_tab == 'user-management' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium">
+                User Management
+            </a>
+            <a href="{{ url('portal:product-detail', args=(product.slug,)) }}?tab=settings"
+               class="{% if active_tab == 'settings' %}border-indigo-500 text-indigo-600{% else %}border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700{% endif %} whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium">
+                Product Settings
+            </a>
+        </div>
+    </nav>
+
+    <!-- Tab Content -->
+    <div class="py-4">
+        {% include tab_template %}
+    </div>
+</div>
+{% endblock %}
