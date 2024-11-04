@@ -12,7 +12,14 @@ help:
 	@echo "setup              -- load all the data from the fixture to the app "
 	@echo "dumpdata           -- Backup the data from the running django app   "
 	@echo "tailwindcss        -- Generate Tailwindcss 						   "
+	@echo "docs               -- Update schema.json and generate documentation "
 
+.PHONY: docs
+docs:
+	$(MANAGE) update_schema
+	$(MANAGE) generate_docs
+	@echo "Schema and documentation updated successfully!"
+	@echo "Check apps/common/schema.json and docs/schema.md"
 
 rmpyc:
 	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs sudo rm -rf

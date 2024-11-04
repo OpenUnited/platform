@@ -1,116 +1,52 @@
 from django.urls import path
 from .views import (
     PortalDashboardView,
+    PortalProductListView,
     PortalProductDetailView,
-    PortalProductChallengeFilterView,
-    PortalProductBountiesView,
-    PortalProductBountyFilterView,
-    PortalReviewWorkView,
-    PortalContributorAgreementTemplateListView,
-    PortalManageBountiesView,
-    PortalBountyClaimRequestsView,
+    PortalProductSettingsView,
     PortalManageUsersView,
     PortalAddProductUserView,
     PortalUpdateProductUserView,
-    PortalProductSettingView,
-    DeleteBountyClaimView,
-    PortalProductChallengesView,
+    PortalBountyListView,
+    PortalBountyClaimView,
+    PortalMyBountiesView,
+    PortalChallengeListView,
+    PortalWorkReviewView,
+    PortalAgreementTemplatesView,
     bounty_claim_actions,
-    CreateAgreementTemplateView,
 )
 
 app_name = 'portal'
 
 urlpatterns = [
-    path("", PortalDashboardView.as_view(), name="home"),
-    path(
-        "product/<str:product_slug>/<int:default_tab>/",
-        PortalDashboardView.as_view(),
-        name="product-dashboard",
-    ),
-    path(
-        "bounties/",
-        PortalManageBountiesView.as_view(),
-        name="manage-bounties",
-    ),
-    path(
-        "bounties/bounty-requests",
-        PortalBountyClaimRequestsView.as_view(),
-        name="bounty-requests",
-    ),
-    path(
-        "product/<str:slug>/",
-        PortalProductDetailView.as_view(),
-        name="product-detail",
-    ),
-    path(
-        "product/<str:product_slug>/tab/<str:default_tab>/",
-        PortalProductDetailView.as_view(),
-        name="product-detail-tab",
-    ),
-    path(
-        "product/<str:product_slug>/challenges/",
-        PortalProductChallengesView.as_view(),
-        name="portal-product-challenges",
-    ),
-    path(
-        "product/<str:product_slug>/challenges/filter/",
-        PortalProductChallengeFilterView.as_view(),
-        name="product-challenge-filter",
-    ),
-    path(
-        "product/<str:product_slug>/bounties/",
-        PortalProductBountiesView.as_view(),
-        name="portal-product-bounties",
-    ),
-    path(
-        "bounties/action/<int:pk>/",
-        bounty_claim_actions,
-        name="bounties-action",
-    ),
-    path(
-        "product/<str:product_slug>/bounties/filter/",
-        PortalProductBountyFilterView.as_view(),
-        name="product-bounty-filter",
-    ),
-    path(
-        "product/<str:product_slug>/review-work",
-        PortalReviewWorkView.as_view(),
-        name="portal-review-work",
-    ),
-    path(
-        "product/<str:product_slug>/contributor-agreement-templates",
-        PortalContributorAgreementTemplateListView.as_view(),
-        name="portal-contributor-agreement-templates",
-    ),
-    path(
-        "product/<str:product_slug>/user-management",
-        PortalManageUsersView.as_view(),
-        name="manage-users",
-    ),
-    path(
-        "product/<str:product_slug>/add-product-user",
-        PortalAddProductUserView.as_view(),
-        name="add-product-user",
-    ),
-    path(
-        "product/<str:product_slug>/product-users/<int:pk>/update",
-        PortalUpdateProductUserView.as_view(),
-        name="update-product-user",
-    ),
-    path(
-        "product/<str:product_slug>/settings/",
-        PortalProductSettingView.as_view(),
-        name="product-settings",
-    ),
-    path(
-        "bounty-claim/delete/<int:pk>",
-        DeleteBountyClaimView.as_view(),
-        name="delete-bounty-claim",
-    ),
-    path(
-        "product/<str:product_slug>/agreements/create/",
-        CreateAgreementTemplateView.as_view(),
-        name="create-agreement-template",
-    ),
+    # Dashboard
+    path('', PortalDashboardView.as_view(), name='dashboard'),
+    
+    # Product management
+    path('products/<slug:slug>/', PortalProductDetailView.as_view(), name='product-detail'),
+    path('products/<slug:slug>/settings/', PortalProductSettingsView.as_view(), name='product-settings'),
+    
+    # User management
+    path('products/<slug:slug>/users/', PortalManageUsersView.as_view(), name='product-users'),
+    path('products/<slug:slug>/users/add/', PortalAddProductUserView.as_view(), name='product-user-add'),
+    path('products/<slug:slug>/users/<int:user_id>/', PortalUpdateProductUserView.as_view(), name='product-user-update'),
+    
+    # Bounty management
+    path('products/<slug:slug>/bounties/', PortalBountyListView.as_view(), name='bounty-manage'),
+    path('products/<slug:slug>/bounties/my/', PortalMyBountiesView.as_view(), name='my-bounties'),
+    path('products/<slug:slug>/bounties/<int:pk>/claims/', PortalBountyClaimView.as_view(), name='bounty-claims'),
+    
+    # Challenge management
+    path('products/<slug:slug>/challenges/', PortalChallengeListView.as_view(), name='challenge-manage'),
+    
+    # Work review
+    path('products/<slug:slug>/work/review/', PortalWorkReviewView.as_view(), name='work-review'),
+    
+    # Agreements
+    path('products/<slug:slug>/agreements/templates/', PortalAgreementTemplatesView.as_view(), name='agreement-templates'),
+    
+    # Add these URLs:
+    path('products/', PortalProductListView.as_view(), name='products'),
+    path('products/<slug:slug>/bounties/<int:pk>/claims/<int:claim_id>/actions/', 
+         bounty_claim_actions, name='bounty-claim-actions'),
 ]

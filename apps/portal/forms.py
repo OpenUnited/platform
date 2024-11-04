@@ -10,90 +10,42 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic import View
 from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.talent.models import Person
+from apps.capabilities.product_management.models import ProductContributorAgreementTemplate
 
-class PortalProductForm(forms.ModelForm):
-    """Portal-specific extension of ProductForm"""
-    name = forms.CharField(
-        label="Product Name",
-        widget=forms.TextInput(attrs={
-            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-        })
-    )
+class PortalBaseForm(forms.ModelForm):
+    """Base form with common styling and functionality."""
     
-    organisation = forms.ModelChoiceField(
-        queryset=None,  # We'll set this in __init__
-        required=False,
-        widget=forms.Select(attrs={
-            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6'
-        })
-    )
+    # Common CSS classes
+    INPUT_CLASSES = "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+    SELECT_CLASSES = "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+    TEXTAREA_CLASSES = "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+    CHECKBOX_CLASSES = "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
     
-    make_me_owner = forms.BooleanField(
-        required=False,
-        label="Make me the owner",
-        help_text="You will be set as the owner of this product",
-        widget=forms.CheckboxInput(attrs={
-            'class': 'h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600'
-        })
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_common_styles()
     
-    short_description = forms.CharField(
-        label="Short Description",
-        widget=forms.Textarea(attrs={
-            'rows': 3,
-            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-        })
-    )
-    
-    full_description = forms.CharField(
-        label="Full Description",
-        widget=forms.Textarea(attrs={
-            'rows': 6,
-            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
-        })
-    )
-    
-    website = forms.URLField(
-        required=False,
-        widget=forms.URLInput(attrs={
-            'class': 'block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6'
-        })
-    )
-    
-    video_url = forms.URLField(
-        required=False,
-        widget=forms.URLInput(attrs={
-            'class': 'block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6'
-        })
-    )
-    
-    detail_url = forms.URLField(
-        required=False,
-        widget=forms.URLInput(attrs={
-            'class': 'block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6'
-        })
-    )
-    
-    photo = forms.ImageField(
-        required=False,
-        widget=forms.FileInput(attrs={
-            'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
-        })
-    )
-    
-    visibility = forms.ChoiceField(
-        choices=Product.Visibility.choices,
-        widget=forms.Select(attrs={
-            'class': 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6'
-        })
-    )
+    def apply_common_styles(self):
+        """Apply consistent styling to form fields."""
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, (forms.TextInput, forms.URLInput, forms.EmailInput)):
+                field.widget.attrs['class'] = self.INPUT_CLASSES
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs['class'] = self.SELECT_CLASSES
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs['class'] = self.TEXTAREA_CLASSES
+            elif isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = self.CHECKBOX_CLASSES
 
+class PortalProductForm(PortalBaseForm):
+    """Form for creating/editing products."""
+    
     class Meta:
         model = Product
         fields = [
             'name',
             'organisation',
-            'short_description', 
+            'short_description',
             'full_description',
             'website',
             'video_url',
@@ -247,3 +199,13 @@ class ProductSettingsForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+class AgreementTemplateForm(PortalBaseForm):
+    """Form for creating/editing agreement templates."""
+    
+    class Meta:
+        model = ProductContributorAgreementTemplate
+        fields = ['title', 'content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 10}),
+        }

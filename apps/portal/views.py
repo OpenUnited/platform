@@ -1,495 +1,414 @@
 """
 Views for the product management portal.
 
-This module handles the presentation layer for product management portal features,
-including the portal overview, work review, bounty management, and contributor agreements.
+This module handles the presentation layer for product management portal features.
+Views delegate business logic to services.
 """
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, TemplateView, DeleteView, UpdateView, View, DetailView, CreateView
-from django.shortcuts import get_object_or_404, render, redirect
-from django.db import models
+from django.views.generic import TemplateView, View
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.db.models import Count, Q
-from django.core.exceptions import PermissionDenied, BadRequest
 from django.contrib import messages
-from django.http import HttpResponseBadRequest
-from django.views.generic.edit import UpdateView
 
-from apps.capabilities.product_management.models import (
-    Product,
-    ProductContributorAgreementTemplate,
-    Bounty,
-    Challenge,
-    FileAttachment
-)
-from apps.capabilities.security.models import ProductRoleAssignment
-from apps.capabilities.talent.models import BountyClaim, BountyDeliveryAttempt
-from apps.capabilities.security.services import RoleService
-from apps.portal.forms import PortalProductForm, PortalProductRoleAssignmentForm, ProductSettingsForm
-from apps.common import mixins as common_mixins
 from apps.common.mixins import AttachmentMixin
-from apps.capabilities.product_management.forms import ProductForm
+from apps.portal.forms import PortalProductForm, PortalProductRoleAssignmentForm, ProductSettingsForm, AgreementTemplateForm
+from .services import (
+    PortalService,
+    BountyService,
+    ProductUserService,
+    ChallengeService,
+    BountyDeliveryReviewService,
+    PortalError,
+    AgreementTemplateService,
+)
 
 
 class PortalBaseView(LoginRequiredMixin, TemplateView):
-    """Base view for portal pages with common functionality."""
-    login_url = "sign_in"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        
-        if not hasattr(user, 'person'):
-            return context
-            
-        person = user.person
-        # Get all products user has access to
-        user_products = RoleService.get_user_products(person=person)
-        # Get products where user has management rights
-        managed_products = RoleService.get_managed_products(person=person)
-        
-        context.update({
-            "products": user_products,  # Add this for all accessible products
-            "managed_products": managed_products,
-            "person": person,
-        })
-        return context
-
-def bounty_claim_actions(request, pk):
-    instance = BountyClaim.objects.get(pk=pk)
-    action_type = request.GET.get("action")
-    if action_type == "accept":
-        instance.status = BountyClaim.Status.GRANTED
-
-        # If one claim is accepted for a particular challenge, the other claims automatically fails.
-        challenge = instance.bounty.challenge
-        _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(status=BountyClaim.Status.REJECTED)
-    elif action_type == "reject":
-        instance.status = BountyClaim.Status.REJECTED
-    else:
-        raise BadRequest()
-
-    instance.save()
-
-    return redirect(reverse("portal:product-bounties", args=(instance.bounty.challenge.product.slug,)))
-
-
-class PortalProductSettingView(LoginRequiredMixin, AttachmentMixin, DetailView):
-    template_name = "product_settings.html"
-    model = Product
-    slug_url_kwarg = 'product_slug'
-    context_object_name = 'product'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        form = ProductForm(instance=self.object)
-        context.update({
-            'form': form,
-            'detail_url': self.object.get_absolute_url(),
-        })
-        return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = PortalProductForm(request.POST, request.FILES, instance=self.object)
-        attachment_formset = self.get_attachment_formset()
-
-        if form.is_valid() and attachment_formset.is_valid():
-            form.save()
-            attachment_formset.save()
-            return redirect(self.object.get_absolute_url())
-
-        context = {
-            'form': form,
-            'product': self.object,
-            'attachment_formset': attachment_formset,
-            'detail_url': self.object.get_absolute_url()
-        }
-        return render(request, self.template_name, context)
-
-
-class PortalManageBountiesView(PortalBaseView, TemplateView):
-    template_name = "my_bounties.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        person = self.request.user.person
-        queryset = BountyClaim.objects.filter(
-            person=person,
-            status__in=[
-                BountyClaim.Status.GRANTED,
-                BountyClaim.Status.REQUESTED,
-            ],
-        )
-        context.update({"bounty_claims": queryset})
-        return context
+    """Base view for portal pages."""
+    login_url = 'sign_in'
+    portal_service = PortalService()
     
-class PortalUpdateProductUserView(PortalBaseView):
-    model = ProductRoleAssignment
-    form_class = PortalProductRoleAssignmentForm
-    template_name = "update_product_user.html"
-    login_url = "sign_in"
-    context_object_name = "product_role_assignment"
+    def handle_service_error(self, error: PortalError):
+        """Handle service layer errors consistently."""
+        messages.error(self.request, str(error))
+        return redirect('portal:dashboard')
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Common permission checking."""
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except PortalError as e:
+            return self.handle_service_error(e)
+    
+    def get_context_data(self, **kwargs):
+        """Add common context data."""
+        context = super().get_context_data(**kwargs)
+        try:
+            context.update(self.portal_service.get_user_context(self.request.user.person))
+        except PortalError as e:
+            messages.warning(self.request, str(e))
+        return context
 
+
+class PortalProductDetailView(PortalBaseView, AttachmentMixin):
+    """View for product details, editing, and attachments."""
+    template_name = "portal/products/detail.html"
+    
+    def get(self, request, slug):
+        try:
+            context = self.get_context_data()
+            context.update(self.portal_service.get_product_detail_context(
+                slug=slug,
+                person=request.user.person
+            ))
+            if 'edit' in request.GET:
+                context['form'] = PortalProductForm(instance=context['product'])
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+    
+    def post(self, request, slug):
+        try:
+            if 'attachment' in request.FILES:
+                return self.handle_attachment_upload(
+                    request,
+                    product_slug=slug,
+                    redirect_url=reverse('portal:product-detail', args=[slug])
+                )
+                
+            # Handle normal form submission
+            product = self.portal_service.get_product_or_404(slug)
+            form = PortalProductForm(request.POST, request.FILES, instance=product)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Product updated successfully")
+                return redirect('portal:product-detail', slug=slug)
+            
+            context = self.get_context_data()
+            context['form'] = form
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class PortalProductListView(PortalBaseView):
+    """List view for all products."""
+    template_name = "portal/products/list.html"
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if context["search_result"]:
+        try:
+            context.update(self.portal_service.get_products_context(
+                person=self.request.user.person
+            ))
+            return context
+        except PortalError as e:
+            messages.warning(self.request, str(e))
             return context
 
-        slug = self.kwargs.get("product_slug")
-        product = Product.objects.get(slug=slug)
-        product_users = RoleService.get_product_members(product=product)
 
-        context["product"] = product
-        context["product_users"] = product_users
-
-        return context
-
-    def post(self, request, *args, **kwargs):
-        product_role_assignment = ProductRoleAssignment.objects.get(pk=kwargs.get("pk"))
-        product = Product.objects.get(slug=kwargs.get("product_slug"))
-
-        form = PortalProductRoleAssignmentForm(request.POST, instance=product_role_assignment)
-
-        if form.is_valid():
-            person = form.cleaned_data['person']
-            role = form.cleaned_data['role']
-            
-            RoleService.assign_product_role(
-                person=person,
-                product=product,
-                role=role
+class PortalProductSettingsView(PortalBaseView):
+    """Settings view for a product."""
+    template_name = "portal/products/settings.html"
+    
+    def get(self, request, slug):
+        try:
+            context = self.portal_service.get_product_settings_context(
+                slug=slug,
+                person=request.user.person
             )
+            context['form'] = ProductSettingsForm(instance=context['product'])
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+    
+    def post(self, request, slug):
+        try:
+            product = self.portal_service.get_product_or_404(slug)
+            form = ProductSettingsForm(request.POST, request.FILES, instance=product)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Product settings updated successfully.")
+                return redirect('portal:product-detail', slug=slug)
+            context = self.get_context_data()
+            context['form'] = form
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
 
-            self.success_url = reverse("portal:manage-users", args=(product.slug,))
-            return redirect(self.success_url)
 
-        return super().post(request, *args, **kwargs)
+class PortalBountyListView(PortalBaseView):
+    """List view for product bounties."""
+    template_name = "portal/bounties/list.html"
+    
+    def get(self, request, slug):
+        try:
+            context = self.portal_service.get_product_bounties_context(
+                slug=slug,
+                person=request.user.person
+            )
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
 
-class PortalBountyClaimRequestsView(LoginRequiredMixin, ListView):
-    model = BountyClaim
-    context_object_name = "bounty_claims"
-    template_name = "bounty_claim_requests.html"
-    login_url = "sign_in"
 
-    def get_queryset(self):
-        person = self.request.user.person
-        return BountyClaim.objects.filter(
-            person=person,
-            status__in=[BountyClaim.Status.GRANTED, BountyClaim.Status.REQUESTED],
+class PortalBountyClaimView(PortalBaseView):
+    """View for managing bounty claims."""
+    template_name = "portal/bounties/claims.html"
+    
+    def get(self, request, slug, pk):
+        try:
+            context = self.portal_service.get_bounty_claims_context(
+                slug=slug,
+                bounty_id=pk,
+                person=request.user.person
+            )
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class PortalMyBountiesView(PortalBaseView):
+    """View for user's claimed bounties."""
+    template_name = "portal/bounties/my_bounties.html"
+    
+    def get(self, request, slug):
+        try:
+            context = self.portal_service.get_my_bounties_context(
+                slug=slug,
+                person=request.user.person
+            )
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class PortalChallengeListView(PortalBaseView):
+    """View for managing challenges."""
+    template_name = "portal/challenges/manage.html"
+    challenge_service = ChallengeService()
+    
+    def get(self, request, slug):
+        try:
+            context = self.get_context_data()
+            context.update(self.challenge_service.get_challenges_context(
+                slug=slug,
+                person=request.user.person
+            ))
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class BountyClaimActionView(PortalBaseView):
+    """Handle bounty claim actions."""
+    portal_service = PortalService()
+    
+    def post(self, request, slug, pk, claim_id):
+        try:
+            action = request.POST.get('action')
+            if action not in ['accept', 'reject']:
+                messages.error(request, "Invalid action")
+                return redirect('portal:bounty-claims', slug=slug, pk=pk)
+                
+            self.portal_service.handle_bounty_claim_action(
+                slug=slug,
+                bounty_id=pk,
+                claim_id=claim_id,
+                action=action,
+                person=request.user.person
+            )
+            
+            messages.success(request, f"Bounty claim {action}ed successfully")
+            return redirect('portal:bounty-claims', slug=slug, pk=pk)
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class DeleteBountyClaimView(PortalBaseView):
+    """View for cancelling bounty claims."""
+    bounty_service = BountyService()
+
+    def post(self, request, pk):
+        try:
+            self.bounty_service.handle_claim_action(pk, "cancel")
+            messages.success(request, "The bounty claim was successfully cancelled.")
+            return redirect('portal:bounty-requests')
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class PortalManageUsersView(PortalBaseView):
+    """View for managing product users."""
+    template_name = "portal/products/users/manage.html"
+    product_user_service = ProductUserService()
+
+    def get(self, request, product_slug):
+        context = super().get_context_data()
+        context.update(
+            self.product_user_service.get_product_users_context(product_slug)
         )
-
-class PortalManageUsersView(PortalBaseView, TemplateView):
-    template_name = "manage_users.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        slug = self.kwargs.get("product_slug")
-        product = Product.objects.get(slug=slug)
-
-        product_users = RoleService.get_product_members(product=product)
-
-        context["product"] = product
-        context["product_users"] = product_users
-
-        return context
+        return render(request, self.template_name, context)
 
 
 class PortalAddProductUserView(PortalBaseView):
-    form_class = PortalProductRoleAssignmentForm
-    template_name = "add_product_user.html"
-    login_url = "sign_in"
+    """View for adding users to a product."""
+    template_name = "portal/products/users/add.html"
+    product_user_service = ProductUserService()
 
-    def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
-        if product_slug := self.kwargs.get("product_slug", None):
-            kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        if context["search_result"]:
-            return context
-
-        slug = self.kwargs.get("product_slug")
-        product = Product.objects.get(slug=slug)
-
-        product_users = RoleService.get_product_members(product=product)
-
-        context["product"] = product
-        context["product_users"] = product_users
-
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-
-        if form.is_valid():
-            product = Product.objects.get(slug=kwargs.get("product_slug"))
-            person = form.cleaned_data['person']
-            role = form.cleaned_data['role']
-
-            RoleService.assign_product_role(
-                person=person,
-                product=product,
-                role=role
-            )
-
-            messages.success(request, "The user was successfully added!")
-
-            self.success_url = reverse("portal:manage-users", args=(product.slug,))
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
-
-class PortalDashboardView(PortalBaseView, TemplateView):
-    template_name = "main.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['content_template'] = 'dashboard.html'
-        return context
-
-
-class PortalReviewWorkView(LoginRequiredMixin, ListView):
-    """View for reviewing submitted work in the portal."""
-    model = BountyDeliveryAttempt
-    context_object_name = "bounty_deliveries"
-    template_name = "review_work.html"
-    login_url = "sign_in"
-
-
-class PortalContributorAgreementTemplateListView(LoginRequiredMixin, ListView):
-    """View for managing contributor agreement templates in the portal."""
-    model = ProductContributorAgreementTemplate
-    context_object_name = "contributor_agreement_templates"
-    login_url = "sign_in"
-    template_name = "contributor_agreement_templates.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        slug = self.kwargs.get("product_slug")
-        context.update({
-            "product": get_object_or_404(Product, slug=slug)
-        })
-        return context
-
-    def get_queryset(self):
-        product_slug = self.kwargs.get("product_slug")
-        return ProductContributorAgreementTemplate.objects.filter(
-            product__slug=product_slug
-        ).order_by("-created_at")
-
-
-class PortalProductBountyFilterView(LoginRequiredMixin, TemplateView):
-    """View for filtering and displaying bounties in the portal."""
-    template_name = "product_bounties.html"
-    login_url = "sign_in"
-
-    def get(self, request, *args, **kwargs):
-        context = {}
-        queryset = Bounty.objects.filter(
-            challenge__product__slug=kwargs.get("product_slug")
-        ).exclude(
-            challenge__status=Challenge.ChallengeStatus.DRAFT
-        )
-
-        if query_parameter := request.GET.get("q"):
-            for q in query_parameter.split(" "):
-                q = q.split(":")
-                key = q[0]
-                if key == "sort":
-                    value = q[1]
-
-                    if value == "points-asc":
-                        queryset = queryset.order_by("points")
-                    elif value == "points-desc":
-                        queryset = queryset.order_by("-points")
-
-        if query_parameter := request.GET.get("search-bounty"):
-            queryset = Bounty.objects.filter(
-                challenge__title__icontains=query_parameter
-            )
-
-        context.update({"bounties": queryset})
-        return render(request, self.template_name, context)
-
-
-class PortalProductBountiesView(LoginRequiredMixin, ListView):
-    """View for managing product bounties in the portal."""
-    model = BountyClaim
-    template_name = "product_bounties.html"
-    context_object_name = "bounty_claims"
-    login_url = "sign_in"
-
-    def get_queryset(self):
-        product_slug = self.kwargs.get("product_slug")
-        product = Product.objects.get(slug=product_slug)
-        return BountyClaim.objects.filter(
-            bounty__challenge__product=product,
-            status=BountyClaim.Status.REQUESTED,
-        )
-
-class PortalProductChallengesView(LoginRequiredMixin, ListView):
-    model = Challenge
-    context_object_name = "challenges"
-    login_url = "sign_in"
-    template_name = "manage_challenges.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        slug = self.kwargs.get("product_slug")
-        context.update({"product": Product.objects.get(slug=slug)})
-        return context
-
-    def get_queryset(self):
-        product_slug = self.kwargs.get("product_slug")
-        return Challenge.objects.filter(product__slug=product_slug).order_by("-created_at")
-
-class PortalProductChallengeFilterView(View):
-    template_name = 'manage_challenges.html'
-    
     def get(self, request, product_slug):
-        product = get_object_or_404(Product, slug=product_slug)
-        search_query = request.GET.get('search-challenge', '')
-        sort = request.GET.get('sort', '')
+        context = super().get_context_data()
+        context['form'] = PortalProductRoleAssignmentForm()
+        return render(request, self.template_name, context)
+
+    def post(self, request, product_slug):
+        form = PortalProductRoleAssignmentForm(request.POST)
+        if form.is_valid():
+            try:
+                self.product_user_service.assign_user_role(
+                    product_slug=product_slug,
+                    person=form.cleaned_data['person'],
+                    role=form.cleaned_data['role']
+                )
+                messages.success(request, "User successfully added to product.")
+                return redirect('portal:manage-users', product_slug=product_slug)
+            except ValueError as e:
+                messages.error(request, str(e))
         
-        challenges = product.challenges.all()
-        
-        if search_query:
-            challenges = challenges.filter(title__icontains=search_query)
-            
-        if sort == 'created-desc':
-            challenges = challenges.order_by('-created_at')
-        elif sort == 'created-asc':
-            challenges = challenges.order_by('created_at')
-            
-        context = {
-            'product': product,
-            'challenges': challenges,
-        }
-        
+        context = super().get_context_data()
+        context['form'] = form
         return render(request, self.template_name, context)
 
 
-class PortalProductDetailView(LoginRequiredMixin, View):
+class PortalUpdateProductUserView(PortalBaseView):
+    """View for updating product user roles."""
+    template_name = "portal/products/users/update.html"
+    product_user_service = ProductUserService()
+
+    def get(self, request, product_slug, user_id):
+        context = super().get_context_data()
+        context['form'] = PortalProductRoleAssignmentForm(
+            instance=self.product_user_service.get_user_role_assignment(
+                product_slug=product_slug,
+                user_id=user_id
+            )
+        )
+        return render(request, self.template_name, context)
+
+    def post(self, request, product_slug, user_id):
+        form = PortalProductRoleAssignmentForm(request.POST)
+        if form.is_valid():
+            try:
+                self.product_user_service.update_user_role(
+                    product_slug=product_slug,
+                    user_id=user_id,
+                    role=form.cleaned_data['role']
+                )
+                messages.success(request, "User role successfully updated.")
+                return redirect('portal:manage-users', product_slug=product_slug)
+            except ValueError as e:
+                messages.error(request, str(e))
+
+
+class PortalWorkReviewView(PortalBaseView):
+    """View for reviewing work."""
+    template_name = "portal/work/review.html"
+    review_service = BountyDeliveryReviewService()
+    
     def get(self, request, slug):
-        product = get_object_or_404(Product, slug=slug)
-        tab = request.GET.get('tab', 'challenges')
-        products = Product.objects.all()
-        
-        context = {
-            'product': product,
-            'current_product': product,
-            'products': products,
-            'active_tab': tab,
-        }
-        
-        # Add tab-specific context
-        if tab == 'settings':
-            form = ProductSettingsForm(instance=product)
+        try:
+            context = self.get_context_data()
+            context.update(self.review_service.get_review_context(
+                slug=slug,
+                person=request.user.person
+            ))
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+            
+    def post(self, request, slug):
+        try:
+            attempt_id = request.POST.get('attempt_id')
+            approved = request.POST.get('approved') == 'true'
+            feedback = request.POST.get('feedback', '')
+            
+            self.review_service.review_delivery_attempt(
+                attempt_id=attempt_id,
+                approved=approved,
+                feedback=feedback,
+                reviewer=request.user.person
+            )
+            
+            messages.success(request, "Work review submitted successfully")
+            return redirect('portal:work-review', slug=slug)
+        except PortalError as e:
+            return self.handle_service_error(e)
+
+
+class PortalAgreementTemplatesView(PortalBaseView):
+    """View for managing agreement templates."""
+    template_name = "portal/agreements/templates.html"
+    agreement_service = AgreementTemplateService()
+    
+    def get(self, request, slug):
+        try:
+            context = self.get_context_data()
+            context.update(self.agreement_service.get_templates_context(
+                slug=slug,
+                person=request.user.person
+            ))
+            context['form'] = AgreementTemplateForm()
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+    
+    def post(self, request, slug):
+        try:
+            form = AgreementTemplateForm(request.POST)
+            if form.is_valid():
+                if request.POST.get('template_id'):
+                    # Update existing template
+                    self.agreement_service.update_template(
+                        slug=slug,
+                        template_id=request.POST['template_id'],
+                        person=request.user.person,
+                        data=form.cleaned_data
+                    )
+                    messages.success(request, "Agreement template updated successfully")
+                else:
+                    # Create new template
+                    self.agreement_service.create_template(
+                        slug=slug,
+                        person=request.user.person,
+                        data=form.cleaned_data
+                    )
+                    messages.success(request, "Agreement template created successfully")
+                return redirect('portal:agreement-templates', slug=slug)
+            
+            # If form is invalid, show errors
+            context = self.get_context_data()
+            context.update(self.agreement_service.get_templates_context(
+                slug=slug,
+                person=request.user.person
+            ))
             context['form'] = form
-        
-        # Map tabs to their template names
-        tab_templates = {
-            'challenges': 'challenge_table.html',
-            'bounty-claim-requests': 'bounty_claim_requests.html',
-            'review-work': 'review_work.html',
-            'contribution-agreements': 'contributor_agreement_templates.html',
-            'user-management': 'manage_users.html',
-            'settings': 'product_settings.html'
-        }
-        
-        context['tab_template'] = tab_templates.get(tab, 'challenge_table.html')
-        
-        return render(request, 'product_detail.html', context)
-
-
-class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
-    """View for cancelling bounty claims from the portal."""
-    model = BountyClaim
-    login_url = "sign_in"
-    success_url = reverse_lazy("portal:bounty-requests")
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.status == BountyClaim.Status.REQUESTED:
-            instance.status = BountyClaim.Status.CANCELLED
-            instance.save()
-            messages.success(request, "The bounty claim is successfully deleted.")
-        else:
-            messages.error(
-                request,
-                "Only the active claims can be deleted. The bounty claim did not deleted.",
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)
+    
+    def delete(self, request, slug):
+        try:
+            template_id = request.POST.get('template_id')
+            if not template_id:
+                raise PortalError("Template ID is required")
+                
+            self.agreement_service.delete_template(
+                slug=slug,
+                template_id=template_id,
+                person=request.user.person
             )
-
-        return redirect(self.success_url)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.status == BountyClaim.Status.REQUESTED:
-            instance.status = BountyClaim.Status.CANCELLED
-            instance.save()
-
-        context = self.get_context_data()
-        context["bounty"] = self.object.bounty
-        context["elem"] = instance
-
-        template_name = self.request.POST.get("from")
-        if template_name == "bounty_detail_table.html":
-            return render(
-                request,
-                "portal/partials/buttons/create_bounty_claim_button.html",
-                context,
-            )
-
-        return super().post(request, *args, **kwargs)
-
-def product_detail(request, slug, tab):
-    context = {
-        'product': get_object_or_404(Product, slug=slug),
-        'default_tab': tab,
-        'content_template': 'product_detail.html'  # or whatever your content template is
-    }
-    
-    # Add any other context data you need
-    if hasattr(request.user, 'person'):
-        context['person'] = request.user.person
-        
-    # Get all products user has access to
-    user_products = RoleService.get_user_products(person=context['person'])
-    context['products'] = user_products
-    
-    if request.headers.get('HX-Request'):
-        # Return just the content template
-        return render(request, 'product_detail.html', context)
-    
-    # Return the full portal layout
-    return render(request, 'main.html', context)
-
-def get(self, request):
-    context = {
-        'person': getattr(request.user, 'person', None),
-        'products': Product.objects.filter(owner=request.user),
-        'content_template': 'dashboard.html'
-    }
-    return render(request, 'main.html', context)
-
-class CreateAgreementTemplateView(LoginRequiredMixin, CreateView):
-    template_name = 'create_agreement_template.html'
-    # Add your model and form class here
-    # model = ContributorAgreementTemplate
-    # form_class = ContributorAgreementTemplateForm
-    
-    def get_success_url(self):
-        return reverse('portal:product-detail', args=[self.kwargs['product_slug']]) + '?tab=agreements'
-    
-    def form_valid(self, form):
-        form.instance.product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        return super().form_valid(form)
+            messages.success(request, "Agreement template deleted successfully")
+            return redirect('portal:agreement-templates', slug=slug)
+        except PortalError as e:
+            return self.handle_service_error(e)
