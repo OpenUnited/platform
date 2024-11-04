@@ -412,3 +412,17 @@ class PortalAgreementTemplatesView(PortalBaseView):
             return redirect('portal:agreement-templates', slug=slug)
         except PortalError as e:
             return self.handle_service_error(e)
+
+
+class PortalDashboardView(PortalBaseView):
+    """Dashboard view for portal."""
+    template_name = "portal/dashboard.html"
+    
+    def get(self, request):
+        try:
+            context = self.portal_service.get_dashboard_context(
+                person=request.user.person
+            )
+            return render(request, self.template_name, context)
+        except PortalError as e:
+            return self.handle_service_error(e)

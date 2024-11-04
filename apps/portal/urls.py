@@ -13,7 +13,7 @@ from .views import (
     PortalChallengeListView,
     PortalWorkReviewView,
     PortalAgreementTemplatesView,
-    bounty_claim_actions,
+    BountyClaimActionView
 )
 
 app_name = 'portal'
@@ -48,5 +48,5 @@ urlpatterns = [
     # Add these URLs:
     path('products/', PortalProductListView.as_view(), name='products'),
     path('products/<slug:slug>/bounties/<int:pk>/claims/<int:claim_id>/actions/', 
-         bounty_claim_actions, name='bounty-claim-actions'),
+         BountyClaimActionView.as_view(), name='bounty-claim-actions'),
 ]
