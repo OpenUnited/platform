@@ -1,13 +1,11 @@
-{% for node in nodes %}
+{% for node in skills %}
     {% if node.children %}
         <optgroup class="ml-{{ depth|default:0|add:depth|default:0 }}" label="{{ node.name }}">
-            {% with nodes=node.children depth=depth|default:0|add:1 %}
-                {% include "product_management/bounty/helper/macros_fun.html" %}
-            {% endwith %}
+            {% include "product_management/bounty/helper/skill_expertise_tree.html" with skills=node.children depth=depth|default:0|add:1 %}
         </optgroup>
     {% else %}
         <option class="ml-{{ depth|default:0|add:depth|default:0 }}" value="{{ node.id }}">
             {{ node.name }}
         </option>
     {% endif %}
-{% endfor %}
+{% endfor %} 

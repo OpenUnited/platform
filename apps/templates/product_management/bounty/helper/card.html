@@ -1,33 +1,31 @@
-{% with product = bounty.challenge.product   %}
-{% with challenge = bounty.challenge   %}
-
+{% with product=bounty.challenge.product challenge=bounty.challenge %}
 <li class="col-span-1 rounded-t-lg bg-white relative divide-y divide-gray-200 border">
     <div class="flex w-full items-center justify-between space-x-6 p-6">
       <div class="flex-1 truncate">
         <div class="flex items-center space-x-3 justify-between">
-          <a href="{% url product_management:bounty-detail product.slug, challenge.id, bounty.id,   %}"
-            class="truncate text-sm font-medium text-gray-900">{{ bounty.title  }}</a>
+          <a href="{% url 'product_management:bounty-detail' product.slug challenge.id bounty.id %}"
+            class="truncate text-sm font-medium text-gray-900">{{ bounty.title }}</a>
         </div>
-        <p class="mt-1 truncate text-sm text-gray-500">{{ bounty.description  }}</p>
+        <p class="mt-1 truncate text-sm text-gray-500">{{ bounty.description }}</p>
         
-        <!-- Skills and Expertise section with matching style -->
+        <!-- Skills and Expertise section -->
         <div class="mt-2 flex flex-wrap gap-2">
           {% if bounty.skill %}
             <div class="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-              {{ bounty.skill  }}
-              {% if bounty.expertise and bounty.expertise|call:exists %}
-                ({{ bounty.expertise|call:all|map(attribute='name')|map('replace', 'talent.Expertise.', '')|join(', ')  }})
-              {% endif  %}
+              {{ bounty.skill }}
+              {% if bounty.expertise.exists %}
+                ({% for exp in bounty.expertise.all %}
+                    {{ exp.name|cut:"talent.Expertise." }}{% if not forloop.last %}, {% endif %}
+                {% endfor %})
+              {% endif %}
             </div>
-          {% endif  %}
+          {% endif %}
         </div>
 
         <div class="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 mt-4">
           {% if bounty.has_claimed and bounty.claimed_by %}
-            Claimed by <a class="text-blue-400 pl-1" href="{{ bounty.claimed_by|call:get_absolute_url  }}">{{ bounty.claimed_by  }}</a>
-          {% else %}
-            {{ bounty.status  }}
-          {% endif  %}
+            Claimed by <a class="text-blue-400 pl-1" href="{{ bounty.claimed_by.get_absolute_url }}">{{ bounty.claimed_by }}</a>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -43,7 +41,7 @@
 
         {% if bounty.status == "Available" %}
             <div class="-ml-px flex w-0 flex-1">
-              <a href="{% url product_management:challenge-detail product.slug, challenge.pk  %}"
+              <a href="{% url 'product_management:challenge-detail' product.slug challenge.pk %}"
                 class="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
                 <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
                 <svg class="h-6 w-6 text-gray-400 fill-gray-400" fill="" width="20" height="20" viewBox="0 0 100 100"
@@ -83,7 +81,10 @@
           </button>
           {% endif  %}
           <div class="flex-1">
-            <a class="text-indigo-500 text-sm w-full block text-end" href="{% url product_management:product-detail product.slug,   %}">{{ product.name  }}</a>
+            <a class="text-indigo-500 text-sm w-full block text-end" 
+               href="{% url 'product_management:product-detail' product.slug %}">
+              {{ product.name }}
+            </a>
           </div>
         </div>
       </div>
@@ -101,8 +102,8 @@
           <div>
             {% if challenge.initiative %}
             <a class="text-indigo-500 text-sm w-full block text-end"
-                href="{% url product_management:initiative-detail product.slug, challenge.initiative.pk,   %}">
-                {{ challenge.initiative.name  }}
+                href="{% url 'product_management:initiative-detail' product.slug challenge.initiative.pk %}">
+                {{ challenge.initiative.name }}
             </a>
             {% else %}
             <span class="text-indigo-500 text-sm w-full block text-end"> None
@@ -115,8 +116,10 @@
       <div class="flex justify-between py-2">
         <div class="truncate text-sm font-medium text-gray-900">Challenge</div>
         <div>
-          <a href="{% url product_management:challenge-detail product.slug, challenge.pk   %}"
-            class="text-indigo-500 text-sm w-full block text-end max-w-[210px]">{{ challenge.title  }}</a>
+          <a href="{% url 'product_management:challenge-detail' product.slug challenge.pk %}"
+            class="text-indigo-500 text-sm w-full block text-end max-w-[210px]">
+            {{ challenge.title }}
+          </a>
         </div>
       </div>
       <div class="flex justify-between py-2">
@@ -147,6 +150,7 @@
       {% endif  %}
     </div>
   </li>
+{% endwith %}
 
   <script>
     function viewMoreFunc(event, bountyID){

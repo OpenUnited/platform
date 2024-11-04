@@ -278,14 +278,26 @@ class ProductListView(ListView):
     model = Product
     template_name = "product_management/products.html"
     context_object_name = "products"
-    queryset = Product.objects.filter(
-        visibility=Product.Visibility.GLOBAL
-    ).order_by("created_at")
     paginate_by = 8
+
+    def get_queryset(self):
+        return Product.objects.filter(
+            visibility=Product.Visibility.GLOBAL
+        ).prefetch_related(
+            'challenge_set',
+            'initiatives'
+        ).order_by("created_at")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["challenge_status"] = Challenge.ChallengeStatus
+        
+        # Add active challenges count to each product
+        for product in context['products']:
+            product.active_challenges_count = product.challenge_set.filter(
+                status=Challenge.ChallengeStatus.ACTIVE
+            ).count()
+            
         return context
 
 
@@ -302,14 +314,33 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = context["product"]
+        
+        # Add the page types dictionary
+        context["types_page"] = {
+            "summary": "Summary",
+            "initiatives": "Initiatives", 
+            "bounties": "Bounties",
+            "challenges": "Challenges",
+            "tree": "Product Tree",
+            "ideas-and-bugs": "Ideas & Bugs",
+            "people": "People"
+        }
+        
+        # Add URL segment data
+        url_segments = self.request.path.strip('/').split('/')
+        context["url_segment"] = url_segments
+        context["last_segment"] = url_segments[-1] if url_segments else ''
+        
+        # Existing code
         challenges = Challenge.objects.filter(product=product, status=Challenge.ChallengeStatus.ACTIVE)
-
         can_modify_product = False
         if self.request.user.is_authenticated:
             can_modify_product = utils.has_product_modify_permission(self.request.user, product)
 
-        context["can_modify_product"] = can_modify_product
-        context["challenges"] = challenges
+        context.update({
+            "can_modify_product": can_modify_product,
+            "challenges": challenges
+        })
 
         # Get the first ProductTree for the current product
         product_tree = product.product_trees.first()
@@ -322,6 +353,11 @@ class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
             context["tree_data"] = []
 
         return context
+
+    def generate_summary_structure(self, data, depth=0, displayed_items=None):
+        if displayed_items is None:
+            displayed_items = []
+        return data, depth, displayed_items
 
 
 def redirect_challenge_to_bounties(request):
@@ -361,6 +397,7 @@ class BountyListView(ListView):
 
         context["skills"] = [serialize_other_type_tree(skill) for skill in Skill.get_roots()]
         context["expertises"] = [serialize_other_type_tree(expertise) for expertise in expertises]
+        context['TASK_CLAIM_TYPES'] = ["Claimed", "Not Ready", "Ready", "Done"]
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -848,11 +885,10 @@ class ProductDetailView(DetailView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        default_tab = self.kwargs.get("default_tab", 1)
+        product = context["product"]
         
-        context.update({
-            "default_tab": default_tab,
-            # Add any other context data needed for product layout
-        })
+        # Add photo URL to context
+        context["product_photo_url"] = product.get_photo_url()
         
+        # Rest of your existing context data...
         return context

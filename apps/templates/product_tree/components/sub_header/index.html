@@ -2,11 +2,13 @@
     {% include "product_tree/components/sub_header/search.html"  %}
     <div>
         {% if product_slug %}
-            {% with add_node_url=url 'product_management:product-area' product_slug,   %}
+            {% url "product_management:product-area" product_slug as node_url %}
+            {% with add_node_url=node_url %}
                 {% include "product_tree/components/sub_header/add_product_button.html"  %}
             {% endwith  %}
         {% else %}
-            {% with add_node_url=url 'canopy:add-node-root' product-tree.pk,  %}
+            {% url "canopy:add-node-root" product_tree.pk as node_url %}
+            {% with add_node_url=node_url %}
                 {% include "product_tree/components/sub_header/add_product_button.html"  %}
             {% endwith  %}
         {% endif  %}
