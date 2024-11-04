@@ -45,8 +45,10 @@ urlpatterns = [
     # Agreements
     path('products/<slug:slug>/agreements/templates/', PortalAgreementTemplatesView.as_view(), name='agreement-templates'),
     
-    # Add these URLs:
+    # Product List
     path('products/', PortalProductListView.as_view(), name='products'),
+    
+    # Bounty Claim Actions
     path('products/<slug:slug>/bounties/<int:pk>/claims/<int:claim_id>/actions/', 
          BountyClaimActionView.as_view(), name='bounty-claim-actions'),
 ]

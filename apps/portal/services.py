@@ -8,6 +8,7 @@ bounty handling, work review, and user management.
 from typing import Dict, List, Optional, Any
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
+import logging
 
 from apps.capabilities.product_management.models import (
     Product,
@@ -35,6 +36,17 @@ class PortalBaseService:
     def get_product_or_404(self, slug: str) -> Product:
         """Get product by slug or raise 404."""
         return get_object_or_404(Product, slug=slug)
+
+    def get_base_product_context(self, product: Product, person: Optional[Person] = None) -> Dict[str, Any]:
+        """Get common context data for product views."""
+        context = {
+            'product': product,
+            'current_product': product,
+        }
+        if person:
+            context['can_manage'] = RoleService.has_product_role(person, product, 'Manager')
+            context['can_admin'] = RoleService.has_product_role(person, product, 'Admin')
+        return context
 
 
 class PortalService(PortalBaseService):
@@ -136,6 +148,15 @@ class PortalService(PortalBaseService):
             
         claim.save()
 
+    def _get_work_review_context(self, product: Product) -> Dict[str, Any]:
+        """Get context data for work review tab."""
+        return {
+            'delivery_attempts': BountyDeliveryAttempt.objects.filter(
+                bounty_claim__bounty__challenge__product=product,
+                status=BountyDeliveryAttempt.Status.SUBMITTED
+            ).select_related('bounty_claim', 'bounty_claim__bounty', 'bounty_claim__person')
+        }
+
 
 class BountyService:
     """
@@ -146,14 +167,17 @@ class BountyService:
         """Handle accepting, rejecting, or cancelling a bounty claim."""
         claim = get_object_or_404(BountyClaim, pk=claim_id)
         
-        if action == "accept":
-            self._accept_claim(claim)
-        elif action == "reject":
-            self._reject_claim(claim)
-        elif action == "cancel":
-            self._cancel_claim(claim)
-        else:
-            raise ValueError(f"Invalid action: {action}")
+        try:
+            if action == "accept":
+                self._accept_claim(claim)
+            elif action == "reject":
+                self._reject_claim(claim)
+            elif action == "cancel":
+                self._cancel_claim(claim)
+            else:
+                raise PortalError(f"Invalid action: {action}")
+        except ValueError as e:
+            raise PortalError(str(e))
             
         return claim
 
@@ -230,6 +254,10 @@ class ProductUserService:
             person_id=user_id,
             product=product,
             role=role
+        )
+        logger.info(
+            "User role updated - Product: %s, User: %s, Role: %s",
+            product_slug, user_id, role
         )
 
 
