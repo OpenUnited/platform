@@ -1,0 +1,49 @@
+{% with generate_product_area_tree(node, can_modify_product=False, slug=None, depth=1)   %}
+{% for child in node %}
+  <li ondragstart="drag(event)" ondragover="allowDrop(event)" id="li_node_{{ child.id }}"
+      class="w-full list-none"
+      data-id="{{ child.id }}" {% if can_modify_product %} draggable="true"{% endif  %}
+      target_url="{% if slug %} {{ url('product_management:product-area-update', args=(slug, child.id,) )  }}  {% else %} {{ url('canopy:update-node', args=(child.id,) )  }} {% endif  %}">
+            <div class="block border border-gray-300 p-3 mb-2 rounded-md text-blue-500 mb-3 mt-2">
+                <div class="flex justify-between w-full gap-2 group/item inline-flex">
+                    <div class="flex justify-start">
+                        {% with child=child  %}
+                            {% include "product_tree/components/main/macros/expand_button.html"  %}
+                        {% endwith  %}
+
+                        {% include "product_tree/components/main/macros/drag.html"  %}
+
+                        {% with product_slug=slug, child=child, can_modify_product=can_modify_product  %}
+                            {% include "product_tree/components/main/macros/tree_name.html"  %}
+                        {% endwith  %}
+
+
+                        {% with child=child  %}
+                            {% include "product_tree/components/main/macros/video.html"  %}
+                        {% endwith  %}
+
+                    </div>
+                    {% with id=child.id, depth=depth, can_modify_product=can_modify_product, product_slug=slug   %}
+                        {% include "product_tree/components/main/macros/action_buttons.html"  %}
+                    {% endwith  %}
+                </div>
+
+                <div class="description view-node-group text_desc flex text-sm leading-6 text-gray-700 font-normal mt-0.5">
+                    {{ child.description }}
+                </div>
+            </div>
+
+            <ul ondrop="drop(event)" class="pl-{{ depth * 4 }} hidden" id="li_{{ child.id }}_ul_child">
+                {% if child["children"] %}
+                        {{ generate_product_area_tree(
+                                child["children"],
+                                can_modify_product=can_modify_product,
+                                slug=slug,
+                                depth=depth + 1
+                            )
+                         }}
+                {% endif  %}
+            </ul>
+        </li>
+    {% endfor  %}
+{% endmacro  %}

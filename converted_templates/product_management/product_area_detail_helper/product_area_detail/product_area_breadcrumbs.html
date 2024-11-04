@@ -1,0 +1,53 @@
+<nav class="flex mb-6" aria-label="Breadcrumb">
+    <ol role="list" class="flex items-center space-x-4">
+        <li>
+            <div>
+                <a href="{{ url 'product-tree' product.slug,  }}" class="text-gray-400 cursor-pointer hover:text-gray-500">
+                    <i class="fa fa-tree"></i>
+                    <span class="sr-only">Home</span>
+                </a>
+            </div>
+        </li>
+        {% if product-area|call:get_ancestors|call:count %}
+            <li>
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <a href="{{ url 'product-detail' product.slug,  }}"  class=" ml-4 text-sm font-medium text-gray-500
+                        hover:text-gray-700">...</a>
+                </div>
+            </li>
+        {% endif  %}
+        {% if product-area|call:get_parent %}
+            <li>
+                <div class="flex items-center">
+                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
+                        aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <a href="{{ url('product-area-detail', args=(product_slug, product-area|call:get_parent.id,))  }}" class=" ml-4 text-sm font-medium text-gray-500
+                        hover:text-gray-700">{{ product-area|call:get_parent.name }}</a>
+                </div>
+            </li>
+        {% endif  %}
+        <li>
+            <div class="flex items-center">
+                <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path fill-rule="evenodd"
+                        d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                        clip-rule="evenodd" />
+                </svg>
+                <a href=""
+                    class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ product-area.name }}</a>
+            </div>
+        </li>
+
+    </ol>
+</nav>

@@ -1,0 +1,39 @@
+{% extends 'base_html.html'  %}
+
+{% block header   %}
+{% include 'header_without_discord.html'  %}
+{% endblock  %}
+
+{% block footer   %}
+{% include 'footer.html'  %}
+{% endblock  %}
+
+{% block scripts   %}
+<script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          dark: '#181826',
+          'light-gray': '#D3D9E1',
+          'gray-dark': '#a3acb9',
+          'light-blue': '#f0f9ff',
+          'light-indigo': 'rgb(54 42 255 / 8%)'
+        }
+      }
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+<script src="{{ static 'plugin/alert/js/alertify.min.js'  }}"></script>
+<script type="module" src="{{ static 'scripts/main.js'  }}"></script>
+
+<script>
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token  }}';
+  })
+</script>
+
+{% endblock  %}

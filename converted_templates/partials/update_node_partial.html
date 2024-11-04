@@ -1,0 +1,21 @@
+<li draggable="false" id="li_node_{{ product-area.id }}" class="mb-2">
+    <form method="post" hx-post="{{ url('canopy:update-node', args=(product-area.id,) ) }}"  hx-target="#li_content_{{ product-area.id }}" hx-swap="outerHTML">
+        <div id="li_content_{{ product-area.id }}" class="p-2 mt-1 block border border-gray-300 rounded-md text-blue-500">
+            <div class="w-full mb-2">
+                <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Name</label>
+                <input type="text" value="{{ product-area.name }}" name="name" id="name" class="bg-gray-50 border border-blue-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full" placeholder="Name..." required />
+                <input type="hidden" value="{{ depth }}" name="depth" class="bg-gray-50 border border-blue-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full" placeholder="Name..." required />
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Description</label>
+                <textarea id="description" name="description" rows="4" class="bg-gray-50 border border-blue-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Write your description here...">{{ product-area.description }}</textarea>
+            </div>
+
+            <div class="flex justify-end mr-2 mt-2 mb-2">
+                <button type="button" class="py-1 sm:py-0 transition-all duration-300 ease-linear text-indigo-600 rounded bg-white border border-indigo-600 px-4 transition-all ease-linear duration-100 hover:bg-indigo-600 hover:text-white mr-2"  hx-post="{{ url('canopy:update-node', args=(product-area.id,) ) }}"  hx-vals='{"cancelled":"true"}' hx-target="#li_content_{{ product-area.id }}" hx-swap="outerHTML">Cancel</button>
+                <button type="submit" class="bg-indigo-600  text-white py-2 px-4 rounded">Save</button>
+            </div>
+
+        </div>
+    </form>
+</li>

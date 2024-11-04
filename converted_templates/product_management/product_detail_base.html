@@ -1,0 +1,304 @@
+{% extends 'base.html'  %}
+
+{% with url_segment = request.path.split('/')   %}
+{% with last_segment = url_segment[-1]   %}
+
+{% set TYPES_PAGE = {"summary":"Summary", "initiatives":"Initiatives", "bounties": "Bounties",
+                    "challenges":"Challenges","tree":"Product Tree", "ideas-and-bugs":"Ideas & Bugs",
+                    "people":"People"} %}
+
+{% block content   %}
+
+<div class="lg:flex flex-grow w-full">
+    <div class="relative z-50 lg:hidden" style="display: none;" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/80"></div>
+        <div class="fixed inset-0 flex">
+            <div class="relative mr-16 flex w-full max-w-xs flex-1">
+                <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+                    <button type="button" class="appearance-none -m-2.5 p-2.5">
+                        <span class="sr-only">Close sidebar</span>
+                        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Sidebar component, swap this element with another sidebar if you like -->
+                <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
+                    <div class="flex shrink-0 items-center">
+                        <img class="h-16 w-auto rounded-full overflow-hidden" src="{{ product|call:get_photo_url  }}" alt="Product Logo">
+                    </div>
+                    <nav class="flex flex-1 flex-col">
+                        <div class="flex flex-1 flex-col gap-y-7">
+                            <ul role="list" class="-mx-2 space-y-1">
+                                <li>
+                                    {% if last_segment  == "summary" %}
+                                    <a href=""
+                                        class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                        {% else %}
+                                        <a href="{{ url('product_management:product-summary', args=(product_slug,) ) }}"
+                                            class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                            {% endif  %}
+                                            Summary
+                                        </a>
+                                </li>
+                                <li>
+                                    {% if last_segment  == "initiatives" %}
+                                    <a href=""
+                                        class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                        {% else %}
+                                        <a href="{{ url 'product_management:product-initiatives' product_slug,  }}"
+                                            class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                            {% endif  %}
+                                            Initiatives
+                                        </a>
+                                </li>
+                                <li>
+                                    {% if last_segment  == "challenges" %}
+                                    <a href=""
+                                        class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                        {% else %}
+                                        <a href="{{ url 'product_management:product-challenges' product_slug,  }}"
+                                            class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                            {% endif  %}
+                                            Challenges
+                                        </a>
+                                </li>
+                                <li>
+                                    {% if last_segment  == "ideas-and-bugs" %}
+                                    <a href=""
+                                        class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                        {% else %}
+                                        <a href="{{ url 'product_management:product-ideas-bugs' product_slug,  }}"
+                                            class=" text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex
+                                            gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                            {% endif  %}
+                                            Ideas & Bugs
+                                        </a>
+                                </li>
+
+                                <li>
+                                    {% if last_segment  == "people" %}
+                                    <a href=""
+                                        class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                        {% else %}
+                                        <a href="{{ url 'product_management:product-people' product_slug,  }}"
+                                            class="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                            {% endif  %}
+                                            People
+                                        </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Static sidebar for desktop -->
+    <div class="flex lg:w-72 lg:flex-none lg:flex-col">
+        <!-- Sidebar component, swap this element with another sidebar if you like -->
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto lg:border-r border-gray-200 bg-white lg:px-6">
+            <div class="hidden lg:flex shrink-0 items-center">
+                <img class="h-20 w-auto rounded-full overflow-hidden"
+                    src="{{ product|call:get_photo_url  }}" alt="Product Logo">
+            </div>
+            <nav class="hidden flex-1 flex-col sm:flex">
+                <div class="flex flex-1 flex-col gap-y-7">
+                    <ul role="list" class="lg:-mx-2 lg:space-y-1 flex flex-row lg:flex-col pb-2 lg:pb-0">
+                        <li>
+                            {% if last_segment  == "summary" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url('product_management:product-summary', args=(product_slug,) ) }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Summary
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "bounties" %}
+                                <a href=""
+                                    class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                            {% else %}
+                                <a href="{{ url('product_management:product-bounties', args=(product_slug, ) ) }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Bounties
+                                </a>
+                        </li>
+
+                        <li>
+                            {% if last_segment  == "tree" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-tree' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Product Tree
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "initiatives" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-initiatives' product_slug, }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Initiatives
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "challenges" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-challenges' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Challenges
+                                </a>
+                        </li>
+
+
+                        <li>
+                            {% if last_segment  == "ideas-and-bugs" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-ideas-bugs' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Ideas & Bugs
+                                </a>
+                        </li>
+
+                        <li>
+                            {% if last_segment  == "people" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-people' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    People
+                                </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="flex sm:hidden w-max">
+                <button
+                    class="flex gap-2 px-3.5 py-2.5 justify-center text-gray-700 bg-white border border-gray-300 focus:bg-white font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center"
+                    type="button" data-dropdown-toggle="dropdown">
+                    <span>{{ TYPES_PAGE[last_segment] }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+
+                </button>
+
+                <!-- Dropdown menu -->
+                <div class="hidden bg-white text-base z-50 list-none divide-y divide-gray-100 rounded-xl shadow my-4"
+                    id="dropdown">
+                    <ul class="py-1 min-w-[200px]" aria-labelledby="dropdown">
+                        <li>
+                            {% if last_segment  == "summary" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url('product_management:product-summary', args=(product_slug,) ) }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Summary
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "bounties" %}
+                                <a href=""
+                                    class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                            {% else %}
+                                <a href="{{ url('product_management:product-bounties', args=(product_slug, ) ) }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Bounties
+                                </a>
+                        </li>
+
+                        <li>
+                            {% if last_segment  == "tree" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-tree' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Product Tree
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "initiatives" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-initiatives' product_slug, }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Initiatives
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "challenges" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-challenges' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Challenges
+                                </a>
+                        </li>
+                        <li>
+                            {% if last_segment  == "ideas-and-bugs" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-ideas-bugs' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    Ideas & Bugs
+                                </a>
+                        </li>
+
+                        <li>
+                            {% if last_segment  == "people" %}
+                            <a href=""
+                                class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                {% else %}
+                                <a href="{{ url 'product_management:product-people' product_slug,  }}"
+                                    class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
+                                    {% endif  %}
+                                    People
+                                </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="pb-10 pt-3 lg:pt-10 lg:flex-1 w-full lg:max-w-[calc(100%_-_288px)]">
+        <div class="px-0 sm:px-6 xl:px-8" id="product-content_container">
+            {% block product_content   %}{% endblock  %}
+        </div>
+    </section>
+</div>
+
+<script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
+{% endblock  %}

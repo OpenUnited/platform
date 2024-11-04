@@ -1,0 +1,328 @@
+{% extends 'base.html'  %}
+
+{% block content   %}
+
+<style>
+  .mt-16 {
+    margin-top: 4rem;
+}
+.mt-8 {
+    margin-top: 3rem;
+}
+</style>
+
+<div class="bg-white px-6 py-32 lg:px-8">
+    <div class="mx-auto max-w-3xl text-base leading-7 text-gray-700">
+      <p class="text-base font-semibold leading-7 text-indigo-600">Canopy - Chapter 1</p>
+      <h1 class="mt-6 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Product Tree - Cultivating Growth, Alignment, and Discovery</h1>
+      <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900">Introduction</h2>
+      <p class="mt-6 text-xl leading-8">Product teams face a whirlwind of information and different perspectives. Designers have their design tools, engineers dive into code, and product managers juggle feedback and strategy. Each team member works hard with their set of tools, but there's a missing piece. We lack a coherent, unified artefact showcasing the entirety of the product. The absence of such an artefact makes joining a new team often feels like unravelling a mysterious plot. We're often overwhelmed by fragmented and disorganised information, and weeks or even months go by as you attempt to grasp the product's soul.</p>
+      <p class="mt-6 text-xl leading-8">This is where the Product Tree steps in, offering a solution to unite everyone's understanding.</p>
+      <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900" style="margin-top: 4em">The Product Tree: An Overview</h2>
+      <div class="mt-10 max-w-2xl">
+        <p>Product Tree is a foundational structure that instead of the usual trunks and branches, presents interconnected product areas, creating an integrated, dynamic map. Each area, akin to a network node, encompasses distinct aspects of your product, spotlighting its essence, capabilities, and objectives.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p>Consider, for instance, a digital marketplace. At a macro level, you'd identify primary product areas like Sellers, Buyers, and Admins. Delving deeper into the 'Sellers' domain, there might be sub-areas for listing items, monitoring sales, or overseeing reviews. And within 'listing items', further divisions could have image uploads, pricing setup, or categorization. It's noteworthy that while this example simplifies the idea, an intricate product like Spotify would naturally entail a much more extensive Product Tree.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p>Another example — simplified Product Tree for the ‘viewer’ persona on Netflix:</p>
+      </div>
+
+      <pre>
+
+        Discover
+            Browse Genres
+            Search Shows/Movies
+            Recommendations
+        Watch (Experience-Based Lens)
+            Streaming
+            Subtitles & Language Options (Feature-Based)
+        Account & Settings
+            Profile Management
+            Payment & Billing
+            Viewing History
+      </pre>
+
+      <div class="mt-10 max-w-2xl">
+        <p>The Product Tree isn’t merely a graphical representation; it's an evolving depiction of the product's journey, from its birth, through its transformations, to its future visions. For a product manager, it's an indispensable compass, maintaining precision and direction throughout the product's life. Its brilliance lies not just in its comprehensiveness but its flexibility. As products transform, so does the Product Tree, adapting and reflecting the product's evolution.</p>
+      </div>
+
+      <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900">Key benefits</h2>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Unified Understanding:</strong> The Product Tree offers a holistic view of all product areas. It establishes a universal language for all stakeholders, ensuring everyone speaks the same 'product' language. No more do functions, teams, and departments operate in silos or misinterpret the product vision. For example, when the marketing team plans a campaign for a specific feature, referencing the Product Tree helps them understand its placement and relevance within the entire product.This shared reference ensures that every team, from design to marketing, aligns with a consistent product vision.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Centralised Information Storage: </strong>  No more scattered product documents. The Product Tree is your one-stop shop for all product-related intel, from historical decisions to previous discovery results, ensuring teams have the latest data, reducing errors and streamlining operations.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Insight Foundation:</strong> Feedback and insights come from everywhere—sales teams, customer support, social media. The Product Tree allows you to categorise these insights under relevant product areas, ensuring no feedback is ever lost or overlooked.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Analytical Backbone:</strong> Metrics are integral to product evolution. The Product Tree allows each product area to have its distinct health and traction metrics, ensuring continuous growth and innovation.
+        </p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Quick Onboarding:</strong> New team members can grasp the product's essence faster. Example: Imagine joining a team responsible for a complex CRM software. Traditionally, one might spend weeks understanding each feature, its purpose, and interrelation with other features. With the Product Tree, a new member can visualise the entire product's hierarchy, relationships, and importance within hours, reducing the steep learning curve.
+        </p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Efficient Product Budgeting:</strong> The Product Tree demystifies where focus and investments are allocated. Example: Consider an e-commerce platform. By visualising the Product Tree, leadership can immediately identify that while substantial resources are poured into 'Checkout' and 'Product Discovery' sections, there's minimal focus on the 'Customer Review' segment, leading to targeted investments for potential innovation or improvement in under-resourced areas.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Trouble-spotting:</strong>  With a comprehensive view, it's easier to pinpoint problematic areas. The recency bias refers to our tendency to weigh recent events more heavily than earlier ones. With the Product Tree, PMs have a bird's eye view of both historical and current data, preventing them from making decisions based solely on the most recent feedback or events. Example: A feature, well-received upon its release three months ago, starts getting negative feedback after a system update two weeks prior. Instead of making rash changes to the feature based solely on recent feedback, a PM, with insights from the Product Tree, can deduce that compatibility issues from the latest system update might be the real culprit. This clarity allows for more targeted troubleshooting and decision-making.
+        </p>
+      </div>
+
+      <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900">Crafting Your First Product Tree</h2>
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Leverage lenses to break down your product</h3>
+
+      <div class="mt-10 max-w-2xl">
+        <p>The essence of the Product Tree lies in its nested structure. Each product area acts as a parent to further nuanced sub-areas. Similar to how a camera lens influences what's in the frame, depending on your product's nature and complexity, you can use different lenses to break down each part of your product into further product areas. Here are potential lenses with examples:</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Persona-Based Lens:</strong>  Utilise this lens when needing to differentiate areas based on user roles or segments.
+          Usage: An online shop can be segmented into Sellers, Buyers, and Admins.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Feature-Based Lens:</strong>  Ideal when focusing on the distinct functionalities your product offers.
+          Usage: For a messaging app, you might break down Chats, Voice Calls, and Stories.
+          </p>
+      </div>
+
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Experience-Based Lens:</strong>  Apply this when mapping areas around the user's journey and touchpoints.
+          Usage: For a hotel booking process, segment into Search, Stay, and Review stages.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Technical Components Lens:</strong> Essential when diving into the foundational tech elements of your product.
+          Usage: Cloud solutions might be divided into Storage, Computing, and Networking.</p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Monetization & Business Models Lens:</strong>  Employ this when exploring how your product achieves profitability.
+          Usage: For games, explore In-Game Purchases, Ad Integrations, and Premium Access.
+          </p>
+      </div>
+
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Flow-Based Lens:</strong>  Adopt this perspective when wanting to map out the sequential steps users take.
+          Usage: Buying concert tickets might involve Discover, Purchase, and Attend sequences.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Platform & Device Lens:</strong> Essential when considering where users predominantly engage with your product.
+          Usage: Segment a video streaming service by Mobile, Web, or TV.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Geography & Localization Lens:</strong> Use this when tailoring features or functionalities to specific regions.
+          Usage: E-commerce platforms might vary features for the US, UK, and Asia.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Integrations & Extensions Lens:</strong> Effective when identifying how your product interlinks with others.
+          Usage: A scheduling tool might integrate with Email and CRM systems.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Lifecycle Stages Lens:</strong> Deploy this to segment features according to a user's progression.
+          Usage: A fitness platform can classify user stages from Novice to Expert.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Security & Compliance Lens:</strong>  Essential when emphasizing safety, rules, and regulatory compliance.
+          Usage: A banking app would be segmented into Features, Safety Protocols, and Compliance Standards.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p><strong>Accessibility Lens:</strong>  Use this to ensure inclusivity, ensuring features are usable by all demographics.
+          Usage: Websites should be mapped to cater to all, including those with unique needs.</p>
+      </div>
+      <div class="mt-10 max-w-2xl">
+        <p>Remember, the choice of lens is determined by the product area and its context. It's essential to be fluid and choose a lens that provides the most clarity for that specific product area.</p>
+      </div>
+
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Use a blend of lenses to map out your product</h3>
+      <div class="mt-10 max-w-2xl"><p>Your Product Tree will often require a blend of lenses. Different sections might demand varied perspectives. For instance, the topmost tier might scream for a persona-based distinction, while as you go deeper, a technical or flow-based lens could become more apt. The goal is a lucid, easy-to-navigate structure, no matter the lens.</p></div>
+      <div class="mt-10 max-w-2xl"><p>Let's use an example of an **Online Learning Platform** to illustrate the concept of leveraging multiple lenses at different layers of the product:</p></div>
+
+    <pre>
+
+      ### **Online Learning Platform - Product Tree Example**
+
+      #### **1. Top-Level Product Areas (using the Persona-Based Lens)**
+      - **Students**
+      - **Instructors**
+      - **Admin**
+
+      #### **2. Diving Deeper:**
+
+      - **Students**
+          - *Course Discovery* (Flow-Based Lens)
+              - Browse Courses (Feature-Based)
+              - Search Functionality (Feature-Based)
+              - Recommendations (Experience-Based)
+          - *Learning* (Experience-Based Lens)
+              - Video Lectures (Platform & Device Lens: Mobile, Web, TV)
+              - Quizzes (Feature-Based)
+              - Interactive Simulations (Technical Components Lens: VR Enabled, Standard)
+          - *Community & Support* (Feature-Based Lens)
+              - Forums
+              - Peer Chat
+              - Instructor Q&A
+
+      - **Instructors**
+          - *Course Creation* (Flow-Based Lens)
+              - Video Uploads (Platform & Device Lens: Mobile, Desktop)
+              - Quiz Setup (Feature-Based)
+              - Resource Attachments (Feature-Based)
+          - *Engagement & Feedback* (Experience-Based Lens)
+              - Student Analytics (Monetization & Business Models Lens: Free vs. Premium Insights)
+              - Review Responses (Feature-Based)
+          - *Monetization* (Monetization & Business Models Lens)
+              - Pricing Setup
+              - Revenue Reports
+              - Affiliate Programs
+
+      - **Admin**
+          - *User Management* (Technical Components Lens)
+              - Student Profiles
+              - Instructor Approvals
+              - Bans & Restrictions
+          - *Platform Oversight* (Flow-Based Lens)
+              - Course Approvals
+              - Content Flagging and Review
+          - *Localization* (Geography & Localization Lens)
+              - Language Translations
+              - Regional Course Features
+              - Currency Adjustments
+
+      </pre>
+
+      <div class="mt-10 max-w-2xl">
+        <p>In this example, as you progress through the different layers of the Product Tree, multiple lenses are utilised to map out the product areas effectively. This highlights the adaptability of the lenses depending on the context and the granularity needed for each product area.</p>
+      </div>
+
+      <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900">Guiding Principles</h2>
+
+      <div class="max-w-2xl"><p>Use the following guiding principles while crafting your tree:</p></div>
+
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Take an iterative approach</h3>
+
+      <div class="max-w-2xl"><p>Crafting the Product Tree is as much an art as it is a science. Begin with an initial structure and iterate as your domain understanding deepens and as insights flow in. Don't let the quest for a perfect tree prevent you from planting the first seed.</p></div>
+
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Treat your product tree like a living, breathing entity</h3>
+      <div class="max-w-2xl"><p></p></div>Much like a tree in nature, your Product Tree will grow, adapt, and sometimes, shed leaves. It's not about capturing a static moment but documenting a journey. With every new feature, user feedback, or market shift, revisit the Tree. Let it be a living document, echoing the product's heartbeat.
+
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Accept and even desire asymmetry of the tree</h3>
+      <div class="max-w-2xl"><p></p></div>The Product Tree is not a forced symmetrical structure but a reflection of the product's complexities. You might find one area brimming with sub-areas, each crying out for attention, while another speaks its complete story in a singular note. This asymmetry is not just acceptable but desired, bringing authenticity to the Tree.
+
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Resist the urge to overextend or oversimplify</h3>
+      <div class="max-w-2xl"><p></p></div>Finding the sweet spot between detail and becoming overwhelming can be tricky. Strive for a balance. The more experience you gain in creating and maintaining a tree, the easier you can strive for a balance.
+
+      <h3 class="mt-8 text-1xl font-bold tracking-tight text-gray-900">Seek cross-functional help for creating and managing your tree</h3>
+      <div class="max-w-2xl"><p></p></div>Diverse perspectives enrich your tree. Involve cross-functional teams. The nuances they bring from their domains can enrich your tree manifold.
+
+
+      <div class="mt-10 max-w-2xl"><p>Example of Spotify’s Product Tree:</p></div>
+
+      <pre>
+
+      ├── **Music Streaming**:
+      │   ├── **Discover**:
+      │   │   ├── **Genres & Moods**:
+      │   │   │   ├── **Playlists**:
+      │   │   │   │   ├── **Curated Playlists**:
+      │   │   │   │   │   ├── **Daily Mix**:
+      │   │   │   │   │   │   ├── **Daily Mix 1**:
+      │   │   │   │   │   │   │   ├── **Recommended Songs**:
+      │   │   │   │   │   │   │   │   ├── **History**:
+      │   │   │   │   │   │   │   │   │   ├── **Songs Played**
+      │   │   │   │   │   │   │   │   │   └── **Skipped Songs**
+      │   │   │   │   │   │   │   │   └── **User Feedback**:
+      │   │   │   │   │   │   │   │       ├── **Like Song**
+      │   │   │   │   │   │   │   │       └── **Dislike Song**
+      │   │   │   │   │   │   ├── **Discover Weekly**:
+      │   │   │   │   │   │   │   └── **User's Track Recs**:
+      │   │   │   │   │   │   │       ├── **Playback Speed**
+      │   │   │   │   │   │   │       └── **Queue Management**
+      │   │   │   │   │   │   ├── **New Discoveries**:
+      │   │   │   │   │   │   │   ├── **Save Track**
+      │   │   │   │   │   │   │   └── **Share Track**
+      │   │   │   │   │   │   └── **Release Radar**:
+      │   │   │   │   │   │       ├── **Save for Later**
+      │   │   │   │   │   │       └── **Add to Playlist**
+      │   │   │   │   │   └── **User Playlists**:
+      │   │   │   │   │       ├── **Shared Playlists**:
+      │   │   │   │   │       │   ├── **By Friends**:
+      │   │   │   │   │       │   │   ├── **Follow Friend**
+      │   │   │   │   │       │   │   └── **Share Playlist**
+      │   │   │   │   │       │   └── **Collaborative Playlists**:
+      │   │   │   │   │       │       ├── **Add Songs**
+      │   │   │   │   │       │       └── **Remove Songs**
+      │   │   │   │   │       └── **Private Playlists**:
+      │   │   │   │   │           └── **Edit Details**:
+      │   │   │   │   │               ├── **Change Name**
+      │   │   │   │   │               └── **Add Description**
+      │   │   │   └── **Stations**:
+      │   │   │       ├── **Curated Stations**:
+      │   │   │       │   ├── **Genre Stations**:
+      │   │   │       │   │   ├── **Rock**:
+      │   │   │       │   │   │   ├── **Top Rock Tracks**
+      │   │   │       │   │   │   └── **New Releases**
+      │   │   │       │   │   └── **Pop**:
+      │   │   │       │   │       ├── **Top Pop Tracks**
+      │   │   │       │   │       └── **Trending**
+      │   │   │       │   └── **User-Created Stations**:
+      │   │   │       │       └── **Modify Station**:
+      │   │   │       │           ├── **Add Tracks**
+      │   │   │       │           └── **Set Playback Preferences**
+      │   │   │       └── **Stations by Artists**:
+      │   │   │           ├── **Artist's Top Tracks**
+      │   │   │           └── **Similar Artists**
+      │   │   └── **Search & Browse**:
+      │   │       ├── **By Keywords**:
+      │   │       │   ├── **Tracks**
+      │   │       │   ├── **Artists**
+      │   │       │   └── **Playlists**
+      │   │       ├── **Voice Command**:
+      │   │       │   ├── **Song Recognition**
+      │   │       │   └── **Mood-based Search**
+      │   │       └── **Advanced Filters**
+      │   └── **Podcasts & Shows**:
+      │       ├── **Browse**
+      │       └── **Library**:
+      │           ├── **Saved Podcasts**
+      │           └── **Ongoing Shows**
+      ├── **Spotify Connect**:
+      │   └── **Devices Available**
+      ├── **User Profile & Social**:
+      │   ├── **Public Profile**
+      │   ├── **Activity Feed**
+      │   └── **Settings**
+      ├── **Artist Profiles**:
+      │   ├── **Artist Overview**
+      │   ├── **Artist's Albums & Singles**
+      │   └── **Fans Also Like**
+      └── **Store & Merchandise**:
+          ├── **Featured Merchandise**
+          ├── **Artist Merchandise**
+          └── **Shopping Cart & Checkout**
+
+        </pre>
+
+    </div>
+
+  </div>
+  <div class="mt-10 flex items-center justify-center gap-x-6">
+    <a href="https://940f5a5a.sibforms.com/serve/MUIFAKFQqT6wblCrb_A9m06PxV4qYhG3F3wEyPCew2BVp6fF8QKPSahLFjkYCPwwT7RXgPBDMNaHoGcgE93l5-5Gdet7nVK5VVHV5XUOqgvVbNsO56NI5jpcwPIESDfI1j2nNJZ0MtZvTirgRCX5H2L2xQ36_NGxyE0bHg1gwB-5li8mv3QIZBv10knn-b2kb_QmWItMCpus6dpn" target="_blank" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Receive Canopy Email Updates</a>
+    <a href="" class="text-sm font-semibold leading-6 text-gray-900">Chapter 2 (Monitoring/managing your product using Product Tree) Coming Soon<span aria-hidden="true">→</span></a>
+  </div>
+
+{% endblock  %}

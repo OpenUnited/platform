@@ -1,0 +1,42 @@
+<div class="flex flex-col">
+    <fieldset>
+        <legend for="question-1"
+            class="text-xl sm:text-2xl text-black/[0.85] font-semobild mb-4 sm:mb-6 w-full">
+            Does solving your challenge require one skill, or multiple skills?</legend>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <!-- Single Skill Option -->
+            <label class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="skills-count" class="form-check-input" value="1" checked>
+                <span class="flex items-center flex-1 ml-2.5 sm:ml-4 xl:ml-9">
+                    <!-- ... rest of single skill option ... -->
+                </span>
+            </label>
+            
+            <!-- Multi Skill Option -->
+            <label class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="skills-count" class="form-check-input" value="2">
+                <span class="flex items-center flex-1 ml-2.5 sm:ml-4 xl:ml-9">
+                    <!-- ... rest of multi skill option ... -->
+                </span>
+            </label>
+        </div>
+    </fieldset>
+
+    <!-- Reward Type Section -->
+    <fieldset>
+        <legend for="question-1"
+            class="text-xl sm:text-2xl text-black/[0.85] font-semobild mb-4 sm:mb-6 w-full">
+            How will solving this challenge be rewarded?</legend>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <!-- Non-liquid Points Option -->
+            <label class="relative flex items-center cursor-pointer rounded border border-solid border-[#F0F0F0] bg-white py-3 sm:py-[18px] pl-4 sm:pl-5 xl:pl-[34px] pr-2.5 sm:pr-4 focus:outline-none">
+                <input type="radio" name="reward_type" value="Non-liquid Points"
+                    class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    required="" id="id_reward_type_0" checked>
+                <!-- ... rest of non-liquid points option ... -->
+            </label>
+        </div>
+    </fieldset>
+</div> 

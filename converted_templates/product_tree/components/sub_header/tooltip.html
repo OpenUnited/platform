@@ -1,0 +1,17 @@
+{% if show_share_button %}
+
+<input type="hidden" class="form-input w-full" id="sharable_link" value="{{ sharable_link }}" readonly>
+
+<button onclick="copyReferralLink()" class="relative inline-block btn btn-outline-info text-center group text-indigo-500 border border-indigo-500 hover:bg-indigo-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 hover:text-white">
+    <i class="fa fa-share-alt" aria-hidden="true"></i>
+    <span id="myTooltip" class="tooltiptext absolute  w-[160px]  bg-black text-white text-center rounded-md py-1 me-2 mb-2  bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 transition-opacity duration-300">
+        Copy share link
+    </span>
+</button>
+
+<style>
+    .btn:hover .tooltiptext {
+        opacity: 1;
+    }
+</style>
+{% endif  %}

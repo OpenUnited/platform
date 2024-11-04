@@ -1,0 +1,5 @@
+<button class="toggleVisibility mr-2 {% if child.children|length  == 0 %}hidden{% endif  %}"
+    id="toggleVisibility_{{ child.id  }}"
+    onclick="toggleVisibility(event)">
+    <i class="fa fa-chevron-circle-right text-gray-400 icon-arrow" aria-hidden="true"></i>
+</button>

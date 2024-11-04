@@ -1,0 +1,93 @@
+<div class="flex flex-col grow pb-8 lg:pb-0">
+
+    <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900 mb-6 md:mb-10 lg:pt-[30px]">
+        Create Challenge
+    </h2>
+
+    {% include '"talent/helper/macro_fun.html" as macros_fun  ' %}
+
+    <div class="grid grid-cols-12 sm:grid-cols-12 md:col-span-12 mb-5">
+        <div class="col-span-full">
+            {% if form|call:non_field_errors %}
+            <div
+                class="mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+                <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
+                    <img src="{{ static 'images/error.svg'  }}" alt="Error Icon">
+                </span>
+                {% for error in form|call:non_field_errors %}
+                <p>{{ error  }}</p>
+                {% endfor  %}
+            </div>
+            {% endif  %}
+        </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row space-y-8 sm:space-y-0 sm:space-x-4 sm:pb-8 lg:pb-12" data-current-step="1">
+        {% include 'product_management/forms/partials/challenge_step_nav.html'  %}
+        <form method="post" enctype="multipart/form-data"
+            class="challenges-steps flex flex-col justify-between grow sm:px-5
+                lg:px-[34px] sm:py-6 lg:pb-9 lg:pt-[34px] mb-0 sm:border-[3px] border-solid border-[#F4F6F7]"
+            id="challenge-form" novalidate>
+            {% csrf_token  %}
+            {{ form.media  }}
+
+            <div class="active flex-col space-y-6 sm:space-y-10 lg:space-y-12 mb-8 sm:mb-10" data-step-id="1">
+                {% include 'product_management/forms/partials/challenge_step_1.html'  %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="2">
+                {% include 'product_management/forms/partials/challenge_step_2.html'  %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="3">
+                {% include 'product_management/forms/partials/challenge_step_3.html'  %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="4">
+                {% include 'product_management/forms/partials/challenge_step_4.html'  %}
+            </div>
+            <div class="flex-col mb-10" data-step-id="5">
+                {% include 'product_management/forms/partials/challenge_step_5.html'  %}
+            </div>
+
+            <div class="form-buttons__wrap flex-wrap">
+                <div class="form-buttons mb-3 sm:mb-0">
+                    <div class="flex items-center justify-end md:justify-start">
+                        <a href="javascript:history.go(-1)">
+                            <button type="button"
+                            class="btn-cancel appearance-none bg-transparent text-sm font-semibold text-sm
+                                leading-6 text-gray-900 leading-6 transition-all delay-600 rounded px-3.5 py-1.5
+                                hover:bg-transparent focus-visible:outline focus-visible:outline-2
+                                focus-visible:outline-offset-2 focus-visible:outline-transparent hover:underline
+                                underline-offset-2 cursor-pointer">Cancel</button>
+                        </a>
+                    </div>
+                    <div class="md:ml-auto flex items-center justify-end space-x-2 md:space-x-4 whitespace-nowrap">
+                        <button type="button"
+                            class="appearance-none w-fit md:min-w-[96px] bg-white text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-gray-900 shadow-sm hover:bg-gray-900/[0.8] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent cursor-pointer border border-solid border-[#ddd] hover:border-gray-900/[0.8] hidden"
+                            data-step-previous="">
+                            <span aria-hidden="true" class="pointer-events-none">←</span>
+                            <span class="inline-block">Previous</span>
+                        </button>
+                        <button type="button"
+                            class="appearance-none w-fit md:min-w-[96px] bg-[#1890ff] text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 cursor-pointer"
+                            data-step-next="">
+                            <span class="inline-block">Next</span>
+                            <span aria-hidden="true" class="pointer-events-none">→</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="publish-challenge-btn" class="hidden flex w-fit sm:ml-auto items-center justify-end mt-4 mb-3 sm:mb-0">
+                    <button type="submit"
+                        class="appearance-none w-fit md:min-w-[96px] bg-green-500 text-sm font-semibold leading-6 transition-all delay-600 rounded px-3 md:px-3.5 py-1.5 text-white shadow-sm hover:bg-green-500/[0.85] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500/[0.85] cursor-pointer">
+                        Publish Challenge
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% include 'product_management/forms/partials/challenge_bounty_modal.html'  %}
+
+</div>
+
+<script>
+
+</script>

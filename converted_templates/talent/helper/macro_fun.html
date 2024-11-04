@@ -1,0 +1,40 @@
+{% with expertise_filter_tree(expertises, selected_expertise_ids, index, depth=0)   %}
+    {% for expertise in expertises %}
+        <li class="py-1 ps-{{ depth * 4  }}">
+            {% if expertise.selectable %}
+                <div class="flex items-center">
+                    <input id="{{ expertise.id  }}" type="checkbox" value="{{ expertise.id  }}"
+                           class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500"
+                           {% if expertise.id in selected_expertise_ids %}checked{% endif  %}>
+                    <label for="{{ expertise.id  }}" class="ms-2 text-sm text-gray-900">{{ expertise.name  }}</label>
+                </div>
+            {% else %}
+                <span class="text-sm text-gray-500">{{ expertise.name  }}</span>
+            {% endif  %}
+            
+            {% if expertise.get_children %}
+                <ul>
+                    {{ expertise_filter_tree(expertise.get_children, selected_expertise_ids, index, depth + 1)  }}
+                </ul>
+            {% endif  %}
+        </li>
+    {% endfor  %}
+{% endmacro  %}
+
+
+
+{% with skill_filter_tree(nodes, selected_pk,has_empty, depth=0)   %}
+    {% for node in nodes %}
+        {% if node.children %}
+            <optgroup class="ml-{{ depth * 2 }}" label="{{ node.name }}">
+                {{ skill_filter_tree(node.children,selected_pk,has_empty, depth+1)  }}
+            </optgroup>
+        {% else %}
+            <option class="ml-{{ depth * 2 }}" value="{{ node.id }}" {% if node.id  == selected_pk %} selected {% elif not has_empty  %} disabled{% endif  %}>
+                {{ node.name  }}
+
+            </option>
+        {% endif  %}
+
+    {% endfor  %}
+{% endmacro  %}
