@@ -1,44 +1,89 @@
 {% extends 'portal/base.html' %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="container mx-auto p-4">
     <!-- Product Header -->
-    <div class="md:flex md:items-center md:justify-between mb-8">
-        <div class="flex-1 min-w-0">
-            <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-                {{ product.name }} - Product Summary
-            </h1>
-            <p class="mt-1 text-sm text-gray-500">
-                {{ product.description }}
-            </p>
-        </div>
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">
+            {{ product.name }}
+        </h1>
+        {% if product.description %}
+        <p class="mt-2 text-base-content/70">
+            {{ product.description }}
+        </p>
+        {% endif %}
     </div>
 
     <!-- Quick Stats -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <!-- Debug info -->
-        <div class="bg-white p-4 rounded shadow">
-            Debug Values:
-            <br>active_challenges_count: {{ active_challenges_count }}
-            <br>open_bounties_count: {{ open_bounties_count }}
-            <br>active_contributors_count: {{ active_contributors_count }}
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <!-- Debug Card -->
+        {% if debug %}
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h3 class="card-title text-sm">Debug Values</h3>
+                <div class="text-sm">
+                    <p>active_challenges_count: {{ active_challenges_count }}</p>
+                    <p>open_bounties_count: {{ open_bounties_count }}</p>
+                    <p>active_contributors_count: {{ active_contributors_count }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Available Points -->
+        <div class="stats shadow bg-base-100">
+            <div class="stat">
+                <div class="stat-title">Available Points</div>
+                <div class="stat-value">1,000</div>
+            </div>
         </div>
 
-        {% with label="Available Points" value="1,000" %}
-            {% include "portal/product/components/stat_card.html" %}
-        {% endwith %}
-        
-        {% with label="Active Challenges" value=active_challenges_count %}
-            {% include "portal/product/components/stat_card.html" %}
-        {% endwith %}
-        
-        {% with label="Open Bounties" value=open_bounties_count %}
-            {% include "portal/product/components/stat_card.html" %}
-        {% endwith %}
-        
-        {% with label="Active Contributors" value=active_contributors_count %}
-            {% include "portal/product/components/stat_card.html" %}
-        {% endwith %}
+        <!-- Active Challenges -->
+        <div class="stats shadow bg-base-100">
+            <div class="stat">
+                <div class="stat-title">Active Challenges</div>
+                <div class="stat-value">{{ active_challenges_count }}</div>
+            </div>
+        </div>
+
+        <!-- Open Bounties -->
+        <div class="stats shadow bg-base-100">
+            <div class="stat">
+                <div class="stat-title">Open Bounties</div>
+                <div class="stat-value">{{ open_bounties_count }}</div>
+            </div>
+        </div>
+
+        <!-- Active Contributors -->
+        <div class="stats shadow bg-base-100">
+            <div class="stat">
+                <div class="stat-title">Active Contributors</div>
+                <div class="stat-value">{{ active_contributors_count }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Content -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- Recent Activity -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Recent Activity</h2>
+                <!-- Add recent activity content here -->
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">Quick Actions</h2>
+                <div class="space-y-2">
+                    <button class="btn btn-primary w-full">Create Challenge</button>
+                    <button class="btn btn-secondary w-full">Manage Users</button>
+                    <button class="btn btn-accent w-full">View Analytics</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %} 

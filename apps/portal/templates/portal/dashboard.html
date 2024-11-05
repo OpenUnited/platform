@@ -2,35 +2,65 @@
 
 {% block content %}
 <div class="dashboard-content">
-    <h1 class="text-2xl font-semibold text-gray-900 mb-6">Dashboard</h1>
+    <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
 
     <!-- Products Section -->
     <div class="mb-8">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">My Products</h2>
+        <h2 class="text-xl font-bold mb-4">My Products</h2>
         {% if products %}
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {% for product in products %}
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="w-0 flex-1">
-                                    <h3 class="text-lg font-medium text-gray-900">
-                                        {{ product.name }}
-                                    </h3>
-                                    <p class="mt-1 text-sm text-gray-500">
-                                        {{ product.description|truncatewords:30 }}
-                                    </p>
-                                    <div class="mt-3 flex space-x-4">
-                                        <a href="{% url 'product_management:product-detail' product.slug %}" 
-                                           class="text-sm text-indigo-600 hover:text-indigo-900">
-                                            View in Marketplace
-                                        </a>
-                                        <span class="text-gray-300">|</span>
-                                        <a href="{% url 'portal:product-summary' product.slug %}" 
-                                           class="text-sm text-indigo-600 hover:text-indigo-900">
-                                            View in Portal
-                                        </a>
-                                    </div>
+                    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-200">
+                        <div class="card-body">
+                            <h3 class="card-title text-lg font-bold">
+                                {{ product.name }}
+                            </h3>
+                            
+                            {% if product.short_description %}
+                            <p class="text-base-content/70 mb-4">
+                                {{ product.short_description }}
+                            </p>
+                            {% endif %}
+
+                            <div class="card-actions flex justify-between items-center mt-auto pt-4 border-t border-base-200">
+                                <a href="{% url 'product_management:product-detail' product.slug %}" 
+                                   class="btn btn-sm btn-warning">
+                                    View in Marketplace
+                                </a>
+                                <a href="{% url 'portal:product-summary' product.slug %}" 
+                                   class="btn btn-sm btn-ghost">
+                                    Manage →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>No products available.</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bounty Claims Section -->
+    <div>
+        <h2 class="text-xl font-bold mb-4">Active Bounty Claims</h2>
+        {% if active_bounty_claims %}
+            <div class="space-y-4">
+                {% for claim in active_bounty_claims %}
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <div class="flex items-center justify-between">
+                                <h3 class="card-title">
+                                    <a href="{% url 'portal:bounty-detail' claim.bounty.challenge.product.slug claim.bounty.id %}" 
+                                       class="link link-hover">
+                                        {{ claim.bounty.title }}
+                                    </a>
+                                </h3>
+                                <div class="badge badge-outline">
+                                    Status: {{ claim.get_status_display }}
                                 </div>
                             </div>
                         </div>
@@ -38,36 +68,11 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-gray-500">No products available.</p>
-        {% endif %}
-    </div>
-
-    <!-- Bounty Claims Section -->
-    <div>
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Active Bounty Claims</h2>
-        {% if active_bounty_claims %}
-            <div class="space-y-4">
-                {% for claim in active_bounty_claims %}
-                    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-                        <div class="px-4 py-4 sm:px-6">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                    <a href="{% url 'portal:bounty-detail' claim.bounty.challenge.product.slug claim.bounty.id %}" class="hover:underline">
-                                        {{ claim.bounty.title }}
-                                    </a>
-                                </h3>
-                                <p class="text-sm text-gray-500">
-                                    Status: {{ claim.get_status_display }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+            <div class="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>No active bounty claims.</span>
             </div>
-        {% else %}
-            <p class="text-gray-500">No active bounty claims.</p>
         {% endif %}
     </div>
 </div>
 {% endblock %}
-
