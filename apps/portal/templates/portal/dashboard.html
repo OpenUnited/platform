@@ -22,15 +22,24 @@
                             </p>
                             {% endif %}
 
-                            <div class="card-actions flex justify-between items-center mt-auto pt-4 border-t border-base-200">
-                                <a href="{% url 'product_management:product-detail' product.slug %}" 
-                                   class="btn btn-sm btn-warning">
-                                    View in Marketplace
+                            <div class="card-actions flex-col gap-3 mt-auto pt-4 border-t border-base-200">
+                                <!-- Primary action -->
+                                <a href="{% url 'challenge_authoring:create' product_slug=product.slug %}" 
+                                   class="btn btn-primary btn-sm w-full">
+                                    Create Challenge
                                 </a>
-                                <a href="{% url 'portal:product-summary' product.slug %}" 
-                                   class="btn btn-sm btn-ghost">
-                                    Manage →
-                                </a>
+                                
+                                <!-- Secondary actions -->
+                                <div class="flex justify-between w-full">
+                                    <a href="{% url 'product_management:product-detail' product.slug %}" 
+                                       class="btn btn-sm btn-warning">
+                                        View in Marketplace
+                                    </a>
+                                    <a href="{% url 'portal:product-summary' product.slug %}" 
+                                       class="btn btn-sm btn-ghost">
+                                        Manage →
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
