@@ -31,7 +31,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{% url 'product_management:product-summary' product_slug %}"
+                                        <a href="{% url 'product_management:product-summary' request.resolver_match.kwargs.product_slug %}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif  %}
                                             Summary
@@ -42,7 +42,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{% url 'product_management:product-initiatives' product_slug %}"
+                                        <a href="{% url 'product_management:product-initiatives' request.resolver_match.kwargs.product_slug %}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif  %}
                                             Initiatives
@@ -53,7 +53,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{% url 'product_management:product-challenges' product_slug %}"
+                                        <a href="{% url 'product_management:product-challenges' request.resolver_match.kwargs.product_slug %}"
                                             class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif  %}
                                             Challenges
@@ -64,7 +64,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{% url 'product_management:product-ideas-bugs' product_slug %}"
+                                        <a href="{% url 'product_management:product-ideas-bugs' request.resolver_match.kwargs.product_slug %}"
                                             class=" text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex
                                             gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif  %}
@@ -77,7 +77,7 @@
                                     <a href=""
                                         class="bg-gray-50 text-indigo-600 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                         {% else %}
-                                        <a href="{% url 'product_management:product-people' product_slug %}"
+                                        <a href="{% url 'product_management:product-people' request.resolver_match.kwargs.product_slug %}"
                                             class="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                             {% endif  %}
                                             People
@@ -107,7 +107,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-summary' product_slug %}"
+                                <a href="{% url 'product_management:product-summary' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                     {% endif  %}
                                     Summary
@@ -118,7 +118,7 @@
                                 <a href=""
                                     class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                             {% else %}
-                                <a href="{% url 'product_management:product-bounties' product_slug %}"
+                                <a href="{% url 'product_management:product-bounties' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Bounties
@@ -130,7 +130,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-tree' product_slug %}"
+                                <a href="{% url 'product_management:product-tree' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Product Tree
@@ -141,7 +141,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-initiatives' product_slug %}"
+                                <a href="{% url 'product_management:product-initiatives' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Initiatives
@@ -152,7 +152,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-challenges' product_slug %}"
+                                <a href="{% url 'product_management:product-challenges' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Challenges
@@ -165,7 +165,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-ideas-bugs' product_slug %}"
+                                <a href="{% url 'product_management:product-ideas-bugs' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Ideas & Bugs
@@ -177,7 +177,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-people' product_slug %}"
+                                <a href="{% url 'product_management:product-people' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 People
@@ -190,7 +190,7 @@
                 <button
                     class="flex gap-2 px-3.5 py-2.5 justify-center text-gray-700 bg-white border border-gray-300 focus:bg-white font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center"
                     type="button" data-dropdown-toggle="dropdown">
-                    <span>{{ TYPES_PAGE|get_item:last_segment }}</span>
+                    
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -207,7 +207,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-summary' product_slug %}"
+                                <a href="{% url 'product_management:product-summary' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Summary
@@ -218,7 +218,7 @@
                                 <a href=""
                                     class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                             {% else %}
-                                <a href="{% url 'product_management:product-bounties' product_slug %}"
+                                <a href="{% url 'product_management:product-bounties' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Bounties
@@ -230,7 +230,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-tree' product_slug %}"
+                                <a href="{% url 'product_management:product-tree' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Product Tree
@@ -241,7 +241,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-initiatives' product_slug %}"
+                                <a href="{% url 'product_management:product-initiatives' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Initiatives
@@ -252,7 +252,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-challenges' product_slug %}"
+                                <a href="{% url 'product_management:product-challenges' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Challenges
@@ -263,7 +263,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-ideas-bugs' product_slug %}"
+                                <a href="{% url 'product_management:product-ideas-bugs' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 Ideas & Bugs
@@ -275,7 +275,7 @@
                             <a href=""
                                 class="bg-gray-50 text-blue-400 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% else %}
-                                <a href="{% url 'product_management:product-people' product_slug %}"
+                                <a href="{% url 'product_management:product-people' request.resolver_match.kwargs.product_slug %}"
                                     class="text-gray-700 hover:text-blue-400 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 px-3 lg:px-2 text-sm leading-6 font-semibold whitespace-nowrap">
                                 {% endif  %}
                                 People

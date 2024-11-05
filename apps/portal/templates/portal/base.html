@@ -160,7 +160,7 @@
                                         
                                         
                                         <a href="{% url 'portal:product-users' product.slug %}"
-                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-users' %}bg-gray-100 font-semibold{% endif %}">
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-users' or request.resolver_match.url_name == 'product-user-add' %}bg-gray-100 font-semibold{% endif %}">
                                             Users
                                         </a>
                                         

@@ -50,6 +50,9 @@ from apps.capabilities.product_management.models import (
     ProductContributorAgreementTemplate,
 )
 from ..utils import require_product_management_access
+from itertools import groupby
+from operator import attrgetter
+from django.db.models import Count
 
 logger = logging.getLogger(__name__)
 
@@ -240,15 +243,6 @@ class ProductSummaryView(BaseProductView, TemplateView):
             'challenges': challenges,
             'can_modify_product': can_modify_product,
             'tree_data': tree_data,
-            'types_page': {
-                'summary': 'Summary',
-                'initiatives': 'Initiatives',
-                'bounties': 'Bounties',
-                'challenges': 'Challenges',
-                'tree': 'Product Tree',
-                'ideas-and-bugs': 'Ideas & Bugs',
-                'people': 'People'
-            }
         })
 
         # Add URL segment data
@@ -353,27 +347,31 @@ class ProductAreaDetailView(BaseProductView, DetailView):
     template_name = "product_management/product_area_detail.html"
     context_object_name = 'product_area'
 
-class ProductRoleAssignmentView(BaseProductView, TemplateView):
+class ProductPeopleView(BaseProductView, TemplateView):
     """View for managing product role assignments"""
-    template_name = "product_management/product_role_assignments.html"
+    template_name = "product_management/product_people.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
         
-        assignments = ProductRoleAssignment.objects.filter(product=product)
+        # Get product people and sort by role
+        product_people = ProductRoleAssignment.objects.filter(product=product).order_by('role')
+        
+        # Group by role and convert to dict
+        grouped_people = {}
+        for role, group in groupby(product_people, key=attrgetter('role')):
+            grouped_people[role] = list(group)
+        
+        # Sort roles in reverse order
+        sorted_groups = dict(sorted(grouped_people.items(), reverse=True))
         
         context.update({
             'product': product,
-            'assignments': assignments,
-            'can_manage': RoleService.has_product_management_access(
-                self.request.user.person, 
-                product
-            )
+            'grouped_product_people': sorted_groups.items(),
         })
         return context
 
-# ... continue with other missing views ...
 
 class CreateInitiativeView(BaseProductView, CreateView):
     """View for creating new initiatives"""
@@ -525,3 +523,15 @@ class CreateBountyView(BaseProductView, CreateView):
             'challenge_id': self.kwargs['challenge_id'],
             'pk': self.object.pk
         })
+
+class ProductBountyListView(View):
+    def get(self, request, product_slug):
+        # Get the last segment of the URL path
+        last_segment = request.path.strip('/').split('/')[-1]
+        
+        context = {
+            'product_slug': product_slug,
+            'last_segment': last_segment,
+            'bounties': [],  # Your bounties queryset
+        }
+        return render(request, 'product_management/product_detail_base.html', context)

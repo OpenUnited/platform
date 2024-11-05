@@ -3,8 +3,6 @@
 {% block title   %}Product - People{% endblock  %}
 {% block product_content   %}
 
-{% with grouped_product_people = product_people|groupby('role')|reverse   %}
-
 <div class="flex flex-col divide-y divide-slate-900/5">
     {% for role, product_people in grouped_product_people %}
     <div class="flex flex-col py-[30px] first:pt-0">
@@ -17,11 +15,11 @@
             <div class="flex items-start">
                 <div class="w-16 h-16 mr-2.5 flex items-center justify-center">
                     <img class="w-full h-full rounded-full object-cover object-center"
-                        src="{{ product_person.person|call:get_photo_url  }}" alt="Profile Photo">
+                        src="{{ product_person.person.get_photo_url  }}" alt="Profile Photo">
                 </div>
                 <div class="flex flex-col grow">
                     <h3 class="text-lg font-semibold leading-8 tracking-tight text-gray-900 mb-1">
-                        {{ product_person.person|call:get_full_name  }}</h3>
+                        {{ product_person.person.get_full_name  }}</h3>
                     <p class="text-base leading-7 text-gray-600">{{ product_person.person.current_position  }}</p>
                     <ul role="list" class="mt-[14px] flex gap-x-6">
                         {% if product_person.person.twitter_link %}

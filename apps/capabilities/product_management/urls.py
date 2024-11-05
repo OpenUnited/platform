@@ -12,7 +12,7 @@ from .views.product_views import (
     ProductAreaCreateView,
     ProductAreaUpdateView,
     ProductAreaDetailView,
-    ProductRoleAssignmentView,
+    ProductPeopleView,
     CreateInitiativeView,
     InitiativeDetailView,
     redirect_challenge_to_bounties,
@@ -200,7 +200,7 @@ urlpatterns += [
     ),
     path(
         "product/<str:product_slug>/people",
-        ProductRoleAssignmentView.as_view(),
+        ProductPeopleView.as_view(),
         name="product-people",
     ),
     path(
