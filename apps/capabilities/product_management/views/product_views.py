@@ -130,31 +130,47 @@ class ProductDetailView(BaseProductView, DetailView):
         )
         return context
 
-class ProductChallengesView(BaseProductView, TemplateView):
-    template_name = "product_management/product_challenges.html"
-
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        challenges = Challenge.objects.filter(product=product)
-        
-        # Custom ordering for challenges
-        custom_order = models.Case(
-            models.When(status=Challenge.ChallengeStatus.ACTIVE, then=models.Value(0)),
-            models.When(status=Challenge.ChallengeStatus.BLOCKED, then=models.Value(1)),
-            models.When(status=Challenge.ChallengeStatus.COMPLETED, then=models.Value(2)),
-            models.When(status=Challenge.ChallengeStatus.CANCELLED, then=models.Value(3)),
+class ProductChallengesView(LoginRequiredMixin, TemplateView):
+    template_name = 'product_management/product_challenges.html'
+    
+    STATUS_COLORS = {
+        'Draft': 'text-gray-500 border-gray-500',
+        'Blocked': 'text-red-700 border-red-700',
+        'Active': 'text-green-700 border-green-700',
+        'Completed': 'text-blue-700 border-blue-700',
+        'Cancelled': 'text-gray-400 border-gray-400',
+    }
+    
+    def get_queryset(self, product):
+        return Challenge.objects.filter(
+            product=product
+        ).select_related(
+            'product_area',
+            'created_by'
+        ).prefetch_related(
+            'bounty_set'
         )
-        challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get product from URL using slug instead of ID
+        product_slug = self.kwargs.get('product_slug')
+        product = get_object_or_404(Product, slug=product_slug)
+        
+        challenges = self.get_queryset(product)
+        
+        # Process each challenge
+        for challenge in challenges:
+            challenge.status_color = self.STATUS_COLORS.get(challenge.status, '')
+            challenge.bounty_points = challenge.get_bounty_points()
+            challenge.has_bounty = challenge.has_bounty()
         
         context.update({
-            "product": product,
-            "challenges": challenges,
-            "challenge_status": Challenge.ChallengeStatus,
-            "can_manage": RoleService.has_product_management_access(
-                self.request.user.person, 
-                product
-            )
+            'challenges': challenges,
+            'product': product,
+            'status_choices': Challenge.ChallengeStatus.choices,
+            'priority_choices': Challenge.ChallengePriority.choices,
         })
         return context
 

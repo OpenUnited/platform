@@ -68,8 +68,10 @@
 </div>
 
 <!-- Remove inline script and add module import -->
+{% load static %}
+
 <script type="module">
-    import { showModal, closeModal } from "{{ static('js/flows/challenge_authoring/bounty_modal.js') }}";
+    import { showModal, closeModal } from "{% static 'js/flows/challenge_authoring/bounty_modal.js' %}";
     
     // Make functions available globally for button onclick handlers
     window.showModal = showModal;
@@ -77,4 +79,4 @@
 </script>
 
 <!-- Move styles to external CSS file -->
-<link rel="stylesheet" href="{{ static('css/flows/challenge_authoring/bounty_modal.css') }}">
+<link rel="stylesheet" href="{% static 'css/flows/challenge_authoring/bounty_modal.css' %}">
