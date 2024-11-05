@@ -9,6 +9,7 @@ from typing import Dict, List, Optional, Any
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 import logging
+from django.db.models import Count
 
 from apps.capabilities.product_management.models import (
     Product,
@@ -19,6 +20,8 @@ from apps.capabilities.product_management.models import (
 from apps.capabilities.talent.models import Person, BountyClaim, BountyDeliveryAttempt
 from apps.capabilities.security.services import RoleService
 
+logger = logging.getLogger(__name__)
+
 
 class PortalError(Exception):
     """Base exception for portal errors."""
@@ -28,10 +31,16 @@ class PortalError(Exception):
 class PortalBaseService:
     """Base service with common functionality."""
     
-    def check_product_access(self, person: Person, product: Product, required_role: str) -> None:
+    def check_product_access(self, person: Person, product: Product, required_role: str = None) -> None:
         """Check if person has required access to product."""
-        if not RoleService.has_product_role(person, product, required_role):
-            raise PortalError(f"User does not have {required_role} access to this product")
+        if required_role:
+            if not RoleService.has_product_role(person, product, required_role):
+                logger.warning(f"Access denied: {person} does not have {required_role} role for {product}")
+                raise PermissionDenied(f"User does not have {required_role} access to this product")
+        else:
+            if not RoleService.has_product_access(person, product):
+                logger.warning(f"Access denied: {person} does not have access to {product}")
+                raise PermissionDenied("User does not have access to this product")
     
     def get_product_or_404(self, slug: str) -> Product:
         """Get product by slug or raise 404."""
@@ -42,10 +51,33 @@ class PortalBaseService:
         context = {
             'product': product,
             'current_product': product,
+            'current_product_slug': product.slug,
         }
         if person:
             context['can_manage'] = RoleService.has_product_role(person, product, 'Manager')
             context['can_admin'] = RoleService.has_product_role(person, product, 'Admin')
+        return context
+
+    def get_product_summary(self, slug: str, person: Person) -> Dict[str, Any]:
+        """Get summary data for product overview page."""
+        product = self.get_product_or_404(slug)
+        self.check_product_access(person, product)
+        
+        context = self.get_base_product_context(product, person)
+        
+        # Add summary statistics
+        context.update({
+            'active_challenges_count': Challenge.objects.filter(
+                product=product,
+                status='active'
+            ).count(),
+            'open_bounties_count': Bounty.objects.filter(
+                challenge__product=product,
+                status='open'
+            ).count(),
+            'active_contributors_count': RoleService.get_product_members(product).count(),
+        })
+        
         return context
 
 
@@ -66,7 +98,7 @@ class PortalService(PortalBaseService):
     def get_product_detail_context(self, slug: str, person: Person, tab: str = 'challenges') -> Dict[str, Any]:
         """Get context data for product detail view."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Member')
+        self.check_product_access(person, product)
         
         context = {
             'product': product,
@@ -107,7 +139,7 @@ class PortalService(PortalBaseService):
     def get_product_settings_context(self, slug: str, person: Person) -> Dict[str, Any]:
         """Get context for product settings."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Admin')
+        self.check_product_access(person, product)
         return {
             'product': product,
             'current_product': product,
@@ -116,7 +148,7 @@ class PortalService(PortalBaseService):
     def get_product_bounties_context(self, slug: str, person: Person) -> Dict[str, Any]:
         """Get context for product bounties list."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Member')
+        self.check_product_access(person, product)
         return {
             'product': product,
             'current_product': product,
@@ -137,7 +169,7 @@ class PortalService(PortalBaseService):
         bounty = get_object_or_404(Bounty, pk=bounty_id, challenge__product=product)
         claim = get_object_or_404(BountyClaim, pk=claim_id, bounty=bounty)
         
-        self.check_product_access(person, product, 'Manager')
+        self.check_product_access(person, product)
         
         if action == 'accept':
             claim.status = BountyClaim.Status.GRANTED
@@ -156,6 +188,107 @@ class PortalService(PortalBaseService):
                 status=BountyDeliveryAttempt.Status.SUBMITTED
             ).select_related('bounty_claim', 'bounty_claim__bounty', 'bounty_claim__person')
         }
+
+    def get_dashboard_context(self, person: Person) -> Dict[str, Any]:
+        """Get context data for user dashboard."""
+        if not person:
+            raise PortalError("No person associated with user")
+            
+        # Get user's products and claims
+        user_products = RoleService.get_user_products(person=person)
+        bounty_claims = BountyClaim.objects.filter(
+            person=person,
+            status__in=[
+                BountyClaim.Status.GRANTED,
+                BountyClaim.Status.REQUESTED
+            ]
+        ).select_related('bounty', 'bounty__challenge', 'bounty__challenge__product')
+        
+        return {
+            "products": user_products,
+            "managed_products": RoleService.get_managed_products(person=person),
+            "person": person,
+            "active_bounty_claims": bounty_claims,
+            "page_title": "Dashboard"
+        }
+
+    def get_product_summary_context(self, slug: str, person: Person) -> Dict[str, Any]:
+        """Get context data for product summary view."""
+        product = self.get_product_or_404(slug)
+        self.check_product_access(person, product)
+        
+        context = self.get_base_product_context(product, person)
+        
+        # Add summary statistics
+        context.update({
+            'active_challenges_count': Challenge.objects.filter(
+                product=product, 
+                status='active'
+            ).count(),
+            'open_bounties_count': Bounty.objects.filter(
+                challenge__product=product,
+                status='open'
+            ).count(),
+            'pending_reviews_count': BountyDeliveryAttempt.objects.filter(
+                bounty_claim__bounty__challenge__product=product,
+                status=BountyDeliveryAttempt.Status.SUBMITTED
+            ).count(),
+            'recent_activity': self._get_recent_product_activity(product)
+        })
+        
+        return context
+        
+    def _get_recent_product_activity(self, product: Product) -> List[Dict[str, Any]]:
+        """Get recent activity for a product."""
+        # Aggregate recent activity from various models
+        activities = []
+        
+        # Get recent challenges
+        challenges = Challenge.objects.filter(
+            product=product
+        ).order_by('-created_at')[:5]
+        
+        # Get recent bounty claims
+        claims = BountyClaim.objects.filter(
+            bounty__challenge__product=product
+        ).order_by('-created_at')[:5]
+        
+        # Get recent delivery attempts
+        attempts = BountyDeliveryAttempt.objects.filter(
+            bounty_claim__bounty__challenge__product=product
+        ).order_by('-created_at')[:5]
+        
+        # Combine and sort activities
+        for challenge in challenges:
+            activities.append({
+                'type': 'challenge',
+                'date': challenge.created_at,
+                'title': challenge.title,
+                'status': challenge.status,
+                'url': f'/portal/products/{product.slug}/challenges/{challenge.slug}/'
+            })
+        
+        for claim in claims:
+            activities.append({
+                'type': 'claim',
+                'date': claim.created_at,
+                'title': claim.bounty.title,
+                'person': claim.person.name,
+                'status': claim.status,
+                'url': f'/portal/products/{product.slug}/bounties/{claim.bounty.id}/'
+            })
+        
+        for attempt in attempts:
+            activities.append({
+                'type': 'delivery',
+                'date': attempt.created_at,
+                'title': attempt.bounty_claim.bounty.title,
+                'person': attempt.bounty_claim.person.name,
+                'status': attempt.status,
+                'url': f'/portal/products/{product.slug}/review/{attempt.id}/'
+            })
+        
+        return activities
 
 
 class BountyService:
@@ -267,7 +400,7 @@ class ChallengeService(PortalBaseService):
     def get_challenges_context(self, slug: str, person: Person) -> Dict[str, Any]:
         """Get context for challenges management."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Member')
+        self.check_product_access(person, product)
         
         return {
             'product': product,
@@ -283,14 +416,14 @@ class BountyDeliveryReviewService(PortalBaseService):
     def get_review_context(self, slug: str, person: Person) -> Dict[str, Any]:
         """Get context for work review."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Manager')
+        self.check_product_access(person, product)
         
         return {
             'product': product,
             'current_product': product,
             'delivery_attempts': BountyDeliveryAttempt.objects.filter(
                 bounty_claim__bounty__challenge__product=product,
-                status=BountyDeliveryAttempt.Status.SUBMITTED
+                kind=BountyDeliveryAttempt.SubmissionType.NEW
             ).select_related('bounty_claim', 'bounty_claim__bounty', 'bounty_claim__person')
         }
     
@@ -305,11 +438,11 @@ class BountyDeliveryReviewService(PortalBaseService):
         attempt = get_object_or_404(BountyDeliveryAttempt, pk=attempt_id)
         product = attempt.bounty_claim.bounty.challenge.product
         
-        self.check_product_access(reviewer, product, 'Manager')
+        self.check_product_access(reviewer, product)
         
         attempt.status = (
             BountyDeliveryAttempt.Status.APPROVED if approved 
-            else BountyDeliveryAttempt.Status.REJECTED
+            else BountyDeliveryAttempt.SubmissionType.REJECTED
         )
         attempt.feedback = feedback
         attempt.reviewed_by = reviewer
@@ -322,7 +455,7 @@ class AgreementTemplateService(PortalBaseService):
     def get_templates_context(self, slug: str, person: Person) -> Dict[str, Any]:
         """Get context for agreement templates."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Admin')
+        self.check_product_access(person, product)
         
         return {
             'product': product,
@@ -334,13 +467,14 @@ class AgreementTemplateService(PortalBaseService):
     def create_template(self, slug: str, person: Person, data: Dict[str, Any]) -> ProductContributorAgreementTemplate:
         """Create a new agreement template."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Admin')
+        self.check_product_access(person, product)
         
         template = ProductContributorAgreementTemplate(
             product=product,
             title=data['title'],
             content=data['content'],
-            created_by=person
+            created_by=person,
+            effective_date=data.get('effective_date')
         )
         template.save()
         return template
@@ -348,7 +482,7 @@ class AgreementTemplateService(PortalBaseService):
     def update_template(self, slug: str, template_id: int, person: Person, data: Dict[str, Any]) -> ProductContributorAgreementTemplate:
         """Update an existing agreement template."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Admin')
+        self.check_product_access(person, product)
         
         template = get_object_or_404(
             ProductContributorAgreementTemplate,
@@ -365,7 +499,7 @@ class AgreementTemplateService(PortalBaseService):
     def delete_template(self, slug: str, template_id: int, person: Person) -> None:
         """Delete an agreement template."""
         product = self.get_product_or_404(slug)
-        self.check_product_access(person, product, 'Admin')
+        self.check_product_access(person, product)
         
         template = get_object_or_404(
             ProductContributorAgreementTemplate,

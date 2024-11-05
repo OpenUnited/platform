@@ -1,9 +1,0 @@
-<ul role="list" id="li_list_container"  class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    {% for bounty in bounties %}
-        {% with bounty=bounty  %}
-            {% include "product_management/bounty/helper/card.html"  %}
-        {% endwith  %}
-    {% endfor  %}
-</ul>
-
-{% include "product_management/bounty/helper/pagination.html"  %}

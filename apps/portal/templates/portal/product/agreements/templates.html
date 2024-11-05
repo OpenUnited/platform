@@ -1,0 +1,60 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="dashboard-content max-w-4xl mx-auto py-6">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-2xl font-semibold text-gray-900">Agreement Templates</h1>
+            <p class="mt-2 text-sm text-gray-700">
+                Manage contributor agreement templates for your product.
+            </p>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:ml-16">
+            <a href="{% url 'portal:create-agreement-template' product.slug %}">
+                <button type="button"
+                    class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Create New Template
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-6">
+        <div class="px-4 py-5 sm:p-6">
+            {% if contributor_agreement_templates %}
+                <table class="min-w-full divide-y divide-gray-300">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Title</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created By</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Effective Date</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created At</th>
+                            <th scope="col" class="relative py-3.5 pl-3 pr-4">
+                                <span class="sr-only">Actions</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for template in contributor_agreement_templates %}
+                        <tr>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ template.title }}</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ template.created_by }}</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ template.effective_date }}</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ template.created_at|date }}</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                <a href="{% url 'portal:contributor_agreement_template_detail' product.slug template.id %}"
+                                    class="font-medium text-indigo-600 hover:text-indigo-900">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-sm text-gray-500">Currently, there are no contributor agreement templates for this product.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

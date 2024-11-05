@@ -326,8 +326,11 @@ class Challenge(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
 
     def get_absolute_url(self):
         return reverse(
-            "challenge_detail",
-            kwargs={"product_slug": self.product.slug, "pk": self.pk},
+            'product_management:challenge-detail',
+            kwargs={
+                'product_slug': self.product.slug,
+                'pk': self.id
+            }
         )
 
     def can_delete_challenge(self, person):

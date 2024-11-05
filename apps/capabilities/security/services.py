@@ -422,3 +422,85 @@ class RoleService:
             Q(organisation__in=user_orgs) |
             Q(person=person)
         ).distinct()
+
+    @staticmethod
+    def has_product_access(person: Person, product: Product) -> bool:
+        """
+        Check if person has access to view the product
+        
+        Access is granted if person:
+        1. Has admin/manager role in the product
+        2. Has member role in the product
+        3. Is the direct owner of the product
+        4. Has access through organization roles
+        """
+        # Direct product ownership
+        if product.person == person:
+            return True
+            
+        # Check product roles (admin, manager, member)
+        if ProductRoleAssignment.objects.filter(
+            person=person,
+            product=product,
+            role__in=[
+                ProductRoleAssignment.ProductRoles.ADMIN,
+                ProductRoleAssignment.ProductRoles.MANAGER,
+                ProductRoleAssignment.ProductRoles.MEMBER
+            ]
+        ).exists():
+            return True
+            
+        # Check organization access
+        if product.organisation:
+            if OrganisationPersonRoleAssignment.objects.filter(
+                person=person,
+                organisation=product.organisation,
+                role__in=[
+                    OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MEMBER
+                ]
+            ).exists():
+                return True
+                
+        return False
+
+    @staticmethod
+    def has_product_management_access(person: Person, product: Product) -> bool:
+        """
+        Check if person has management-level access to the product
+        
+        Management access is granted if person:
+        1. Has admin role in the product
+        2. Has manager role in the product
+        3. Is the direct owner of the product
+        4. Has owner/manager access through organization roles
+        """
+        # Direct product ownership
+        if product.person == person:
+            return True
+            
+        # Check product roles (admin, manager)
+        if ProductRoleAssignment.objects.filter(
+            person=person,
+            product=product,
+            role__in=[
+                ProductRoleAssignment.ProductRoles.ADMIN,
+                ProductRoleAssignment.ProductRoles.MANAGER
+            ]
+        ).exists():
+            return True
+            
+        # Check organization access (owner/manager only)
+        if product.organisation:
+            if OrganisationPersonRoleAssignment.objects.filter(
+                person=person,
+                organisation=product.organisation,
+                role__in=[
+                    OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER
+                ]
+            ).exists():
+                return True
+                
+        return False

@@ -1,4 +1,5 @@
-{% include '"talent/helper/macro_fun.html" as macros_fun  ' %}
+{% load talent_tags %}
+{% include "talent/helper/macro_fun.html" %}
 {{ person_skill_formset.management_form  }}
 
 <div class="mt-4 pt-2">
@@ -12,10 +13,10 @@
                 </button>
 
                 <div class="mt-2">
-                    <select id="id_skills-{{ loop.index0  }}-skill" hx-get="{% url profile pk,   %}" hx-vals='{"index":"{{ loop.index0  }}"}'
+                    <select id="id_skills-{{ loop.index0  }}-skill" hx-get="{% url 'profile' pk %}" hx-vals='{"index":"{{ loop.index0 }}"}'
                             name="skills-{{ loop.index0  }}-skill" hx-trigger="change" hx-target="#ul_expertise_{{ loop.index0  }}"
                             class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        {{ macros_fun.skill_filter_tree(skills, person_skill_form.instance.skill.id, False)  }}
+                        {% skill_filter_tree skills person_skill_form.instance.skill.id False %}
                     </select>
                 </div>
                 <div id="td_{{ loop.index0  }}-exxpertise" class="mt-4">
@@ -23,7 +24,7 @@
                         {% include "talent/helper/expertises.html"  %}
                     {% endwith  %}
                     <select class="hidden" id="id_skills-{{ loop.index0  }}-expertise" name="skills-{{ loop.index0  }}-expertise" multiple>
-                        {% for expertise in person_skill_form.instance.expertise|call:all %}
+                        {% for expertise in person_skill_form.instance.expertise.all %}
                             <option value="{{ expertise.pk  }}" selected>{{ expertise.pk  }}</option>
                         {% endfor  %}
                     </select>
@@ -42,7 +43,7 @@
 
     <div class="w-full mb-4 text-left">
         <button type="button"
-            hx-get="{% url profile pk,  %}"
+            hx-get="{% url 'profile' pk %}"
             id="add_more_button"
             onclick="event|call:preventDefault"
             hx-target="#person_skill_container" class="bg-indigo-600 text-white py-2 px-4 rounded focus:outline-none"

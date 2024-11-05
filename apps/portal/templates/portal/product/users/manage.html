@@ -1,0 +1,52 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="dashboard-content max-w-4xl mx-auto py-6">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-2xl font-semibold text-gray-900">Users</h1>
+            <p class="mt-2 text-sm text-gray-700">A list of users associated with this product.</p>
+        </div>
+        <div class="mt-4 sm:mt-0 sm:ml-16">
+            <a href="{% url 'portal:product-user-add' product.slug %}" 
+               class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Add User
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-6">
+        <div class="px-4 py-5 sm:p-6">
+            <div id="user_table">
+                {% if product_users %}
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">#</th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Name</th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Role</th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for product_role in product_users %}
+                            <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 text-sm text-gray-500">{{ loop.index }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product_role.person }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product_role.role }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                    <a href="{% url 'portal:product-user-update' product.slug product_role.id %}" 
+                                       class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-sm text-gray-500">Currently, there are no users for this product.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

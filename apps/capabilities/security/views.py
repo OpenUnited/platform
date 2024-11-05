@@ -135,7 +135,8 @@ class SignInView(TemplateView):
                 if next_url:
                     return redirect(next_url)
                 else:
-                    return redirect("portal:manage-bounties")
+                    #todo: consider whether we should redirect to the portal dashboard if the user has product manager or admin rights
+                    return redirect("product_management:bounty-list")
             else:
                 if user_obj.password_reset_required:
                     return redirect("password_reset_required")

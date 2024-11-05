@@ -1,0 +1,146 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="dashboard-content max-w-4xl mx-auto py-6">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">{{ product.name }} Settings</h1>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <form method="post" enctype="multipart/form-data" class="space-y-8">
+                {% csrf_token %}
+                
+                <!-- Form sections with proper spacing -->
+                <div class="space-y-6">
+                    <!-- Owner Type Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Owner Type</label>
+                        <div class="space-y-2">
+                            {% for radio in form.owner_type %}
+                            <div class="flex items-center">
+                                <input type="radio" name="{{ radio.name }}" 
+                                       value="{{ radio.choice_value }}"
+                                       id="{{ radio.id_for_label }}"
+                                       {% if radio.is_checked %}checked{% endif %}
+                                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                <label for="{{ radio.id_for_label }}" 
+                                       class="ml-3 block text-sm font-medium text-gray-700">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">Product Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <p class="mt-2 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.short_description.id_for_label }}" class="block text-sm font-medium text-gray-700">Short Description</label>
+                            {{ form.short_description }}
+                            {% if form.short_description.errors %}
+                                <p class="mt-2 text-sm text-red-600">{{ form.short_description.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.full_description.id_for_label }}" class="block text-sm font-medium text-gray-700">Full Description</label>
+                            {{ form.full_description }}
+                            {% if form.full_description.errors %}
+                                <p class="mt-2 text-sm text-red-600">{{ form.full_description.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- URLs -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.website.id_for_label }}" class="block text-sm font-medium text-gray-700">Website</label>
+                            {{ form.website }}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.video_url.id_for_label }}" class="block text-sm font-medium text-gray-700">Video URL</label>
+                            {{ form.video_url }}
+                        </div>
+                    </div>
+
+                    <!-- Photo -->
+                    <div>
+                        <label for="{{ form.photo.id_for_label }}" class="block text-sm font-medium text-gray-700">Product Photo</label>
+                        {% if product.photo %}
+                            <div class="mt-2 mb-4">
+                                <img src="{{ product.photo.url }}" alt="{{ product.name }}" class="h-32 w-32 object-cover rounded-lg">
+                            </div>
+                        {% endif %}
+                        <div class="mt-2">
+                            <input type="file" name="photo" accept="image/*" 
+                                   class="block w-full text-sm text-gray-500
+                                          file:mr-4 file:py-2 file:px-4
+                                          file:rounded-md file:border-0
+                                          file:text-sm file:font-semibold
+                                          file:bg-indigo-50 file:text-indigo-700
+                                          hover:file:bg-indigo-100"
+                                   id="{{ form.photo.id_for_label }}">
+                        </div>
+                    </div>
+
+                    <!-- Visibility -->
+                    <div>
+                        <label for="{{ form.visibility.id_for_label }}" class="block text-sm font-medium text-gray-700">Visibility</label>
+                        {{ form.visibility }}
+                        {% if form.visibility.help_text %}
+                            <p class="mt-2 text-sm text-gray-500">{{ form.visibility.help_text|linebreaks }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Hidden Fields -->
+                    {{ form.person }}
+                    {{ form.organisation }}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end pt-6">
+                    <button type="submit" 
+                            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for owner type toggle -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ownerTypeInputs = document.querySelectorAll('input[name="owner_type"]');
+    const personField = document.getElementById('{{ form.person.id_for_label }}');
+    const orgField = document.getElementById('{{ form.organisation.id_for_label }}');
+
+    function toggleOwnerFields() {
+        const selectedValue = document.querySelector('input[name="owner_type"]:checked').value;
+        if (selectedValue === 'person') {
+            personField.parentElement.style.display = 'block';
+            orgField.parentElement.style.display = 'none';
+        } else {
+            personField.parentElement.style.display = 'none';
+            orgField.parentElement.style.display = 'block';
+        }
+    }
+
+    ownerTypeInputs.forEach(input => {
+        input.addEventListener('change', toggleOwnerFields);
+    });
+
+    // Initial toggle
+    toggleOwnerFields();
+});
+</script>
+{% endblock %}

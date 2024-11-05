@@ -14,7 +14,7 @@
       </span>
 
       <div id="searchable-dropdown" class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg overflow-y-auto sm:w-screen sm:left-0 sm:right-0 sm:max-h-[20vh] hidden">
-            <input type="search" onkeyup="searchableDropdownFilterInput(event, '{% url add-product-user product.slug,  %}')" id="searchable-dropdown-input" class="w-full rounded-md py-1 px-2 mb-1 border border-red-400" placeholder="Search...">
+            <input type="search" onkeyup="searchableDropdownFilterInput(event, '{{ request.path }}')" id="searchable-dropdown-input" class="w-full rounded-md py-1 px-2 mb-1 border border-red-400" placeholder="Search...">
             <ul id="searchable-dropdown-list" class="py-1" style="max-height:60vh; overflow-y-auto">
             </ul>
       </div>

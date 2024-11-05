@@ -1,0 +1,16 @@
+{# Add your attachment display logic here #}
+<div class="attachments-container">
+    {% if attachments %}
+        <ul>
+        {% for attachment in attachments %}
+            <li>
+                <a href="{{ attachment.file.url }}" target="_blank">
+                    {{ attachment.filename }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No attachments</p>
+    {% endif %}
+</div> 

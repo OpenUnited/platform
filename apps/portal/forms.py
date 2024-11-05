@@ -89,21 +89,25 @@ class PortalProductSettingView(LoginRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
-class ProductSettingsForm(forms.ModelForm):
+class ProductSettingsForm(PortalBaseForm):
+    """Form for editing product settings."""
+    
+    OWNER_CHOICES = (
+        ('person', 'Person'),
+        ('organisation', 'Organisation'),
+    )
+    
     owner_type = forms.ChoiceField(
-        choices=[
-            ('person', 'Individual'),
-            ('organisation', 'Organisation')
-        ],
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        choices=OWNER_CHOICES,
+        widget=forms.RadioSelect,
         required=True
     )
 
     class Meta:
         model = Product
         fields = [
-            'name',
-            'short_description',
+            'name', 
+            'short_description', 
             'full_description',
             'website',
             'video_url',
@@ -113,58 +117,22 @@ class ProductSettingsForm(forms.ModelForm):
             'organisation'
         ]
         widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Product Name'
-            }),
-            'short_description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Brief description of your product'
-            }),
-            'full_description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 6,
-                'placeholder': 'Detailed description of your product'
-            }),
-            'website': forms.URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'https://example.com'
-            }),
-            'video_url': forms.URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'https://youtube.com/...'
-            }),
-            'photo': forms.FileInput(attrs={
-                'class': 'form-control'
-            }),
-            'visibility': forms.Select(attrs={
-                'class': 'form-control'
-            }, choices=Product.Visibility.choices),
-            'person': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'organisation': forms.Select(attrs={
-                'class': 'form-control'
-            })
+            'name': forms.TextInput(),
+            'short_description': forms.TextInput(),
+            'full_description': forms.Textarea(attrs={'rows': 4}),
+            'person': forms.HiddenInput(),
+            'organisation': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['visibility'].help_text = """
-            Global: Visible to everyone
-            Organisation Only: Visible only to organisation members
-            Restricted: Visible only to specific users
-        """
-        
-        # Set initial owner_type based on current ownership
         instance = kwargs.get('instance')
         if instance:
-            self.fields['owner_type'].initial = instance.owner_type
-
-        # Hide person/organisation fields initially - they'll be shown/hidden via JS
-        self.fields['person'].widget = forms.HiddenInput()
-        self.fields['organisation'].widget = forms.HiddenInput()
+            # Set initial owner_type based on whether person or organisation is set
+            if instance.person:
+                self.fields['owner_type'].initial = 'person'
+            elif instance.organisation:
+                self.fields['owner_type'].initial = 'organisation'
 
     def clean(self):
         cleaned_data = super().clean()
@@ -172,30 +140,23 @@ class ProductSettingsForm(forms.ModelForm):
         person = cleaned_data.get('person')
         organisation = cleaned_data.get('organisation')
 
-        # Validate ownership based on owner_type
-        if owner_type == 'person':
-            if not person:
-                raise ValidationError("Person owner must be selected")
-            cleaned_data['organisation'] = None
-        elif owner_type == 'organisation':
-            if not organisation:
-                raise ValidationError("Organisation owner must be selected")
-            cleaned_data['person'] = None
+        if owner_type == 'person' and not person:
+            raise ValidationError("Person owner must be selected")
+        elif owner_type == 'organisation' and not organisation:
+            raise ValidationError("Organisation owner must be selected")
 
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
+        owner_type = self.cleaned_data.get('owner_type')
         
         # Set ownership based on owner_type
-        owner_type = self.cleaned_data.get('owner_type')
         if owner_type == 'person':
             instance.organisation = None
-            instance.person = self.cleaned_data.get('person')
         else:
             instance.person = None
-            instance.organisation = self.cleaned_data.get('organisation')
-
+            
         if commit:
             instance.save()
         return instance

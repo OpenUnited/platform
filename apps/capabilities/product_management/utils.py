@@ -1,11 +1,13 @@
 import uuid
+from functools import wraps
 
 from django.contrib import messages
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect, get_object_or_404
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, redirect
 
 from apps.capabilities.security.models import ProductRoleAssignment
+from apps.capabilities.security.services import RoleService
 
 from .models import Product
 
@@ -19,18 +21,12 @@ def to_dict(instance):
     return {key: (str(result[key]) if isinstance(result[key], uuid.UUID) else result[key]) for key in result.keys()}
 
 
-def has_product_modify_permission(user, product):
-    if user.is_authenticated:
-        try:
-            role_assignment = ProductRoleAssignment.objects.get(person__user=user, product=product)
-            return role_assignment.role in [
-                ProductRoleAssignment.ProductRoles.ADMIN,
-                ProductRoleAssignment.ProductRoles.MANAGER,
-            ]
-        except Exception as ex:
-            print(ex)
-            return False
-    return False
+def has_product_access(user, product):
+    """Check if user has access to view the product"""
+    if not user.is_authenticated or not hasattr(user, 'person'):
+        return False
+        
+    return RoleService.has_product_access(user.person, product)
 
 
 def permission_error_message():
@@ -74,3 +70,14 @@ class BaseProductDetailView:
         context["product"] = product
         context["product_slug"] = product.slug
         return context
+
+
+def require_product_management_access(view_func):
+    @wraps(view_func)
+    def wrapper(request, product_slug, *args, **kwargs):
+        product = get_object_or_404(Product, slug=product_slug)
+        if not RoleService.has_product_management_access(request.user.person, product):
+            messages.error(request, "You do not have management access to this product")
+            return redirect('portal:dashboard')
+        return view_func(request, product_slug, *args, **kwargs)
+    return wrapper

@@ -1,0 +1,82 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="dashboard-content max-w-4xl mx-auto py-6">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-2xl font-semibold text-gray-900">Challenges</h1>
+            <p class="mt-2 text-sm text-gray-700">A list of challenges created for this product.</p>
+        </div>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-6">
+        <div class="px-4 py-5 sm:p-6">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 mb-4">
+                <!-- Search Form -->
+                <div class="w-full md:w-1/2">
+                    <form action="" method="GET">
+                        <input type="search" name="search-challenge"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            placeholder="Search">
+                    </form>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div class="relative inline-block">
+                    <div class="flex">
+                        <button type="button" _="on click toggle .hidden on #sortButton"
+                            class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+                            id="menu-button" aria-expanded="false" aria-haspopup="true">
+                            Sort
+                            <svg class="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="sortButton"
+                        class="hidden absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div _="on mouseenter from <a/> in me
+                                    remove .bg-gray-100 from <a/> in me
+                                    tell the target
+                                        add .bg-gray-100
+                                end
+                                on mouseleave from <a/> in me
+                                    tell the target
+                                        remove .bg-gray-100
+                                on click from <a/> in me
+                                    remove .font-medium .text-gray-900 from <a /> in me
+                                    tell the target
+                                        add .font-medium .text-gray-900
+                                    wait 100ms
+                                    add .hidden to #sortButton
+                                end" class="py-1" role="none">
+                            <a href="?sort=created-desc"
+                                class="cursor-pointer text-gray-500 block px-4 py-2 text-sm">Newest</a>
+                            <a href="?sort=created-asc"
+                                class="cursor-pointer text-gray-500 block px-4 py-2 text-sm">Oldest</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge Table -->
+            <div class="mt-4">
+                <div id="challenge-table" class="overflow-hidden">
+                    {% if challenges %}
+                        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                            {% include 'portal/product/challenges/components/table.html' %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-gray-500">No challenge is created for this product.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Product Header -->
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                {{ product.name }} - Product Summary
+            </h1>
+            <p class="mt-1 text-sm text-gray-500">
+                {{ product.description }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <!-- Debug info -->
+        <div class="bg-white p-4 rounded shadow">
+            Debug Values:
+            <br>active_challenges_count: {{ active_challenges_count }}
+            <br>open_bounties_count: {{ open_bounties_count }}
+            <br>active_contributors_count: {{ active_contributors_count }}
+        </div>
+
+        {% with label="Available Points" value="1,000" %}
+            {% include "portal/product/components/stat_card.html" %}
+        {% endwith %}
+        
+        {% with label="Active Challenges" value=active_challenges_count %}
+            {% include "portal/product/components/stat_card.html" %}
+        {% endwith %}
+        
+        {% with label="Open Bounties" value=open_bounties_count %}
+            {% include "portal/product/components/stat_card.html" %}
+        {% endwith %}
+        
+        {% with label="Active Contributors" value=active_contributors_count %}
+            {% include "portal/product/components/stat_card.html" %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %} 

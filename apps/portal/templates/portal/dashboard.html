@@ -1,67 +1,73 @@
-<!-- Page title & actions -->
-<div class="min-h-full">
-    <!-- Page header -->
-    <div class="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <div class="min-w-0 flex-1">
-            <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate">Portal - Dashboard</h1>
-        </div>
-        <div class="mt-4 flex sm:mt-0 sm:ml-4">
-            <!-- Add any action buttons here if needed -->
-        </div>
-    </div>
+{% extends "portal/base.html" %}
 
-    <!-- Products section -->
-    <div class="mt-6 px-4 sm:px-6 lg:px-8">
-        <h2 class="text-xl font-medium text-gray-900">My Products</h2>
-        <div class="mt-4">
-            {% if products %}
-                <ul role="list" class="divide-y divide-gray-200">
-                    {% for product in products %}
-                        <li class="py-4">
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate">
-                                        {{ product.name  }}
+{% block content %}
+<div class="dashboard-content">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">Dashboard</h1>
+
+    <!-- Products Section -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">My Products</h2>
+        {% if products %}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {% for product in products %}
+                    <div class="bg-white overflow-hidden shadow rounded-lg">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="w-0 flex-1">
+                                    <h3 class="text-lg font-medium text-gray-900">
+                                        {{ product.name }}
+                                    </h3>
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        {{ product.description|truncatewords:30 }}
                                     </p>
-                                    <p class="text-sm text-gray-500 truncate">
-                                        {{ product.short_description  }}
-                                    </p>
+                                    <div class="mt-3 flex space-x-4">
+                                        <a href="{% url 'product_management:product-detail' product.slug %}" 
+                                           class="text-sm text-indigo-600 hover:text-indigo-900">
+                                            View in Marketplace
+                                        </a>
+                                        <span class="text-gray-300">|</span>
+                                        <a href="{% url 'portal:product-summary' product.slug %}" 
+                                           class="text-sm text-indigo-600 hover:text-indigo-900">
+                                            View in Portal
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </li>
-                    {% endfor  %}
-                </ul>
-            {% else %}
-                <p class="text-gray-500">No products available.</p>
-            {% endif  %}
-        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500">No products available.</p>
+        {% endif %}
     </div>
 
-    <!-- Active Bounty Claims section -->
-    <div class="mt-8 px-4 sm:px-6 lg:px-8">
-        <h2 class="text-xl font-medium text-gray-900">Active Bounty Claims</h2>
-        <div class="mt-4">
-            {% if active_bounty_claims %}
-                <ul role="list" class="divide-y divide-gray-200">
-                    {% for claim in active_bounty_claims %}
-                        <li class="py-4">
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate">
-                                        {{ claim.bounty.title  }}
-                                    </p>
-                                    <p class="text-sm text-gray-500">
-                                        Status: {{ claim.status  }}
-                                    </p>
-                                </div>
+    <!-- Bounty Claims Section -->
+    <div>
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Active Bounty Claims</h2>
+        {% if active_bounty_claims %}
+            <div class="space-y-4">
+                {% for claim in active_bounty_claims %}
+                    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                        <div class="px-4 py-4 sm:px-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                    <a href="{% url 'portal:bounty-detail' claim.bounty.challenge.product.slug claim.bounty.id %}" class="hover:underline">
+                                        {{ claim.bounty.title }}
+                                    </a>
+                                </h3>
+                                <p class="text-sm text-gray-500">
+                                    Status: {{ claim.get_status_display }}
+                                </p>
                             </div>
-                        </li>
-                    {% endfor  %}
-                </ul>
-            {% else %}
-                <p class="text-gray-500">No active bounty claims.</p>
-            {% endif  %}
-        </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500">No active bounty claims.</p>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
 

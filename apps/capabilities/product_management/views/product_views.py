@@ -24,7 +24,7 @@ from django.views.generic import (
 from apps.canopy import utils as canopy_utils
 from apps.capabilities.commerce.models import Organisation
 from apps.common import mixins as common_mixins
-from .. import utils  # for BaseProductDetailView
+from .. import utils
 from ..forms import (
     BountyForm,
     ContributorAgreementTemplateForm,
@@ -40,7 +40,6 @@ from apps.capabilities.talent.forms import PersonSkillFormSet
 from apps.capabilities.talent.models import BountyClaim, Expertise, Skill
 from apps.capabilities.talent.utils import serialize_skills
 from apps.utility.utils import serialize_other_type_tree
-
 from apps.capabilities.product_management.models import (
     Bounty,
     Challenge,
@@ -50,38 +49,42 @@ from apps.capabilities.product_management.models import (
     ProductContributorAgreement,
     ProductContributorAgreementTemplate,
 )
-
-from ..forms import ProductForm
-from .. import utils
+from ..utils import require_product_management_access
 
 logger = logging.getLogger(__name__)
+
+class BaseProductView(LoginRequiredMixin):
+    """Base class for product views with common functionality"""
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+            
+        # Only check product access if product_slug is in kwargs
+        if 'product_slug' in kwargs:
+            try:
+                product = Product.objects.get(slug=kwargs['product_slug'])
+                if not RoleService.has_product_management_access(request.user.person, product):
+                    messages.error(request, "You do not have access to manage this product")
+                    return redirect('product_management:products')
+            except Product.DoesNotExist:
+                messages.error(request, "Product not found")
+                return redirect('product_management:products')
+                
+        return super().dispatch(request, *args, **kwargs)
 
 class CreateProductView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'product_management/create_product.html'
-    success_url = reverse_lazy('portal:dashboard')  # Adjust this to your needs
+    success_url = reverse_lazy('portal:dashboard')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['person'] = self.request.user.person
         return kwargs
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        product = self.object
-        
-        if form.cleaned_data.get('make_me_owner'):
-            # Make the current user the owner
-            RoleService.assign_product_role(
-                person=self.request.user.person,
-                product=product,
-                role='Admin'  # Or whatever your highest role is
-            )
-        
-        return response
-
-class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, UpdateView):
+class UpdateProductView(BaseProductView, common_mixins.AttachmentMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "product_management/update_product.html"
@@ -94,12 +97,10 @@ class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Updat
         context = super().get_context_data(**kwargs)
         initial = {}
         
-        # Check if product is owned by the current user
         if self.object.is_owned_by_person():
             initial["make_me_owner"] = (self.object.person == self.request.user.person)
             context["make_me_owner"] = initial["make_me_owner"]
 
-        # Check if product is owned by an organisation
         if self.object.is_owned_by_organisation():
             initial["organisation"] = self.object.organisation
             context["organisation"] = self.object.organisation
@@ -110,349 +111,31 @@ class UpdateProductView(LoginRequiredMixin, common_mixins.AttachmentMixin, Updat
 
     def form_valid(self, form):
         return super().form_save(form)
-    
-class CreateOrganisationView(LoginRequiredMixin, common_mixins.HTMXInlineFormValidationMixin, CreateView):
-    model = Organisation
-    form_class = OrganisationForm
-    template_name = "product_management/create_organisation.html"
-    success_url = reverse_lazy("create-product")
-    login_url = "sign_in"
 
-    def post(self, request, *args, **kwargs):
-        if self._is_htmx_request(self.request):
-            return super().post(request, *args, **kwargs)
-
-        form = self.form_class(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-
-            return redirect(self.success_url)
-
-        return super().post(request, *args, **kwargs)
-
-class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_challenges.html"
-
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        product = context["product"]
-        challenges = Challenge.objects.filter(product=product)
-        custom_order = models.Case(
-            models.When(status=Challenge.ChallengeStatus.ACTIVE, then=models.Value(0)),
-            models.When(status=Challenge.ChallengeStatus.BLOCKED, then=models.Value(1)),
-            models.When(status=Challenge.ChallengeStatus.COMPLETED, then=models.Value(2)),
-            models.When(status=Challenge.ChallengeStatus.CANCELLED, then=models.Value(3)),
-        )
-        challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
-        context["challenges"] = challenges
-        context["challenge_status"] = Challenge.ChallengeStatus
-        return context
-
-class UpdateChallengeView(
-    LoginRequiredMixin, common_mixins.AttachmentMixin, common_mixins.HTMXInlineFormValidationMixin, UpdateView
-):
-    model = Challenge
-    form_class = ChallengeForm
-    template_name = "product_management/update_challenge.html"
-    login_url = "sign_in"
-
-    def get_success_url(self):
-        return reverse("challenge_detail", args=(self.object.product.slug, self.object.id))
-
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context["product"] = self.object.product
-        return context
-
-    def form_valid(self, form):
-        form.instance.updated_by = self.request.user.person
-        return super().form_save(form)
-    
-class DeleteChallengeView(LoginRequiredMixin, DeleteView):
-    model = Challenge
-    template_name = "product_management/delete_challenge.html"
-    login_url = "sign_in"
-    success_url = reverse_lazy("challenges")
-
-    def get(self, request, *args, **kwargs):
-        challenge_obj = self.get_object()
-        person = request.user.person
-        if challenge_obj.can_delete_challenge(person) or challenge_obj.created_by == person:
-            Challenge.objects.get(pk=challenge_obj.pk).delete()
-            messages.success(request, "The challenge is successfully deleted!")
-            return redirect(self.success_url)
-        else:
-            messages.error(request, "You do not have rights to remove this challenge.")
-
-            return redirect(
-                reverse(
-                    "challenge_detail",
-                    args=(
-                        challenge_obj.product.slug,
-                        challenge_obj.pk,
-                    ),
-                )
-            )
-
-class BountyDetailView(common_mixins.AttachmentMixin, DetailView):
-
-    model = Bounty
-    template_name = "product_management/bounty_detail.html"
-
-    def get_object(self, queryset=None):
-        try:
-            return super().get_object(queryset)
-        except Bounty.DoesNotExist:
-            messages.error(self.request, "This bounty no longer exists.")
-            raise Http404("Bounty does not exist")
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        data = super().get_context_data(**kwargs)
-
-        bounty = data.get("bounty")
-        challenge = bounty.challenge
-        product = challenge.product
-        user = self.request.user
-
-        can_be_modified = False
-        can_be_claimed = False
-        created_bounty_claim_request = False
-        bounty_claim = None
-        if user.is_authenticated:
-            person = user.person
-            _bounty_claim = bounty.bountyclaim_set.filter(person=person).first()
-
-            if _bounty_claim and _bounty_claim.status == BountyClaim.Status.REQUESTED and not bounty.claimed_by:
-                created_bounty_claim_request = True
-                bounty_claim = _bounty_claim
-
-            if bounty.status == Bounty.BountyStatus.AVAILABLE:
-                can_be_claimed = not _bounty_claim
-
-            can_be_modified = ProductRoleAssignment.objects.filter(
-                person=person,
-                product=product,
-                role=ProductRoleAssignment.ProductRoles.ADMIN,
-            ).exists()
-
-        data.update(
-            {
-                "product": product,
-                "challenge": challenge,
-                "claimed_by": bounty.claimed_by,
-                "bounty_claim": bounty_claim,
-                "show_actions": created_bounty_claim_request or can_be_claimed or can_be_modified,
-                "can_be_claimed": can_be_claimed,
-                "can_be_modified": can_be_modified,
-                "is_product_admin": True,
-                "created_bounty_claim_request": created_bounty_claim_request,
-            }
-        )
-
-        return {"data": data, "attachment_formset": data["attachment_formset"]}
-
-class BountyClaimView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        bounty_id = kwargs.get('pk')
-        bounty = get_object_or_404(Bounty, pk=bounty_id)
-        
-        if not request.user.is_authenticated or not request.user.person:
-            return JsonResponse({'error': 'Authentication required'}, status=401)
-            
-        # Create bounty claim
-        claim = BountyClaim.objects.create(
-            bounty=bounty,
-            person=request.user.person,
-            status=BountyClaim.Status.REQUESTED
-        )
-        
-        return JsonResponse({
-            'status': 'success',
-            'claim_id': claim.id
-        })
-
-    def get(self, request, *args, **kwargs):
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
-    
-class ProductListView(ListView):
+class ProductDetailView(BaseProductView, DetailView):
+    template_name = "product_management/product/detail.html"
     model = Product
-    template_name = "product_management/products.html"
-    context_object_name = "products"
-    paginate_by = 8
-
-    def get_queryset(self):
-        return Product.objects.filter(
-            visibility=Product.Visibility.GLOBAL
-        ).prefetch_related(
-            'challenge_set',
-            'initiatives'
-        ).order_by("created_at")
-
+    context_object_name = 'product'
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["challenge_status"] = Challenge.ChallengeStatus
-        
-        # Add active challenges count to each product
-        for product in context['products']:
-            product.active_challenges_count = product.challenge_set.filter(
-                status=Challenge.ChallengeStatus.ACTIVE
-            ).count()
-            
-        return context
-
-
-class ProductRedirectView(RedirectView):
-    def get(self, request, *args, **kwargs):
-        kwargs = {"product_slug": kwargs.get("product_slug")}
-        url = reverse("product_management:product-summary", kwargs=kwargs)
-        return HttpResponseRedirect(url)
-
-
-class ProductSummaryView(utils.BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_summary.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = context["product"]
-        
-        # Add the page types dictionary
-        context["types_page"] = {
-            "summary": "Summary",
-            "initiatives": "Initiatives", 
-            "bounties": "Bounties",
-            "challenges": "Challenges",
-            "tree": "Product Tree",
-            "ideas-and-bugs": "Ideas & Bugs",
-            "people": "People"
-        }
-        
-        # Add URL segment data
-        url_segments = self.request.path.strip('/').split('/')
-        context["url_segment"] = url_segments
-        context["last_segment"] = url_segments[-1] if url_segments else ''
-        
-        # Existing code
-        challenges = Challenge.objects.filter(product=product, status=Challenge.ChallengeStatus.ACTIVE)
-        can_modify_product = False
-        if self.request.user.is_authenticated:
-            can_modify_product = utils.has_product_modify_permission(self.request.user, product)
-
-        context.update({
-            "can_modify_product": can_modify_product,
-            "challenges": challenges
-        })
-
-        # Get the first ProductTree for the current product
-        product_tree = product.product_trees.first()
-        
-        if product_tree:
-            # Get all root ProductAreas associated with this ProductTree
-            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
-            context["tree_data"] = [utils.serialize_tree(node) for node in product_areas]
-        else:
-            context["tree_data"] = []
-
-        return context
-
-    def generate_summary_structure(self, data, depth=0, displayed_items=None):
-        if displayed_items is None:
-            displayed_items = []
-        return data, depth, displayed_items
-
-
-def redirect_challenge_to_bounties(request):
-    return redirect(reverse("bounties"))
-
-
-class BountyListView(ListView):
-    model = Bounty
-    context_object_name = "bounties"
-    paginate_by = 51
-
-    def get_template_names(self):
-        if self.request.htmx:
-            return ["product_management/bounty/partials/list_partials.html"]
-        return ["product_management/bounty/list.html"]
-
-    def get_queryset(self):
-        filters = ~models.Q(challenge__status=Challenge.ChallengeStatus.DRAFT)
-
-        if expertise := self.request.GET.get("expertise"):
-            filters &= models.Q(expertise=expertise)
-
-        if status := self.request.GET.get("status"):
-            filters &= models.Q(status=status)
-
-        if skill := self.request.GET.get("skill"):
-            filters &= models.Q(skill=skill)
-        return Bounty.objects.filter(filters).select_related("challenge", "skill").prefetch_related("expertise")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["BountyStatus"] = Bounty.BountyStatus
-
-        expertises = []
-        if skill := self.request.GET.get("skill"):
-            expertises = Expertise.get_roots().filter(skill=skill)
-
-        context["skills"] = [serialize_other_type_tree(skill) for skill in Skill.get_roots()]
-        context["expertises"] = [serialize_other_type_tree(expertise) for expertise in expertises]
-        context['TASK_CLAIM_TYPES'] = ["Claimed", "Not Ready", "Ready", "Done"]
-        return context
-
-    def render_to_response(self, context, **response_kwargs):
-        from django.template.loader import render_to_string
-
-        if self.request.htmx and self.request.GET.get("target") == "skill":
-            list_html = render_to_string(
-                "product_management/bounty/partials/list_partials.html",
-                context,
-                request=self.request,
-            )
-            expertise_html = render_to_string(
-                "product_management/bounty/partials/expertise.html",
-                context,
-                request=self.request,
-            )
-
-            return JsonResponse(
-                {
-                    "list_html": list_html,
-                    "expertise_html": expertise_html,
-                    "item_found_count": context["object_list"].count(),
-                }
-            )
-        return super().render_to_response(context, **response_kwargs)
-
-
-class ProductBountyListView(utils.BaseProductDetailView, ListView):
-    model = Bounty
-    context_object_name = "bounties"
-    object_list = []
-
-    def get_template_names(self):
-        return ["product_management/product_bounties.html"]
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["request"] = self.request
-        return context
-
-    def get_queryset(self):
-        context = self.get_context_data()
-        product = context.get("product")
-        return Bounty.objects.filter(challenge__product=product).exclude(
-            challenge__status=Challenge.ChallengeStatus.DRAFT
+        product = self.object
+        context["product_photo_url"] = product.get_photo_url()
+        context["can_manage"] = RoleService.has_product_management_access(
+            self.request.user.person, 
+            product
         )
+        return context
 
-
-class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
+class ProductChallengesView(BaseProductView, TemplateView):
     template_name = "product_management/product_challenges.html"
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        product = context["product"]
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
         challenges = Challenge.objects.filter(product=product)
+        
+        # Custom ordering for challenges
         custom_order = models.Case(
             models.When(status=Challenge.ChallengeStatus.ACTIVE, then=models.Value(0)),
             models.When(status=Challenge.ChallengeStatus.BLOCKED, then=models.Value(1)),
@@ -460,375 +143,20 @@ class ProductChallengesView(utils.BaseProductDetailView, TemplateView):
             models.When(status=Challenge.ChallengeStatus.CANCELLED, then=models.Value(3)),
         )
         challenges = challenges.annotate(custom_order=custom_order).order_by("custom_order")
-        context["challenges"] = challenges
-        context["challenge_status"] = Challenge.ChallengeStatus
-        return context
-
-
-class ProductInitiativesView(utils.BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_initiatives.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        initiatives = Initiative.objects.filter(product=context["product"]).annotate(
-            total_points=models.Sum(
-                "challenge__bounty__points",
-                filter=models.Q(challenge__bounty__status=Bounty.BountyStatus.AVAILABLE)
-                & models.Q(challenge__bounty__is_active=True),
-            )
-        )
-        context["initiatives"] = initiatives
-        return context
-
-
-class ProductAreaCreateView(utils.BaseProductDetailView, CreateView):
-    model = ProductArea
-    form_class = ProductAreaForm
-    template_name = "product_tree/components/partials/create_node_partial.html"
-
-    def get_template_names(self):
-        if self.request.method == "POST":
-            return ["product_tree/components/partials/add_node_partial.html"]
-        elif not self.request.GET.get("parent_id"):
-            return ["product_tree/components/partials/create_root_node_partial.html"]
-        else:
-            return super().get_template_names()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, context["product"])
-        if self.request.method == "GET":
-            context["id"] = str(uuid.uuid4())[:8]
-            context["parent_id"] = self.request.GET.get("parent_id")
-        context["depth"] = self.request.GET.get("depth", 0)
-        context["product_slug"] = self.kwargs.get("product_slug")
-        return context
-
-    def form_valid(self, form, **kwargs):
-        context = self.get_context_data(**kwargs)
-        try:
-            parent = ProductArea.objects.get(pk=self.request.POST.get("parent_id"))
-            new_node = parent.add_child(**form.cleaned_data)
-        except ProductArea.DoesNotExist:
-            new_node = ProductArea.add_root(**form.cleaned_data)
-
-        context["product_area"] = new_node
-        context["node"] = [utils.serialize_tree(new_node)]
-        context["depth"] = int(self.request.POST.get("depth", 0))
-        return render(self.request, self.get_template_names(), context)
-
-    def form_invalid(self, form):
-        return super().form_invalid(form)
-
-
-class ProductAreaUpdateView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
-    template_name = "product_management/product_area_detail.html"
-    model = ProductArea
-    form_class = ProductAreaForm
-
-    def get_success_url(self):
-        product_slug = self.get_context_data()["product"].slug
-        return reverse("product_tree", args=(product_slug,))
-
-    def get_template_names(self):
-        request = self.request
-        if request.htmx:
-            return "product_tree/components/partials/update_node_partial.html"
-        else:
-            return super().get_template_names()
-
-    def get_context_data(self, **kwargs):
-        product = Product.objects.get(slug=self.kwargs.get("product_slug"))
-        product_perm = utils.has_product_modify_permission(self.request.user, product)
-        product_area = ProductArea.objects.get(pk=self.kwargs["pk"])
-        challenges = Challenge.objects.filter(product_area=product_area)
-
-        form = ProductAreaForm(instance=product_area, can_modify_product=product_perm)
-        context = super().get_context_data(**kwargs)
-        new_context = {
+        
+        context.update({
             "product": product,
-            "product_slug": product.slug,
-            "can_modify_product": product_perm,
-            "form": form,
             "challenges": challenges,
-            "product_area": product_area,
-            "margin_left": int(self.request.GET.get("margin_left", 0)) + 4,
-            "depth": int(self.request.GET.get("depth", 0)),
-        }
-        context.update(**new_context)
-        return context
-
-    def form_valid(self, form):
-        context = self.get_context_data()
-        if not self.request.htmx:
-            return super().form_save(form)
-        return canopy_utils.update_node_helper(self.request, context["product_area"])
-
-
-class ProductAreaDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
-    template_name = "product_management/product_area_detail.html"
-
-    model = ProductArea
-    context_object_name = "product_area"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["children"] = utils.serialize_tree(self.get_object())["children"]
-        return context
-
-
-class ProductTreeInteractiveView(utils.BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_tree.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = context["product"]
-        
-        context["can_modify_product"] = utils.has_product_modify_permission(self.request.user, product)
-        
-        # Get the first ProductTree for the current product
-        product_tree = product.product_trees.first()
-        
-        if product_tree:
-            # Get all root ProductAreas associated with this ProductTree
-            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
-            context["tree_data"] = [utils.serialize_tree(node) for node in product_areas]
-        else:
-            context["tree_data"] = []
-        
-        return context
-    
-
-class ProductRoleAssignmentView(utils.BaseProductDetailView, TemplateView):
-    template_name = "product_management/product_people.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = context["product"]
-
-        context.update(
-            {
-                "product_people": ProductRoleAssignment.objects.filter(product=product),
-            }
-        )
-
-        return context
-
-
-class ChallengeDetailView(utils.BaseProductDetailView, common_mixins.AttachmentMixin, DetailView):
-    model = Challenge
-    context_object_name = "challenge"
-    template_name = "product_management/challenge_detail.html"
-
-    def get_object(self, queryset=None):
-        try:
-            return super().get_object(queryset)
-        except Challenge.DoesNotExist:
-            messages.error(self.request, "This challenge no longer exists.")
-            raise Http404("Challenge does not exist")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product'] = self.object.product
-        context['product_slug'] = self.kwargs['product_slug']
-        return context
-
-
-class CreateInitiativeView(LoginRequiredMixin, utils.BaseProductDetailView, CreateView):
-    form_class = InitiativeForm
-    template_name = "product_management/create_initiative.html"
-    login_url = "sign_in"
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["slug"] = self.kwargs.get("product_slug")
-
-        return kwargs
-
-    def get_success_url(self):
-        return reverse(
-            "product_initiatives",
-            args=(self.kwargs.get("product_slug"),),
-        )
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-
-            product = form.cleaned_data.get("product")
-            instance.product = product
-            instance.save()
-
-            return HttpResponseRedirect(self.get_success_url())
-
-        return super().post(request, *args, **kwargs)
-
-
-class InitiativeDetailView(utils.BaseProductDetailView, DetailView):
-    template_name = "product_management/initiative_detail.html"
-    model = Initiative
-    context_object_name = "initiative"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["challenges"] = Challenge.objects.filter(
-            initiative=self.object, status=Challenge.ChallengeStatus.ACTIVE
-        )
-        context["bounty_status"] = Bounty.BountyStatus
-
-        return context
-
-
-class CreateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, CreateView):
-    model = Bounty
-    form_class = BountyForm
-    template_name = "product_management/create_bounty.html"
-    login_url = "sign_in"
-
-    def get_success_url(self):
-        challenge = self.object.challenge
-        return reverse("challenge_detail", args=(challenge.product.slug, challenge.pk))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["challenge"] = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
-        context["challenge_queryset"] = Challenge.objects.filter(pk=self.kwargs.get("challenge_id"))
-        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
-        context["empty_form"] = PersonSkillFormSet().empty_form
-        return context
-
-    def form_valid(self, form):
-        form.instance.challenge = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
-        form.instance.skill = Skill.objects.get(id=form.cleaned_data.get("skill"))
-        response = super().form_save(form)
-        if len(form.cleaned_data.get("expertise_ids")) > 0:
-            form.instance.expertise.add(
-                *Expertise.objects.filter(id__in=form.cleaned_data.get("expertise_ids").split(","))
+            "challenge_status": Challenge.ChallengeStatus,
+            "can_manage": RoleService.has_product_management_access(
+                self.request.user.person, 
+                product
             )
-            form.instance.save()
-        return response
-
-
-class DeleteBountyView(LoginRequiredMixin, DeleteView):
-    model = Bounty
-    login_url = "sign_in"
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        Bounty.objects.get(pk=self.object.pk).delete()
-        success_url = reverse(
-            "challenge_detail",
-            args=(kwargs.get("product_slug"), kwargs.get("challenge_id")),
-        )
-        return redirect(success_url)
-
-class DeleteBountyClaimView(LoginRequiredMixin, DeleteView):
-    model = BountyClaim
-    login_url = "sign_in"
-    success_url = reverse_lazy("dashboard-bounty-requests")
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.status == BountyClaim.Status.REQUESTED:
-            instance.status = BountyClaim.Status.CANCELLED
-            instance.save()
-            messages.success(request, "The bounty claim is successfully deleted.")
-        else:
-            messages.error(
-                request,
-                "Only the active claims can be deleted. The bounty claim did not deleted.",
-            )
-
-        return redirect(self.success_url)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        instance = BountyClaim.objects.get(pk=self.object.pk)
-        if instance.status == BountyClaim.Status.REQUESTED:
-            instance.status = BountyClaim.Status.CANCELLED
-            instance.save()
-
-        context = self.get_context_data()
-        context["bounty"] = self.object.bounty
-        context["elem"] = instance
-
-        template_name = self.request.POST.get("from")
-        if template_name == "bounty_detail_table.html":
-            return render(
-                request,
-                "product_management/partials/buttons/create_bounty_claim_button.html",
-                context,
-            )
-
-        return super().post(request, *args, **kwargs)
-    
-class UpdateBountyView(LoginRequiredMixin, utils.BaseProductDetailView, common_mixins.AttachmentMixin, UpdateView):
-    model = Bounty
-    form_class = BountyForm
-    template_name = "product_management/update_bounty.html"
-    login_url = "sign_in"
-
-    def get_success_url(self):
-        challenge = self.object.challenge
-        return reverse("challenge_detail", args=(challenge.product.slug, challenge.pk))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["challenge"] = Challenge.objects.get(pk=self.kwargs.get("challenge_id"))
-        context["skills"] = [serialize_skills(skill) for skill in Skill.get_roots()]
-        context["empty_form"] = PersonSkillFormSet().empty_form
-
+        })
         return context
 
-    def form_valid(self, form):
-        try:
-            form.instance.challenge = form.cleaned_data.get("challenge")
-            skill = form.cleaned_data.get("skill")
-            
-            if not skill:
-                raise ValidationError("Skill is required")
-            
-            # If skill is already a Skill object, use it directly
-            if isinstance(skill, Skill):
-                form.instance.skill = skill
-            # If skill is an ID (string or integer), get the Skill object
-            else:
-                form.instance.skill = Skill.objects.get(id=skill)
-                
-            response = super().form_save(form)
-            expertise_ids = form.cleaned_data.get("expertise_ids")
-            if expertise_ids:
-                form.instance.expertise.add(
-                    *Expertise.objects.filter(id__in=expertise_ids.split(","))
-                )
-            form.instance.save()
-            return response
-        except Skill.DoesNotExist:
-            form.add_error('skill', 'Selected skill does not exist')
-            return self.form_invalid(form)
-
-def bounty_claim_actions(request, pk):
-    instance = BountyClaim.objects.get(pk=pk)
-    action_type = request.GET.get("action")
-    if action_type == "accept":
-        instance.status = BountyClaim.Status.GRANTED
-
-        # If one claim is accepted for a particular challenge, the other claims automatically fails.
-        challenge = instance.bounty.challenge
-        _ = BountyClaim.objects.filter(bounty__challenge=challenge).update(status=BountyClaim.Status.REJECTED)
-    elif action_type == "reject":
-        instance.status = BountyClaim.Status.REJECTED
-    else:
-        raise BadRequest()
-
-    instance.save()
-
-    return redirect(reverse("portal-product-bounties", args=(instance.bounty.challenge.product.slug,)))
-
-
-class CreateContributorAgreementTemplateView(LoginRequiredMixin, common_mixins.AttachmentMixin, common_mixins.HTMXInlineFormValidationMixin, CreateView):
+class CreateContributorAgreementTemplateView(BaseProductView, common_mixins.AttachmentMixin, 
+                                           common_mixins.HTMXInlineFormValidationMixin, CreateView):
     model = ProductContributorAgreementTemplate
     form_class = ContributorAgreementTemplateForm
     template_name = "product_management/create_contributor_agreement_template.html"
@@ -838,57 +166,362 @@ class CreateContributorAgreementTemplateView(LoginRequiredMixin, common_mixins.A
         kwargs = super().get_form_kwargs(*args, **kwargs)
         if product_slug := self.kwargs.get("product_slug", None):
             kwargs.update(initial={"product": Product.objects.get(slug=product_slug)})
-
         return kwargs
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-
         if form.is_valid():
             instance = form.save(commit=False)
             instance.created_by = request.user.person
             instance.save()
-
             messages.success(request, "The contribution agreement is successfully created!")
-
             self.success_url = reverse(
                 "contributor-agreement-template-detail",
-                args=(
-                    instance.product.slug,
-                    instance.id,
-                ),
+                args=(instance.product.slug, instance.id,),
             )
             return redirect(self.success_url)
-
         return super().post(request, *args, **kwargs)
 
 
-class ContributorAgreementTemplateView(DetailView):
-    model = ProductContributorAgreementTemplate
-    template_name = "product_management/contributor_agreement_template_detail.html"
-    context_object_name = "contributor_agreement_template"
+class ProductListView(BaseProductView, ListView):
+    """View for listing all products"""
+    model = Product
+    template_name = "product_management/products.html"
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return Product.objects.all().order_by('-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        slug = self.kwargs.get("product_slug")
-        context.update(
-            {
-                "product": Product.objects.get(slug=slug),
-                "pk": self.object.pk,
+        context['can_create'] = True  # Or add logic to determine if user can create products
+        return context
+
+class ProductRedirectView(BaseProductView, RedirectView):
+    """Redirects to the product summary view"""
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        product_slug = kwargs.get('product_slug')
+        return reverse('product_management:product-summary', kwargs={'product_slug': product_slug})
+
+class ProductSummaryView(BaseProductView, TemplateView):
+    """View for displaying product summary"""
+    template_name = "product_management/product_summary.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        
+        # Add product to context
+        context['product'] = product
+        
+        # Get active challenges
+        challenges = Challenge.objects.filter(
+            product=product, 
+            status=Challenge.ChallengeStatus.ACTIVE
+        )
+        
+        # Check product management access
+        can_modify_product = RoleService.has_product_management_access(
+            self.request.user.person, 
+            product
+        )
+
+        # Get product tree data
+        product_tree = product.product_trees.first()
+        if product_tree:
+            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
+            tree_data = [utils.serialize_tree(node) for node in product_areas]
+        else:
+            tree_data = []
+
+        context.update({
+            'challenges': challenges,
+            'can_modify_product': can_modify_product,
+            'tree_data': tree_data,
+            'types_page': {
+                'summary': 'Summary',
+                'initiatives': 'Initiatives',
+                'bounties': 'Bounties',
+                'challenges': 'Challenges',
+                'tree': 'Product Tree',
+                'ideas-and-bugs': 'Ideas & Bugs',
+                'people': 'People'
             }
+        })
+
+        # Add URL segment data
+        url_segments = self.request.path.strip('/').split('/')
+        context['url_segment'] = url_segments
+        context['last_segment'] = url_segments[-1] if url_segments else ''
+
+        return context
+
+class ProductInitiativesView(BaseProductView, TemplateView):
+    """View for displaying product initiatives"""
+    template_name = "product_management/product_initiatives.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        
+        initiatives = Initiative.objects.filter(product=product).order_by('-created_at')
+        
+        context.update({
+            'product': product,
+            'initiatives': initiatives,
+            'can_manage': RoleService.has_product_management_access(
+                self.request.user.person, 
+                product
+            )
+        })
+        return context
+
+class BountyListView(BaseProductView, ListView):
+    """View for listing all bounties"""
+    model = Bounty
+    template_name = "product_management/bounty/list.html"
+    context_object_name = 'bounties'
+    paginate_by = 20  # Show 20 bounties per page
+
+    def get_queryset(self):
+        return (Bounty.objects
+                .select_related('challenge', 'challenge__product')  # Fetch related fields in single query
+                .only(
+                    'id', 'title', 'points', 'status', 'created_at',
+                    'challenge__title', 'challenge__product__name'
+                )  # Select only needed fields
+                .order_by('-created_at'))
+
+class ProductBountyListView(BaseProductView, ListView):
+    """View for listing product-specific bounties"""
+    model = Bounty
+    template_name = "product_management/product_bounties.html"
+    context_object_name = 'bounties'
+
+    def get_queryset(self):
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        return Bounty.objects.filter(challenge__product=product).order_by('-created_at')
+
+class ProductTreeInteractiveView(BaseProductView, TemplateView):
+    """View for interactive product tree"""
+    template_name = "product_management/product_tree_interactive.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        
+        product_tree = product.product_trees.first()
+        if product_tree:
+            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
+            tree_data = [utils.serialize_tree(node) for node in product_areas]
+        else:
+            tree_data = []
+            
+        context.update({
+            'product': product,
+            'tree_data': tree_data,
+            'can_manage': RoleService.has_product_management_access(
+                self.request.user.person, 
+                product
+            )
+        })
+        return context
+
+class ProductAreaCreateView(BaseProductView, CreateView):
+    """View for creating product areas"""
+    model = ProductArea
+    form_class = ProductAreaForm
+    template_name = "product_management/product_area_create.html"
+
+    def get_success_url(self):
+        return reverse('product-tree', kwargs={'product_slug': self.kwargs['product_slug']})
+
+class ProductAreaUpdateView(BaseProductView, UpdateView):
+    """View for updating product areas"""
+    model = ProductArea
+    form_class = ProductAreaForm
+    template_name = "product_management/product_area_update.html"
+
+    def get_success_url(self):
+        return reverse('product-tree', kwargs={'product_slug': self.kwargs['product_slug']})
+
+class ProductAreaDetailView(BaseProductView, DetailView):
+    """View for product area details"""
+    model = ProductArea
+    template_name = "product_management/product_area_detail.html"
+    context_object_name = 'product_area'
+
+class ProductRoleAssignmentView(BaseProductView, TemplateView):
+    """View for managing product role assignments"""
+    template_name = "product_management/product_role_assignments.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        
+        assignments = ProductRoleAssignment.objects.filter(product=product)
+        
+        context.update({
+            'product': product,
+            'assignments': assignments,
+            'can_manage': RoleService.has_product_management_access(
+                self.request.user.person, 
+                product
+            )
+        })
+        return context
+
+# ... continue with other missing views ...
+
+class CreateInitiativeView(BaseProductView, CreateView):
+    """View for creating new initiatives"""
+    model = Initiative
+    form_class = InitiativeForm
+    template_name = "product_management/create_initiative.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['product'] = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user.person
+        form.instance.product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('product_management:initiative-detail', kwargs={
+            'product_slug': self.kwargs['product_slug'],
+            'pk': self.object.pk
+        })
+
+class InitiativeDetailView(BaseProductView, DetailView):
+    """View for initiative details"""
+    model = Initiative
+    template_name = "product_management/initiative_detail.html"
+    context_object_name = 'initiative'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        context['can_manage'] = RoleService.has_product_management_access(
+            self.request.user.person, 
+            context['product']
         )
         return context
 
+def redirect_challenge_to_bounties(request):
+    """Redirect legacy challenge URLs to the bounties view"""
+    return redirect('product_management:bounties')
 
-class ProductDetailView(DetailView, TemplateView):
-    template_name = "product_management/product/detail.html"
+class DeleteBountyView(BaseProductView, DeleteView):
+    """View for deleting bounties"""
+    model = Bounty
+    template_name = "product_management/delete_bounty.html"
+    
+    def get_success_url(self):
+        return reverse('product_management:product-bounties', 
+                      kwargs={'product_slug': self.kwargs['product_slug']})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = context["product"]
-        
-        # Add photo URL to context
-        context["product_photo_url"] = product.get_photo_url()
-        
-        # Rest of your existing context data...
-        return context
+class ContributorAgreementTemplateView(BaseProductView, DetailView):
+    """View for viewing contributor agreement templates"""
+    model = ProductContributorAgreementTemplate
+    template_name = "product_management/contributor_agreement_template_detail.html"
+    context_object_name = 'template'
+
+class UpdateChallengeView(BaseProductView, UpdateView):
+    """View for updating challenges"""
+    model = Challenge
+    form_class = ChallengeForm
+    template_name = "product_management/update_challenge.html"
+
+    def get_success_url(self):
+        return reverse('product_management:challenge-detail', 
+                      kwargs={'product_slug': self.kwargs['product_slug'], 
+                             'pk': self.object.pk})
+
+class DeleteChallengeView(BaseProductView, DeleteView):
+    """View for deleting challenges"""
+    model = Challenge
+    template_name = "product_management/delete_challenge.html"
+
+    def get_success_url(self):
+        return reverse('product_management:product-challenges', 
+                      kwargs={'product_slug': self.kwargs['product_slug']})
+
+class BountyDetailView(BaseProductView, DetailView):
+    """View for bounty details"""
+    model = Bounty
+    template_name = "product_management/bounty_detail.html"
+    context_object_name = 'bounty'
+
+class BountyClaimView(BaseProductView, DetailView):
+    """View for bounty claims"""
+    model = BountyClaim
+    template_name = "product_management/bounty_claim.html"
+    context_object_name = 'claim'
+
+class CreateOrganisationView(BaseProductView, CreateView):
+    """View for creating organizations"""
+    model = Organisation
+    form_class = OrganisationForm
+    template_name = "product_management/create_organisation.html"
+    success_url = reverse_lazy('product_management:products')
+
+class ChallengeDetailView(BaseProductView, DetailView):
+    """View for challenge details"""
+    model = Challenge
+    template_name = "product_management/challenge_detail.html"
+    context_object_name = 'challenge'
+
+class DeleteBountyClaimView(BaseProductView, DeleteView):
+    """View for deleting bounty claims"""
+    model = BountyClaim
+    template_name = "product_management/delete_bounty_claim.html"
+
+    def get_success_url(self):
+        return reverse('product_management:bounty-detail', 
+                      kwargs={'product_slug': self.object.bounty.challenge.product.slug,
+                             'challenge_id': self.object.bounty.challenge.id,
+                             'pk': self.object.bounty.id})
+
+class UpdateBountyView(BaseProductView, UpdateView):
+    """View for updating bounties"""
+    model = Bounty
+    form_class = BountyForm
+    template_name = "product_management/update_bounty.html"
+
+    def get_success_url(self):
+        return reverse('product_management:bounty-detail',
+                      kwargs={'product_slug': self.object.challenge.product.slug,
+                             'challenge_id': self.object.challenge.id,
+                             'pk': self.object.id})
+
+class CreateBountyView(BaseProductView, CreateView):
+    """View for creating bounties"""
+    model = Bounty
+    form_class = BountyForm
+    template_name = "product_management/create_bounty.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['product'] = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user.person
+        form.instance.challenge = get_object_or_404(
+            Challenge, 
+            pk=self.kwargs['challenge_id'],
+            product__slug=self.kwargs['product_slug']
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('product_management:bounty-detail', kwargs={
+            'product_slug': self.kwargs['product_slug'],
+            'challenge_id': self.kwargs['challenge_id'],
+            'pk': self.object.pk
+        })

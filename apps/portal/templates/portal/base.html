@@ -1,43 +1,204 @@
-{% load static  %}
-
+{% load static %}
 <!DOCTYPE html>
-<html class="h-full bg-gray-100">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title   %}OpenUnited Portal{% endblock  %}</title>
+    <title>{% block title %}OpenUnited Portal{% endblock %}</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'portal/css/styles.css'  %}">
-    
-    <!-- Additional Styles -->
-    {% block extra_css   %}{% endblock  %}
+    <!-- Any additional CSS -->
+    {% block extra_css %}{% endblock %}
+
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body class="h-full">
-    <div class="min-h-full">
+<body class="h-screen bg-gray-100">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
+        <div class="w-full px-4">
+            <div class="flex justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="/" class="flex items-center">
+                        <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="OpenUnited Logo">
+                    </a>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="hidden lg:flex lg:items-center lg:justify-end lg:gap-x-5 relative z-[2] ml-auto">
+                    {% if request.user.is_authenticated %}
+                    <div class="relative inline-block px-3 text-left" x-data="{ open: false }">
+                        {% with person=request.user.person %}
+                        <div>
+                            <button type="button" 
+                                    @click="open = !open"
+                                    class="group w-full rounded-md px-3.5 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-100" 
+                                    id="navbar-menu-button"
+                                    aria-expanded="false" 
+                                    aria-haspopup="true">
+                                <span class="flex w-full items-center justify-between">
+                                    <span class="flex min-w-0 items-center justify-between space-x-3">
+                                        <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
+                                            src="{{ person.get_photo_url }}" 
+                                            alt="Profile Picture">
+                                        <span class="flex min-w-0 flex-1 flex-col">
+                                            <span class="truncate text-sm font-medium text-gray-900">{{ person.get_full_name }}</span>
+                                            <span class="truncate text-sm text-gray-500">@{{ person.get_username }}</span>
+                                        </span>
+                                    </span>
+                                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" viewBox="0 0 20 20"
+                                        fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd"
+                                            d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+
+                        <div x-show="open"
+                             x-cloak
+                             @click.away="open = false"
+                             class="absolute left-0 right-0 z-10 mx-3 mt-1 origin-top divide-y divide-gray-200 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
+                             role="menu" 
+                             aria-orientation="vertical"
+                             aria-labelledby="navbar-menu-button" 
+                             tabindex="-1">
+                            <div class="py-1" role="none">
+                                <a href="{% url 'portal:dashboard' %}" 
+                                   class="text-gray-700 block px-4 py-2 text-sm" 
+                                   role="menuitem"
+                                   tabindex="-1" 
+                                   id="options-menu-item-0">Portal</a>
+                                <a href="{% url 'profile' request.user.person.pk %}"
+                                   class="text-gray-700 block px-4 py-2 text-sm" 
+                                   role="menuitem" 
+                                   tabindex="-1"
+                                   id="options-menu-item-1">Your Profile</a>
+                                <a href="{% url 'showcase' request.user.username %}"
+                                   class="text-gray-700 block px-4 py-2 text-sm" 
+                                   role="menuitem" 
+                                   tabindex="-1"
+                                   id="options-menu-item-2">Visit Showcase</a>
+                            </div>
+                            <div class="py-1" role="none">
+                                <form id="logout-form" method="post" action="{% url 'log_out' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-gray-700 block w-full px-4 py-2 text-left text-sm">Log out</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area with adjusted spacing -->
+    <div class="flex h-screen pt-16">
         <!-- Sidebar -->
-        {% include "portal/components/sidebar.html"  %}
+        <div class="w-64 bg-white shadow-md">
+            <div class="p-4">
+                <h2 class="text-xl font-semibold text-gray-800">Portal</h2>
+            </div>
+            <nav class="mt-4">
+                <ul class="space-y-1">
+                    <!-- Dashboard -->
+                    <li>
+                        <a href="{% url 'portal:dashboard' %}" 
+                           class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-100 font-semibold{% endif %}">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
 
-        <!-- Mobile header -->
-        {% include "portal/components/mobile_header.html"  %}
+                    <!-- Products Dropdown -->
+                    <li x-data="{ open: {% if 'product-' in request.resolver_match.url_name %}true{% else %}false{% endif %} }" class="relative">
+                        <button @click="open = !open" 
+                                class="flex items-center justify-between w-full px-4 py-2 text-gray-600 hover:bg-gray-100">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                                Product Portfolio
+                            </div>
+                            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div x-show="open" class="pl-8">
+                            {% if user_products %}
+                                {% for product in user_products %}
+                                <div class="space-y-1">
+                                    <!-- Product Name -->
+                                    <a href="{% url 'portal:product-summary' product.slug %}"
+                                       class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if product.slug == current_product_slug %}bg-gray-100 font-semibold{% endif %}">
+                                        {{ product.name }}
+                                    </a>
+                                    
+                                    <!-- Product Sections (only show for current product) -->
+                                    {% if product.slug == current_product_slug %}
+                                    <div class="pl-8 space-y-1">
 
-        <!-- Main content -->
-        <div class="lg:pl-64">
-            <main class="flex-1">
-                {% block content   %}{% endblock  %}
-            </main>
+                                        <a href="{% url 'portal:product-challenges' product.slug %}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-challenges' %}bg-gray-100 font-semibold{% endif %}">
+                                            Challenges
+                                        </a>
+                                        
+                                        <a href="{% url 'portal:product-bounties' product.slug %}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-bounties' %}bg-gray-100 font-semibold{% endif %}">
+                                            Bounties
+                                        </a>
+                                        
+                                        
+                                        <a href="{% url 'portal:product-users' product.slug %}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-users' %}bg-gray-100 font-semibold{% endif %}">
+                                            Users
+                                        </a>
+                                        
+                                        <a href="{% url 'portal:product-review' product.slug %}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-review' %}bg-gray-100 font-semibold{% endif %}">
+                                            Review Work
+                                        </a>
+                                        
+                                        <a href="{% url 'portal:product-agreements' product.slug %}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-agreements' %}bg-gray-100 font-semibold{% endif %}">
+                                            Agreements
+                                        </a>
+
+                                        <a href="{% url 'portal:product-settings' product.slug %}"
+                                           class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 {% if request.resolver_match.url_name == 'product-settings' %}bg-gray-100 font-semibold{% endif %}">
+                                            Settings
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="px-4 py-2 text-sm text-gray-500">
+                                    No products available
+                                </div>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto bg-gray-100">
+            <div class="container mx-auto px-4 py-6">
+                {% block content %}{% endblock content %}
+            </div>
         </div>
     </div>
-
-    <!-- Core JavaScript -->
-    <script src="{% static 'portal/js/core.js'  %}"></script>
-    
-    <!-- Additional Scripts -->
-    {% block extra_js   %}
-    <script src="{% static 'portal/js/bounties.js'  %}"></script>
-    {% endblock  %}
 </body>
 </html> 
