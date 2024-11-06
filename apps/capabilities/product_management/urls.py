@@ -255,7 +255,7 @@ urlpatterns += [
         name='delete-bounty-claim'
     ),
     path(
-        'update/bounty/',
+        'product/<slug:product_slug>/challenge/<int:challenge_id>/bounty/<int:bounty_id>/update/',
         UpdateBountyView.as_view(),
         name='update-bounty'
     ),

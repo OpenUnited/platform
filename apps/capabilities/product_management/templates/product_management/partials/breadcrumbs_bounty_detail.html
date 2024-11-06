@@ -24,9 +24,14 @@
                         d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                         clip-rule="evenodd" />
                 </svg>
-                <a href="{% url 'product_management:product-summary' product.slug %}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
-                    {{ product.name }}
-                </a>
+                {% if product %}
+                    <a href="{% url 'product_management:product-summary' product.slug %}" 
+                       class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+                        {{ product.name }}
+                    </a>
+                {% else %}
+                    <span class="ml-4 text-sm font-medium text-gray-500">Unknown Product</span>
+                {% endif %}
             </div>
         </li>
         <li>
@@ -37,9 +42,14 @@
                         d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                         clip-rule="evenodd" />
                 </svg>
-                <a href="{% url 'product_management:product-challenges' product.slug %}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
-                    Challenges
-                </a>
+                {% if product %}
+                    <a href="{% url 'product_management:product-challenges' product.slug %}" 
+                       class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+                        Challenges
+                    </a>
+                {% else %}
+                    <span class="ml-4 text-sm font-medium text-gray-500">Challenges</span>
+                {% endif %}
             </div>
         </li>
         <li>
@@ -50,8 +60,14 @@
                         d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                         clip-rule="evenodd" />
                 </svg>
-                <a href="{% url 'product_management:challenge-detail' product.slug challenge.id %}"
-                    class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ challenge.title  }}</a>
+                {% if product and challenge %}
+                    <a href="{% url 'product_management:challenge-detail' product.slug challenge.id %}"
+                       class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+                        {{ challenge.title|default:"Unknown Challenge" }}
+                    </a>
+                {% else %}
+                    <span class="ml-4 text-sm font-medium text-gray-500">Unknown Challenge</span>
+                {% endif %}
             </div>
         </li>
         <li>
@@ -62,8 +78,9 @@
                         d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
                         clip-rule="evenodd" />
                 </svg>
-                <a href="{% url 'product_management:bounty-detail' product.slug challenge.id bounty.id %}"
-                    class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700" aria-current="page">Bounty - {{ bounty.pk  }}</a>
+                <span class="ml-4 text-sm font-medium text-gray-500" aria-current="page">
+                    Bounty - {{ bounty.pk|default:"Unknown" }}
+                </span>
             </div>
         </li>
     </ol>

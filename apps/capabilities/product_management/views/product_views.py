@@ -471,6 +471,25 @@ class BountyDetailView(BaseProductView, DetailView):
     template_name = "product_management/bounty_detail.html"
     context_object_name = 'bounty'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        bounty = self.object
+        
+        # Structure the data as expected by the template
+        context['data'] = {
+            'product': bounty.challenge.product,
+            'challenge': bounty.challenge,
+            'bounty': bounty,
+            'show_actions': True,  # Or your logic to determine this
+            'can_be_modified': True,  # Or your logic to determine this
+            'created_bounty_claim_request': False  # Or your logic to determine this
+        }
+        
+        # Add any additional context needed by the template
+        context['expertise_list'] = bounty.expertise.all() if bounty.expertise.exists() else []
+        
+        return context
+
 class BountyClaimView(BaseProductView, DetailView):
     """View for bounty claims"""
     model = BountyClaim
