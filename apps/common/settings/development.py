@@ -24,9 +24,9 @@ if AWS_STORAGE_BUCKET_NAME := os.getenv("AWS_STORAGE_BUCKET_NAME"):
     
     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
     STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_STATIC_LOCATION}/"
-    STATICFILES_STORAGE = "apps.capabilities.storage_backends.StaticStorage"
+    STATICFILES_STORAGE = "apps.common.storage_backends.StaticStorage"
     MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_MEDIA_LOCATION}/"
-    DEFAULT_FILE_STORAGE = "apps.capabilities.storage_backends.PublicMediaStorage"
+    DEFAULT_FILE_STORAGE = "apps.common.storage_backends.PublicMediaStorage"
 
 # Email settings (you might want to move these from local.py)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
