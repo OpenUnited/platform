@@ -7,7 +7,7 @@ def migrate_visibility_forward(apps, schema_editor):
     - is_private=True -> ORG_ONLY
     - is_private=False -> GLOBAL
     """
-    Product = apps.capabilities.get_model('product_management', 'Product')
+    Product = apps.get_model('product_management', 'Product')
     
     # Update all products based on their is_private value
     Product.objects.filter(is_private=True).update(visibility='ORG_ONLY')
@@ -18,7 +18,7 @@ def migrate_visibility_backward(apps, schema_editor):
     """
     Restore is_private values from visibility field if needed
     """
-    Product = apps.capabilities.get_model('product_management', 'Product')
+    Product = apps.get_model('product_management', 'Product')
     
     # Restore is_private values
     Product.objects.filter(visibility='ORG_ONLY').update(is_private=True)

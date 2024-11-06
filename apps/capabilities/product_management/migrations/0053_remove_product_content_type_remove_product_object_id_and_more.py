@@ -2,7 +2,39 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+from django.contrib.contenttypes.models import ContentType
 
+def convert_generic_to_explicit(apps, schema_editor):
+    Product = apps.get_model('product_management', 'Product')
+    Organisation = apps.get_model('commerce', 'Organisation')
+    Person = apps.get_model('talent', 'Person')
+    ContentType = apps.get_model('contenttypes', 'ContentType')
+    
+    # Get content types using the historical models
+    org_content_type = ContentType.objects.get(
+        app_label='commerce',
+        model='organisation'
+    )
+    person_content_type = ContentType.objects.get(
+        app_label='talent',
+        model='person'
+    )
+    
+    # Convert organisation-owned products
+    for product in Product.objects.filter(content_type_id=org_content_type.id):
+        product.organisation_id = product.object_id
+        product.person = None
+        product.save()
+    
+    # Convert person-owned products
+    for product in Product.objects.filter(content_type_id=person_content_type.id):
+        product.person_id = product.object_id
+        product.organisation = None
+        product.save()
+
+def reverse_convert(apps, schema_editor):
+    # If you need to reverse the migration
+    pass
 
 class Migration(migrations.Migration):
 
@@ -13,57 +45,40 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name="product",
-            name="content_type",
-        ),
-        migrations.RemoveField(
-            model_name="product",
-            name="object_id",
+        # First add the new fields while keeping the old ones
+        migrations.AddField(
+            model_name='product',
+            name='organisation',
+            field=models.ForeignKey('commerce.Organisation', null=True, blank=True, on_delete=models.SET_NULL, related_name='owned_products'),
         ),
         migrations.AddField(
-            model_name="product",
-            name="organisation",
-            field=models.ForeignKey(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="owned_products",
-                to="commerce.organisation",
-            ),
+            model_name='product',
+            name='person',
+            field=models.ForeignKey('talent.Person', null=True, blank=True, on_delete=models.CASCADE, related_name='owned_products'),
         ),
-        migrations.AddField(
-            model_name="product",
-            name="person",
-            field=models.ForeignKey(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="owned_products",
-                to="talent.person",
-            ),
+        
+        # Convert the data
+        migrations.RunPython(convert_generic_to_explicit, reverse_convert),
+        
+        # Then remove the old fields
+        migrations.RemoveField(
+            model_name='product',
+            name='content_type',
         ),
-        migrations.AddIndex(
-            model_name="product",
-            index=models.Index(fields=["slug"], name="product_man_slug_74fe12_idx"),
+        migrations.RemoveField(
+            model_name='product',
+            name='object_id',
         ),
-        migrations.AddIndex(
-            model_name="product",
-            index=models.Index(fields=["organisation"], name="product_man_organis_d3e00b_idx"),
-        ),
-        migrations.AddIndex(
-            model_name="product",
-            index=models.Index(fields=["person"], name="product_man_person__714b9f_idx"),
-        ),
+        
+        # Finally add the constraint
         migrations.AddConstraint(
-            model_name="product",
+            model_name='product',
             constraint=models.CheckConstraint(
-                check=models.Q(
-                    models.Q(("organisation__isnull", False), ("person__isnull", True)),
-                    models.Q(("organisation__isnull", True), ("person__isnull", False)),
-                    _connector="OR",
+                check=(
+                    models.Q(person__isnull=True, organisation__isnull=False) |
+                    models.Q(person__isnull=False, organisation__isnull=True)
                 ),
-                name="product_single_owner",
+                name='product_single_owner'
             ),
         ),
     ]
