@@ -288,7 +288,7 @@ class ProductInitiativesView(BaseProductView, TemplateView):
         })
         return context
 
-class BountyListView(BaseProductView, ListView):
+class BountyListView(ListView):
     """View for listing all bounties"""
     model = Bounty
     template_name = "product_management/bounty/list.html"
