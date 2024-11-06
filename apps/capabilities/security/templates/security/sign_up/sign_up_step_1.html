@@ -1,7 +1,7 @@
 {% load static %}
 <div class="flex flex-col">
     <div class="space-y-6 mb-0">
-        {% with non_field_errors = wizard.form|call:non_field_errors   %}
+        {% with non_field_errors=wizard.form.non_field_errors %}
         {% if non_field_errors %}
         <div
             class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
@@ -9,9 +9,9 @@
                 <img src="{% static 'images/error.svg' %}" alt="Error Icon">
             </span>
             <ul>
-                {% for error in non_field_errors|list %}
-                <li>{{ error  }}</li>
-                {% endfor  %}
+                {% for error in non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
             </ul>
         </div>
         {% else %}
@@ -20,6 +20,7 @@
             Please check your email for six-digit code
         </div>
         {% endif  %}
+        {% endwith %}
 
         <label class="flex flex-col items-center digit-code">
             <div class="text-sm text-black/[0.85] mb-2">

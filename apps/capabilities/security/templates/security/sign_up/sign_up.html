@@ -9,7 +9,7 @@
 
 {% block content   %}
 
-{% with current_step = wizard.steps.current|int   %}
+{% with current_step=wizard.steps.current %}
 
 {% include 'logo.html'  %}
 
@@ -130,6 +130,8 @@
         </div>
     </div>
 </div>
+
+{% endwith %}
 
 {% endblock  %}
 
