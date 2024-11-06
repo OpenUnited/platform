@@ -20,22 +20,32 @@ def multiply(value, arg):
         return ''
 
 @register.simple_tag
-def skill_filter_tree(skills, skill_id=None, show_all=False):
+def skill_filter_tree(children, selected_pk=None, depth=0):
     """
-    Renders a tree of skills as HTML select options
+    Renders a hierarchical skill tree as HTML select options
     
     Args:
-        skills: QuerySet of Skill objects
-        skill_id: ID of currently selected skill (optional)
-        show_all: Boolean to show all skills or just active ones
+        children: List of skill nodes
+        selected_pk: Currently selected skill ID
+        depth: Current depth level for indentation
     """
     html = []
-    
-    for skill in skills:
-        selected = ' selected' if skill_id and str(skill.id) == str(skill_id) else ''
-        html.append(f'<option value="{skill.id}"{selected}>{skill.name}</option>')
+    for node in children:
+        # Get id and name, handling both dict and model object cases
+        node_id = node.get('id') if isinstance(node, dict) else node.id
+        node_name = node.get('name') if isinstance(node, dict) else node.name
         
-    return mark_safe('\n'.join(html))
+        # Add the option with proper indentation
+        indent = ' ' * (depth * 2)  # 2 spaces per level
+        selected = ' selected' if selected_pk and str(node_id) == str(selected_pk) else ''
+        html.append(f'<option value="{node_id}"{selected}>{indent}{node_name}</option>')
+        
+        # Handle children recursively
+        node_children = node.get('children') if isinstance(node, dict) else getattr(node, 'children', [])
+        if node_children:
+            html.extend(skill_filter_tree(node_children, selected_pk, depth + 1))
+            
+    return mark_safe(''.join(html))
 
 @register.filter
 def get_dict_value(dictionary, key):

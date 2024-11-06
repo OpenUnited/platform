@@ -26,7 +26,7 @@
         {% if node.children %}
             <optgroup class="ml-{{ depth|multiply:2 }}" label="{{ node.name }}">
                 {% with depth=depth|add:1 %}
-                    {% skill_filter_tree skills=node.children skill_id=selected_pk %}
+                    {% skill_filter_tree node.children selected_pk=selected_pk depth=depth %}
                 {% endwith %}
             </optgroup>
         {% else %}
