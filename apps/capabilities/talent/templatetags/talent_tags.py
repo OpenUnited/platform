@@ -36,3 +36,7 @@ def skill_filter_tree(skills, skill_id=None, show_all=False):
         html.append(f'<option value="{skill.id}"{selected}>{skill.name}</option>')
         
     return mark_safe('\n'.join(html))
+
+@register.filter
+def get_dict_value(dictionary, key):
+    return dictionary.get(key) if dictionary else None

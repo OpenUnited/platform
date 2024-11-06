@@ -17,7 +17,7 @@
                             name="skills-{{ loop.index0  }}-skill" hx-trigger="change" hx-target="#ul_expertise_{{ loop.index0  }}"
                             class="focus-visible:outline-transparent w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         {% if person_skill_form.instance.skill %}
-                            {% skill_filter_tree skills person_skill_form.instance.skill.get('id') False %}
+                            {% skill_filter_tree skills person_skill_form.instance.skill|get_dict_value:'id' False %}
                         {% else %}
                             {% skill_filter_tree skills None False %}
                         {% endif %}
