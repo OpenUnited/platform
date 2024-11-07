@@ -316,7 +316,7 @@ class ProductBountyListView(BaseProductView, ListView):
 
 class ProductTreeInteractiveView(BaseProductView, TemplateView):
     """View for interactive product tree"""
-    template_name = "product_management/product_tree_interactive.html"
+    template_name = "product_management/product_tree.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

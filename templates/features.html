@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>OpenUnited - Empowering Global Talent</title>
+    <meta content="OpenUnited connects skilled contributors with enterprise-grade digital products." name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Theme favicon -->
+    <link rel="shortcut icon" href="/landing-pages/assets/favicon-ByuwSyI9.ico" />
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
+  <script type="module" crossorigin src="/landing-pages/assets/app-pJqE1zeg.js"></script>
+  <link rel="stylesheet" crossorigin href="/landing-pages/assets/app-Dq5tbri-.css">
+</head>
+<body>
+<div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
+  <span>
+    Welcome to OpenUnited - Empowering Global Talent
+  </span>
+</div>
+
+<div
+  id="navbar-wrapper"
+  class="sticky top-0 z-10 border-b bg-base-100 lg:bg-opacity-95 lg:backdrop-blur-sm"
+  x-data="{ atTop: false }"
+  :class="{ 'border-base-content/10': atTop, 'border-transparent': !atTop}"
+  @scroll.window="atTop = (window.pageYOffset < 30) ? false: true">
+  <div class="container">
+    <nav class="navbar px-0">
+      <div class="navbar-start gap-2">
+        <div class="flex-none lg:hidden">
+          <label for="my-drawer" id="my-drawer-trigger" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <i class="icon-menu inline-block text-xl"></i>
+          </label>
+        </div>
+
+        <!-- Navbar Brand logo -->
+        <a href="index.html" class="text-xl font-bold tracking-tighter">
+          <img src="/landing-pages/assets/logo-sPloSm9P.svg" alt="OpenUnited Logo" class="h-7">
+        </a>
+      </div>
+
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal menu-sm gap-2 px-1">
+          <li class="font-medium"><a href="about.html">About Us</a></li>
+          <li class="font-medium"><a href="how-it-works.html">How It Works</a></li>
+          <li class="font-medium"><a href="features.html">Features</a></li>
+          <li class="font-medium"><a href="why-openunited.html">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="enterprise-support.html">OpenUnited for Enterprises</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-end gap-3">
+        <a class="btn btn-ghost btn-sm" onclick="register_modal.showModal()">Sign in</a>
+        <a class="btn btn-primary btn-sm" onclick="login_modal.showModal()">Sign up</a>
+      </div>
+    </nav>
+
+    <!-- sm screen menu (drawer) -->
+    <div class="drawer">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-side">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+
+        <ul class="menu min-h-full w-80 gap-2 bg-base-100 p-4 text-base-content">
+          <li class="font-medium"><a href="index.html">Home</a></li>
+          <li class="font-medium"><a href="about.html">About Us</a></li>
+          <li class="font-medium"><a href="how-it-works.html">How It Works</a></li>
+          <li class="font-medium"><a href="features.html">Features</a></li>
+          <li class="font-medium"><a href="why-openunited.html">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="py-8 lg:py-20" id="features">
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center">Platform Features</h1>
+        <p class="mt-4 text-xl text-center text-gray-600 max-w-3xl mx-auto">
+            Our AI-powered platform offers tailored features for each audience, enabling seamless collaboration and efficient product development.
+        </p>
+
+        <div class="grid gap-8 lg:grid-cols-3 mt-12">
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">For Contributors</h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• Dynamic portfolio building across products</li>
+                    <li>• AI-assisted task matching</li>
+                    <li>• Skill-based opportunity discovery</li>
+                    <li>• Achievement tracking and rewards</li>
+                    <li>• Collaborative learning environment</li>
+                </ul>
+            </div>
+
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">For Tech Companies</h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• Repository transformation tools</li>
+                    <li>• Global talent pool access</li>
+                    <li>• AI-powered issue management</li>
+                    <li>• Contribution analytics</li>
+                    <li>• Ecosystem product optimization</li>
+                </ul>
+            </div>
+
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">For Enterprises</h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• Internal marketplace setup</li>
+                    <li>• Resource allocation tracking</li>
+                    <li>• Cross-team collaboration tools</li>
+                    <li>• AI-driven talent matching</li>
+                    <li>• Flexible adoption pathways</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-base-200 text-base-content">
+    <div class="container py-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <h2 class="font-bold mb-4">Platform</h2>
+                <ul class="space-y-2">
+                    <li><a href="#">Explore Bounties</a></li>
+                    <li><a href="#">Add Your Product</a></li>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="how-it-works.html">How It Works</a></li>
+                    <li><a href="why-openunited.html">Why OpenUnited?</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Solutions</h2>
+                <ul class="space-y-2">
+                    <li><a href="#">For Contributors</a></li>
+                    <li><a href="#">For Tech Companies</a></li>
+                    <li><a href="enterprise-support.html">Enterprise Support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Company</h2>
+                <ul class="space-y-2">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Legal</h2>
+                <ul class="space-y-2">
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html> 
