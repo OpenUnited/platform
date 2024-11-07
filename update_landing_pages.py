@@ -58,14 +58,24 @@ def update_asset_paths(html_content):
     # Fix any malformed quotes in the HTML first
     html_content = re.sub(r'(src|href)=([^"\s>]+)(?=[>\s])', r'\1="\2"', html_content)
     
-    # Replace static asset paths
-    patterns = [
-        r'(src|href)=[\'"]*/(?:static/)?(?:landing-pages/)?assets/([^"\']+)[\'"]',
+    # First update all asset paths to use /static/assets/
+    asset_patterns = [
+        # Script tags
+        r'<script([^>]*?)src=[\'"]*/landing-pages/assets/([^"\']+)[\'"]([^>]*?)>',
+        # Link tags
+        r'<link([^>]*?)href=[\'"]*/landing-pages/assets/([^"\']+)[\'"]([^>]*?)>',
+        # Image tags
+        r'<img([^>]*?)src=[\'"]*/landing-pages/assets/([^"\']+)[\'"]([^>]*?)>',
     ]
     
-    replacement = r'\1="{% static "assets/\2" %}"'
+    asset_replacements = [
+        r'<script\1src="/static/assets/\2"\3>',
+        r'<link\1href="/static/assets/\2"\3>',
+        r'<img\1src="/static/assets/\2"\3>',
+    ]
     
-    for pattern in patterns:
+    # Apply asset path updates
+    for pattern, replacement in zip(asset_patterns, asset_replacements):
         html_content = re.sub(pattern, replacement, html_content)
     
     # Replace navigation links
@@ -91,7 +101,7 @@ def update_asset_paths(html_content):
         r'href=[\'"]*(?:./)?how-it-works\.html[\'"]': r'href="{% url "marketing:how_it_works" %}"',
         r'href=[\'"]*(?:./)?why-openunited\.html[\'"]': r'href="{% url "marketing:why_openunited" %}"',
         
-        # Legal pages - updated to use terms.html
+        # Legal pages
         r'href=[\'"]*(?:./)?privacy\.html[\'"]': r'href="{% url "marketing:privacy_policy" %}"',
         r'href=[\'"]*(?:./)?terms\.html[\'"]': r'href="{% url "marketing:terms" %}"',
         
@@ -151,37 +161,70 @@ def validate_html_links(html_content):
     
     return invalid_links
 
+def update_favicon_paths(html_content):
+    """Update favicon paths to use the correct asset locations"""
+    if html_content is None:
+        return None
+
+    # Find the theme favicon section
+    favicon_section_start = html_content.find('<!-- Theme favicon -->')
+    if favicon_section_start == -1:
+        print("❌ No favicon section found")
+        return html_content
+
+    # Find the next script tag
+    script_tag_start = html_content.find('<script', favicon_section_start)
+    if script_tag_start == -1:
+        print("❌ No script tag found after favicon section")
+        return html_content
+
+    # Extract the favicon section
+    favicon_section = html_content[favicon_section_start:script_tag_start]
+
+    # Create updated favicon section
+    updated_favicon_section = '''    <!-- Theme favicon -->
+    <link rel="shortcut icon" href="/static/images/favicon/favicon.ico" />    
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/images/favicon/site.webmanifest">
+    '''
+
+    # Replace the old favicon section with the updated one
+    return html_content.replace(favicon_section, updated_favicon_section)
+
 def process_html_files(html_dir):
-    """Process all HTML files in directory"""
+    """Process HTML files to update asset paths and favicon"""
+    print(f"\nProcessing HTML files in: {html_dir}")
+    
     for html_file in Path(html_dir).glob('*.html'):
+        print(f"\nProcessing: {html_file}")
         try:
-            print(f"Processing {html_file}...")
-            
-            # Read the file
+            # Read existing content
             with open(html_file, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Update the content
+            # Skip if file is empty
+            if not content.strip():
+                print(f"❌ Empty file: {html_file}")
+                continue
+            
+            # Update asset paths
             updated_content = update_asset_paths(content)
             
-            if updated_content is None:
-                raise ValueError(f"update_asset_paths returned None for {html_file}")
+            # Update favicon paths
+            updated_content = update_favicon_paths(updated_content)
             
-            # Validate the updated content
-            invalid_links = validate_html_links(updated_content)
-            if invalid_links:
-                print(f"\nWarning: Found unconverted links in {html_file}:")
-                for link in invalid_links:
-                    print(f"  - {link}")
-            
-            # Write the updated content back
-            with open(html_file, 'w', encoding='utf-8') as f:
-                f.write(updated_content)
+            # Write updated content if changed
+            if updated_content and updated_content != content:
+                with open(html_file, 'w', encoding='utf-8') as f:
+                    f.write(updated_content)
+                print(f"✅ Updated {html_file}")
+            else:
+                print(f"ℹ️ No changes needed for {html_file}")
                 
-            print(f"Successfully updated {html_file}")
-            
         except Exception as e:
-            print(f"Error processing {html_file}: {e}")
+            print(f"❌ Error processing {html_file}: {e}")
 
 def main():
     # Get the current script's directory (platform root)
@@ -204,6 +247,10 @@ def main():
         
         # Update asset paths
         print("\nUpdating asset paths...")
+        process_html_files(html_dest_dir)
+        
+        # Inject favicon
+        print("\nInjecting favicon...")
         process_html_files(html_dest_dir)
         
         print("\nProcess completed successfully!")

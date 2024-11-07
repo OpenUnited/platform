@@ -7,14 +7,17 @@
     <meta content="OpenUnited connects skilled contributors with enterprise-grade digital products." name="description" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Theme favicon -->
-    <link rel="shortcut icon" href="{% static "assets/favicon-ByuwSyI9.ico" %}" />
-    
+            <!-- Theme favicon -->
+    <link rel="shortcut icon" href="/static/images/favicon/favicon.ico" />    
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/images/favicon/site.webmanifest">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="{% static "assets/app-BQgnZg9C.js" %}"></script>
-  <link rel="stylesheet" crossorigin href="{% static "assets/app-BjMhKUYN.css" %}">
+  <script type="module" crossorigin src="/static/assets/app-BQgnZg9C.js"></script>
+  <link rel="stylesheet" crossorigin href="/static/assets/app-BjMhKUYN.css">
 </head>
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
@@ -40,7 +43,7 @@
 
         <!-- Navbar Brand logo -->
         <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
-          <img src="{% static "assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
+          <img src="/static/assets/logo-sPloSm9P.svg" alt="OpenUnited Logo" class="h-7">
         </a>
       </div>
 
