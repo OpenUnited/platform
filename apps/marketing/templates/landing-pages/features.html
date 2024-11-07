@@ -16,8 +16,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="/static/assets/app-BQgnZg9C.js"></script>
-  <link rel="stylesheet" crossorigin href="/static/assets/app-BjMhKUYN.css">
+  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-BQgnZg9C.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-BjMhKUYN.css" %}">
 </head>
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
@@ -43,7 +43,7 @@
 
         <!-- Navbar Brand logo -->
         <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
-          <img src="/static/assets/logo-sPloSm9P.svg" alt="OpenUnited Logo" class="h-7">
+          <img src="{% static "assets/landing-pages/assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
         </a>
       </div>
 
@@ -132,8 +132,8 @@
             <div>
                 <h2 class="font-bold mb-4">Platform</h2>
                 <ul class="space-y-2">
-                    <li><a href="#">Explore Bounties</a></li>
-                    <li><a href="#">Add Your Product</a></li>
+                    <li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>
+                    <li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>
                     <li><a href="{% url "marketing:features" %}">Features</a></li>
                     <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
                     <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>

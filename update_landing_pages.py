@@ -58,20 +58,20 @@ def update_asset_paths(html_content):
     # Fix any malformed quotes in the HTML first
     html_content = re.sub(r'(src|href)=([^"\s>]+)(?=[>\s])', r'\1="\2"', html_content)
     
-    # First update all asset paths to use /static/assets/
+    # First update all asset paths to use {% static %}
     asset_patterns = [
-        # Script tags
-        r'<script([^>]*?)src=[\'"]*/landing-pages/assets/([^"\']+)[\'"]([^>]*?)>',
-        # Link tags
-        r'<link([^>]*?)href=[\'"]*/landing-pages/assets/([^"\']+)[\'"]([^>]*?)>',
+        # Script tags with crossorigin
+        r'<script([^>]*?)src=[\'"]*/(?:landing-pages/|static/)?assets/([^"\']+\.js)[\'"]([^>]*?)>',
+        # Link/CSS tags with crossorigin
+        r'<link([^>]*?)href=[\'"]*/(?:landing-pages/|static/)?assets/([^"\']+\.css)[\'"]([^>]*?)>',
         # Image tags
-        r'<img([^>]*?)src=[\'"]*/landing-pages/assets/([^"\']+)[\'"]([^>]*?)>',
+        r'<img([^>]*?)src=[\'"]*/(?:landing-pages/|static/)?assets/([^"\']+)[\'"]([^>]*?)>',
     ]
     
     asset_replacements = [
-        r'<script\1src="/static/assets/\2"\3>',
-        r'<link\1href="/static/assets/\2"\3>',
-        r'<img\1src="/static/assets/\2"\3>',
+        r'<script type="module" crossorigin src="{% static "assets/landing-pages/assets/\2" %}"\3>',
+        r'<link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/\2" %}"\3>',
+        r'<img\1src="{% static "assets/landing-pages/assets/\2" %}"\3>',
     ]
     
     # Apply asset path updates
@@ -109,14 +109,6 @@ def update_asset_paths(html_content):
         r'href=[\'"]*(?:./)?c/privacy-policy/?[\'"]': r'href="{% url "marketing:privacy_policy" %}"',
         r'href=[\'"]*(?:./)?c/terms/?[\'"]': r'href="{% url "marketing:terms" %}"',
         
-        # Handle cross-references
-        r'href=[\'"]*(?:./)?privacy(?:\.html)?[\'"]': r'href="{% url "marketing:privacy_policy" %}"',
-        r'href=[\'"]*(?:./)?terms(?:\.html)?[\'"]': r'href="{% url "marketing:terms" %}"',
-        
-        # Authentication
-        r'href=[\'"]*(?:./)?s/sign-in/?[\'"]': r'href="{% url "security:sign_in" %}"',
-        r'href=[\'"]*(?:./)?s/sign-up/?[\'"]': r'href="{% url "security:sign_up" %}"',
-        
         # Features sections
         r'href=[\'"]*(?:./)?features\.html#([^"\']+)[\'"]': r'href="{% url "marketing:features" %}#\1"',
         
@@ -125,7 +117,24 @@ def update_asset_paths(html_content):
         
         # Enterprise customers page
         r'href=[\'"]*(?:./)?enterprise-customers\.html[\'"]': r'href="{% url "marketing:enterprise_customers" %}"',
-        r'href=[\'"]*(?:./)?c/enterprise-customers/?[\'"]': r'href="{% url "marketing:enterprise_customers" %}"',
+        
+        # Add new link patterns for buttons and remaining links
+        r'<a href="#" class="btn btn-primary">Explore Bounties</a>': 
+            r'<a href="{% url "product_management:bounty-list" %}" class="btn btn-primary">Explore Bounties</a>',
+        
+        r'<a href="#" class="btn btn-primary">Add Your Product</a>': 
+            r'<a href="{% url "security:sign_in" %}" class="btn btn-primary">Add Your Product</a>',
+        
+        # Footer links that are still "#"
+        r'<li><a href="#">Explore Bounties</a></li>': 
+            r'<li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>',
+        
+        r'<li><a href="#">Add Your Product</a></li>': 
+            r'<li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>',
+        
+        # Video modal links
+        r'<a href="#" class="btn btn-primary" onclick="openVideoModal\(\'([^\']+)\'\)">': 
+            r'<a href="javascript:void(0)" class="btn btn-primary" onclick="openVideoModal(\'\1\')">'
     }
     
     for old_link, new_link in nav_links.items():

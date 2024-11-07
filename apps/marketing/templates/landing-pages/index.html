@@ -16,8 +16,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="/static/assets/app-BQgnZg9C.js"></script>
-  <link rel="stylesheet" crossorigin href="/static/assets/app-BjMhKUYN.css">
+  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-BQgnZg9C.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-BjMhKUYN.css" %}">
 </head>
 
 <body>
@@ -44,7 +44,7 @@
 
         <!-- Navbar Brand logo -->
         <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
-          <img src="/static/assets/logo-sPloSm9P.svg" alt="OpenUnited Logo" class="h-7">
+          <img src="{% static "assets/landing-pages/assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
         </a>
       </div>
 
@@ -94,8 +94,8 @@
                     OpenUnited connects skilled contributors with enterprise-grade digital products, using AI-powered challenges and bounties to accelerate innovation.
                 </p>
                 <div class="mt-16 inline-flex gap-3">
-                    <a href="#" class="btn btn-primary">Explore Bounties</a>
-                    <a href="#" class="btn btn-primary">Add Your Product</a>
+                    <a href="{% url "product_management:bounty-list" %}" class="btn btn-primary">Explore Bounties</a>
+                    <a href="{% url "security:sign_in" %}" class="btn btn-primary">Add Your Product</a>
                 </div>
 
                 <div class="mt-6 text-left">
@@ -106,7 +106,7 @@
             </div>
             <div>
                 <img 
-                    src="/static/assets/hero-qZHp0eXj.png" 
+                    src="{% static "assets/landing-pages/assets/hero-qZHp0eXj.png" %}" 
                     alt="Digital garden with vintage computers and bees" 
                     class="rounded-lg w-full h-auto object-cover shadow-lg"
                 />
@@ -128,7 +128,7 @@
                     <li>Leverage AI to simplify complex codebases</li>
                 </ul>
                 <div class="mt-6 flex items-center gap-4">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('H2N4IfaGZ94')">Watch How It Works</a>
+                    <a href="javascript:void(0)" class="btn btn-primary" onclick="openVideoModal(\'H2N4IfaGZ94\')">Watch How It Works</a>
                     <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
                 </div>
             </div>
@@ -146,7 +146,7 @@
                     <li>Track progress with transparent metrics</li>
                 </ul>
                 <div class="mt-6 flex items-center gap-4">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch How It Works</a>
+                    <a href="javascript:void(0)" class="btn btn-primary" onclick="openVideoModal(\'urIf0Ld9adE\')">Watch How It Works</a>
                     <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
                 </div>
             </div>
@@ -221,8 +221,8 @@
             <div>
                 <h2 class="font-bold mb-4">Platform</h2>
                 <ul class="space-y-2">
-                    <li><a href="#">Explore Bounties</a></li>
-                    <li><a href="#">Add Your Product</a></li>
+                    <li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>
+                    <li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>
                     <li><a href="{% url "marketing:features" %}">Features</a></li>
                     <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
                     <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
