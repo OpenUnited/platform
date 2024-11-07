@@ -1,5 +1,5 @@
-<!doctype html>
 {% load static %}
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,13 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Theme favicon -->
-    <link rel="shortcut icon" href="{% static "landing-pages/assets/favicon-ByuwSyI9.ico" %}" />
+    <link rel="shortcut icon" href="{% static "assets/favicon-ByuwSyI9.ico" %}" />
     
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="{% static "landing-pages/assets/app-pJqE1zeg.js" %}"></script>
-  <link rel="stylesheet" crossorigin href="{% static "landing-pages/assets/app-Dq5tbri-.css" %}">
+  <script type="module" crossorigin src="{% static "assets/app-BQgnZg9C.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/app-BjMhKUYN.css" %}">
 </head>
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
@@ -40,7 +40,7 @@
 
         <!-- Navbar Brand logo -->
         <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
-          <img src="{% static "landing-pages/assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
+          <img src="{% static "assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
         </a>
       </div>
 
@@ -55,8 +55,8 @@
       </div>
 
       <div class="navbar-end gap-3">
-        <a href="{% url 'security:sign_in' %}" class="btn btn-ghost btn-sm">Sign in</a>
-        <a href="{% url 'security:sign_up' %}" class="btn btn-primary btn-sm">Sign up</a>
+        <a class="btn btn-ghost btn-sm" href="{% url "security:sign_in" %}">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="{% url "security:sign_up" %}">Sign up</a>
       </div>
     </nav>
 
@@ -139,9 +139,9 @@
             <div>
                 <h2 class="font-bold mb-4">Solutions</h2>
                 <ul class="space-y-2">
-                    <li><a href="#">For Contributors</a></li>
-                    <li><a href="#">For Tech Companies</a></li>
-                    <li><a href="{% url "marketing:enterprise_support" %}">Enterprise Support</a></li>
+                    <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
+                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
+                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
                 </ul>
             </div>
             <div>
@@ -149,16 +149,13 @@
                 <ul class="space-y-2">
                     <li><a href="{% url "marketing:about" %}">About Us</a></li>
                     <li><a href="{% url "marketing:contact" %}">Contact</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Careers</a></li>
                 </ul>
             </div>
             <div>
                 <h2 class="font-bold mb-4">Legal</h2>
                 <ul class="space-y-2">
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="{% url "marketing:terms" %}">Terms of Service</a></li>
+                    <li><a href="{% url "marketing:privacy_policy" %}">Privacy Policy</a></li>
                 </ul>
             </div>
         </div>

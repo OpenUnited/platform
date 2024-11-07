@@ -15,9 +15,10 @@ urlpatterns = [
     path('why-openunited/', TemplateView.as_view(template_name='landing-pages/why-openunited.html'), name='why_openunited'),
     
     # Legacy content pages (keeping these for backward compatibility)
-    path('c/about/', TemplateView.as_view(template_name='marketing/about.html'), name='legacy_about'),
-    path('c/enterprise-customers/', TemplateView.as_view(template_name='marketing/enterprise_customers.html'), name='enterprise_customers'),
-    path('c/privacy-policy/', TemplateView.as_view(template_name='marketing/privacy_policy.html'), name='privacy_policy'),
-    path('c/terms-of-use/', TemplateView.as_view(template_name='marketing/terms_of_use.html'), name='terms_of_use'),
+    path('c/about/', TemplateView.as_view(template_name='landing-pages/about.html'), name='legacy_about'),
+    path('c/enterprise-customers/', TemplateView.as_view(template_name='landing-pages/enterprise-customers.html'), name='enterprise_customers'),
+    path('c/privacy-policy/', TemplateView.as_view(template_name='landing-pages/privacy.html'), name='privacy_policy'),
+    path('c/terms/', TemplateView.as_view(template_name='landing-pages/terms.html'), name='terms'),
+    path('c/terms/', TemplateView.as_view(template_name='landing-pages/terms.html'), name='terms_of_use'),
     path('c/<path:path>', views.MarketingPageView.as_view(), name='marketing_page'),
 ]

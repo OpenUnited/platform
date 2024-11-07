@@ -1,0 +1,175 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>OpenUnited - Empowering Global Talent</title>
+    <meta content="OpenUnited connects skilled contributors with enterprise-grade digital products." name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Theme favicon -->
+    <link rel="shortcut icon" href="{% static "assets/favicon-ByuwSyI9.ico" %}" />
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
+  <script type="module" crossorigin src="{% static "assets/app-BQgnZg9C.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/app-BjMhKUYN.css" %}">
+</head>
+<body>
+<div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
+  <span>
+    Welcome to OpenUnited - Empowering Global Talent
+  </span>
+</div>
+
+<div
+  id="navbar-wrapper"
+  class="sticky top-0 z-10 border-b bg-base-100 lg:bg-opacity-95 lg:backdrop-blur-sm"
+  x-data="{ atTop: false }"
+  :class="{ 'border-base-content/10': atTop, 'border-transparent': !atTop}"
+  @scroll.window="atTop = (window.pageYOffset < 30) ? false: true">
+  <div class="container">
+    <nav class="navbar px-0">
+      <div class="navbar-start gap-2">
+        <div class="flex-none lg:hidden">
+          <label for="my-drawer" id="my-drawer-trigger" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <i class="icon-menu inline-block text-xl"></i>
+          </label>
+        </div>
+
+        <!-- Navbar Brand logo -->
+        <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
+          <img src="{% static "assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
+        </a>
+      </div>
+
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal menu-sm gap-2 px-1">
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-end gap-3">
+        <a class="btn btn-ghost btn-sm" href="{% url "security:sign_in" %}">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="{% url "security:sign_up" %}">Sign up</a>
+      </div>
+    </nav>
+
+    <!-- sm screen menu (drawer) -->
+    <div class="drawer">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-side">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+
+        <ul class="menu min-h-full w-80 gap-2 bg-base-100 p-4 text-base-content">
+          <li class="font-medium"><a href="{% url "marketing:index" %}">Home</a></li>
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:contact" %}">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="py-8 lg:py-20" id="terms">
+    <div class="container">
+        <h1 class="text-4xl font-bold">Terms of Service</h1>
+        <p class="mt-4 text-gray-600">Last updated: November 2024</p>
+
+        <div class="mt-8 space-y-12">
+            <div>
+                <h2 class="text-2xl font-semibold">1. Eligibility and Acceptance</h2>
+                <div class="mt-4 text-gray-600 space-y-2">
+                    <p>By using OpenUnited, you affirm that you are at least 18 years of age (or the age of majority in your country of residence) and are legally permitted to enter into these Terms.</p>
+                    <p>OpenUnited reserves the right to refuse service, suspend accounts, or revoke access to the Platform for users who violate these Terms.</p>
+                </div>
+            </div>
+
+            <!-- Repeat for each section -->
+            <div>
+                <h2 class="text-2xl font-semibold">2. User Accounts and Security</h2>
+                <div class="mt-4 text-gray-600 space-y-2">
+                    <p>Users are required to create an account with accurate information. You are responsible for maintaining the confidentiality of your account and password.</p>
+                    <p>You agree to notify OpenUnited immediately of any unauthorized use of your account or any other security breach.</p>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold">3. Services Provided</h2>
+                <div class="mt-4 text-gray-600 space-y-2">
+                    <p>OpenUnited connects skilled contributors with enterprises through a marketplace model, offering challenges and bounties for specific tasks on digital products.</p>
+                    <p>OpenUnited provides a platform for both individual contributors and enterprise clients to engage in collaborative digital product development.</p>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold">4. Contributions and Bounties</h2>
+                <div class="mt-4 text-gray-600">
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>Contributors:</strong> By participating in challenges or bounties, you agree to perform tasks to the best of your ability and adhere to any specific requirements outlined.</li>
+                        <li><strong>Bounties and Rewards:</strong> Completion of a bounty to OpenUnited's standards and requirements will result in the release of rewards (either points or USD). Failure to meet requirements may result in partial or no reward.</li>
+                        <li><strong>Public Showcase:</strong> Contributions may be publicly displayed in a portfolio linked to your profile on OpenUnited. By participating, you consent to have your contributions showcased.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Continue with remaining sections following the same pattern -->
+            
+            <div>
+                <h2 class="text-2xl font-semibold">12. Amendments</h2>
+                <div class="mt-4 text-gray-600">
+                    <p>OpenUnited may amend these Terms at any time. We will notify users of any changes by posting the revised Terms on our website. Continued use of the Platform after the changes become effective constitutes your acceptance of the revised Terms.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-base-200 text-base-content">
+    <div class="container py-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <h2 class="font-bold mb-4">Platform</h2>
+                <ul class="space-y-2">
+                    <li><a href="#">Explore Bounties</a></li>
+                    <li><a href="#">Add Your Product</a></li>
+                    <li><a href="{% url "marketing:features" %}">Features</a></li>
+                    <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+                    <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Solutions</h2>
+                <ul class="space-y-2">
+                    <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
+                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
+                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Company</h2>
+                <ul class="space-y-2">
+                    <li><a href="{% url "marketing:about" %}">About Us</a></li>
+                    <li><a href="{% url "marketing:contact" %}">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Legal</h2>
+                <ul class="space-y-2">
+                    <li><a href="{% url "marketing:terms" %}">Terms of Service</a></li>
+                    <li><a href="{% url "marketing:privacy_policy" %}">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html> 

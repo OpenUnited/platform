@@ -1,0 +1,200 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>OpenUnited - Empowering Global Talent</title>
+    <meta content="OpenUnited connects skilled contributors with enterprise-grade digital products." name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Theme favicon -->
+    <link rel="shortcut icon" href="{% static "assets/favicon-ByuwSyI9.ico" %}" />
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
+  <script type="module" crossorigin src="{% static "assets/app-BQgnZg9C.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/app-BjMhKUYN.css" %}">
+</head>
+<body>
+<div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
+  <span>
+    Welcome to OpenUnited - Empowering Global Talent
+  </span>
+</div>
+
+<div
+  id="navbar-wrapper"
+  class="sticky top-0 z-10 border-b bg-base-100 lg:bg-opacity-95 lg:backdrop-blur-sm"
+  x-data="{ atTop: false }"
+  :class="{ 'border-base-content/10': atTop, 'border-transparent': !atTop}"
+  @scroll.window="atTop = (window.pageYOffset < 30) ? false: true">
+  <div class="container">
+    <nav class="navbar px-0">
+      <div class="navbar-start gap-2">
+        <div class="flex-none lg:hidden">
+          <label for="my-drawer" id="my-drawer-trigger" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <i class="icon-menu inline-block text-xl"></i>
+          </label>
+        </div>
+
+        <!-- Navbar Brand logo -->
+        <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
+          <img src="{% static "assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
+        </a>
+      </div>
+
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal menu-sm gap-2 px-1">
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-end gap-3">
+        <a class="btn btn-ghost btn-sm" href="{% url "security:sign_in" %}">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="{% url "security:sign_up" %}">Sign up</a>
+      </div>
+    </nav>
+
+    <!-- sm screen menu (drawer) -->
+    <div class="drawer">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-side">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+
+        <ul class="menu min-h-full w-80 gap-2 bg-base-100 p-4 text-base-content">
+          <li class="font-medium"><a href="{% url "marketing:index" %}">Home</a></li>
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:contact" %}">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="py-12 lg:py-24" id="enterprise-support">
+    <div class="container mx-auto px-4">
+        <h1 class="text-5xl font-bold text-center mb-8">Transform Your Engineering Capabilities</h1>
+        <p class="text-xl text-center text-gray-700 leading-relaxed mb-12 max-w-3xl mx-auto">
+            Unlock the full potential of your engineering talent with OpenUnited's AI-powered marketplace platform. Designed for enterprises with large engineering teams, we help you maximize efficiency, accelerate innovation, and scale seamlessly.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Current Challenges</h3>
+                <ul class="space-y-3">
+                    <li>• Engineers trapped in rigid team structures</li>
+                    <li>• Difficulty scaling without adding overhead</li>
+                    <li>• Limited visibility into resource allocation</li>
+                    <li>• Slow response to shifting priorities</li>
+                </ul>
+            </div>
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Our Solution</h3>
+                <ul class="space-y-3">
+                    <li>• AI-powered talent matching</li>
+                    <li>• Dynamic marketplace model</li>
+                    <li>• Transparent point-based system</li>
+                    <li>• Hybrid team structure support</li>
+                </ul>
+            </div>
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-4">Key Benefits</h3>
+                <ul class="space-y-3">
+                    <li>• Optimal resource utilization</li>
+                    <li>• Increased team agility</li>
+                    <li>• Enhanced collaboration</li>
+                    <li>• Reduced administrative overhead</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-semibold text-center mb-8">How It Works</h2>
+        <div class="grid md:grid-cols-2 gap-12 mb-16 max-w-4xl mx-auto">
+            <div>
+                <h3 class="text-2xl font-semibold mb-4">Core Teams</h3>
+                <p class="text-lg text-gray-700">
+                    Maintain product vision and ownership with dedicated core teams while unlocking the flexibility to tap into a broader talent pool. Our hybrid model ensures stability while maximizing efficiency.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-semibold mb-4">Talent Marketplace</h3>
+                <p class="text-lg text-gray-700">
+                    Create a dynamic internal marketplace where engineers can contribute across projects based on their skills and interests. AI-powered matching ensures the right talent finds the right opportunities.
+                </p>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-semibold text-center mb-8">Getting Started</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div class="text-center p-6">
+                <h3 class="text-xl font-semibold mb-3">Buildathons</h3>
+                <p>Quick wins through focused events that tackle technical debt and backlog</p>
+            </div>
+            <div class="text-center p-6">
+                <h3 class="text-xl font-semibold mb-3">Internal Competitions</h3>
+                <p>Drive innovation through engaging challenges and rewards</p>
+            </div>
+            <div class="text-center p-6">
+                <h3 class="text-xl font-semibold mb-3">Cross-Team Collaboration</h3>
+                <p>Enable seamless contribution across project boundaries</p>
+            </div>
+            <div class="text-center p-6">
+                <h3 class="text-xl font-semibold mb-3">Full Integration</h3>
+                <p>Comprehensive platform adoption for maximum impact</p>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url "marketing:contact" %}" class="btn btn-primary btn-lg">Schedule a Demo</a>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-base-200 text-base-content">
+    <div class="container py-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <h2 class="font-bold mb-4">Platform</h2>
+                <ul class="space-y-2">
+                    <li><a href="#">Explore Bounties</a></li>
+                    <li><a href="#">Add Your Product</a></li>
+                    <li><a href="{% url "marketing:features" %}">Features</a></li>
+                    <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+                    <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Solutions</h2>
+                <ul class="space-y-2">
+                    <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
+                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
+                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Company</h2>
+                <ul class="space-y-2">
+                    <li><a href="{% url "marketing:about" %}">About Us</a></li>
+                    <li><a href="{% url "marketing:contact" %}">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h2 class="font-bold mb-4">Legal</h2>
+                <ul class="space-y-2">
+                    <li><a href="{% url "marketing:terms" %}">Terms of Service</a></li>
+                    <li><a href="{% url "marketing:privacy_policy" %}">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html> 

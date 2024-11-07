@@ -1,0 +1,118 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>OpenUnited - Empowering Global Talent</title>
+    <meta content="OpenUnited connects skilled contributors with enterprise-grade digital products." name="description" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Theme favicon -->
+    <link rel="shortcut icon" href="{% static "assets/favicon-ByuwSyI9.ico" %}" />
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
+  <script type="module" crossorigin src="{% static "assets/app-BQgnZg9C.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/app-BjMhKUYN.css" %}">
+</head>
+<body>
+<div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
+  <span>
+    Welcome to OpenUnited - Empowering Global Talent
+  </span>
+</div>
+
+<div
+  id="navbar-wrapper"
+  class="sticky top-0 z-10 border-b bg-base-100 lg:bg-opacity-95 lg:backdrop-blur-sm"
+  x-data="{ atTop: false }"
+  :class="{ 'border-base-content/10': atTop, 'border-transparent': !atTop}"
+  @scroll.window="atTop = (window.pageYOffset < 30) ? false: true">
+  <div class="container">
+    <nav class="navbar px-0">
+      <div class="navbar-start gap-2">
+        <div class="flex-none lg:hidden">
+          <label for="my-drawer" id="my-drawer-trigger" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <i class="icon-menu inline-block text-xl"></i>
+          </label>
+        </div>
+
+        <!-- Navbar Brand logo -->
+        <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
+          <img src="{% static "assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
+        </a>
+      </div>
+
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal menu-sm gap-2 px-1">
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-end gap-3">
+        <a class="btn btn-ghost btn-sm" href="{% url "security:sign_in" %}">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="{% url "security:sign_up" %}">Sign up</a>
+      </div>
+    </nav>
+
+    <!-- sm screen menu (drawer) -->
+    <div class="drawer">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-side">
+        <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+
+        <ul class="menu min-h-full w-80 gap-2 bg-base-100 p-4 text-base-content">
+          <li class="font-medium"><a href="{% url "marketing:index" %}">Home</a></li>
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:contact" %}">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="py-8 lg:py-20" id="privacy">
+    <div class="container max-w-4xl">
+        <h1 class="text-4xl font-bold">Privacy Policy</h1>
+        <p class="mt-4 text-gray-600">Last updated: November 2024</p>
+
+        <div class="mt-8 prose prose-lg max-w-none">
+            <p>
+                This document should be read in conjunction with our <a href="{% url "marketing:terms" %}">Terms of Service</a>. At OpenUnited, we value your privacy and are committed to being transparent about how we collect, use, and share your information. This Privacy Policy explains the types of information we collect, how we use it, and the choices you have.
+            </p>
+
+            <h2>Information We Collect</h2>
+            <p>We collect information to enhance the quality of our services for users. We gather information in the following ways:</p>
+
+            <h3>Information You Give Us</h3>
+            <p>
+                When you sign up for an account or participate in activities on OpenUnited, we ask for personal information such as your name, email address, and location. If you engage in our platform's sharing features, we may ask you to create a profile that includes your name, photo, and professional details.
+            </p>
+
+            <h3>Information We Obtain from Your Use of Our Services</h3>
+            <p>
+                We collect data on the services you use and how you use them. This may include details like IP address, browser type, pages visited, and device information. This data helps us improve our services and provide you with a better user experience.
+            </p>
+
+            <h2>How We Use the Information We Collect</h2>
+            <p>
+                We use the collected information to maintain, protect, and improve our services, develop new features, and provide you with a personalized experience on OpenUnited. Specifically, we use the information for:
+            </p>
+            <ul>
+                <li><strong>Service Delivery:</strong> Managing your account, facilitating participation in challenges, and processing rewards.</li>
+                <li><strong>Support and Communication:</strong> Keeping records of your interactions with OpenUnited and using your email address to inform you about service updates, new features, or necessary changes.</li>
+                <li><strong>Personalization:</strong> Offering customized experiences based on your preferences</li>
+            </ul>
+        </div>
+    </div>
+</section>
+</body>
+</html>
