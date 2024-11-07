@@ -29,7 +29,8 @@ else:
     ]
 
 urlpatterns += [
-    path("bounties/", include("apps.capabilities.product_management.urls", namespace="product_management")),
+    path("bounties/", RedirectView.as_view(url="/products/bounties/", permanent=True)),
+    path("products/", include("apps.capabilities.product_management.urls", namespace="product_management")),
     path("canopy/", include("apps.canopy.urls")),
     path("canopy", RedirectView.as_view(url="/canopy/")),
     path("version/", views.version_view, name="version"),

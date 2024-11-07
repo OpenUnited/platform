@@ -202,7 +202,7 @@ class CreateContributorAgreementTemplateView(BaseProductView, common_mixins.Atta
         return super().post(request, *args, **kwargs)
 
 
-class ProductListView(BaseProductView, ListView):
+class ProductListView(ListView):
     """View for listing all products"""
     model = Product
     template_name = "product_management/products.html"
@@ -213,7 +213,7 @@ class ProductListView(BaseProductView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_create'] = True  # Or add logic to determine if user can create products
+        context['can_create'] = self.request.user.is_authenticated  # Only show create button for authenticated users
         return context
 
 class ProductRedirectView(BaseProductView, RedirectView):

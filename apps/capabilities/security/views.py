@@ -192,11 +192,10 @@ class PasswordResetCompleteView(PasswordResetCompleteView):
     template_name = "security/password_reset/password_reset_complete.html"
 
 
-# TODO: We can add 5 seconds pause before redirecting immediately
 class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = "security/logout.html"
     login_url = "sign_in"
 
     def post(self, request, *args, **kwargs):
         logout(request)
-        return redirect("home")
+        return redirect("product_management:products")
