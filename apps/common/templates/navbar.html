@@ -5,12 +5,12 @@
         <a href="{% url 'product_management:bounty-list' %}" class="text-sm font-semibold leading-6 text-gray-900">
             Claim a Bounty
         </a>
-        <a href="{% url 'about' %}" class="text-sm font-semibold leading-6 text-gray-900">
+        <a href="{% url 'marketing:about' %}" class="text-sm font-semibold leading-6 text-gray-900">
             About
         </a>
     </div>
     <div class="flex justify-start lg:justify-center grow w-full h-8 lg:inset-x-0 lg:absolute z-[1]">
-        <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
+        <a href="{% url 'index' %}" class="-m-1.5 p-1.5">
             <span class="sr-only">OpenUnited</span>
             <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="OpenUnited Logo">
         </a>
@@ -78,8 +78,8 @@
                         id="options-menu-item-2">Visit Showcase</a>
                 </div>
                 <div class="py-1" role="none">
-                    <form id="logout-form" method="post" action="{% url 'log_out' %}">
-                        {% csrf_token  %}
+                    <form id="logout-form" method="post" action="{% url 'security:logout' %}">
+                        {% csrf_token %}
                         <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log out</button>
                     </form>
                 </div>
@@ -102,7 +102,7 @@
             <div
                 class="fixed inset-y-0 z-[11] overflow-y-auto bg-white px-4 py-6 sm:max-w-sm w-full sm:ring-1 sm:ring-gray-900/10 menu">
                 <div class="flex items-center justify-between">
-                    <a href="{% url 'home' %}" class="-m-1.5 p-1.5">
+                    <a href="{% url 'index' %}" class="-m-1.5 p-1.5">
                         <span class="sr-only">OpenUnited</span>
                     </a>
                     <button _="on click remove .menu-open from #mobile-menu-wrap" type="button"
@@ -147,8 +147,8 @@
                         id="options-menu-item-2">Visit Showcase</a>
                 </div>
                 <div class="py-1" role="none">
-                    <form id="logout-form" method="post" action="{% url 'log_out' %}">
-                        {% csrf_token  %}
+                    <form id="logout-form" method="post" action="{% url 'security:logout' %}">
+                        {% csrf_token %}
                         <button type="submit" class="text-gray-700 block px-4 py-2 text-sm">Log out</button>
                     </form>
                 </div>
@@ -162,7 +162,7 @@
                             Bounty</a>
                     </li>
                     <li class="flex">
-                        <a href="{% url 'about' %}" class="text-sm font-semibold leading-6 text-gray-900">About</a>
+                        <a href="{% url 'marketing:about' %}" class="text-sm font-semibold leading-6 text-gray-900">About</a>
                     </li>
 
 

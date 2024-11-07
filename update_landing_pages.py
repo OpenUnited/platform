@@ -42,6 +42,46 @@ def update_asset_paths(html_content):
     # Fix any malformed quotes in the HTML first
     html_content = re.sub(r'(src|href)=([^"\s>]+)(?=[>\s])', r'\1="\2"', html_content)
     
+    # Replace the navbar buttons
+    navbar_buttons_pattern = r'<div class="navbar-end gap-3">\s*' \
+                           r'<a class="btn btn-ghost btn-sm" onclick="register_modal\.showModal\(\)">Sign in</a>\s*' \
+                           r'<a class="btn btn-primary btn-sm" onclick="login_modal\.showModal\(\)">Sign up</a>\s*' \
+                           r'</div>'
+    
+    navbar_buttons_replacement = '''<div class="navbar-end gap-3">
+        <a href="{% url 'security:sign_in' %}" class="btn btn-ghost btn-sm">Sign in</a>
+        <a href="{% url 'security:sign_up' %}" class="btn btn-primary btn-sm">Sign up</a>
+      </div>'''
+    
+    html_content = re.sub(navbar_buttons_pattern, navbar_buttons_replacement, html_content)
+    
+    # Replace navigation links
+    nav_links = {
+        r'href="index.html"': r'href="{% url "marketing:index" %}"',
+        r'href="about.html"': r'href="{% url "marketing:about" %}"',
+        r'href="contact.html"': r'href="{% url "marketing:contact" %}"',
+        r'href="enterprise-support.html"': r'href="{% url "marketing:enterprise_support" %}"',
+        r'href="features.html"': r'href="{% url "marketing:features" %}"',
+        r'href="how-it-works.html"': r'href="{% url "marketing:how_it_works" %}"',
+        r'href="why-openunited.html"': r'href="{% url "marketing:why_openunited" %}"',
+    }
+    
+    for old_link, new_link in nav_links.items():
+        html_content = re.sub(old_link, new_link, html_content)
+    
+    # Replace the action buttons
+    action_buttons_pattern = r'<div class="mt-16 inline-flex gap-3">\s*' \
+                           r'<a href="#" class="btn btn-primary">Explore Bounties</a>\s*' \
+                           r'<a href="#" class="btn btn-primary">Add Your Product</a>\s*' \
+                           r'</div>'
+    
+    action_buttons_replacement = '''<div class="mt-16 inline-flex gap-3">
+                    <a href="{% url 'product_management:bounty-list' %}" class="btn btn-primary">Explore Bounties</a>
+                    <a href="{% url 'security:sign_up' %}" class="btn btn-primary">Add Your Product</a>
+                </div>'''
+    
+    html_content = re.sub(action_buttons_pattern, action_buttons_replacement, html_content)
+    
     # Pattern to match both /landing-pages/assets/ and /static/landing-pages/assets/
     patterns = [
         # Match /landing-pages/assets/
@@ -50,19 +90,26 @@ def update_asset_paths(html_content):
         r'(src|href)=[\'"]*\/static\/landing-pages\/assets\/([^"\'>]+)[\'"]*',
         # Match paths without assets directory
         r'(src|href)=[\'"]*\/static\/landing-pages\/([^"\'>]+)[\'"]*',
-        r'(src|href)=[\'"]*\/landing-pages\/([^"\'>]+)[\'"]*'
+        r'(src|href)=[\'"]*\/landing-pages\/([^"\'>]+)[\'"]*',
+        # Match bounty URL
+        r'(href)=[\'"]*/bounties[\'"]'
     ]
     
-    # Fixed: Use double quotes for the static tag
-    replacement = r'\1="{% static "landing-pages/assets/\2" %}"'
-    replacement_no_assets = r'\1="{% static "landing-pages/\2" %}"'
+    # Replacements for different patterns
+    replacements = [
+        # Assets with directory
+        r'\1="{% static "landing-pages/assets/\2" %}"',
+        r'\1="{% static "landing-pages/assets/\2" %}"',
+        # Assets without directory
+        r'\1="{% static "landing-pages/\2" %}"',
+        r'\1="{% static "landing-pages/\2" %}"',
+        # Bounty URL
+        r'\1="{% url "product_management:bounty-list" %}"'
+    ]
     
     # Apply all replacements
-    for i, pattern in enumerate(patterns):
-        if i < 2:  # First two patterns use the assets directory
-            html_content = re.sub(pattern, replacement, html_content)
-        else:  # Last two patterns don't include assets directory
-            html_content = re.sub(pattern, replacement_no_assets, html_content)
+    for pattern, replacement in zip(patterns, replacements):
+        html_content = re.sub(pattern, replacement, html_content)
     
     return html_content
 

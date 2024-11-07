@@ -59,7 +59,7 @@
                     <li><a href="{% url 'showcase' request.user.username %}">Visit Showcase</a></li>
                     <li class="divider"></li>
                     <li>
-                        <form id="logout-form" method="post" action="{% url 'log_out' %}">
+                        <form id="logout-form" method="post" action="{% url 'security:logout' %}">
                             {% csrf_token %}
                             <button type="submit" class="w-full text-left">Log out</button>
                         </form>

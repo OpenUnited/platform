@@ -40,24 +40,24 @@
         </div>
 
         <!-- Navbar Brand logo -->
-        <a href="index.html" class="text-xl font-bold tracking-tighter">
+        <a href="{% url "marketing:index" %}" class="text-xl font-bold tracking-tighter">
           <img src="{% static "landing-pages/assets/logo-sPloSm9P.svg" %}" alt="OpenUnited Logo" class="h-7">
         </a>
       </div>
 
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal menu-sm gap-2 px-1">
-          <li class="font-medium"><a href="about.html">About Us</a></li>
-          <li class="font-medium"><a href="how-it-works.html">How It Works</a></li>
-          <li class="font-medium"><a href="features.html">Features</a></li>
-          <li class="font-medium"><a href="why-openunited.html">Why OpenUnited?</a></li>
-          <li class="font-medium"><a href="enterprise-support.html">OpenUnited for Enterprises</a></li>
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
         </ul>
       </div>
 
       <div class="navbar-end gap-3">
-        <a class="btn btn-ghost btn-sm" onclick="register_modal.showModal()">Sign in</a>
-        <a class="btn btn-primary btn-sm" onclick="login_modal.showModal()">Sign up</a>
+        <a href="{% url 'security:sign_in' %}" class="btn btn-ghost btn-sm">Sign in</a>
+        <a href="{% url 'security:sign_up' %}" class="btn btn-primary btn-sm">Sign up</a>
       </div>
     </nav>
 
@@ -68,12 +68,12 @@
         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
         <ul class="menu min-h-full w-80 gap-2 bg-base-100 p-4 text-base-content">
-          <li class="font-medium"><a href="index.html">Home</a></li>
-          <li class="font-medium"><a href="about.html">About Us</a></li>
-          <li class="font-medium"><a href="how-it-works.html">How It Works</a></li>
-          <li class="font-medium"><a href="features.html">Features</a></li>
-          <li class="font-medium"><a href="why-openunited.html">Why OpenUnited?</a></li>
-          <li class="font-medium"><a href="contact.html">Contact</a></li>
+          <li class="font-medium"><a href="{% url "marketing:index" %}">Home</a></li>
+          <li class="font-medium"><a href="{% url "marketing:about" %}">About Us</a></li>
+          <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+          <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
+          <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
+          <li class="font-medium"><a href="{% url "marketing:contact" %}">Contact</a></li>
         </ul>
       </div>
     </div>
@@ -91,12 +91,12 @@
                     OpenUnited connects skilled contributors with enterprise-grade digital products, using AI-powered challenges and bounties to accelerate innovation.
                 </p>
                 <div class="mt-16 inline-flex gap-3">
-                    <a href="#" class="btn btn-primary">Explore Bounties</a>
-                    <a href="#" class="btn btn-primary">Add Your Product</a>
+                    <a href="{% url 'product_management:bounty-list' %}" class="btn btn-primary">Explore Bounties</a>
+                    <a href="{% url 'security:sign_up' %}" class="btn btn-primary">Add Your Product</a>
                 </div>
 
                 <div class="mt-6 text-left">
-                    <a href="enterprise-support.html" class="text-gray-500 hover:underline">
+                    <a href="{% url "marketing:enterprise_support" %}" class="text-gray-500 hover:underline">
                         Enterprise Customer wanting to use OpenUnited?
                     </a>
                 </div>
@@ -126,7 +126,7 @@
                 </ul>
                 <div class="mt-6 flex items-center gap-4">
                     <a href="#" class="btn btn-primary" onclick="openVideoModal('H2N4IfaGZ94')">Watch How It Works</a>
-                    <a href="why-openunited.html" class="btn btn-outline">Learn More</a>
+                    <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
                 </div>
             </div>
 
@@ -144,7 +144,7 @@
                 </ul>
                 <div class="mt-6 flex items-center gap-4">
                     <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch How It Works</a>
-                    <a href="why-openunited.html" class="btn btn-outline">Learn More</a>
+                    <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
                 </div>
             </div>
         </div>
@@ -164,8 +164,8 @@
                     <li>Scale engineering capacity efficiently</li>
                 </ul>
                 <div class="mt-6 flex items-center gap-4">
-                    <a href="enterprise-support.html" class="btn btn-primary">Enterprise Support</a>
-                    <a href="why-openunited.html" class="btn btn-outline">Learn More</a>
+                    <a href="{% url "marketing:enterprise_support" %}" class="btn btn-primary">Enterprise Support</a>
+                    <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
                 </div>
             </div>
         </div>
@@ -220,9 +220,9 @@
                 <ul class="space-y-2">
                     <li><a href="#">Explore Bounties</a></li>
                     <li><a href="#">Add Your Product</a></li>
-                    <li><a href="features.html">Features</a></li>
-                    <li><a href="how-it-works.html">How It Works</a></li>
-                    <li><a href="why-openunited.html">Why OpenUnited?</a></li>
+                    <li><a href="{% url "marketing:features" %}">Features</a></li>
+                    <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
+                    <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
                 </ul>
             </div>
             <div>
@@ -230,14 +230,14 @@
                 <ul class="space-y-2">
                     <li><a href="#">For Contributors</a></li>
                     <li><a href="#">For Tech Companies</a></li>
-                    <li><a href="enterprise-support.html">Enterprise Support</a></li>
+                    <li><a href="{% url "marketing:enterprise_support" %}">Enterprise Support</a></li>
                 </ul>
             </div>
             <div>
                 <h2 class="font-bold mb-4">Company</h2>
                 <ul class="space-y-2">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="{% url "marketing:about" %}">About Us</a></li>
+                    <li><a href="{% url "marketing:contact" %}">Contact</a></li>
                     <li><a href="#">Blog</a></li>
                     <li><a href="#">Careers</a></li>
                 </ul>

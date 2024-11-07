@@ -6,6 +6,7 @@ from django.views.generic.base import RedirectView
 from django.contrib.auth import views as auth_views
 
 from apps.canopy.views import ProductTreeUpdateView, ProductTreeView
+from apps.marketing.views import MarketingPageView
 
 from . import views
 
@@ -28,25 +29,22 @@ else:
     ]
 
 urlpatterns += [
-    path("", include("apps.marketing.urls")),
-    path("privacy-policy/", views.privacy_policy, name="privacy-policy"),
-    path("terms-of-use/", views.terms_of_use, name="terms-of-use"),
-    path("enterprise-customers/", views.enterprise_customers, name="enterprise-customers"),
+    path("bounties/", include("apps.capabilities.product_management.urls", namespace="product_management")),
     path("canopy/", include("apps.canopy.urls")),
     path("canopy", RedirectView.as_view(url="/canopy/")),
     path("version/", views.version_view, name="version"),
     path("talent/", include("apps.capabilities.talent.urls")),
     path("freshlatte", RedirectView.as_view(url="/canopy/")),
-    path("", include("apps.capabilities.security.urls")),
-    path("", include("apps.capabilities.product_management.urls")),
+    path('s/', include('apps.capabilities.security.urls', namespace='security')),
     path("", include("social_django.urls", namespace="social")),
     path("tinymce/", include("tinymce.urls")),
     path("product-tree", ProductTreeView.as_view()),
     path("product-tree/", ProductTreeView.as_view(), name="shareable_product_tree"),
     path("product-tree/share/<str:pk>", ProductTreeUpdateView.as_view(), name="update_product_tree"),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('portal/', include('apps.portal.urls', namespace='portal')),
     path('', include('apps.flows.challenge_authoring.urls', namespace='challenge_authoring')),
+    path('', include('apps.marketing.urls', namespace='marketing')),
+    path('', MarketingPageView.as_view(), name='index'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

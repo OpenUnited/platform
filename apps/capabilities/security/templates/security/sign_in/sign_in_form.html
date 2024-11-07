@@ -40,7 +40,7 @@
         </div>
 
         <div class="text-sm leading-6">
-            <a href="{% url 'password_reset' %}"
+            <a href="{% url 'security:password_reset' %}"
                 class="font-medium transition-all text-[#1890ff] hover:text-text-[#1890ff] hover:underline underline-offset-2">
                 Forgot password?
             </a>
@@ -54,8 +54,8 @@
     </div>
 
     <p class="text-left text-sm text-gray-500">
-        Don’t have an account yet?
-        <a href="{% url 'sign-up' %}?next={{ next  }}"
+        Don't have an account yet?
+        <a href="{% url 'security:sign_up' %}?next={{ next }}"
             class="font-medium leading-6 text-[#1890ff] transition-all hover:text-text-[#1890ff] hover:underline underline-offset-2">
             Sign up here
         </a>

@@ -1,4 +1,6 @@
 from django.urls import path
+from django.shortcuts import redirect
+from django.contrib.auth.views import LogoutView
 
 from .views import (
     LogoutView,
@@ -11,10 +13,12 @@ from .views import (
     SignUpWizard,
 )
 
+app_name = 'security'
+
 urlpatterns = [
-    path("sign-up/", SignUpWizard.as_view(), name="sign-up"),
+    path("sign-up/", SignUpWizard.as_view(), name="sign_up"),
     path("sign-in/", SignInView.as_view(), name="sign_in"),
-    path("log-out/", LogoutView.as_view(), name="log_out"),
+    path("logout/", LogoutView.as_view(next_page='/'), name="logout"),
     path(
         "password-reset-required/",
         PasswordResetRequiredView.as_view(),
