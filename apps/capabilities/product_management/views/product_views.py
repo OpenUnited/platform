@@ -60,6 +60,7 @@ logger = logging.getLogger(__name__)
 
 class BaseProductView(LoginRequiredMixin):
     """Base class for product views with common functionality"""
+    login_url = 'security:sign_in'
     
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -93,7 +94,7 @@ class UpdateProductView(BaseProductView, common_mixins.AttachmentMixin, UpdateVi
     model = Product
     form_class = ProductForm
     template_name = "product_management/update_product.html"
-    login_url = "sign_in"
+    login_url = 'security:sign_in'
 
     def get_success_url(self):
         return reverse("update-product", args=(self.object.id,))
