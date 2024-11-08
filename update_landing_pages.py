@@ -167,7 +167,7 @@ def validate_html_links(html_content):
     return invalid_links
 
 def update_favicon_paths(html_content):
-    """Update favicon paths to use the correct asset locations"""
+    """Update favicon paths to use Django static template tags"""
     if html_content is None:
         return None
 
@@ -186,13 +186,13 @@ def update_favicon_paths(html_content):
     # Extract the favicon section
     favicon_section = html_content[favicon_section_start:script_tag_start]
 
-    # Create updated favicon section
+    # Create updated favicon section with Django static tags
     updated_favicon_section = '''    <!-- Theme favicon -->
-    <link rel="shortcut icon" href="/static/images/favicon/favicon.ico" />    
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/static/images/favicon/site.webmanifest">
+    <link rel="shortcut icon" href="{% static 'images/favicon/favicon.ico' %}" />    
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
     '''
 
     # Replace the old favicon section with the updated one
