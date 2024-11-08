@@ -32,6 +32,7 @@ from .views.product_views import (
     DeleteBountyClaimView,
     UpdateBountyView,
     ProductDetailView,
+    ProductContributorsView,
 )
 
 from .views.ideas_and_bugs_views import (
@@ -105,6 +106,7 @@ urlpatterns = [
         CreateOrganisationView.as_view(),
         name="create-organisation",
     ),
+    path("<str:product_slug>/bounties/", ProductBountyListView.as_view(), name="product-bounties"),
 ]
 
 # Product URLs
@@ -209,6 +211,7 @@ urlpatterns += [
         ProductIdeasAndBugsView.as_view(),
         name='product-ideas-bugs'
     ),
+    path('<str:product_slug>/contributors/', ProductContributorsView.as_view(), name='product-contributors'),
 ]
 
 # Initiative URLs
@@ -260,4 +263,19 @@ urlpatterns += [
         UpdateBountyView.as_view(),
         name='update-bounty'
     ),
+]
+
+# Ideas and Bugs URLs
+urlpatterns += [
+    path('<str:product_slug>/ideas-and-bugs/', ProductIdeasAndBugsView.as_view(), name='ideas-and-bugs'),
+    path('<str:product_slug>/ideas/create/', CreateProductIdea.as_view(), name='create-idea'),
+    path('<str:product_slug>/ideas/', ProductIdeaListView.as_view(), name='idea-list'),
+    path('<str:product_slug>/ideas/<int:pk>/', ProductIdeaDetail.as_view(), name='idea-detail'),
+    path('<str:product_slug>/ideas/<int:pk>/update/', UpdateProductIdea.as_view(), name='update-idea'),
+    path('<str:product_slug>/ideas/<int:pk>/vote/', cast_vote_for_idea, name='vote-idea'),
+    
+    path('<str:product_slug>/bugs/create/', CreateProductBug.as_view(), name='create-bug'),
+    path('<str:product_slug>/bugs/', ProductBugListView.as_view(), name='bug-list'),
+    path('<str:product_slug>/bugs/<int:pk>/', ProductBugDetail.as_view(), name='bug-detail'),
+    path('<str:product_slug>/bugs/<int:pk>/update/', UpdateProductBug.as_view(), name='update-bug'),
 ]

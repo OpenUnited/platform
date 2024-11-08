@@ -54,6 +54,8 @@ from itertools import groupby
 from operator import attrgetter
 from django.db.models import Count
 
+from apps.capabilities.product_management.services import ProductService
+
 logger = logging.getLogger(__name__)
 
 class BaseProductView(LoginRequiredMixin):
@@ -207,13 +209,14 @@ class ProductListView(ListView):
     model = Product
     template_name = "product_management/products.html"
     context_object_name = 'products'
+    paginate_by = 12  # Optional: Add pagination if needed
 
     def get_queryset(self):
-        return Product.objects.all().order_by('-created_at')
+        return ProductService.get_visible_products(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['can_create'] = self.request.user.is_authenticated  # Only show create button for authenticated users
+        context['can_create'] = self.request.user.is_authenticated
         return context
 
 class ProductRedirectView(BaseProductView, RedirectView):
@@ -224,9 +227,24 @@ class ProductRedirectView(BaseProductView, RedirectView):
         product_slug = kwargs.get('product_slug')
         return reverse('product_management:product-summary', kwargs={'product_slug': product_slug})
 
-class ProductSummaryView(BaseProductView, TemplateView):
+class ProductSummaryView(TemplateView):
     """View for displaying product summary"""
     template_name = "product_management/product_summary.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the product
+        product = get_object_or_404(Product, slug=kwargs['product_slug'])
+        
+        # Check if user can see this product
+        if not ProductService.has_product_visibility_access(request.user, product):
+            if not request.user.is_authenticated:
+                # Redirect to login if user is not authenticated
+                return redirect(f"{settings.LOGIN_URL}?next={request.path}")
+            # If user is authenticated but doesn't have access
+            messages.error(request, "You do not have access to view this product")
+            return redirect('product_management:products')
+            
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -241,10 +259,13 @@ class ProductSummaryView(BaseProductView, TemplateView):
             status=Challenge.ChallengeStatus.ACTIVE
         )
         
-        # Check product management access
-        can_modify_product = RoleService.has_product_management_access(
-            self.request.user.person, 
-            product
+        # Check product management access (only for authenticated users)
+        can_modify_product = (
+            self.request.user.is_authenticated and 
+            RoleService.has_product_management_access(
+                self.request.user.person, 
+                product
+            )
         )
 
         # Get product tree data
@@ -259,12 +280,9 @@ class ProductSummaryView(BaseProductView, TemplateView):
             'challenges': challenges,
             'can_modify_product': can_modify_product,
             'tree_data': tree_data,
+            'url_segment': self.request.path.strip('/').split('/'),
+            'last_segment': self.request.path.strip('/').split('/')[-1]
         })
-
-        # Add URL segment data
-        url_segments = self.request.path.strip('/').split('/')
-        context['url_segment'] = url_segments
-        context['last_segment'] = url_segments[-1] if url_segments else ''
 
         return context
 
@@ -363,29 +381,29 @@ class ProductAreaDetailView(BaseProductView, DetailView):
     template_name = "product_management/product_area_detail.html"
     context_object_name = 'product_area'
 
-class ProductPeopleView(BaseProductView, TemplateView):
-    """View for managing product role assignments"""
-    template_name = "product_management/product_people.html"
+class ProductPeopleView(ListView):
+    template_name = 'product_management/product_people.html'
+
+    def get_queryset(self):
+        self.product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        # Get all members using RoleService
+        return RoleService.get_product_members(self.product)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        context['product'] = self.product
         
-        # Get product people and sort by role
-        product_people = ProductRoleAssignment.objects.filter(product=product).order_by('role')
+        # Get role assignments for all members
+        product_roles = ProductRoleAssignment.objects.filter(
+            product=self.product
+        ).select_related('person').order_by('role')
         
-        # Group by role and convert to dict
-        grouped_people = {}
-        for role, group in groupby(product_people, key=attrgetter('role')):
-            grouped_people[role] = list(group)
+        # Group by role for the template
+        context['grouped_product_people'] = [
+            (role, list(assignments)) 
+            for role, assignments in groupby(product_roles, key=lambda x: x.role)
+        ]
         
-        # Sort roles in reverse order
-        sorted_groups = dict(sorted(grouped_people.items(), reverse=True))
-        
-        context.update({
-            'product': product,
-            'grouped_product_people': sorted_groups.items(),
-        })
         return context
 
 
@@ -570,3 +588,16 @@ class ProductBountyListView(View):
             'bounties': [],  # Your bounties queryset
         }
         return render(request, 'product_management/product_detail_base.html', context)
+
+class ProductContributorsView(ListView):
+    template_name = 'product_management/product_contributors.html'
+    context_object_name = 'contributors'
+
+    def get_queryset(self):
+        self.product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        return ProductPerson.objects.filter(product=self.product)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.product
+        return context

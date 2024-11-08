@@ -227,3 +227,7 @@ if os.environ.get("SENTRY_DSN"):
         # of transactions for performance monitoring.
         traces_sample_rate=1.0,
     )
+
+# Authentication settings
+LOGIN_URL = 'security:sign_in'  # Update this to use your sign-in URL
+LOGIN_REDIRECT_URL = '/'  # Where to redirect after successful login

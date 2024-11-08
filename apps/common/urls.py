@@ -40,7 +40,7 @@ urlpatterns += [
     path("", include("social_django.urls", namespace="social")),
     path("tinymce/", include("tinymce.urls")),
     path("product-tree", ProductTreeView.as_view()),
-    path("product-tree/", ProductTreeView.as_view(), name="shareable_product_tree"),
+    path("product-tree/<str:product_slug>/", ProductTreeView.as_view(), name="shareable_product_tree"),
     path("product-tree/share/<str:pk>", ProductTreeUpdateView.as_view(), name="update_product_tree"),
     path('portal/', include('apps.portal.urls', namespace='portal')),
     path('', include('apps.flows.challenge_authoring.urls', namespace='challenge_authoring')),
