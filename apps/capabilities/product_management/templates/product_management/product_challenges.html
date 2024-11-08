@@ -16,7 +16,11 @@
         {% for challenge in challenges %}
         <li class="overflow-hidden rounded-xl border border-gray-200 flex flex-col">
             <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
-                <div class="text-sm font-medium leading-6 text-gray-900">{{ challenge.title }}</div>
+                <div class="text-sm font-medium leading-6 text-gray-900">
+                    <a href="{% url 'product_management:challenge-detail' product_slug=product.slug pk=challenge.pk %}" class="hover:text-indigo-600">
+                        {{ challenge.title }}
+                    </a>
+                </div>
                 <div class="rounded-[16px] py-1 px-2 text-xs font-medium border {{ challenge.status_color }}">
                     {{ challenge.status }}
                 </div>

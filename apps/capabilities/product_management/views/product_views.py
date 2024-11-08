@@ -528,6 +528,30 @@ class ChallengeDetailView(DetailView):
     template_name = "product_management/challenge_detail.html"
     context_object_name = 'challenge'
 
+    def get_queryset(self):
+        # Get the challenge with its related product
+        return Challenge.objects.select_related('product').filter(
+            product__slug=self.kwargs['product_slug']
+        )
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        
+        # Check if user has access to the related product
+        if not self.request.user.is_authenticated:
+            raise Http404("Authentication required")
+            
+        person = self.request.user.person
+        if not RoleService.has_product_access(person, obj.product):
+            raise Http404("You don't have access to this challenge")
+            
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.object.product
+        return context
+
 class DeleteBountyClaimView(BaseProductView, DeleteView):
     """View for deleting bounty claims"""
     model = BountyClaim

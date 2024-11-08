@@ -1,5 +1,7 @@
 {% extends 'base.html'  %}
 
+{% load product_management_tags %}
+
 {% block title   %}Challenge Detail{% endblock  %}
 
 {% block content   %}
@@ -7,7 +9,7 @@
 {% include 'toast.html'  %}
 
 <div class="flex flex-col">
-    {% include 'product_management/partials/breadcrumbs_challenge-detail.html'  %}
+    {% include 'product_management/partials/breadcrumbs_challenge_detail.html'  %}
     <h2 class="mt-2.5 mb-4 w-full text-neutral-800 text-xl">{{ challenge.title  }}</h2>
     <div class="space-y-3.5 text-sm text-black/[0.85]">
         {% if challenge.short_description %}
@@ -19,14 +21,14 @@
         <div class="flex items-center mb-2">
             <p>{{ challenge.description|linebreaksbr|safe  }}</p>
             {% if request.user.is_authenticated %}
-            {% if request.user.person  == challenge.created_by or challenge.can_delete_challenge(request.user.person) %}
+            {% if request.user.person == challenge.created_by or challenge|can_delete:request.user.person %}
             <div class="ml-auto">
-                <a href="{% url update-challenge challenge.product.slug, challenge.pk,   %}">
+                <a href="{% url 'product_management:update-challenge' challenge.product.slug challenge.pk %}">
                     <button type="button"
                         class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-2 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Edit
                         Challenge</button>
                 </a>
-                <a href="{% url delete-challenge challenge.product.slug, challenge.pk,   %}">
+                <a href="{% url 'product_management:delete-challenge' challenge.product.slug challenge.pk %}">
                     <button type="button"
                         class="focus:outline-none text-white bg-red-400 hover:bg-red-500 focus:ring-2 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Delete
                         Challenge</button>
@@ -40,14 +42,14 @@
     <div class="flex flex-col space-y-2.5 my-6">
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Created By:</strong>
-            <a href="{{ challenge.created_by|call:get_absolute_url  }}" class="flex items-center ml-4">
+            <a href="{{ challenge.created_by.get_absolute_url }}" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                     <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                        src="{{ challenge.created_by|call:get_photo_url  }}" alt="Created By">
+                        src="{{ challenge.created_by.get_photo_url }}" alt="Created By">
                 </div>
-                <div class="text-neutral-800">{{ challenge.created_by|call:get_full_name  }}</div>
+                <div class="text-neutral-800">{{ challenge.created_by.get_full_name }}</div>
             </a>
-            <span>&nbsp;at {{ challenge.created_at|date  }}</span>
+            <span>&nbsp;at {{ challenge.created_at|date }}</span>
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Status:</strong>
