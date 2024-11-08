@@ -483,7 +483,7 @@ class DeleteChallengeView(BaseProductView, DeleteView):
         return reverse('product_management:product-challenges', 
                       kwargs={'product_slug': self.kwargs['product_slug']})
 
-class BountyDetailView(BaseProductView, DetailView):
+class BountyDetailView(DetailView):
     """View for bounty details"""
     model = Bounty
     template_name = "product_management/bounty_detail.html"
@@ -508,7 +508,7 @@ class BountyDetailView(BaseProductView, DetailView):
         
         return context
 
-class BountyClaimView(BaseProductView, DetailView):
+class BountyClaimView(DetailView):
     """View for bounty claims"""
     model = BountyClaim
     template_name = "product_management/bounty_claim.html"
@@ -521,7 +521,7 @@ class CreateOrganisationView(BaseProductView, CreateView):
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy('product_management:products')
 
-class ChallengeDetailView(BaseProductView, DetailView):
+class ChallengeDetailView(DetailView):
     """View for challenge details"""
     model = Challenge
     template_name = "product_management/challenge_detail.html"
@@ -590,14 +590,28 @@ class ProductBountyListView(View):
         return render(request, 'product_management/product_detail_base.html', context)
 
 class ProductContributorsView(ListView):
-    template_name = 'product_management/product_contributors.html'
+    template_name = 'product_management/product_people.html'
     context_object_name = 'contributors'
 
     def get_queryset(self):
         self.product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        return ProductPerson.objects.filter(product=self.product)
+        return RoleService.get_product_members(self.product)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product'] = self.product
+        
+        # Optionally add role information for each contributor
+        contributors_with_roles = []
+        for person in context['contributors']:
+            roles = ProductRoleAssignment.objects.filter(
+                person=person,
+                product=self.product
+            ).values_list('role', flat=True)
+            contributors_with_roles.append({
+                'person': person,
+                'roles': list(roles)
+            })
+        context['contributors_with_roles'] = contributors_with_roles
+        
         return context
