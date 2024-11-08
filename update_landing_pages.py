@@ -131,10 +131,6 @@ def update_asset_paths(html_content):
         
         r'<li><a href="#">Add Your Product</a></li>': 
             r'<li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>',
-        
-        # Video modal links
-        r'<a href="#" class="btn btn-primary" onclick="openVideoModal\(\'([^\']+)\'\)">': 
-            r'<a href="javascript:void(0)" class="btn btn-primary" onclick="openVideoModal(\'\1\')">'
     }
     
     for old_link, new_link in nav_links.items():
