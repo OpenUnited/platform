@@ -15,6 +15,8 @@ from apps.common import models as common
 from apps.common.mixins import TimeStampMixin, UUIDMixin
 from apps.capabilities.product_management.mixins import ProductMixin
 
+import uuid
+
 
 class FileAttachment(models.Model):
     file = models.FileField(upload_to="attachments")
