@@ -60,7 +60,7 @@ from apps.capabilities.product_management.services import ProductService
 logger = logging.getLogger(__name__)
 
 class BaseProductView(LoginRequiredMixin):
-    """Base class for product views with common functionality"""
+    """Base class for product management views requiring authentication"""
     login_url = 'security:sign_in'
     
     def dispatch(self, request, *args, **kwargs):
@@ -79,6 +79,10 @@ class BaseProductView(LoginRequiredMixin):
                 return redirect('product_management:products')
                 
         return super().dispatch(request, *args, **kwargs)
+
+class BasePublicProductView:
+    """Base class for public product views"""
+    pass
 
 class CreateProductView(LoginRequiredMixin, CreateView):
     model = Product
@@ -215,91 +219,55 @@ class ProductListView(ListView):
         context['can_create'] = self.request.user.is_authenticated
         return context
 
-class ProductRedirectView(BaseProductView, RedirectView):
-    """Redirects to the product summary view"""
+class ProductRedirectView(BasePublicProductView, ProductVisibilityCheckMixin, RedirectView):
     permanent = False
+
+    def get_product(self):
+        # Override get_product to get product directly from slug
+        return get_object_or_404(Product, slug=self.kwargs['product_slug'])
 
     def get_redirect_url(self, *args, **kwargs):
         product_slug = kwargs.get('product_slug')
         return reverse('product_management:product-summary', kwargs={'product_slug': product_slug})
 
-class ProductSummaryView(TemplateView):
-    """View for displaying product summary"""
+class ProductSummaryView(BasePublicProductView, ProductVisibilityCheckMixin, DetailView):
+    model = Product
     template_name = "product_management/product_summary.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        # Get the product
-        product = get_object_or_404(Product, slug=kwargs['product_slug'])
-        
-        # Check if user can see this product
-        if not ProductService.has_product_visibility_access(request.user, product):
-            if not request.user.is_authenticated:
-                # Redirect to login if user is not authenticated
-                return redirect(f"{settings.LOGIN_URL}?next={request.path}")
-            # If user is authenticated but doesn't have access
-            messages.error(request, "You do not have access to view this product")
-            return redirect('product_management:products')
-            
-        return super().dispatch(request, *args, **kwargs)
+    slug_url_kwarg = 'product_slug'
+    context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        
-        # Add product to context
-        context['product'] = product
-        
-        # Get active challenges
-        challenges = Challenge.objects.filter(
-            product=product, 
-            status=Challenge.ChallengeStatus.ACTIVE
-        )
-        
-        # Check product management access (only for authenticated users)
-        can_modify_product = (
-            self.request.user.is_authenticated and 
-            RoleService.has_product_management_access(
-                self.request.user.person, 
-                product
-            )
-        )
-
-        # Get product tree data
-        product_tree = product.product_trees.first()
-        if product_tree:
-            product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
-            tree_data = [utils.serialize_tree(node) for node in product_areas]
-        else:
-            tree_data = []
-
-        context.update({
-            'challenges': challenges,
-            'can_modify_product': can_modify_product,
-            'tree_data': tree_data,
-            'url_segment': self.request.path.strip('/').split('/'),
-            'last_segment': self.request.path.strip('/').split('/')[-1]
-        })
-
+        context['product_slug'] = self.kwargs['product_slug']
+        context['challenges'] = Challenge.objects.filter(product=self.object)
         return context
 
-class ProductInitiativesView(BaseProductView, TemplateView):
-    """View for displaying product initiatives"""
+class ProductInitiativesView(BasePublicProductView, ProductVisibilityCheckMixin, ListView):
+    """View for product initiatives"""
+    model = Initiative
     template_name = "product_management/product_initiatives.html"
+    context_object_name = 'initiatives'
+
+    def get_object(self):
+        """Required by ProductVisibilityCheckMixin"""
+        return get_object_or_404(Product, slug=self.kwargs['product_slug'])
+
+    def get_queryset(self):
+        self.product = self.get_object()
+        return Initiative.objects.filter(
+            product=self.product
+        ).select_related('product')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        
-        initiatives = Initiative.objects.filter(product=product).order_by('-created_at')
-        
-        context.update({
-            'product': product,
-            'initiatives': initiatives,
-            'can_manage': RoleService.has_product_management_access(
+        context['product'] = self.product
+        context['product_slug'] = self.kwargs['product_slug']
+        context['last_segment'] = self.request.path.strip('/').split('/')[-1]
+        if self.request.user.is_authenticated:
+            context['can_manage'] = RoleService.has_product_management_access(
                 self.request.user.person, 
-                product
+                self.product
             )
-        })
         return context
 
 class BountyListView(ListView):
@@ -318,15 +286,23 @@ class BountyListView(ListView):
                 )  # Select only needed fields
                 .order_by('-created_at'))
 
-class ProductBountyListView(BaseProductView, ListView):
+class ProductBountyListView(BasePublicProductView, ProductVisibilityCheckMixin, ListView):
     """View for listing product-specific bounties"""
     model = Bounty
-    template_name = "product_management/product_bounties.html"
+    template_name = "product_management/product_detail_base.html"
     context_object_name = 'bounties'
 
-    def get_queryset(self):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        return Bounty.objects.filter(challenge__product=product).order_by('-created_at')
+        context['product'] = product
+        context['active_tab'] = 'bounties'
+        return context
+
+    def get_queryset(self):
+        return Bounty.objects.filter(
+            product__slug=self.kwargs['product_slug']
+        ).select_related('product')
 
 class ProductTreeInteractiveView(BaseProductView, TemplateView):
     """View for interactive product tree"""
@@ -543,31 +519,33 @@ class ChallengeDetailView(ProductVisibilityCheckMixin, DetailView):
     template_name = 'product_management/challenge_detail.html'
     context_object_name = 'challenge'
 
-    def get_queryset(self):
-        """Get challenge queryset filtered by product slug"""
-        return Challenge.objects.filter(
-            product__slug=self.kwargs['product_slug']
+    def get_object(self, queryset=None):
+        """Get the challenge object and ensure proper field selection"""
+        if queryset is None:
+            queryset = self.get_queryset()
+            
+        # Filter by both the product slug and challenge ID
+        queryset = queryset.filter(
+            product__slug=self.kwargs['product_slug'],
+            pk=self.kwargs['pk']
         ).select_related(
             'product',
+            'initiative',
             'product_area',
             'created_by'
-        ).prefetch_related(
-            'bounty_set',
-            'bounty_set__expertise'
         )
+        
+        obj = queryset.get()
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        challenge = self.object
-        product = challenge.product
-        current_person = self.request.user.person if self.request.user.is_authenticated else None
-        
-        context.update({
-            'product': product,
-            'show_actions': current_person and RoleService.has_product_access(current_person, product),
-            'can_modify': current_person and RoleService.has_product_management_access(current_person, product),
-            'bounties': challenge.bounty_set.all()
-        })
+        context['product'] = self.object.product
+        if self.request.user.is_authenticated:
+            context['can_manage'] = RoleService.has_product_management_access(
+                self.request.user.person,
+                self.object.product
+            )
         return context
 
 class DeleteBountyClaimView(BaseProductView, DeleteView):
