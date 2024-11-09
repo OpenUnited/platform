@@ -23,6 +23,7 @@ from django.views.generic import (
 
 from apps.canopy import utils as canopy_utils
 from apps.capabilities.commerce.models import Organisation
+from apps.capabilities.product_management.views.view_mixins import ProductVisibilityCheckMixin
 from apps.common import mixins as common_mixins
 from .. import utils
 from ..forms import (
@@ -133,9 +134,12 @@ class ProductDetailView(BaseProductView, DetailView):
         )
         return context
 
-class ProductChallengesView(LoginRequiredMixin, TemplateView):
+class ProductChallengesView(ProductVisibilityCheckMixin, DetailView):
+    model = Product
     template_name = 'product_management/product_challenges.html'
-    
+    slug_url_kwarg = 'product_slug'
+    context_object_name = 'product'
+
     STATUS_COLORS = {
         'Draft': 'text-gray-500 border-gray-500',
         'Blocked': 'text-red-700 border-red-700',
@@ -144,36 +148,27 @@ class ProductChallengesView(LoginRequiredMixin, TemplateView):
         'Cancelled': 'text-gray-400 border-gray-400',
     }
     
-    def get_queryset(self, product):
+    def get_challenges_queryset(self):
+        """Get challenges for the current product with optimized queries"""
         return Challenge.objects.filter(
-            product=product
+            product=self.object
         ).select_related(
             'product_area',
             'created_by'
         ).prefetch_related(
             'bounty_set'
         )
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Get product from URL using slug instead of ID
-        product_slug = self.kwargs.get('product_slug')
-        product = get_object_or_404(Product, slug=product_slug)
-        
-        challenges = self.get_queryset(product)
-        
-        # Process each challenge
-        for challenge in challenges:
-            challenge.status_color = self.STATUS_COLORS.get(challenge.status, '')
-            challenge.bounty_points = challenge.get_bounty_points()
-            challenge.has_bounty = challenge.has_bounty()
+        product = self.object
+        current_person = self.request.user.person if self.request.user.is_authenticated else None
         
         context.update({
-            'challenges': challenges,
-            'product': product,
-            'status_choices': Challenge.ChallengeStatus.choices,
-            'priority_choices': Challenge.ChallengePriority.choices,
+            'challenges': self.get_challenges_queryset(),
+            'status_colors': self.STATUS_COLORS,
+            'show_actions': current_person and RoleService.has_product_access(current_person, product),
+            'can_modify': current_person and RoleService.has_product_management_access(current_person, product),
         })
         return context
 
@@ -493,15 +488,36 @@ class BountyDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         bounty = self.object
-        
-        # Structure the data as expected by the template
+        product = bounty.challenge.product
+
+        # Default values for anonymous users
+        show_actions = False
+        can_be_modified = False
+        created_bounty_claim_request = False
+
+        # Only check permissions for authenticated users
+        if self.request.user.is_authenticated:
+            current_person = self.request.user.person
+            show_actions = RoleService.has_product_access(
+                current_person,
+                product
+            )
+            can_be_modified = RoleService.has_product_management_access(
+                current_person,
+                product
+            )
+            created_bounty_claim_request = BountyClaim.objects.filter(
+                bounty=bounty,
+                person=current_person
+            ).exists()
+
         context['data'] = {
-            'product': bounty.challenge.product,
+            'product': product,
             'challenge': bounty.challenge,
             'bounty': bounty,
-            'show_actions': True,  # Or your logic to determine this
-            'can_be_modified': True,  # Or your logic to determine this
-            'created_bounty_claim_request': False  # Or your logic to determine this
+            'show_actions': show_actions,
+            'can_be_modified': can_be_modified,
+            'created_bounty_claim_request': created_bounty_claim_request
         }
         
         # Add any additional context needed by the template
@@ -522,34 +538,36 @@ class CreateOrganisationView(BaseProductView, CreateView):
     template_name = "product_management/create_organisation.html"
     success_url = reverse_lazy('product_management:products')
 
-class ChallengeDetailView(DetailView):
-    """View for challenge details"""
+class ChallengeDetailView(ProductVisibilityCheckMixin, DetailView):
     model = Challenge
-    template_name = "product_management/challenge_detail.html"
+    template_name = 'product_management/challenge_detail.html'
     context_object_name = 'challenge'
 
     def get_queryset(self):
-        # Get the challenge with its related product
-        return Challenge.objects.select_related('product').filter(
+        """Get challenge queryset filtered by product slug"""
+        return Challenge.objects.filter(
             product__slug=self.kwargs['product_slug']
+        ).select_related(
+            'product',
+            'product_area',
+            'created_by'
+        ).prefetch_related(
+            'bounty_set',
+            'bounty_set__expertise'
         )
-
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        
-        # Check if user has access to the related product
-        if not self.request.user.is_authenticated:
-            raise Http404("Authentication required")
-            
-        person = self.request.user.person
-        if not RoleService.has_product_access(person, obj.product):
-            raise Http404("You don't have access to this challenge")
-            
-        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = self.object.product
+        challenge = self.object
+        product = challenge.product
+        current_person = self.request.user.person if self.request.user.is_authenticated else None
+        
+        context.update({
+            'product': product,
+            'show_actions': current_person and RoleService.has_product_access(current_person, product),
+            'can_modify': current_person and RoleService.has_product_management_access(current_person, product),
+            'bounties': challenge.bounty_set.all()
+        })
         return context
 
 class DeleteBountyClaimView(BaseProductView, DeleteView):

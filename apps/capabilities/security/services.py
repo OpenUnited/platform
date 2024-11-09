@@ -504,3 +504,49 @@ class RoleService:
                 return True
                 
         return False
+
+    @staticmethod
+    def can_access_product_by_visibility(person: Optional[Person], product: Product) -> bool:
+        """
+        Check if a person can access a product based on its visibility settings
+        
+        Args:
+            person: Optional Person object (None for unauthenticated users)
+            product: Product object to check access for
+            
+        Returns:
+            bool indicating if access is allowed
+        """
+        # GLOBAL products are accessible to everyone
+        if product.visibility == Product.Visibility.GLOBAL:
+            return True
+            
+        # All other visibility levels require authentication
+        if person is None:
+            return False
+            
+        # ORG_ONLY requires org membership
+        if product.visibility == Product.Visibility.ORG_ONLY:
+            return RoleService.has_organisation_role(
+                person,
+                product.organisation,
+                [
+                    OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MEMBER
+                ]
+            )
+            
+        # RESTRICTED requires product role
+        if product.visibility == Product.Visibility.RESTRICTED:
+            return RoleService.has_product_role(
+                person,
+                product,
+                [
+                    ProductRoleAssignment.ProductRoles.ADMIN,
+                    ProductRoleAssignment.ProductRoles.MANAGER,
+                    ProductRoleAssignment.ProductRoles.MEMBER
+                ]
+            )
+        
+        return False
