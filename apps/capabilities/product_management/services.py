@@ -3,10 +3,12 @@ from django.db import transaction
 from django.core.exceptions import ValidationError
 from typing import Dict, List, Optional, Tuple
 from django.db.models import Q, QuerySet
+from django.http import HttpResponse
 
 from apps.capabilities.talent.models import Person, Expertise
 from apps.capabilities.security.services import RoleService
-from .models import Bounty, Challenge, Product
+from .models import Bounty, Challenge, Product, Idea, Bug, IdeaVote, ProductContributorAgreementTemplate, ProductArea, Initiative
+from apps.capabilities.commerce.models import Organisation
 from . import forms
 
 logger = logging.getLogger(__name__)
@@ -138,3 +140,253 @@ class ProductService:
         user_products = RoleService.get_user_products(user.person)
         return (product.visibility == Product.Visibility.GLOBAL or 
                 user_products.filter(id=product.id).exists())
+
+class IdeaService:
+    @staticmethod
+    def create_idea(form_data: Dict, person: Person, product: Product) -> Tuple[bool, Optional[str], Optional[Idea]]:
+        """Create a new idea for a product"""
+        try:
+            idea = Idea.objects.create(
+                person=person,
+                product=product,
+                **form_data
+            )
+            return True, None, idea
+        except Exception as e:
+            logger.error(f"Error creating idea: {e}")
+            return False, str(e), None
+
+    @staticmethod
+    def update_idea(idea: Idea, form_data: Dict) -> Tuple[bool, Optional[str]]:
+        """Update an existing idea"""
+        try:
+            for key, value in form_data.items():
+                setattr(idea, key, value)
+            idea.save()
+            return True, None
+        except Exception as e:
+            logger.error(f"Error updating idea: {e}")
+            return False, str(e)
+
+    @staticmethod
+    def get_idea(pk: int) -> Optional[Idea]:
+        """Get an idea by primary key"""
+        try:
+            return Idea.objects.get(pk=pk)
+        except Idea.DoesNotExist:
+            return None
+
+    @staticmethod
+    def get_product_ideas(product: Product) -> QuerySet[Idea]:
+        """Get all ideas for a product"""
+        return Idea.objects.filter(product=product)
+
+    @staticmethod
+    def toggle_vote(idea: Idea, user) -> Tuple[bool, Optional[str], int]:
+        """Toggle a vote for an idea"""
+        try:
+            if IdeaVote.objects.filter(idea=idea, voter=user).exists():
+                IdeaVote.objects.get(idea=idea, voter=user).delete()
+            else:
+                IdeaVote.objects.create(idea=idea, voter=user)
+            return True, None, IdeaVote.objects.filter(idea=idea).count()
+        except Exception as e:
+            logger.error(f"Error toggling vote: {e}")
+            return False, str(e), 0
+
+    @staticmethod
+    def can_modify_idea(idea: Idea, person: Person) -> bool:
+        """Check if a person can modify an idea"""
+        return idea.person == person
+
+
+class BugService:
+    @staticmethod
+    def create_bug(form_data: Dict, person: Person, product: Product) -> Tuple[bool, Optional[str], Optional[Bug]]:
+        """Create a new bug for a product"""
+        try:
+            bug = Bug.objects.create(
+                person=person,
+                product=product,
+                **form_data
+            )
+            return True, None, bug
+        except Exception as e:
+            logger.error(f"Error creating bug: {e}")
+            return False, str(e), None
+
+    @staticmethod
+    def update_bug(bug: Bug, form_data: Dict) -> Tuple[bool, Optional[str]]:
+        """Update an existing bug"""
+        try:
+            for key, value in form_data.items():
+                setattr(bug, key, value)
+            bug.save()
+            return True, None
+        except Exception as e:
+            logger.error(f"Error updating bug: {e}")
+            return False, str(e)
+
+    @staticmethod
+    def get_bug(pk: int) -> Optional[Bug]:
+        """Get a bug by primary key"""
+        try:
+            return Bug.objects.get(pk=pk)
+        except Bug.DoesNotExist:
+            return None
+
+    @staticmethod
+    def get_product_bugs(product: Product) -> QuerySet[Bug]:
+        """Get all bugs for a product"""
+        return Bug.objects.filter(product=product)
+
+    @staticmethod
+    def can_modify_bug(bug: Bug, person: Person) -> bool:
+        """Check if a person can modify a bug"""
+        return bug.person == person
+
+
+class IdeasAndBugsService:
+    @staticmethod
+    def get_product_ideas_and_bugs(product: Product) -> Tuple[QuerySet[Idea], QuerySet[Bug]]:
+        """Get all ideas and bugs for a product"""
+        ideas = IdeaService.get_product_ideas(product)
+        bugs = BugService.get_product_bugs(product)
+        return ideas, bugs
+
+class ProductManagementService:
+    @staticmethod
+    def create_product(form_data: Dict, person: Person) -> Tuple[bool, Optional[str], Optional[Product]]:
+        try:
+            product = Product.objects.create(
+                **form_data,
+                created_by=person
+            )
+            return True, None, product
+        except Exception as e:
+            logger.error(f"Error creating product: {e}")
+            return False, str(e), None
+
+    @staticmethod
+    def update_product(product: Product, form_data: Dict) -> Tuple[bool, Optional[str]]:
+        try:
+            for key, value in form_data.items():
+                setattr(product, key, value)
+            product.save()
+            return True, None
+        except Exception as e:
+            logger.error(f"Error updating product: {e}")
+            return False, str(e)
+
+class ContributorAgreementService:
+    @staticmethod
+    def create_template(form_data: Dict, person: Person) -> Tuple[bool, Optional[str], Optional[ProductContributorAgreementTemplate]]:
+        try:
+            template = ProductContributorAgreementTemplate.objects.create(
+                **form_data,
+                created_by=person
+            )
+            return True, None, template
+        except Exception as e:
+            logger.error(f"Error creating template: {e}")
+            return False, str(e), None
+
+class OrganisationService:
+    @staticmethod
+    def create_organisation(form_data: Dict) -> Tuple[bool, Optional[str], Optional[Organisation]]:
+        try:
+            org = Organisation.objects.create(**form_data)
+            return True, None, org
+        except Exception as e:
+            logger.error(f"Error creating organisation: {e}")
+            return False, str(e), None
+
+class ProductAreaService:
+    @staticmethod
+    def create_area(form_data: Dict) -> Tuple[bool, Optional[str], Optional[ProductArea]]:
+        try:
+            area = ProductArea.objects.create(**form_data)
+            return True, None, area
+        except Exception as e:
+            logger.error(f"Error creating product area: {e}")
+            return False, str(e), None
+
+    @staticmethod
+    def update_area(area: ProductArea, form_data: Dict) -> Tuple[bool, Optional[str]]:
+        try:
+            for key, value in form_data.items():
+                setattr(area, key, value)
+            area.save()
+            return True, None
+        except Exception as e:
+            logger.error(f"Error updating product area: {e}")
+            return False, str(e)
+
+class InitiativeService:
+    @staticmethod
+    def create_initiative(form_data: Dict, person: Person, product: Product) -> Tuple[bool, Optional[str], Optional[Initiative]]:
+        try:
+            initiative = Initiative.objects.create(
+                **form_data,
+                created_by=person,
+                product=product
+            )
+            return True, None, initiative
+        except Exception as e:
+            logger.error(f"Error creating initiative: {e}")
+            return False, str(e), None
+
+class ChallengeService:
+    @staticmethod
+    def get_product_challenges(product: Product) -> QuerySet:
+        """Get challenges for a specific product with related data."""
+        return Challenge.objects.filter(
+            product=product
+        ).select_related(
+            'product_area',
+            'created_by'
+        ).prefetch_related(
+            'bounty_set'
+        )
+
+class ProductTreeService:
+    @staticmethod
+    def get_product_tree_data(product: Product) -> List:
+        """Get tree data for a product."""
+        product_tree = product.product_trees.first()
+        if not product_tree:
+            return []
+            
+        product_areas = ProductArea.get_root_nodes().filter(product_tree=product_tree)
+        return [utils.serialize_tree(node) for node in product_areas]
+
+class ProductPeopleService:
+    @staticmethod
+    def get_grouped_product_roles(product: Product) -> List[Tuple]:
+        """Get product roles grouped by role type."""
+        product_roles = ProductRoleAssignment.objects.filter(
+            product=product
+        ).select_related('person').order_by('role')
+        
+        return [
+            (role, list(assignments)) 
+            for role, assignments in groupby(product_roles, key=lambda x: x.role)
+        ]
+
+class BountyService:
+    @staticmethod
+    def get_visible_bounties(user) -> QuerySet:
+        """Get all bounties visible to the user."""
+        visible_products = ProductService.get_visible_products(user)
+        return (Bounty.objects
+                .filter(challenge__product__in=visible_products)
+                .select_related('challenge', 'challenge__product')
+                .order_by('-created_at'))
+
+    @staticmethod
+    def get_product_bounties(product_slug: str) -> QuerySet:
+        """Get bounties for a specific product."""
+        return (Bounty.objects
+                .filter(challenge__product__slug=product_slug)
+                .select_related('challenge', 'challenge__product')
+                .order_by('-created_at'))

@@ -1,12 +1,22 @@
-from apps.common.settings.base import *
+from .base import *
 
-DEBUG = True
-SECRET_KEY = "Test secret"
-ALLOWED_HOSTS = ["*"]
-TEMPLATES[0]["OPTIONS"]["auto_reload"] = DEBUG
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+}
 
-# Required for django-debug-toolbar
-INSTALLED_APPS += ["debug_toolbar"]
-MIDDLEWARE += [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
+
+# Disable migrations
+class DisableMigrations:
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return None
+
+MIGRATION_MODULES = DisableMigrations()

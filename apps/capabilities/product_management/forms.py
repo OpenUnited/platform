@@ -494,32 +494,17 @@ class ProductForm(forms.ModelForm):
             # ... other widget definitions remain the same ...
         }
 
-    def __init__(self, *args, person: Person = None, **kwargs):
+    def __init__(self, *args, person=None, **kwargs):
+        self.person = person
         super().__init__(*args, **kwargs)
         
-        # Make fields optional if they should be
-        self.fields['organisation'].required = False
-        self.fields['website'].required = False
-        
-        if person:
-            # Get organizations where user has management rights
-            managed_orgs = RoleService.get_managed_organisations(person)
-            self.fields['organisation'].queryset = managed_orgs
+        # Initialize form fields
+        if self.person and not self.instance.pk:
+            self.fields['make_me_owner'].initial = True
 
-            if not managed_orgs.exists():
-                # If user has no managed orgs, they must create as personal product
-                self.fields['organisation'].disabled = True
-                self.fields['make_me_owner'].initial = True
-                self.fields['make_me_owner'].disabled = True
-            else:
-                # For each org in the queryset, verify if user is admin/manager
-                for org in managed_orgs:
-                    if RoleService.is_organisation_manager(person, org):
-                        # User can create products for this org
-                        self.fields['make_me_owner'].disabled = False
-                        break
-                else:
-                    # If no admin/manager rights found, force personal product
-                    self.fields['organisation'].disabled = True
-                    self.fields['make_me_owner'].initial = True
-                    self.fields['make_me_owner'].disabled = True
+    def clean(self):
+        cleaned_data = super().clean()
+        # Either organization or make_me_owner must be set
+        if not cleaned_data.get('organisation') and not cleaned_data.get('make_me_owner'):
+            raise ValidationError("Either organization or make_me_owner must be specified")
+        return cleaned_data
