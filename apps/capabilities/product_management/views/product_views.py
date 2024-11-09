@@ -275,42 +275,77 @@ class BountyListView(ListView):
     model = Bounty
     template_name = "product_management/bounty/list.html"
     context_object_name = 'bounties'
-    paginate_by = 20  # Show 20 bounties per page
+    paginate_by = 20
 
     def get_queryset(self):
-        return (Bounty.objects
-                .select_related('challenge', 'challenge__product')  # Fetch related fields in single query
-                .only(
-                    'id', 'title', 'points', 'status', 'created_at',
-                    'challenge__title', 'challenge__product__name'
-                )  # Select only needed fields
-                .order_by('-created_at'))
-
-class ProductBountyListView(BasePublicProductView, ProductVisibilityCheckMixin, ListView):
-    """View for listing product-specific bounties"""
-    model = Bounty
-    template_name = "product_management/product_detail_base.html"
-    context_object_name = 'bounties'
+        # If product_slug is in kwargs, filter by that product
+        if 'product_slug' in self.kwargs:
+            product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+            return (Bounty.objects
+                    .filter(challenge__product=product)
+                    .select_related('challenge', 'challenge__product')
+                    .order_by('-created_at'))
+        else:
+            # Otherwise, show all visible bounties
+            return (Bounty.objects
+                    .filter(
+                        challenge__product__in=ProductService.get_visible_products(self.request.user)
+                    )
+                    .select_related('challenge', 'challenge__product')
+                    .order_by('-created_at'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        context['product'] = product
-        context['active_tab'] = 'bounties'
+        if 'product_slug' in self.kwargs:
+            product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+            context['product'] = product
+            if self.request.user.is_authenticated:
+                context['can_manage'] = RoleService.has_product_management_access(
+                    self.request.user.person,
+                    product
+                )
         return context
 
-    def get_queryset(self):
-        return Bounty.objects.filter(
-            product__slug=self.kwargs['product_slug']
-        ).select_related('product')
+class ProductBountiesView(ProductVisibilityCheckMixin, ListView):
+    """View for listing product-specific bounties"""
+    model = Bounty
+    template_name = "product_management/product_bounties.html"
+    context_object_name = 'bounties'
+    paginate_by = 20
 
-class ProductTreeInteractiveView(BaseProductView, TemplateView):
+    def get_product(self):
+        """Required by ProductVisibilityCheckMixin"""
+        return get_object_or_404(Product, slug=self.kwargs['product_slug'])
+
+    def get_queryset(self):
+        product = self.get_product()
+        return (Bounty.objects
+                .filter(challenge__product=product)
+                .select_related('challenge', 'challenge__product')
+                .order_by('-created_at'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_product()
+        context['product'] = product
+        if self.request.user.is_authenticated:
+            context['can_manage'] = RoleService.has_product_management_access(
+                self.request.user.person,
+                product
+            )
+        return context
+
+class ProductTreeInteractiveView(ProductVisibilityCheckMixin, TemplateView):
     """View for interactive product tree"""
     template_name = "product_management/product_tree.html"
 
+    def get_product(self):
+        """Required by ProductVisibilityCheckMixin"""
+        return get_object_or_404(Product, slug=self.kwargs['product_slug'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        product = self.get_product()
         
         product_tree = product.product_trees.first()
         if product_tree:
@@ -322,7 +357,7 @@ class ProductTreeInteractiveView(BaseProductView, TemplateView):
         context.update({
             'product': product,
             'tree_data': tree_data,
-            'can_manage': RoleService.has_product_management_access(
+            'can_manage': self.request.user.is_authenticated and RoleService.has_product_management_access(
                 self.request.user.person, 
                 product
             )
@@ -347,11 +382,15 @@ class ProductAreaUpdateView(BaseProductView, UpdateView):
     def get_success_url(self):
         return reverse('product-tree', kwargs={'product_slug': self.kwargs['product_slug']})
 
-class ProductAreaDetailView(BaseProductView, DetailView):
+class ProductAreaDetailView(ProductVisibilityCheckMixin, DetailView):
     """View for product area details"""
     model = ProductArea
     template_name = "product_management/product_area_detail.html"
     context_object_name = 'product_area'
+
+    def get_product(self):
+        """Required by ProductVisibilityCheckMixin"""
+        return self.get_object().product_tree.product
 
 class ProductPeopleView(ListView):
     template_name = 'product_management/product_people.html'
@@ -455,11 +494,19 @@ class DeleteChallengeView(BaseProductView, DeleteView):
         return reverse('product_management:product-challenges', 
                       kwargs={'product_slug': self.kwargs['product_slug']})
 
-class BountyDetailView(DetailView):
+class BountyDetailView(ProductVisibilityCheckMixin, DetailView):
     """View for bounty details"""
     model = Bounty
     template_name = "product_management/bounty_detail.html"
     context_object_name = 'bounty'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        return obj
+
+    def get_product(self):
+        """Required by ProductVisibilityCheckMixin"""
+        return self.get_object().challenge.product
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -467,38 +514,28 @@ class BountyDetailView(DetailView):
         product = bounty.challenge.product
 
         # Default values for anonymous users
-        show_actions = False
-        can_be_modified = False
-        created_bounty_claim_request = False
-
-        # Only check permissions for authenticated users
-        if self.request.user.is_authenticated:
-            current_person = self.request.user.person
-            show_actions = RoleService.has_product_access(
-                current_person,
-                product
-            )
-            can_be_modified = RoleService.has_product_management_access(
-                current_person,
-                product
-            )
-            created_bounty_claim_request = BountyClaim.objects.filter(
-                bounty=bounty,
-                person=current_person
-            ).exists()
-
         context['data'] = {
             'product': product,
             'challenge': bounty.challenge,
             'bounty': bounty,
-            'show_actions': show_actions,
-            'can_be_modified': can_be_modified,
-            'created_bounty_claim_request': created_bounty_claim_request
+            'show_actions': False,
+            'can_be_modified': False,
+            'created_bounty_claim_request': False
         }
+
+        # Add authenticated user specific context
+        if self.request.user.is_authenticated:
+            current_person = self.request.user.person
+            context['data'].update({
+                'show_actions': RoleService.has_product_access(current_person, product),
+                'can_be_modified': RoleService.has_product_management_access(current_person, product),
+                'created_bounty_claim_request': BountyClaim.objects.filter(
+                    bounty=bounty,
+                    person=current_person
+                ).exists()
+            })
         
-        # Add any additional context needed by the template
-        context['expertise_list'] = bounty.expertise.all() if bounty.expertise.exists() else []
-        
+        context['expertise_list'] = bounty.expertise.all()
         return context
 
 class BountyClaimView(DetailView):
@@ -597,18 +634,6 @@ class CreateBountyView(BaseProductView, CreateView):
             'challenge_id': self.kwargs['challenge_id'],
             'pk': self.object.pk
         })
-
-class ProductBountyListView(View):
-    def get(self, request, product_slug):
-        # Get the last segment of the URL path
-        last_segment = request.path.strip('/').split('/')[-1]
-        
-        context = {
-            'product_slug': product_slug,
-            'last_segment': last_segment,
-            'bounties': [],  # Your bounties queryset
-        }
-        return render(request, 'product_management/product_detail_base.html', context)
 
 class ProductContributorsView(ListView):
     template_name = 'product_management/product_people.html'

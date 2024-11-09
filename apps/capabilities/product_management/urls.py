@@ -7,7 +7,7 @@ from .views.product_views import (
     ProductInitiativesView,
     ProductChallengesView,
     BountyListView,
-    ProductBountyListView,
+    ProductBountiesView,
     ProductTreeInteractiveView,
     ProductAreaCreateView,
     ProductAreaUpdateView,
@@ -106,7 +106,6 @@ urlpatterns = [
         CreateOrganisationView.as_view(),
         name="create-organisation",
     ),
-    path("<str:product_slug>/bounties/", ProductBountyListView.as_view(), name="product-bounties"),
 ]
 
 # Product URLs
@@ -127,14 +126,14 @@ urlpatterns += [
         name="product-initiatives",
     ),
     path(
+        "<str:product_slug>/bounties/",
+        ProductBountiesView.as_view(),
+        name="product-bounties",
+    ),
+    path(
         "<str:product_slug>/challenges",
         ProductChallengesView.as_view(),
         name="product-challenges",
-    ),
-    path(
-        "bounties",
-        ProductBountyListView.as_view(),
-        name="product-bounties",
     ),
     path(
         "tree",
