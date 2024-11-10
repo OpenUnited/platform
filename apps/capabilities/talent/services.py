@@ -3,9 +3,13 @@ from django.db import transaction
 from django.core.exceptions import ValidationError, PermissionDenied, ObjectDoesNotExist
 from django.db.models import QuerySet, Avg, Count
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+import json
 
 from apps.capabilities.product_management.models import Bounty
 from apps.capabilities.talent.forms import PersonProfileForm, PersonSkillFormSet
+from apps.common.exceptions import ServiceException, InvalidInputError, AuthorizationError, ResourceNotFoundError
 from . import utils
 
 from .models import (
@@ -13,36 +17,73 @@ from .models import (
     Feedback, BountyClaim, BountyDeliveryAttempt
 )
 from apps.capabilities.security.models import ProductRoleAssignment
+from django.core.cache import cache
 
 
 class ProfileService:
     @staticmethod
     def get_user_profile(username: str) -> Person:
         """Get user profile with related data"""
-        return Person.objects.select_related('user').get(user__username=username)
+        try:
+            return Person.objects.select_related('user').get(
+                user__username=username
+            )
+        except ObjectDoesNotExist:
+            raise ResourceNotFoundError(f"User {username} not found")
 
     @staticmethod
     @transaction.atomic
     def update_profile(person: Person, profile_data: dict, skills_data: list) -> Person:
         """Update profile and associated skills"""
-        # Update basic profile fields
-        for key, value in profile_data.items():
-            setattr(person, key, value)
-        person.full_clean()
-        person.save()
+        try:
+            # Validate inputs
+            if not isinstance(profile_data, dict):
+                raise InvalidInputError("Profile data must be a dictionary")
+            if not isinstance(skills_data, list):
+                raise InvalidInputError("Skills data must be a list")
 
-        # Update skills
-        PersonSkill.objects.filter(person=person).delete()
-        for skill_data in skills_data:
-            if not skill_data.get('skill'):
-                continue
-            PersonSkill.objects.create(
-                person=person,
-                skill_id=skill_data['skill'],
-                expertise_ids=skill_data.get('expertise', [])
-            )
-        
-        return person
+            with transaction.atomic():
+                # Update basic profile fields
+                for key, value in profile_data.items():
+                    if not hasattr(person, key):
+                        raise InvalidInputError(f"Invalid profile field: {key}")
+                    setattr(person, key, value)
+                person.full_clean()
+                person.save()
+
+                # Update skills
+                PersonSkill.objects.filter(person=person).delete()
+                for skill_data in skills_data:
+                    if not skill_data.get('skill'):
+                        continue
+                    
+                    # Validate skill exists
+                    if not Skill.objects.filter(id=skill_data['skill']).exists():
+                        raise InvalidInputError(f"Invalid skill ID: {skill_data['skill']}")
+                    
+                    expertise_ids = skill_data.get('expertise', [])
+                    if expertise_ids:
+                        # Validate expertise belongs to skill
+                        valid_expertise = Expertise.objects.filter(
+                            id__in=expertise_ids,
+                            skill_id=skill_data['skill']
+                        ).count() == len(expertise_ids)
+                        
+                        if not valid_expertise:
+                            raise InvalidInputError("Invalid expertise for skill")
+                    
+                    PersonSkill.objects.create(
+                        person=person,
+                        skill_id=skill_data['skill'],
+                        expertise_ids=expertise_ids
+                    )
+                
+                return person
+                
+        except ValidationError as e:
+            raise InvalidInputError(str(e))
+        except Exception as e:
+            raise ServiceException(f"Error updating profile: {str(e)}", details=str(e))
 
     @staticmethod
     def get_active_skills() -> QuerySet:
@@ -52,11 +93,14 @@ class ProfileService:
                 .order_by('-display_boost_factor'))
 
     @staticmethod
-    def get_expertises_for_skill(skill_id: int) -> QuerySet:
-        """Get expertise hierarchy for a given skill"""
-        return (Expertise.get_roots()
-                .filter(skill_id=skill_id)
-                .prefetch_related('expertise_children'))
+    def get_expertises_for_skill(skill_id: Optional[int]) -> QuerySet:
+        """Get expertise hierarchy for a skill"""
+        queryset = (Expertise.get_roots()
+            .prefetch_related('expertise_children')
+            .select_related('skill'))
+        if skill_id:
+            queryset = queryset.filter(skill_id=skill_id)
+        return queryset
 
     @staticmethod
     def get_profile_context(person: Person, is_htmx: bool, request_data: dict = None) -> dict:
@@ -106,31 +150,48 @@ class ProfileService:
             "expertises": ProfileService.get_expertises_for_skill(None)
         }
 
+    @staticmethod
+    def get_expertise_context(skill_id: Optional[int], index: int) -> dict:
+        """Get context data for expertise view"""
+        context = {'index': index}
+        
+        if skill_id:
+            context['expertises'] = ProfileService.get_expertises_for_skill(skill_id)
+        
+        return context
+
 
 class ShowcaseService:
     @staticmethod
     def get_showcase_data(username: str, viewing_user=None) -> Dict:
-        """Get all data needed for talent showcase"""
-        person = ProfileService.get_user_profile(username)
-        
-        showcase_data = {
-            'person': person,
-            'person_linkedin_link': utils.get_path_from_url(person.linkedin_link, True),
-            'person_twitter_link': utils.get_path_from_url(person.twitter_link, True),
-            'person_skills': person.skills.all().select_related("skill"),
-            'bounty_claims_completed': ShowcaseService._get_completed_claims(person),
-            'bounty_claims_claimed': ShowcaseService._get_claimed_bounties(person),
-            'received_feedbacks': FeedbackService.get_person_feedbacks(person),
-            'can_leave_feedback': False,
-        }
-        
-        if viewing_user and not viewing_user.is_anonymous:
-            showcase_data['can_leave_feedback'] = FeedbackService.can_leave_feedback(
-                viewing_user.person, 
-                person
-            )
-            
-        return showcase_data
+        try:
+            person = Person.objects.select_related(
+                'user'
+            ).prefetch_related(
+                'skills__skill',
+                'bountyclaims__bounty__challenge__product',
+                'received_feedbacks__provider'
+            ).get(user__username=username)
+
+            return {
+                'person': person,
+                'user': person.user,
+                'person_skills': person.skills.all(),
+                'bounty_claims': person.bountyclaims.all(),
+                'received_feedbacks': person.received_feedbacks.all(),
+                'can_leave_feedback': (
+                    viewing_user and 
+                    not viewing_user.is_anonymous and 
+                    FeedbackService.can_leave_feedback(
+                        provider=viewing_user.person,
+                        recipient=person
+                    )
+                )
+            }
+        except ObjectDoesNotExist:
+            raise ResourceNotFoundError(f"User {username} not found")
+        except Exception as e:
+            raise ServiceException(f"Error getting showcase data: {str(e)}")
 
     @staticmethod
     def _get_completed_claims(person: Person) -> QuerySet:
@@ -160,19 +221,27 @@ class BountyDeliveryService:
         attempt_data: dict
     ) -> BountyDeliveryAttempt:
         """Create new delivery attempt and update bounty claim status"""
-        # Create the attempt
-        attempt = BountyDeliveryAttempt.objects.create(
-            person=person,
-            bounty_claim=bounty_claim,
-            kind=BountyDeliveryAttempt.SubmissionType.NEW,
-            **attempt_data
-        )
+        try:
+            required_fields = ['description']
+            if not all(field in attempt_data for field in required_fields):
+                raise InvalidInputError("Missing required fields in attempt data")
 
-        # Update claim status
-        bounty_claim.status = BountyClaim.Status.CONTRIBUTED
-        bounty_claim.save()
+            with transaction.atomic():
+                attempt = BountyDeliveryAttempt.objects.create(
+                    person=person,
+                    bounty_claim=bounty_claim,
+                    kind=BountyDeliveryAttempt.SubmissionType.NEW,
+                    **attempt_data
+                )
 
-        return attempt
+                bounty_claim.status = BountyClaim.Status.CONTRIBUTED
+                bounty_claim.save()
+
+                return attempt
+        except ValidationError as e:
+            raise InvalidInputError(str(e))
+        except Exception as e:
+            raise ServiceException(f"Error creating delivery attempt: {str(e)}", details=str(e))
 
     @staticmethod
     def get_attempt_details(
@@ -290,41 +359,23 @@ class FeedbackService:
         try:
             feedback = Feedback.objects.get(id=feedback_id)
             if feedback.provider != deleting_user:
-                raise ValidationError(_("You can only delete your own feedback"))
+                raise AuthorizationError(_("You can only delete your own feedback"))
             feedback.delete()
         except ObjectDoesNotExist:
-            raise ValidationError(_("Feedback not found"))
+            raise ResourceNotFoundError(_("Feedback not found"))
 
     @staticmethod
     def get_analytics_for_person(person: Person) -> dict:
-        """
-        Generates the analytics that a Talent receives through the time he/she spent
-        on the platform.
-        """
+        """Get feedback analytics for person"""
         feedbacks = Feedback.objects.filter(recipient=person)
-
-        total_feedbacks = feedbacks.count()
-
-        if total_feedbacks == 0:
-            total_feedbacks = 1
-
-        feedback_aggregates = feedbacks.aggregate(feedback_count=Count("id"), average_stars=Avg("stars"))
-
-        # Calculate percentages
-        feedback_aggregates["average_stars"] = (
-            round(feedback_aggregates["average_stars"], 1) if feedback_aggregates["average_stars"] is not None else 0
+        
+        # Get all aggregates in one query
+        aggregates = feedbacks.aggregate(
+            feedback_count=Count("id"),
+            average_stars=Avg("stars"),
+            **{f"stars_{i}_count": Count("id", filter=models.Q(stars=i))
+               for i in range(1, 6)}
         )
-
-        stars_counts = feedbacks.values("stars").annotate(count=Count("id"))
-
-        stars_percentages = {star: int(round(0 / total_feedbacks * 100, 2)) for star in range(1, 6)}
-
-        for entry in stars_counts:
-            stars_percentages[entry["stars"]] = round(entry["count"] / total_feedbacks * 100, 1)
-
-        feedback_aggregates.update(stars_percentages)
-
-        return feedback_aggregates
 
     @staticmethod
     def get_person_feedbacks(person: Person) -> QuerySet:
@@ -333,6 +384,11 @@ class FeedbackService:
                 .filter(recipient=person)
                 .select_related('provider')
                 .order_by('-created_at'))
+
+    @staticmethod
+    def get_feedback(feedback_id: int) -> Feedback:
+        """Get feedback by ID"""
+        return get_object_or_404(Feedback, id=feedback_id)
 
 
 class SkillService:
@@ -348,8 +404,90 @@ class SkillService:
 
     @staticmethod
     def get_all_active_skills() -> List[dict]:
-        """Get all active skills ordered by boost factor"""
-        return list(Skill.objects
-                   .filter(active=True)
-                   .order_by("-display_boost_factor")
-                   .values())
+        """Get all active skills with caching"""
+        cache_key = 'active_skills'
+        cached_skills = cache.get(cache_key)
+        
+        if cached_skills is None:
+            skills = list(Skill.objects
+                .filter(active=True)
+                .order_by("-display_boost_factor")
+                .values())
+            cache.set(cache_key, skills, timeout=3600)  # Cache for 1 hour
+            return skills
+            
+        return cached_skills
+
+    @staticmethod
+    def get_person_expertise(person: Person) -> Dict[str, List]:
+        """
+        Get all expertise for a person's skills
+        
+        Args:
+            person: The Person object to get expertise for
+            
+        Returns:
+            Dict containing:
+            - expertiseList: List of expertise objects
+            - expertiseIDList: List of expertise IDs
+        """
+        expertise_ids = (PersonSkill.objects
+            .filter(person=person)
+            .values_list('expertise', flat=True))
+        
+        expertise = (Expertise.objects
+            .filter(id__in=expertise_ids)
+            .values())
+        
+        return {
+            "expertiseList": list(expertise),
+            "expertiseIDList": list(expertise_ids)
+        }
+
+    @staticmethod
+    def get_skill_expertise_pairs(expertise_ids: str = None, skills: str = None) -> List[Dict[str, str]]:
+        """
+        Get skill and expertise pairs for given expertise IDs
+        
+        Args:
+            expertise_ids: JSON string of expertise IDs
+            skills: Skills filter parameter (optional)
+            
+        Returns:
+            List of dicts containing skill/expertise name pairs
+            
+        Raises:
+            ValidationError: If expertise_ids is invalid JSON or IDs don't exist
+        """
+        if not expertise_ids or not skills:
+            return []
+            
+        try:
+            expertise_id_list = json.loads(expertise_ids)
+        except json.JSONDecodeError:
+            raise ValidationError("Invalid expertise IDs format")
+            
+        expertise_pairs = (Expertise.objects
+            .filter(id__in=expertise_id_list)
+            .select_related('skill')
+            .values('skill__name', 'name'))
+            
+        return [
+            {
+                "skill": pair['skill__name'],
+                "expertise": pair['name']
+            }
+            for pair in expertise_pairs
+        ]
+
+
+class PersonStatusService:
+    @staticmethod
+    def get_status_and_points(person: Person) -> dict:
+        """Get person's status and points information"""
+        return {
+            'status': person.get_points_status(),
+            'points': person.points,
+            'next_status': person.get_next_status(),
+            'points_needed': person.get_points_needed_for_next_status()
+        }

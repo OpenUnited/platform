@@ -17,6 +17,8 @@ from apps.capabilities.product_management.mixins import ProductMixin
 
 import uuid
 
+from django_lifecycle import BEFORE_CREATE, BEFORE_SAVE, LifecycleModelMixin, hook
+
 
 class FileAttachment(models.Model):
     file = models.FileField(upload_to="attachments")
@@ -65,12 +67,23 @@ class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
         return self.name
 
 
-class Product(ProductMixin, common.AttachmentAbstract):
+class Product(LifecycleModelMixin, TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
     class Visibility(models.TextChoices):
         GLOBAL = "GLOBAL", "Global"
         ORG_ONLY = "ORG_ONLY", "Organisation Only"
         RESTRICTED = "RESTRICTED", "Restricted"
 
+    # Fields migrated from ProductMixin (to be removed)
+    name = models.CharField(max_length=255)
+    short_description = models.TextField(max_length=256, blank=True, null=True)
+    full_description = models.TextField(blank=True, null=True)
+    website = models.URLField(max_length=255, blank=True, null=True)
+    detail_url = models.URLField(max_length=255, blank=True, null=True)
+    video_url = models.URLField(max_length=255, blank=True, null=True)
+    slug = models.SlugField(max_length=255, unique=True)
+    photo = models.ImageField(upload_to='products', blank=True, null=True)
+
+    # Existing Product fields
     person = models.ForeignKey(
         "talent.Person", 
         on_delete=models.CASCADE, 
@@ -203,11 +216,7 @@ class Initiative(TimeStampMixin, UUIDMixin):
         return self.name
 
     def save(self, *args, **kwargs):
-        # TODO: move the below method to a utility class
-        from .services import ProductService
-
-        self.video_url = ProductService.convert_youtube_link_to_embed(self.video_url)
-        super(Initiative, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_available_challenges_count(self):
         return self.challenge_set.filter(status=Challenge.ChallengeStatus.ACTIVE).count()

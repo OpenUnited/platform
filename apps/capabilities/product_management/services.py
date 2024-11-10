@@ -6,6 +6,7 @@ from django.db.models import Q, QuerySet
 from django.http import HttpResponse
 from itertools import groupby
 from operator import attrgetter
+from urllib.parse import urlparse
 
 from apps.capabilities.talent.models import Person, Expertise
 from apps.capabilities.security.services import RoleService
@@ -14,6 +15,7 @@ from .models import Bounty, Challenge, Product, Idea, Bug, IdeaVote, ProductCont
 from apps.capabilities.commerce.models import Organisation
 from . import forms
 from apps.capabilities.security.models import ProductRoleAssignment
+from apps.common.exceptions import ServiceException, InvalidInputError, ResourceNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -24,64 +26,101 @@ class ChallengeCreationService:
         self.user = user
         self.logger = logging.getLogger(__name__)
 
-    def validate_data(self) -> Optional[List[str]]:
-        errors = []
-        # Add validation logic
-        return errors if errors else None
-
-    def process_submission(self) -> Tuple[bool, Optional[str]]:
-        try:
-            if errors := self.validate_data():
-                return False, str(errors)
-
-            with transaction.atomic():
-                challenge = self._create_challenge()
-                if self.bounties_data:
-                    self._create_bounties(challenge)
-                self.logger.info(f"Challenge {challenge.id} created successfully")
-                return True, None
-        except Exception as e:
-            self.logger.error(f"Error processing challenge submission: {e}")
-            return False, str(e)
-
-    def _create_challenge(self):
-        return Challenge.objects.create(
-            **self.challenge_data,
-            created_by=self.user.person
-        )
-
-    def _create_bounties(self, challenge):
+    def validate_data(self) -> None:
+        """
+        Validate challenge and bounty data
+        
+        Raises:
+            InvalidInputError: If data is invalid
+        """
+        if not self.challenge_data.get('title'):
+            raise InvalidInputError("Challenge title is required")
+            
+        if not self.challenge_data.get('product'):
+            raise InvalidInputError("Product is required")
+            
         for bounty_data in self.bounties_data:
-            try:
-                if isinstance(bounty_data, str):
-                    import json
-                    bounty_data = json.loads(bounty_data)
-                
-                bounty_data.pop('reward_type', None)  # Remove if exists since it's inherited
-                
-                # Create bounty directly
+            if not bounty_data.get('title'):
+                raise InvalidInputError("Bounty title is required")
+            if bounty_data.get('points', 0) <= 0:
+                raise InvalidInputError("Bounty points must be positive")
+
+    @transaction.atomic
+    def process_submission(self) -> tuple[bool, Optional[str]]:
+        """
+        Process challenge submission with atomic transaction
+
+        Returns:
+            Tuple of (success, error_message)
+        Raises:
+            InvalidInputError: If input data is invalid
+        """
+        try:
+            self.validate_data()  # Let this raise InvalidInputError
+
+            challenge = Challenge.objects.create(
+                **self.challenge_data,
+                created_by=self.user.person
+            )
+
+            for bounty_data in self.bounties_data:
                 bounty = Bounty.objects.create(
                     **bounty_data,
                     challenge=challenge,
                     status=Bounty.BountyStatus.AVAILABLE
                 )
-                
-                # Handle expertise if provided
+
                 if expertise_ids := bounty_data.get('expertise_ids'):
                     if isinstance(expertise_ids, str):
                         expertise_ids = expertise_ids.split(',')
                     bounty.expertise.add(*Expertise.objects.filter(id__in=expertise_ids))
-                
-            except Exception as e:
-                logger.error(f"Error creating bounty: {e}")
-                raise
+
+            logger.info(f"Challenge {challenge.id} created successfully")
+            return True, None
+
+        except InvalidInputError:
+            # Re-raise InvalidInputError instead of catching it
+            raise
+        except Exception as e:
+            logger.error(f"Error creating challenge: {e}")
+            return False, f"Failed to create challenge: {str(e)}"
 
 class ProductService:
     @staticmethod
-    def convert_youtube_link_to_embed(url: str):
-        if url:
-            return url.replace("watch?v=", "embed/")
-    
+    def convert_youtube_link_to_embed(url: str) -> str:
+        """Convert YouTube URL to embed format"""
+        if not url:
+            return url
+            
+        # Strict validation for YouTube URLs using domain check
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc.lower()
+        
+        if domain not in ['youtube.com', 'www.youtube.com', 'youtu.be', 'www.youtu.be']:
+            logger.debug(f"Invalid URL domain: {domain}")
+            raise InvalidInputError("Not a valid YouTube URL")
+            
+        try:
+            if 'youtube.com' in domain:
+                if 'watch?v=' not in url:
+                    logger.debug(f"Invalid YouTube URL format: {url}")
+                    raise InvalidInputError("Invalid YouTube URL format")
+                video_id = url.split('v=')[1].split('&')[0]
+            else:  # youtu.be
+                if 'youtu.be/' not in url:
+                    logger.debug(f"Invalid YouTube short URL format: {url}")
+                    raise InvalidInputError("Invalid YouTube URL format")
+                video_id = url.split('youtu.be/')[1].split('?')[0]
+                
+            if not video_id:
+                logger.debug("No video ID found")
+                raise InvalidInputError("Could not find YouTube video ID")
+                
+            return f"https://www.youtube.com/embed/{video_id}"
+        except (IndexError, KeyError) as e:
+            logger.debug(f"Failed to parse URL: {e}")
+            raise InvalidInputError("Could not parse YouTube URL")
+
     @staticmethod
     def get_visible_products(user) -> QuerySet[Product]:
         """
@@ -260,16 +299,18 @@ class IdeasAndBugsService:
 
 class ProductManagementService:
     @staticmethod
-    def create_product(form_data: Dict, person: Person) -> Tuple[bool, Optional[str], Optional[Product]]:
+    def create_product(form_data: dict, person: Person) -> Product:
+        if not form_data.get('name'):
+            raise InvalidInputError("Product name is required")
+            
         try:
             product = Product.objects.create(
                 **form_data,
                 person=person
             )
-            return True, None, product
-        except Exception as e:
-            logger.error(f"Error creating product: {e}")
-            return False, str(e), None
+            return product
+        except ValidationError as e:
+            raise InvalidInputError(str(e))
 
     @staticmethod
     def update_product(product: Product, form_data: Dict) -> Tuple[bool, Optional[str]]:
@@ -327,11 +368,27 @@ class ProductAreaService:
             return False, str(e)
 
 class InitiativeService:
-    @staticmethod
-    def create_initiative(form_data: Dict, person: Person) -> Tuple[bool, Optional[str], Optional[Initiative]]:
+    @classmethod
+    def create_initiative(cls, form_data: dict, person) -> tuple[bool, Optional[str], Optional[Initiative]]:
+        """Create a new initiative
+        
+        Args:
+            form_data: Initiative form data
+            person: Person creating the initiative
+            
+        Returns:
+            Tuple of (success, error_message, initiative)
+        """
         try:
+            # Remove created_by from form_data since it's not a model field
+            form_data = form_data.copy()
+            if 'created_by' in form_data:
+                del form_data['created_by']
+                
             initiative = Initiative.objects.create(**form_data)
+            logger.info(f"Initiative {initiative.id} created successfully")
             return True, None, initiative
+            
         except Exception as e:
             logger.error(f"Error creating initiative: {e}")
             return False, str(e), None
@@ -406,3 +463,26 @@ class BountyService:
                 .filter(challenge__product__slug=product_slug)
                 .select_related('challenge', 'challenge__product')
                 .order_by('-created_at'))
+
+class ProductContentService:
+    """Handles ideas, bugs and other product content"""
+    
+    @staticmethod
+    def get_product_content(product: Product) -> Dict:
+        """Get all content for a product"""
+        return {
+            'ideas': IdeaService.get_product_ideas(product),
+            'bugs': BugService.get_product_bugs(product),
+            'initiatives': InitiativeService.get_product_initiatives(product),
+            'challenges': ChallengeService.get_product_challenges(product)
+        }
+        
+    @staticmethod
+    def get_content_stats(product: Product) -> Dict:
+        """Get content statistics for a product"""
+        return {
+            'idea_count': Idea.objects.filter(product=product).count(),
+            'bug_count': Bug.objects.filter(product=product).count(),
+            'initiative_count': Initiative.objects.filter(product=product).count(),
+            'challenge_count': Challenge.objects.filter(product=product).count()
+        }

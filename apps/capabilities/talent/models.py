@@ -142,10 +142,14 @@ class Person(TimeStampMixin):
 class PersonSkill(models.Model):
     person = models.ForeignKey(Person, related_name="skills", on_delete=models.CASCADE)
     skill = models.ForeignKey("talent.Skill", on_delete=models.CASCADE)
-    expertise = models.ManyToManyField("talent.Expertise")
+    expertise = models.ManyToManyField(
+        "talent.Expertise",
+        blank=True
+    )
 
     def __str__(self):
-        return f"{self.person} - {self.skill} - {self.expertise}"
+        expertises = ", ".join([str(exp) for exp in self.expertise.all()])
+        return f"{self.person} - {self.skill} - {expertises}"
 
 
 class Skill(AncestryMixin):
@@ -246,7 +250,11 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     bounty = models.ForeignKey("product_management.Bounty", on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
     expected_finish_date = models.DateField(default=date.today)
-    status = models.CharField(choices=Status.choices, default=Status.REQUESTED)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.REQUESTED
+    )
 
     class Meta:
         unique_together = ("bounty", "person")
@@ -318,11 +326,15 @@ class CapabilityComment(Comment):
 
 class BountyDeliveryAttempt(TimeStampMixin, AttachmentAbstract):
     class SubmissionType(models.TextChoices):
-        NEW = "New"
-        APPROVED = "Approved"
-        REJECTED = "Rejected"
+        NEW = "New", "New"
+        APPROVED = "Approved", "Approved"
+        REJECTED = "Rejected", "Rejected"
 
-    kind = models.CharField(choices=SubmissionType.choices, default=SubmissionType.NEW)
+    kind = models.CharField(
+        max_length=20,
+        choices=SubmissionType.choices,
+        default=SubmissionType.NEW
+    )
     bounty_claim = models.ForeignKey(
         BountyClaim,
         on_delete=models.CASCADE,
@@ -330,7 +342,11 @@ class BountyDeliveryAttempt(TimeStampMixin, AttachmentAbstract):
     )
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     is_canceled = models.BooleanField(default=False)
-    delivery_message = models.CharField(max_length=2000, default=None)
+    delivery_message = models.TextField(
+        max_length=2000,
+        blank=True,
+        default=""
+    )
 
     class Meta:
         ordering = ("-created_at",)

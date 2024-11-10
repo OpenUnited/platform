@@ -10,6 +10,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.core.exceptions import ValidationError
+from django.conf import settings
+from urllib.parse import urlparse
 
 from apps.common import mixins
 from .forms import (
@@ -19,8 +21,9 @@ from .forms import (
 from .services import (
     ProfileService, ShowcaseService, 
     FeedbackService, BountyDeliveryService,
-    SkillService
+    SkillService, PersonStatusService
 )
+from .models import Person
 
 # Profile Management Views
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
@@ -45,7 +48,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = {}
         person = self.get_object()
-        
+
         if self.request.htmx:
             context = self._get_htmx_context(person)
         else:
@@ -56,7 +59,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     def _get_htmx_context(self, person):
         context = {"pk": person.pk}
         index = self.request.GET.get("index")
-        
+
         if skill_id := self.request.GET.get(f"skills-{index}-skill"):
             expertises = ProfileService.get_expertises_for_skill(skill_id)
             context["expertises"] = expertises
@@ -82,7 +85,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         try:
             context = self.get_context_data()
             person_skill_formset = context["person_skill_formset"]
-            
+
             if form.is_valid() and person_skill_formset.is_valid():
                 ProfileService.update_profile(
                     person=self.request.user.person,
@@ -96,49 +99,28 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         return self.form_invalid(form)
 
 # Showcase Views
-class TalentShowcase(TemplateView):
+class TalentShowcase(DetailView):
     template_name = "talent/showcase.html"
+    model = Person
+    context_object_name = 'person'
+    
+    def get_object(self):
+        username = self.kwargs.get('username')
+        User = get_user_model()
+        user = get_object_or_404(User, username=username)
+        return get_object_or_404(Person, user=user)
 
-    def get(self, request, username, *args, **kwargs):
-        user = get_object_or_404(self.User, username=username)
-        person = user.person
-
-        # todo: check the statuses
-        bounty_claims_completed = BountyClaim.objects.filter(
-            status=BountyClaim.Status.COMPLETED,
-            person=person,
-        ).select_related("bounty__challenge", "bounty__challenge__product")
-
-        bounty_claims_claimed = BountyClaim.objects.filter(
-            bounty__status=Bounty.BountyStatus.CLAIMED,
-            person=person,
-        ).select_related("bounty__challenge", "bounty__challenge__product")
-
-        received_feedbacks = Feedback.objects.filter(recipient=person)
-
-        if (
-            request.user.is_anonymous
-            or request.user == user
-            or received_feedbacks.filter(provider=request.user.person)
-        ):
-            can_leave_feedback = False
-        else:
-            can_leave_feedback = True
-
-        context = {
-            "user": user,
-            "person": person,
-            "person_linkedin_link": global_utils.get_path_from_url(person.linkedin_link, True),
-            "person_twitter_link": global_utils.get_path_from_url(person.twitter_link, True),
-            "person_skills": person.skills.all().select_related("skill"),
-            "bounty_claims_claimed": bounty_claims_claimed,
-            "bounty_claims_completed": bounty_claims_completed,
-            "FeedbackService": FeedbackService,
-            "received_feedbacks": received_feedbacks,
-            "form": FeedbackForm(),
-            "can_leave_feedback": can_leave_feedback,
-        }
-        return self.render_to_response(context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        showcase_data = ShowcaseService.get_showcase_data(
+            username=self.kwargs.get('username'),
+            viewing_user=self.request.user
+        )
+        
+        context.update(showcase_data)
+        context['form'] = FeedbackForm()
+        
+        return context
 
     def get_success_url(self):
         return reverse("showcase", args=(self.object.recipient.get_username(),))
@@ -174,62 +156,37 @@ class GetExpertiseView(LoginRequiredMixin, TemplateView):
 
 @login_required(login_url="sign_in")
 def get_current_expertise(request):
-    # TODO I don't think we need this
-    person = request.user.person
-    try:
-        person_skills = PersonSkill.objects.filter(person=person)
-        expertise_ids = []
-        for person_skill in person_skills:
-            for expertise in person_skill.expertise.all():
-                expertise_ids.append(expertise.id)
-
-        print(expertise_ids)
-        expertise = Expertise.objects.filter(id__in=expertise_ids).values()
-
-    except (ObjectDoesNotExist, AttributeError):
-        expertise_ids = []
-        expertise = []
-
-    return JsonResponse(
-        {"expertiseList": list(expertise), "expertiseIDList": expertise_ids},
-        safe=False,
-    )
+    expertise_data = SkillService.get_person_expertise(request.user.person)
+    return JsonResponse(expertise_data, safe=False)
 
 
 @login_required(login_url="sign_in")
 def list_skill_and_expertise(request):
-    # TODO I don't think we need this
-    # Very basic pattern matching to enable this endpoint on
-    # specific URLs.
-    referer_url = request.headers.get("Referer")
-    path = global_utils.get_path_from_url(referer_url)
-    patterns = ["/profile/"]
-    for pattern in patterns:
-        if pattern not in path:
-            return JsonResponse([], safe=False)
+    """Return skill and expertise pairs for given expertise IDs if request comes from allowed paths"""
+    # Check if request comes from allowed paths
+    referer = request.headers.get("Referer", "")
+    if not referer:
+        return JsonResponse([], safe=False)
+        
+    parsed_url = urlparse(referer)
+    allowed_paths = ["/profile/"]
+    if not any(path in parsed_url.path for path in allowed_paths):
+        return JsonResponse([], safe=False)
 
-    skills = request.GET.get("skills")
-    expertise = request.GET.get("expertise")
-
-    if skills and expertise:
-        expertise_ids = json.loads(expertise)
-        expertise_queryset = Expertise.objects.filter(id__in=expertise_ids)
-
-        skill_expertise_pairs = []
-        for exp in expertise_queryset:
-            pair = {
-                "skill": exp.skill.name,
-                "expertise": exp.name,
-            }
-            skill_expertise_pairs.append(pair)
-
-        return JsonResponse(skill_expertise_pairs, safe=False)
-
-    return JsonResponse([], safe=False)
+    try:
+        expertise_data = SkillService.get_skill_expertise_pairs(
+            expertise_ids=request.GET.get("expertise"),
+            skills=request.GET.get("skills")
+        )
+        return JsonResponse(expertise_data, safe=False)
+    except ValidationError as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 
+@login_required(login_url="sign_in")
 def status_and_points(request):
-    return HttpResponse("TODO")
+    data = PersonStatusService.get_status_and_points(request.user.person)
+    return JsonResponse(data)
 
 
 class CreateFeedbackView(LoginRequiredMixin, CreateView):

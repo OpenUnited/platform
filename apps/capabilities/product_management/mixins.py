@@ -16,7 +16,6 @@ class ProductMixin(LifecycleModelMixin, TimeStampMixin, UUIDMixin):
     detail_url = models.URLField(blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
     slug = models.SlugField(unique=True)
-    is_private = models.BooleanField(default=False)
 
     def get_initials_of_name(self):
         return "".join([word[0] for word in self.name.split()])

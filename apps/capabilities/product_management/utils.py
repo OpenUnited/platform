@@ -96,3 +96,4 @@ def require_product_management_access(view_func):
             return redirect('portal:dashboard')
         return view_func(request, product_slug, *args, **kwargs)
     return wrapper
+

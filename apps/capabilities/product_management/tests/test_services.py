@@ -5,13 +5,16 @@ from apps.capabilities.product_management.services import (
     ProductService, IdeaService, BugService, ChallengeCreationService,
     ProductManagementService, ContributorAgreementService, ProductAreaService,
     InitiativeService, ChallengeService, ProductTreeService, ProductPeopleService,
-    BountyService
+    BountyService, ProductContentService
 )
 from apps.capabilities.talent.models import Person
 from apps.capabilities.commerce.models import Organisation
 from django.utils import timezone
+from apps.common.exceptions import InvalidInputError
+import logging
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 @pytest.fixture
 def authenticated_user(db):
@@ -65,6 +68,18 @@ class TestProductService:
         
         assert global_product in visible_products
         assert restricted_product in visible_products
+
+    def test_convert_youtube_link_valid(self):
+        url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        result = ProductService.convert_youtube_link_to_embed(url)
+        assert result == "https://www.youtube.com/embed/dQw4w9WgXcQ"
+
+    def test_convert_youtube_link_invalid(self):
+        url = "https://not-youtube.com/watch?v=123"
+        
+        # The InvalidInputError should be raised
+        with pytest.raises(InvalidInputError, match="Not a valid YouTube URL"):
+            ProductService.convert_youtube_link_to_embed(url)
 
 @pytest.mark.django_db
 class TestIdeaService:
@@ -177,41 +192,63 @@ class TestChallengeCreationService:
         assert challenge.bounty_set.count() == 1
         assert challenge.bounty_set.first().title == "Test Bounty"
 
+    def test_challenge_creation_rollback(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        
+        challenge_data = {
+            "title": "Test Challenge",
+            "product": product
+        }
+        bounties_data = [{
+            "title": "Test Bounty",
+            "points": -100  # Invalid points to trigger error
+        }]
+
+        service = ChallengeCreationService(
+            challenge_data=challenge_data,
+            bounties_data=bounties_data,
+            user=authenticated_user
+        )
+        
+        with pytest.raises(InvalidInputError):
+            service.process_submission()
+        
+        # Verify nothing was created due to rollback
+        assert Challenge.objects.count() == 0
+        assert Bounty.objects.count() == 0
+
 @pytest.mark.django_db
 class TestProductManagementService:
-    def test_create_product(self, authenticated_user):
+    def test_create_product_success(self, authenticated_user):
         form_data = {
             "name": "New Product",
             "slug": "new-product",
             "visibility": Product.Visibility.GLOBAL,
         }
         
-        success, error, product = ProductManagementService.create_product(
+        product = ProductManagementService.create_product(
             form_data,
             authenticated_user.person
         )
         
-        assert success is True
-        assert error is None
         assert product.name == "New Product"
         assert product.person == authenticated_user.person
 
-    def test_update_product(self, authenticated_user):
-        product = Product.objects.create(
-            name="Original Name",
-            person=authenticated_user.person
-        )
-        
+    def test_create_product_invalid_data(self, authenticated_user):
         form_data = {
-            "name": "Updated Name"
+            # Missing required name
+            "visibility": Product.Visibility.GLOBAL,
         }
-
-        success, error = ProductManagementService.update_product(product, form_data)
         
-        assert success is True
-        assert error is None
-        product.refresh_from_db()
-        assert product.name == "Updated Name"
+        with pytest.raises(InvalidInputError) as exc:
+            ProductManagementService.create_product(
+                form_data,
+                authenticated_user.person
+            )
+        assert "name is required" in str(exc.value)
 
 @pytest.mark.django_db
 class TestContributorAgreementService:
@@ -361,3 +398,55 @@ class TestBountyService:
         product_bounties = BountyService.get_product_bounties("test-product")
         
         assert bounty in product_bounties
+
+@pytest.mark.django_db
+class TestProductContentService:
+    def test_get_product_content(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        
+        # Create test content
+        idea = Idea.objects.create(
+            title="Test Idea",
+            product=product,
+            person=authenticated_user.person
+        )
+        bug = Bug.objects.create(
+            title="Test Bug",
+            product=product,
+            person=authenticated_user.person
+        )
+        
+        content = ProductContentService.get_product_content(product)
+        
+        assert idea in content['ideas']
+        assert bug in content['bugs']
+        assert len(content['initiatives']) == 0
+        assert len(content['challenges']) == 0
+
+    def test_get_content_stats(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        
+        # Create test content
+        Idea.objects.create(
+            title="Test Idea",
+            product=product,
+            person=authenticated_user.person
+        )
+        Bug.objects.create(
+            title="Test Bug",
+            product=product,
+            person=authenticated_user.person
+        )
+        
+        stats = ProductContentService.get_content_stats(product)
+        
+        assert stats['idea_count'] == 1
+        assert stats['bug_count'] == 1
+        assert stats['initiative_count'] == 0
+        assert stats['challenge_count'] == 0
