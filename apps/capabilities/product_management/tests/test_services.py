@@ -1,25 +1,41 @@
 import pytest
 from django.contrib.auth import get_user_model
-from apps.capabilities.product_management.models import Product, Challenge, Bounty, Idea, Bug, Initiative
+from apps.capabilities.product_management.models import Product, Challenge, Bounty, Idea, Bug, Initiative, ProductContributorAgreementTemplate, ProductArea, ProductTree
 from apps.capabilities.product_management.services import (
     ProductService, IdeaService, BugService, ChallengeCreationService,
-    ProductManagementService
+    ProductManagementService, ContributorAgreementService, ProductAreaService,
+    InitiativeService, ChallengeService, ProductTreeService, ProductPeopleService,
+    BountyService
 )
 from apps.capabilities.talent.models import Person
+from apps.capabilities.commerce.models import Organisation
+from django.utils import timezone
 
 User = get_user_model()
+
+@pytest.fixture
+def authenticated_user(db):
+    user = User.objects.create_user(username='testuser', password='12345')
+    user.person = Person.objects.create(user=user)
+    return user
 
 @pytest.mark.django_db
 class TestProductService:
     def test_get_visible_products_anonymous(self, client):
+        # Create a person for the product
+        user = User.objects.create_user(username='owner', password='12345')
+        person = Person.objects.create(user=user)
+        
         # Create products with different visibility
         global_product = Product.objects.create(
             name="Global Product",
-            visibility=Product.Visibility.GLOBAL
+            visibility=Product.Visibility.GLOBAL,
+            person=person
         )
         restricted_product = Product.objects.create(
             name="Restricted Product",
-            visibility=Product.Visibility.RESTRICTED
+            visibility=Product.Visibility.RESTRICTED,
+            person=person
         )
 
         visible_products = ProductService.get_visible_products(None)
@@ -30,11 +46,13 @@ class TestProductService:
     def test_get_visible_products_authenticated(self, authenticated_user, mocker):
         global_product = Product.objects.create(
             name="Global Product",
-            visibility=Product.Visibility.GLOBAL
+            visibility=Product.Visibility.GLOBAL,
+            person=authenticated_user.person
         )
         restricted_product = Product.objects.create(
             name="Restricted Product",
-            visibility=Product.Visibility.RESTRICTED
+            visibility=Product.Visibility.RESTRICTED,
+            person=authenticated_user.person
         )
         
         # Mock RoleService to return restricted product
@@ -51,23 +69,27 @@ class TestProductService:
 @pytest.mark.django_db
 class TestIdeaService:
     def test_create_idea(self, authenticated_user):
-        product = Product.objects.create(name="Test Product")
-        person = authenticated_user.person
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
         form_data = {
             "title": "Test Idea",
-            "description": "Test Description"
+            "description": "Idea description"
         }
-
-        success, error, idea = IdeaService.create_idea(form_data, person, product)
+        
+        success, error, idea = IdeaService.create_idea(form_data, authenticated_user.person, product)
         
         assert success is True
         assert error is None
         assert idea.title == "Test Idea"
-        assert idea.person == person
-        assert idea.product == product
+        assert idea.person == authenticated_user.person
 
     def test_toggle_vote(self, authenticated_user):
-        product = Product.objects.create(name="Test Product")
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
         idea = Idea.objects.create(
             title="Test Idea",
             product=product,
@@ -87,7 +109,10 @@ class TestIdeaService:
 @pytest.mark.django_db
 class TestBugService:
     def test_create_bug(self, authenticated_user):
-        product = Product.objects.create(name="Test Product")
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
         person = authenticated_user.person
         form_data = {
             "title": "Test Bug",
@@ -103,7 +128,10 @@ class TestBugService:
         assert bug.product == product
 
     def test_can_modify_bug(self, authenticated_user):
-        product = Product.objects.create(name="Test Product")
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
         bug = Bug.objects.create(
             title="Test Bug",
             product=product,
@@ -118,7 +146,10 @@ class TestBugService:
 @pytest.mark.django_db
 class TestChallengeCreationService:
     def test_create_challenge_with_bounties(self, authenticated_user):
-        product = Product.objects.create(name="Test Product")
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
         challenge_data = {
             "title": "Test Challenge",
             "description": "Challenge Description",
@@ -152,9 +183,9 @@ class TestProductManagementService:
         form_data = {
             "name": "New Product",
             "slug": "new-product",
-            "visibility": Product.Visibility.GLOBAL
+            "visibility": Product.Visibility.GLOBAL,
         }
-
+        
         success, error, product = ProductManagementService.create_product(
             form_data,
             authenticated_user.person
@@ -163,12 +194,12 @@ class TestProductManagementService:
         assert success is True
         assert error is None
         assert product.name == "New Product"
-        assert product.created_by == authenticated_user.person
+        assert product.person == authenticated_user.person
 
     def test_update_product(self, authenticated_user):
         product = Product.objects.create(
             name="Original Name",
-            created_by=authenticated_user.person
+            person=authenticated_user.person
         )
         
         form_data = {
@@ -181,3 +212,152 @@ class TestProductManagementService:
         assert error is None
         product.refresh_from_db()
         assert product.name == "Updated Name"
+
+@pytest.mark.django_db
+class TestContributorAgreementService:
+    def test_create_template(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        form_data = {
+            "title": "Test Template",
+            "content": "Agreement content",
+            "product_id": product.id,
+            "effective_date": timezone.now()
+        }
+
+        success, error, template = ContributorAgreementService.create_template(
+            form_data,
+            authenticated_user.person
+        )
+        
+        assert success is True
+        assert error is None
+        assert template.title == "Test Template"
+        assert template.created_by == authenticated_user.person
+
+@pytest.mark.django_db
+class TestProductAreaService:
+    def test_create_area(self):
+        user = User.objects.create_user(username='owner', password='12345')
+        person = Person.objects.create(user=user)
+        
+        product = Product.objects.create(
+            name="Test Product",
+            person=person
+        )
+        product_tree = ProductTree.objects.create(
+            name="Test Tree",
+            product=product
+        )
+        form_data = {
+            "name": "Test Area",
+            "product_tree": product_tree
+        }
+
+        success, error, area = ProductAreaService.create_area(form_data)
+        
+        assert success is True
+        assert error is None
+        assert area.name == "Test Area"
+        assert area.product_tree.product == product
+
+    def test_update_area(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        product_tree = ProductTree.objects.create(
+            name="Test Tree",
+            product=product
+        )
+        # Create as root node since it's using treebeard
+        area = ProductArea.add_root(
+            name="Original Area",
+            product_tree=product_tree
+        )
+        
+        form_data = {
+            "name": "Updated Area"
+        }
+
+        success, error = ProductAreaService.update_area(area, form_data)
+        
+        assert success is True
+        assert error is None
+        area.refresh_from_db()
+        assert area.name == "Updated Area"
+
+@pytest.mark.django_db
+class TestInitiativeService:
+    def test_create_initiative(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        form_data = {
+            "name": "Test Initiative",
+            "description": "Initiative Description",
+            "product": product,
+            "status": Initiative.InitiativeStatus.ACTIVE
+        }
+
+        success, error, initiative = InitiativeService.create_initiative(
+            form_data,
+            authenticated_user.person
+        )
+        assert success is True
+
+    def test_get_product_initiatives(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            person=authenticated_user.person
+        )
+        Initiative.objects.create(
+            name="Test Initiative",
+            product=product,
+            status=Initiative.InitiativeStatus.ACTIVE
+        )
+
+@pytest.mark.django_db
+class TestBountyService:
+    def test_get_visible_bounties(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            visibility=Product.Visibility.GLOBAL,
+            person=authenticated_user.person
+        )
+        challenge = Challenge.objects.create(
+            title="Test Challenge",
+            product=product
+        )
+        bounty = Bounty.objects.create(
+            title="Test Bounty",
+            challenge=challenge,
+            points=100
+        )
+
+        visible_bounties = BountyService.get_visible_bounties(authenticated_user)
+        
+        assert bounty in visible_bounties
+
+    def test_get_product_bounties(self, authenticated_user):
+        product = Product.objects.create(
+            name="Test Product",
+            slug="test-product",
+            person=authenticated_user.person
+        )
+        challenge = Challenge.objects.create(
+            title="Test Challenge",
+            product=product
+        )
+        bounty = Bounty.objects.create(
+            title="Test Bounty",
+            challenge=challenge,
+            points=100
+        )
+
+        product_bounties = BountyService.get_product_bounties("test-product")
+        
+        assert bounty in product_bounties

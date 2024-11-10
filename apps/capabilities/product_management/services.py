@@ -264,7 +264,7 @@ class ProductManagementService:
         try:
             product = Product.objects.create(
                 **form_data,
-                created_by=person
+                person=person
             )
             return True, None, product
         except Exception as e:
@@ -309,7 +309,7 @@ class ProductAreaService:
     @staticmethod
     def create_area(form_data: Dict) -> Tuple[bool, Optional[str], Optional[ProductArea]]:
         try:
-            area = ProductArea.objects.create(**form_data)
+            area = ProductArea.add_root(**form_data)
             return True, None, area
         except Exception as e:
             logger.error(f"Error creating product area: {e}")
@@ -329,12 +329,8 @@ class ProductAreaService:
 class InitiativeService:
     @staticmethod
     def create_initiative(form_data: Dict, person: Person) -> Tuple[bool, Optional[str], Optional[Initiative]]:
-        """Create a new initiative."""
         try:
-            initiative = Initiative.objects.create(
-                **form_data,
-                created_by=person
-            )
+            initiative = Initiative.objects.create(**form_data)
             return True, None, initiative
         except Exception as e:
             logger.error(f"Error creating initiative: {e}")
