@@ -231,7 +231,7 @@ class ProductListView(ListView):
 class ChallengeDetailView(ProductVisibilityCheckMixin, DetailView):
     """Public view for challenge details"""
     model = Challenge
-    template_name = "product_management/challenge/detail.html"
+    template_name = "product_management/challenge_detail.html"
     context_object_name = 'challenge'
 
     def get_product(self):
