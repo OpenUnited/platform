@@ -1,8 +1,9 @@
 """
-Public Views for Product Management
-=================================
+Visibility Managed Views for Product-Talent Marketplace
+=====================================================
 
-This module contains views that support public access based on product visibility settings.
+This module contains views that enforce product visibility rules based on product settings
+and user permissions.
 
 Security Architecture
 -------------------
@@ -29,33 +30,8 @@ View Types and Visibility Enforcement
         - RESTRICTED where user has explicit access
         - Owned by the user
    - Filter your queryset using these visible products
-
-Example Usage
------------
-Single-Product View:
-    class ProductBountyListView(ProductVisibilityCheckMixin, ListView):
-        def get_product(self):
-            return get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        
-        def get_queryset(self):
-            return Bounty.objects.filter(challenge__product=self.get_product())
-
-Multi-Product View:
-    class PublicBountyListView(ListView):
-        def get_queryset(self):
-            # Get all products the user can see
-            visible_products = ProductService.get_visible_products(self.request.user)
-            
-            # Filter bounties to only those from visible products
-            return (Bounty.objects
-                   .filter(challenge__product__in=visible_products)
-                   .select_related('challenge', 'challenge__product')
-                   .order_by('-created_at'))
-
-Both approaches ensure users only see content they're allowed to access, just at different levels:
-- Single-product views check access to one specific product
-- Multi-product views filter to only show content from accessible products
 """
+
 
 from django.views.generic import ListView, DetailView, TemplateView
 from django.shortcuts import get_object_or_404
@@ -100,7 +76,7 @@ class PublicBountyListView(ListView):
 class ProductBountyListView(ProductVisibilityCheckMixin, ListView):
     """View for listing bounties for a specific product"""
     model = Bounty
-    template_name = "product_management/bounty/list.html"
+    template_name = "product_management/product_bounties.html"
     context_object_name = 'bounties'
     paginate_by = 20
 
@@ -112,13 +88,7 @@ class ProductBountyListView(ProductVisibilityCheckMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = self.get_product()
-        context['product'] = product
-        if self.request.user.is_authenticated:
-            context['can_manage'] = RoleService.has_product_management_access(
-                self.request.user.person,
-                product
-            )
+        context['product'] = self.get_product()
         return context
 
 
@@ -243,9 +213,10 @@ class ProductPeopleView(ProductVisibilityCheckMixin, ListView):
 class ProductListView(ListView):
     """View for listing all visible products"""
     model = Product
-    template_name = "product_management/product_list.html"
+    template_name = "product_management/products.html"
     context_object_name = 'products'
-    
+    paginate_by = 12
+
     def get_queryset(self):
         # Use ProductService to get products visible to the current user
         return ProductService.get_visible_products(self.request.user)
@@ -372,4 +343,54 @@ class ProductBugDetail(ProductVisibilityCheckMixin, DetailView):
         else:
             context.update({"actions_available": False})
 
+        return context
+
+
+class BountyDetailView(ProductVisibilityCheckMixin, DetailView):
+    """Public view for bounty details"""
+    model = Bounty
+    template_name = "product_management/bounty_detail.html"
+    context_object_name = 'bounty'
+    pk_url_kwarg = 'pk'
+
+    def get_object(self):
+        print("\nDEBUG: BountyDetailView.get_object()")
+        print(f"URL kwargs: {self.kwargs}")
+        
+        try:
+            bounty = Bounty.objects.select_related(
+                'challenge', 
+                'challenge__product'
+            ).get(pk=self.kwargs['pk'])
+            
+            print(f"Found bounty: {bounty.id}")
+            print(f"Challenge ID: {bounty.challenge.id}")
+            print(f"Product: {bounty.challenge.product.name}")
+            
+            return bounty
+        except Bounty.DoesNotExist as e:
+            print(f"ERROR: Bounty not found: {e}")
+            raise
+        except Exception as e:
+            print(f"ERROR: Unexpected error: {e}")
+            raise
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        bounty = self.get_object()
+        
+        # Package everything in a 'data' dict to match template expectations
+        context['data'] = {
+            'product': bounty.challenge.product,
+            'challenge': bounty.challenge,
+            'bounty': bounty,
+            'show_actions': self.request.user.is_authenticated and RoleService.has_product_management_access(
+                self.request.user.person,
+                bounty.challenge.product
+            )
+        }
+        
+        # Add expertise list if needed
+        context['expertise_list'] = []  # Add actual expertise list here if you have one
+        
         return context

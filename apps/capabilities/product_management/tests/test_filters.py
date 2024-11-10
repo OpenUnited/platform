@@ -25,26 +25,23 @@ class TestChallengeFilter:
         )
 
     @pytest.fixture
-    def challenges(self, product_with_person):
-        challenges = []
-        challenges.append(Challenge.objects.create(
-            title="Test Challenge 1",
-            description="Test description",
-            short_description="Short description",
-            product=product_with_person,
-            status=Challenge.ChallengeStatus.DRAFT,
-            priority=Challenge.ChallengePriority.HIGH,
-            reward_type=Challenge.RewardType.LIQUID_POINTS
-        ))
-        challenges.append(Challenge.objects.create(
-            title="Test Challenge 2",
-            description="Test description",
-            short_description="Short description",
-            product=product_with_person,
-            status=Challenge.ChallengeStatus.ACTIVE,
-            priority=Challenge.ChallengePriority.MEDIUM,
-            reward_type=Challenge.RewardType.NON_LIQUID_POINTS
-        ))
+    def challenges(db, product):
+        """Create test challenges with different statuses"""
+        from apps.capabilities.product_management.models import Challenge
+        
+        challenges = [
+            Challenge.objects.create(
+                product=product,
+                title=f"Challenge {i}",
+                status=status,
+                priority=priority,
+                reward_type=reward_type
+            ) for i, (status, priority, reward_type) in enumerate([
+                (Challenge.ChallengeStatus.ACTIVE, Challenge.ChallengePriority.HIGH, Challenge.RewardType.LIQUID_POINTS),
+                (Challenge.ChallengeStatus.DRAFT, Challenge.ChallengePriority.MEDIUM, Challenge.RewardType.NON_LIQUID_POINTS),
+                (Challenge.ChallengeStatus.COMPLETED, Challenge.ChallengePriority.LOW, Challenge.RewardType.LIQUID_POINTS)
+            ])
+        ]
         return challenges
 
     def test_challenge_filter_status(self, challenges):

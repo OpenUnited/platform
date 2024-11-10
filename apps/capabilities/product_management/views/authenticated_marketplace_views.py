@@ -1,16 +1,57 @@
 """
-Product Management views for public and unauthenticated access.
+Authenticated Marketplace Views for Product Management
+==================================================
 
-Note: For authenticated management interfaces, see the portal app (apps/portal/).
-The portal app provides protected views and richer management interfaces for these
-same product services, while these views handle public-facing functionality.
+This module contains views that require authentication and handle product management
+operations. These views enforce both authentication and product-specific management
+permissions.
 
-Views in this module focus on:
-- Public product pages
-- Unauthenticated access
-- Basic product interactions
+Security Architecture
+-------------------
+All views in this module require authentication through Django's LoginRequiredMixin
+or the custom BaseProductView. Access control is implemented at two levels:
 
-For full management capabilities, see portal.views.
+1. Authentication Level:
+   - All views require a logged-in user
+   - Unauthenticated requests are redirected to the login page
+
+2. Product Management Level:
+   - Product-specific views check management permissions via RoleService
+   - Users must have explicit product management access for operations
+   - Access is verified in BaseProductView.dispatch()
+
+View Categories
+-------------
+1. Product Management Views:
+   - Create, update, and manage product details
+   - Restricted to users with product management permissions
+
+2. Contributor Agreement Views:
+   - Manage templates and agreements for product contributors
+   - Typically restricted to product owners/managers
+
+3. Organization Views:
+   - Create and manage product-related organizations
+   - Limited to authorized organization managers
+
+4. Product Structure Views:
+   - Manage product areas, initiatives, and challenges
+   - Requires product management access
+
+5. Bounty Management Views:
+   - Create, update, and manage product bounties
+   - Control bounty claims and rewards
+   - Restricted to product managers
+
+6. Ideas and Bugs Views:
+   - Manage product feedback and issue tracking
+   - May have different permission levels for creation vs management
+
+Permission Enforcement
+--------------------
+- BaseProductView handles common authentication and permission checks
+- RoleService.has_product_management_access() verifies management permissions
+- Product ownership and organization membership are considered for access control
 """
 
 import logging
@@ -81,6 +122,8 @@ class BaseProductView(LoginRequiredMixin):
                 
         return super().dispatch(request, *args, **kwargs)
 
+# Uses LoginRequiredMixin directly since BaseProductView's product-specific 
+# permission checks aren't applicable for product creation
 class CreateProductView(LoginRequiredMixin, CreateView):
     """View for creating new products"""
     model = Product
@@ -254,31 +297,6 @@ class InitiativeDetailView(BaseProductView, DetailView):
             self.request.user.person, 
             context['product']
         )
-        return context
-
-class BountyDetailView(BaseProductView, DetailView):
-    """View for bounty details with management options"""
-    model = Bounty
-    template_name = "product_management/bounty_detail.html"
-    context_object_name = 'bounty'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        bounty = self.object
-        product = bounty.challenge.product
-
-        context['data'] = {
-            'product': product,
-            'challenge': bounty.challenge,
-            'bounty': bounty,
-            'show_actions': True,  # Always true for management view
-            'can_be_modified': RoleService.has_product_management_access(
-                self.request.user.person,
-                product
-            )
-        }
-        
-        context['expertise_list'] = bounty.expertise.all()
         return context
 
 class CreateBountyView(BaseProductView, CreateView):

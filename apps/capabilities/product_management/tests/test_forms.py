@@ -24,10 +24,11 @@ class TestProductForm:
             'short_description': 'A test product',
             'full_description': 'A detailed test product description',
             'visibility': 'GLOBAL',
-            'make_me_owner': True
+            'make_me_owner': True,
+            'person': person.id
         }
-        form = ProductForm(data=form_data, person=person)
-        assert form.is_valid()
+        form = ProductForm(data=form_data)
+        assert form.is_valid(), form.errors
 
     def test_invalid_form_missing_required(self):
         form = ProductForm(data={})
@@ -35,14 +36,19 @@ class TestProductForm:
         assert 'name' in form.errors
         assert 'short_description' in form.errors
 
-    def test_form_with_file_upload(self, valid_data):
+    def test_form_with_file_upload(self, person):
+        form_data = {
+            'name': 'Test Product',
+            'short_description': 'A test product',
+            'full_description': 'A detailed test product description',
+            'visibility': 'GLOBAL',
+            'make_me_owner': True,
+            'person': person.id
+        }
         file_data = SimpleUploadedFile(
             "test.jpg",
             b"file_content",
             content_type="image/jpeg"
         )
-        form = ProductForm(
-            data=valid_data,
-            files={'photo': file_data}
-        )
-        assert form.is_valid() 
+        form = ProductForm(data=form_data, files={'photo': file_data})
+        assert form.is_valid(), form.errors

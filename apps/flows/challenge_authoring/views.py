@@ -14,7 +14,7 @@ Flow Steps:
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.http import Http404, JsonResponse, HttpResponseForbidden, HttpResponseNotFound
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from apps.capabilities.security.services import RoleService
 from django.conf import settings

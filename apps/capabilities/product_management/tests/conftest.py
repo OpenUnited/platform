@@ -107,70 +107,66 @@ def bounty_data(challenge, attachment_formset, skill, expertise_list):
 
 
 @pytest.fixture
-def user():
-    """Returns a test user"""
-    return User.objects.create(
-        username=f"testuser_{uuid.uuid4().hex[:8]}",
-        email="test@example.com",
-        is_active=True
+def base_user(db):
+    """Create a base user without a person record"""
+    return get_user_model().objects.create_user(
+        username=f'baseuser_{uuid.uuid4().hex[:8]}',
+        email='baseuser@example.com',
+        password='testpass123'
     )
 
 
 @pytest.fixture
-def person(user):
-    """Returns the person associated with the test user"""
-    from apps.capabilities.talent.models import Person
-    try:
-        return user.person
-    except User.person.RelatedObjectDoesNotExist:
-        return Person.objects.create(
-            user=user,
-            full_name=user.username,
-            preferred_name=user.username
-        )
-
-
-@pytest.fixture
-def product_with_person(person):
-    """Create a test product owned by a person"""
-    from apps.capabilities.product_management.models import Product
+def person(db):
+    """Create a person with an associated user"""
+    user = get_user_model().objects.create_user(
+        username=f'testuser_{uuid.uuid4().hex[:8]}',
+        email='test@example.com',
+        password='testpass123'
+    )
     
-    return Product.objects.create(
-        name="Test Product",
-        slug="test-product",
-        person=person,
-        visibility='GLOBAL'
+    person = Person.objects.create(
+        user=user,
+        full_name="Test User",
+        preferred_name="Test",
+        headline="Test Headline",
+        overview="Test Overview"
     )
+    return person
 
 
 @pytest.fixture
-def product_with_org(organisation):
-    """Create a test product owned by an organization"""
-    from apps.capabilities.product_management.models import Product
-    
-    return Product.objects.create(
-        name="Org Product",
-        slug="org-product",
-        organisation=organisation,
-        visibility='GLOBAL'
-    )
+def user(person):
+    """Return the user associated with a person"""
+    return person.user
 
 
 @pytest.fixture
 def authenticated_client(client, user):
-    """Returns an authenticated client"""
+    """Returns an authenticated client with a proper user/person setup"""
     client.force_login(user)
     return client
 
 
 @pytest.fixture
 def product(person):
-    """Create a test product owned by the test person"""
-    from apps.capabilities.product_management.models import Product
-    
+    """Base product fixture with required person relationship"""
     return Product.objects.create(
-        name='Test Product',
-        short_description='A test product',
-        visibility='GLOBAL',
+        name="Test Product",
+        slug="test-product",
+        short_description="Test Description",
+        visibility=Product.Visibility.GLOBAL,
+        person=person  # Using person field instead of created_by
+    )
+
+
+@pytest.fixture
+def restricted_product(person):
+    """Restricted product fixture"""
+    return Product.objects.create(
+        name="Restricted Product",
+        slug="restricted-product",
+        short_description="Restricted Description",
+        visibility=Product.Visibility.RESTRICTED,
         person=person
     )

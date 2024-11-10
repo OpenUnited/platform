@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 def serialize_skills(node):
     """Serializer for the tree."""
     return {
@@ -15,6 +17,20 @@ def serialize_expertise(node):
         "skill": node.skill.pk,
         "children": [serialize_expertise(child) for child in node.get_children],
     }
+
+
+def get_path_from_url(url: str, remove_trailing_slash: bool = False) -> str:
+    """Extract path from URL, optionally removing trailing slash"""
+    if not url:
+        return ""
+    
+    parsed = urlparse(url)
+    path = parsed.path or parsed.netloc or url
+    
+    if remove_trailing_slash and path.endswith('/'):
+        path = path[:-1]
+        
+    return path
 
 
 class MacrosFun:

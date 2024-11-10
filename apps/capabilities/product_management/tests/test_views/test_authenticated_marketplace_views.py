@@ -11,29 +11,61 @@ from apps.capabilities.talent.models import Person
 from django.contrib.auth.models import User
 
 @pytest.fixture
-def product(db):
+def person(db):
+    """Creates a person with associated user"""
     User = get_user_model()
+    user = User.objects.create(username="test_person")
+    return Person.objects.create(user=user)
+
+@pytest.fixture
+def product(db, person):
+    """Creates a global visibility product with associated person"""
     return Product.objects.create(
         name="Test Product",
+        slug="test-product",
         short_description="Test Description",
         visibility=Product.Visibility.GLOBAL,
-        person=Person.objects.create(
-            user=User.objects.create(username="test")
-        )
+        person=person
     )
 
 @pytest.fixture
-def authenticated_user(db, django_user_model):
-    user = django_user_model.objects.create_user(
+def restricted_product(db, person):
+    """Creates a restricted visibility product"""
+    return Product.objects.create(
+        name="Restricted Product",
+        slug="restricted-product",
+        short_description="Test Description",
+        visibility=Product.Visibility.RESTRICTED,
+        person=person
+    )
+
+@pytest.fixture
+def authenticated_user(db):
+    """Creates an authenticated user with associated person"""
+    User = get_user_model()
+    user = User.objects.create_user(
         username='testuser',
         password='testpass123'
     )
+    Person.objects.create(user=user)
     return user
 
 @pytest.fixture
 def authenticated_client(client, authenticated_user):
+    """Returns a client logged in as authenticated_user"""
     client.force_login(authenticated_user)
     return client
+
+@pytest.fixture
+def product_with_person(db, person):
+    """Creates a product with explicit person relationship for ownership tests"""
+    return Product.objects.create(
+        name="Product With Person",
+        slug="product-with-person",
+        short_description="Test Description",
+        visibility=Product.Visibility.GLOBAL,
+        person=person
+    )
 
 @pytest.mark.django_db
 class TestBaseProductView:

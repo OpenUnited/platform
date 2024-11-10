@@ -4,12 +4,16 @@ from django.core.exceptions import ValidationError
 from typing import Dict, List, Optional, Tuple
 from django.db.models import Q, QuerySet
 from django.http import HttpResponse
+from itertools import groupby
+from operator import attrgetter
 
 from apps.capabilities.talent.models import Person, Expertise
 from apps.capabilities.security.services import RoleService
+from apps.common import utils
 from .models import Bounty, Challenge, Product, Idea, Bug, IdeaVote, ProductContributorAgreementTemplate, ProductArea, Initiative
 from apps.capabilities.commerce.models import Organisation
 from . import forms
+from apps.capabilities.security.models import ProductRoleAssignment
 
 logger = logging.getLogger(__name__)
 
@@ -324,17 +328,26 @@ class ProductAreaService:
 
 class InitiativeService:
     @staticmethod
-    def create_initiative(form_data: Dict, person: Person, product: Product) -> Tuple[bool, Optional[str], Optional[Initiative]]:
+    def create_initiative(form_data: Dict, person: Person) -> Tuple[bool, Optional[str], Optional[Initiative]]:
+        """Create a new initiative."""
         try:
             initiative = Initiative.objects.create(
                 **form_data,
-                created_by=person,
-                product=product
+                created_by=person
             )
             return True, None, initiative
         except Exception as e:
             logger.error(f"Error creating initiative: {e}")
             return False, str(e), None
+
+    @staticmethod
+    def get_product_initiatives(product: Product) -> QuerySet:
+        """Get all initiatives for a specific product."""
+        return Initiative.objects.filter(
+            product=product
+        ).select_related(
+            'product'  # only include fields that exist in the model
+        ).order_by('-created_at')
 
 class ChallengeService:
     @staticmethod
@@ -362,16 +375,23 @@ class ProductTreeService:
 
 class ProductPeopleService:
     @staticmethod
-    def get_grouped_product_roles(product: Product) -> List[Tuple]:
-        """Get product roles grouped by role type."""
-        product_roles = ProductRoleAssignment.objects.filter(
+    def get_grouped_product_roles(product: Product) -> dict:
+        """Get all role assignments for a specific product, grouped by role."""
+        assignments = ProductRoleAssignment.objects.filter(
             product=product
-        ).select_related('person').order_by('role')
-        
-        return [
-            (role, list(assignments)) 
-            for role, assignments in groupby(product_roles, key=lambda x: x.role)
-        ]
+        ).select_related(
+            'person',
+            'product'
+        ).order_by('role')
+
+        # Convert to dictionary with role as key and list of assignments as value
+        grouped = {}
+        for assignment in assignments:
+            if assignment.role not in grouped:
+                grouped[assignment.role] = []
+            grouped[assignment.role].append(assignment)
+            
+        return grouped.items()  # Return as list of tuples (role, assignments)
 
 class BountyService:
     @staticmethod

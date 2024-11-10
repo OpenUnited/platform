@@ -1,10 +1,7 @@
-import json
-
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -12,24 +9,26 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.core.exceptions import ValidationError
 
 from apps.common import mixins
-from apps.capabilities.product_management.models import Bounty
-from apps.capabilities.security.models import ProductRoleAssignment
-from apps.capabilities.talent import utils
-from apps.utility import utils as global_utils
+from .forms import (
+    BountyDeliveryAttemptForm, FeedbackForm, 
+    PersonProfileForm, PersonSkillFormSet
+)
+from .services import (
+    ProfileService, ShowcaseService, 
+    FeedbackService, BountyDeliveryService,
+    SkillService
+)
 
-from .forms import BountyDeliveryAttemptForm, FeedbackForm, PersonProfileForm, PersonSkillFormSet
-from .models import BountyClaim, BountyDeliveryAttempt, Expertise, Feedback, Person, PersonSkill, Skill
-from .services import FeedbackService
-
-
+# Profile Management Views
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
-    model = Person
     form_class = PersonProfileForm
     context_object_name = "person"
     slug_field = "username"
     slug_url_kwarg = "username"
+    template_name = "talent/profile.html"
     login_url = "sign_in"
 
     def get_template_names(self):
@@ -40,105 +39,135 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             return ["talent/partials/partial_expertises.html"]
         return ["talent/profile.html"]
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(user__pk=self.request.user.pk)
+    def get_object(self):
+        return ProfileService.get_user_profile(self.request.user.username)
 
     def get_context_data(self, **kwargs):
         context = {}
         person = self.get_object()
-
-        expertises = []
-        context = {
-            "pk": person.pk,
-        }
-        skills = [utils.serialize_skills(skill) for skill in Skill.get_roots()]
-
+        
         if self.request.htmx:
-            index = self.request.GET.get("index")
-            if skill := self.request.GET.get(f"skills-{index}-skill"):
-                expertises = [
-                    utils.serialize_expertise(expertise) for expertise in Expertise.get_roots().filter(skill=skill)
-                ]
-            else:
-                context["empty_form"] = PersonSkillFormSet().empty_form
-                context["skills"] = skills
-
-            context["index"] = index
-            context["expertises"] = expertises
+            context = self._get_htmx_context(person)
         else:
-            self.extract_context_data(person, context, skills)
+            context = self._get_standard_context(person)
 
-        context["person_skill_formset"] = PersonSkillFormSet(
-            self.request.POST or None,
-            self.request.FILES or None,
-            instance=person,
-        )
         return context
 
-    def extract_context_data(self, person, context, skills):
-        context["form"] = self.form_class(instance=person)
-        context["pk"] = person.pk
-        context["photo_url"] = person.get_photo_url()
-        context["skills"] = skills
-        context["selected_skills"] = skills
-        context["expertises"] = [utils.serialize_expertise(expertise) for expertise in Expertise.get_roots()]
+    def _get_htmx_context(self, person):
+        context = {"pk": person.pk}
+        index = self.request.GET.get("index")
+        
+        if skill_id := self.request.GET.get(f"skills-{index}-skill"):
+            expertises = ProfileService.get_expertises_for_skill(skill_id)
+            context["expertises"] = expertises
+        else:
+            context["empty_form"] = PersonSkillFormSet().empty_form
+            context["skills"] = ProfileService.get_active_skills()
+
+        context["index"] = index
+        return context
+
+    def _get_standard_context(self, person):
+        skills = ProfileService.get_active_skills()
+        return {
+            "form": self.form_class(instance=person),
+            "pk": person.pk,
+            "photo_url": person.get_photo_url(),
+            "skills": skills,
+            "selected_skills": skills,
+            "expertises": ProfileService.get_expertises_for_skill(None)
+        }
 
     def form_valid(self, form):
-        person = self.request.user.person
+        try:
+            context = self.get_context_data()
+            person_skill_formset = context["person_skill_formset"]
+            
+            if form.is_valid() and person_skill_formset.is_valid():
+                ProfileService.update_profile(
+                    person=self.request.user.person,
+                    profile_data=form.cleaned_data,
+                    skills_data=person_skill_formset.cleaned_data
+                )
+                messages.success(self.request, _("Profile updated successfully"))
+                return HttpResponseRedirect(self.get_success_url())
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+        return self.form_invalid(form)
 
-        form = PersonProfileForm(self.request.POST, self.request.FILES, instance=person)
-        context = self.get_context_data(**self.kwargs)
-        person_skill_formset = context["person_skill_formset"]
+# Showcase Views
+class TalentShowcase(TemplateView):
+    template_name = "talent/showcase.html"
 
-        if form.is_valid() and person_skill_formset.is_valid():
-            obj = form.save()
-            person_skill_formset.instance = obj
-            person_skill_formset.save()
-        return super().form_valid(form)
+    def get(self, request, username, *args, **kwargs):
+        user = get_object_or_404(self.User, username=username)
+        person = user.person
 
+        # todo: check the statuses
+        bounty_claims_completed = BountyClaim.objects.filter(
+            status=BountyClaim.Status.COMPLETED,
+            person=person,
+        ).select_related("bounty__challenge", "bounty__challenge__product")
 
-@login_required(login_url="sign_in")
-def get_skills(request):
-    # TODO I don't think we need this
-    skill_queryset = Skill.objects.filter(active=True).order_by("-display_boost_factor").values()
-    skills = list(skill_queryset)
-    return JsonResponse(skills, safe=False)
+        bounty_claims_claimed = BountyClaim.objects.filter(
+            bounty__status=Bounty.BountyStatus.CLAIMED,
+            person=person,
+        ).select_related("bounty__challenge", "bounty__challenge__product")
+
+        received_feedbacks = Feedback.objects.filter(recipient=person)
+
+        if (
+            request.user.is_anonymous
+            or request.user == user
+            or received_feedbacks.filter(provider=request.user.person)
+        ):
+            can_leave_feedback = False
+        else:
+            can_leave_feedback = True
+
+        context = {
+            "user": user,
+            "person": person,
+            "person_linkedin_link": global_utils.get_path_from_url(person.linkedin_link, True),
+            "person_twitter_link": global_utils.get_path_from_url(person.twitter_link, True),
+            "person_skills": person.skills.all().select_related("skill"),
+            "bounty_claims_claimed": bounty_claims_claimed,
+            "bounty_claims_completed": bounty_claims_completed,
+            "FeedbackService": FeedbackService,
+            "received_feedbacks": received_feedbacks,
+            "form": FeedbackForm(),
+            "can_leave_feedback": can_leave_feedback,
+        }
+        return self.render_to_response(context)
+
+    def get_success_url(self):
+        return reverse("showcase", args=(self.object.recipient.get_username(),))
 
 
 @login_required(login_url="sign_in")
 def get_current_skills(request):
-    # TODO I don't think we need this
-    person = request.user.person
-    try:
-        person_skills = PersonSkill.objects.filter(person=person)
-        skill_ids = []
-        for person_skill in person_skills:
-            skill_ids.append(person_skill.skill.id)
-    except (ObjectDoesNotExist, AttributeError):
-        skill_ids = []
-
+    skill_ids = SkillService.get_current_skills(request.user.person)
     return JsonResponse(skill_ids, safe=False)
 
 
+@login_required(login_url="sign_in")
+def get_skills(request):
+    skills = SkillService.get_all_active_skills()
+    return JsonResponse(skills, safe=False)
+
+
 class GetExpertiseView(LoginRequiredMixin, TemplateView):
-    model = Expertise
-    context_object_name = "expertise"
     template_name = "talent/helper/expertises.html"
     login_url = "sign_in"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        skill = self.request.GET.get("skill")
+        skill_id = self.request.GET.get("skill")
         
-        # Get only selectable expertises for the skill
-        expertise_queryset = (Expertise.get_roots()
-                             .filter(skill=skill)
-                             .prefetch_related('expertise_children'))
-        
-        context['expertises'] = expertise_queryset
-        context['selected_expertise_ids'] = []
-        context['index'] = self.request.GET.get('index', 0)
+        context.update(ProfileService.get_expertise_context(
+            skill_id=skill_id,
+            index=self.request.GET.get('index', 0)
+        ))
         
         return context
 
@@ -199,61 +228,11 @@ def list_skill_and_expertise(request):
     return JsonResponse([], safe=False)
 
 
-class TalentShowcase(TemplateView):
-    User = get_user_model()
-    template_name = "talent/showcase.html"
-
-    def get(self, request, username, *args, **kwargs):
-        user = get_object_or_404(self.User, username=username)
-        person = user.person
-
-        # todo: check the statuses
-        bounty_claims_completed = BountyClaim.objects.filter(
-            status=BountyClaim.Status.COMPLETED,
-            person=person,
-        ).select_related("bounty__challenge", "bounty__challenge__product")
-
-        bounty_claims_claimed = BountyClaim.objects.filter(
-            bounty__status=Bounty.BountyStatus.CLAIMED,
-            person=person,
-        ).select_related("bounty__challenge", "bounty__challenge__product")
-
-        received_feedbacks = Feedback.objects.filter(recipient=person)
-
-        if (
-            request.user.is_anonymous
-            or request.user == user
-            or received_feedbacks.filter(provider=request.user.person)
-        ):
-            can_leave_feedback = False
-        else:
-            can_leave_feedback = True
-
-        context = {
-            "user": user,
-            "person": person,
-            "person_linkedin_link": global_utils.get_path_from_url(person.linkedin_link, True),
-            "person_twitter_link": global_utils.get_path_from_url(person.twitter_link, True),
-            "person_skills": person.skills.all().select_related("skill"),
-            "bounty_claims_claimed": bounty_claims_claimed,
-            "bounty_claims_completed": bounty_claims_completed,
-            "FeedbackService": FeedbackService,
-            "received_feedbacks": received_feedbacks,
-            "form": FeedbackForm(),
-            "can_leave_feedback": can_leave_feedback,
-        }
-        return self.render_to_response(context)
-
-    def get_success_url(self):
-        return reverse("showcase", args=(self.object.recipient.get_username(),))
-
-
 def status_and_points(request):
     return HttpResponse("TODO")
 
 
 class CreateFeedbackView(LoginRequiredMixin, CreateView):
-    model = Feedback
     form_class = FeedbackForm
     template_name = "talent/partials/feedback_form.html"
     login_url = "sign_in"
@@ -263,38 +242,32 @@ class CreateFeedbackView(LoginRequiredMixin, CreateView):
 
     def _get_recipient_from_url(self):
         recipient_username = self.request.headers.get("Referer").split("/")[-1]
-        return Person.objects.get(user__username=recipient_username)
+        return ProfileService.get_user_profile(recipient_username)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "post_url": reverse("create-feedback"),
-                "person": self._get_recipient_from_url(),
-                "current_rating": 0,
-            }
-        )
-
+        context.update({
+            "post_url": reverse("create-feedback"),
+            "person": self._get_recipient_from_url(),
+            "current_rating": 0,
+        })
         return context
 
     def form_valid(self, form):
-        form.instance.recipient = self._get_recipient_from_url()
-        form.instance.provider = self.request.user.person
-        self.object = form.save()
-
-        messages.success(self.request, _("Feedback is successfully created!"))
-
-        return super().form_valid(form)
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        try:
+            self.object = FeedbackService.create(
+                provider=self.request.user.person,
+                recipient=self._get_recipient_from_url(),
+                **form.cleaned_data
+            )
+            messages.success(self.request, _("Feedback created successfully"))
+            return HttpResponseRedirect(self.get_success_url())
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+            return self.form_invalid(form)
 
 
 class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
-    model = Feedback
     form_class = FeedbackForm
     context_object_name = "feedback"
     template_name = "talent/partials/feedback_form.html"
@@ -303,35 +276,32 @@ class UpdateFeedbackView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse("showcase", args=(self.object.recipient.get_username(),))
 
+    def get_object(self):
+        return FeedbackService.get_feedback(self.kwargs['pk'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "post_url": reverse("update-feedback", args=(self.object.pk,)),
-                "person": self.object.recipient,
-                "current_rating": self.object.stars,
-            }
-        )
-
+        context.update({
+            "post_url": reverse("update-feedback", args=(self.object.pk,)),
+            "person": self.object.recipient,
+            "current_rating": self.object.stars,
+        })
         return context
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST, instance=self.object)
-        if form.is_valid():
-            form.save()
-            messages.success(self.request, _("Feedback is successfully updated!"))
+    def form_valid(self, form):
+        try:
+            self.object = FeedbackService.update(
+                feedback_id=self.object.pk,
+                **form.cleaned_data
+            )
+            messages.success(self.request, _("Feedback updated successfully"))
             return HttpResponseRedirect(self.get_success_url())
-
-        return super().post(request, *args, **kwargs)
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+            return self.form_invalid(form)
 
 
 class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
-    model = Feedback
     context_object_name = "feedback"
     template_name = "talent/partials/delete_feedback_form.html"
     login_url = "sign_in"
@@ -339,22 +309,24 @@ class DeleteFeedbackView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse("showcase", args=(self.object.recipient.get_username(),))
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    def get_object(self):
+        return FeedbackService.get_feedback(self.kwargs['pk'])
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         try:
-            Feedback.objects.get(pk=self.object.pk).delete()
+            FeedbackService.delete(
+                feedback_id=self.object.pk,
+                deleting_user=request.user.person
+            )
             messages.success(self.request, _("Feedback is successfully deleted!"))
             return HttpResponseRedirect(self.get_success_url())
-        except ObjectDoesNotExist:
-            return super().post(request, *args, **kwargs)
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+            return self.get(request, *args, **kwargs)
 
 
 class CreateBountyDeliveryAttemptView(LoginRequiredMixin, mixins.AttachmentMixin, CreateView):
-    model = BountyDeliveryAttempt
     form_class = BountyDeliveryAttemptForm
     success_url = reverse_lazy("dashboard")
     template_name = "talent/bounty_claim_attempt.html"
@@ -366,46 +338,42 @@ class CreateBountyDeliveryAttemptView(LoginRequiredMixin, mixins.AttachmentMixin
         return kwargs
 
     def form_valid(self, form):
-        form.instance.person = self.request.user.person
-        form.instance.kind = BountyDeliveryAttempt.SubmissionType.NEW
-        response = super().form_save(form)
-
-        bounty_claim = form.instance.bounty_claim
-        bounty_claim.status = BountyClaim.Status.CONTRIBUTED
-        bounty_claim.save()
-        return response
+        try:
+            self.object = BountyDeliveryService.create_delivery_attempt(
+                person=self.request.user.person,
+                bounty_claim=form.cleaned_data['bounty_claim'],
+                attempt_data=form.cleaned_data
+            )
+            messages.success(self.request, _("Delivery attempt created successfully"))
+            return HttpResponseRedirect(self.get_success_url())
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+            return self.form_invalid(form)
 
 
 class BountyDeliveryAttemptDetail(LoginRequiredMixin, mixins.AttachmentMixin, DetailView):
-    model = BountyDeliveryAttempt
-    context_object_name = "object"
     template_name = "talent/bounty_delivery_attempt_detail.html"
-    success_url = reverse_lazy("dashboard")
+    context_object_name = "object"
 
-    def get_context_data(self, *args, **kwargs):
-        product = self.object.bounty_claim.bounty.challenge.product
+    def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        is_product_admin = ProductRoleAssignment.objects.filter(
-            product=product,
-            person=self.request.user.person,
-            role__in=[ProductRoleAssignment.ProductRoles.ADMIN, ProductRoleAssignment.ProductRoles.MANAGER],
-        ).exists()
-        data["is_product_admin"] = is_product_admin
+        attempt, is_admin = BountyDeliveryService.get_attempt_details(
+            attempt_id=self.object.id,
+            requesting_person=self.request.user.person
+        )
+        data["is_product_admin"] = is_admin
         return data
 
     def post(self, request, *args, **kwargs):
-        # TODO This is not best way and need to improve it. we need to move this to UpdateView
-        TRIGGER_KEY = "bounty-delivery-action"
-        APPROVE_TRIGGER_NAME = "approve-bounty-claim-delivery"
-        REJECT_TRIGGER_NAME = "reject-bounty-claim-delivery"
-        value = self.request.POST.get(TRIGGER_KEY)
-        self.object = self.get_object()
-
-        if value == APPROVE_TRIGGER_NAME:
-            self.object.kind = BountyDeliveryAttempt.SubmissionType.APPROVED
-            self.object.save()
-        elif value == REJECT_TRIGGER_NAME:
-            self.object.kind = BountyDeliveryAttempt.SubmissionType.REJECTED
-            self.object.save()
-
-        return HttpResponseRedirect(reverse("dashboard"))
+        try:
+            action_value = request.POST.get("bounty-delivery-action")
+            BountyDeliveryService.handle_delivery_action(
+                attempt_id=self.get_object().id,
+                action_value=action_value,
+                admin_person=request.user.person
+            )
+            messages.success(request, _("Delivery attempt processed successfully"))
+            return HttpResponseRedirect(reverse("dashboard"))
+        except ValidationError as e:
+            messages.error(request, str(e))
+            return self.get(request, *args, **kwargs)

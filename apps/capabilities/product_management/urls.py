@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 
-from .views.public_views import (
+from .views.visibility_managed_marketplace_views import (
     PublicBountyListView,
     ProductBountyListView,
     ProductSummaryView,
@@ -10,6 +10,7 @@ from .views.public_views import (
     ProductTreeInteractiveView,
     ProductPeopleView,
     ProductListView,
+    BountyDetailView,
     ChallengeDetailView,
     ProductIdeasAndBugsView,
     ProductIdeaListView,
@@ -18,7 +19,7 @@ from .views.public_views import (
     ProductBugDetail,
 )
 
-from .views.product_views import (
+from .views.authenticated_marketplace_views import (
     ProductAreaCreateView,
     ProductAreaUpdateView,
     ProductAreaDetailView,
@@ -30,7 +31,6 @@ from .views.product_views import (
     CreateContributorAgreementTemplateView,
     UpdateChallengeView,
     DeleteChallengeView,
-    BountyDetailView,
     BountyClaimView,
     CreateProductView,
     UpdateProductView,
@@ -46,9 +46,10 @@ from .views.product_views import (
 
 app_name = 'product_management'
 
-# Public routes - no login required, visibility controlled by ProductVisibilityCheckMixin
+# Visibility Manage routes - no login required, visibility controlled by ProductVisibilityCheckMixin
 urlpatterns = [
     path("bounties/", PublicBountyListView.as_view(), name="bounty-list"),
+    path("<str:product_slug>/challenge/<int:challenge_id>/bounty/<int:pk>/", BountyDetailView.as_view(), name="bounty-detail"),
     path("<str:product_slug>/bounties/", ProductBountyListView.as_view(), name="product-bounties"),
     path("<str:product_slug>/summary/", ProductSummaryView.as_view(), name="product-summary"),
     path("<str:product_slug>/initiatives/", ProductInitiativesView.as_view(), name="product-initiatives"),
@@ -62,7 +63,7 @@ urlpatterns = [
     path("<str:product_slug>/bug/<int:pk>/", ProductBugDetail.as_view(), name="product-bug-detail"),
 ]
 
-# Management routes - require login and proper permissions
+# Authenticated routes - require login and proper permissions
 urlpatterns += [
     path("", ProductListView.as_view(), name="products"),
     path("create/", CreateProductView.as_view(), name="create-product"),
@@ -78,7 +79,6 @@ urlpatterns += [
     path("<str:product_slug>/challenge/<int:pk>/", ChallengeDetailView.as_view(), name="challenge-detail"),
     path("<str:product_slug>/challenge/update/<int:pk>/", UpdateChallengeView.as_view(), name="update-challenge"),
     path("<str:product_slug>/challenge/delete/<int:pk>/", DeleteChallengeView.as_view(), name="delete-challenge"),
-    path("<str:product_slug>/challenge/<int:challenge_id>/bounty/<int:pk>/", BountyDetailView.as_view(), name="bounty-detail"),
     path("<str:product_slug>/challenge/<int:challenge_id>/bounty/create/", CreateBountyView.as_view(), name="create-bounty"),
     path("<str:product_slug>/challenge/<int:challenge_id>/bounty/delete/<int:pk>/", DeleteBountyView.as_view(), name="delete-bounty"),
     path("<str:product_slug>/challenge/<int:challenge_id>/bounty/<int:bounty_id>/update/", UpdateBountyView.as_view(), name="update-bounty"),
@@ -93,18 +93,11 @@ urlpatterns += [
     path("<str:product_slug>/contributor-agreement/<int:pk>/", ContributorAgreementTemplateView.as_view(), name="contributor-agreement-template-detail"),
     path("<str:product_slug>/contributor-agreement/create/", CreateContributorAgreementTemplateView.as_view(), name="create-contributor-agreement-template"),
 
-    # Add these management routes
     path("<str:product_slug>/idea/create/", CreateProductIdea.as_view(), name="create-idea"),
     path("<str:product_slug>/idea/<int:pk>/update/", UpdateProductIdea.as_view(), name="update-idea"),
     path("<str:product_slug>/bug/create/", CreateProductBug.as_view(), name="create-bug"),
     path("<str:product_slug>/bug/<int:pk>/update/", UpdateProductBug.as_view(), name="update-bug"),
     path("idea/<int:pk>/vote/", cast_vote_for_idea, name="cast-vote-for-idea"),
-]
-
-# Legacy/redirect routes
-urlpatterns += [
-    path("challenges/", RedirectView.as_view(pattern_name='product_management:bounty-list', permanent=True), name="challenges"),
-    re_path(r"^challenges/.*$", RedirectView.as_view(pattern_name='product_management:bounty-list', permanent=True), name="challenges-wildcard"),
 ]
 
 urlpatterns += [
