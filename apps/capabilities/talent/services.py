@@ -168,17 +168,16 @@ class ShowcaseService:
             person = Person.objects.select_related(
                 'user'
             ).prefetch_related(
-                'skills__skill',
-                'bountyclaims__bounty__challenge__product',
-                'received_feedbacks__provider'
+                'feedback_received',
+                'feedback_received__provider'
             ).get(user__username=username)
 
             return {
                 'person': person,
                 'user': person.user,
                 'person_skills': person.skills.all(),
-                'bounty_claims': person.bountyclaims.all(),
-                'received_feedbacks': person.received_feedbacks.all(),
+                'bounty_claims': person.bounty_claims.all(),
+                'received_feedbacks': person.feedback_received.all(),
                 'can_leave_feedback': (
                     viewing_user and 
                     not viewing_user.is_anonymous and 

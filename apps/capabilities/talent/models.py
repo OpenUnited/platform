@@ -248,7 +248,11 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
         FAILED = "Failed"
 
     bounty = models.ForeignKey("product_management.Bounty", on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, blank=True, null=True)
+    person = models.ForeignKey(
+        'Person',
+        on_delete=models.CASCADE,
+        related_name='bounty_claims'
+    )
     expected_finish_date = models.DateField(default=date.today)
     status = models.CharField(
         max_length=20,
@@ -367,10 +371,16 @@ class BountyDeliveryAttempt(TimeStampMixin, AttachmentAbstract):
 
 
 class Feedback(models.Model):
-    # Person who recevies the feedback
-    recipient = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="feedback_recipient")
-    # Person who sends the feedback
-    provider = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="feedback_provider")
+    recipient = models.ForeignKey(
+        'Person',
+        on_delete=models.CASCADE,
+        related_name='feedback_received'
+    )
+    provider = models.ForeignKey(
+        'Person',
+        on_delete=models.CASCADE,
+        related_name='feedback_given'
+    )
     message = models.TextField()
     stars = models.PositiveSmallIntegerField(
         default=1,
