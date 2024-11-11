@@ -17,8 +17,6 @@ from apps.capabilities.product_management.mixins import ProductMixin
 
 import uuid
 
-from django_lifecycle import BEFORE_CREATE, BEFORE_SAVE, LifecycleModelMixin, hook
-
 
 class FileAttachment(models.Model):
     file = models.FileField(upload_to="attachments")
@@ -67,23 +65,33 @@ class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
         return self.name
 
 
-class Product(LifecycleModelMixin, TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
+class Product(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
+    """
+    Represents a product that can be owned by either a Person or an Organisation, but not both.
+    This is enforced through a database constraint 'product_single_owner' which ensures
+    exactly one of person or organisation is set.
+
+    Products have three visibility levels:
+    - GLOBAL: Visible to all users
+    - ORG_ONLY: Only visible to members of the owning organisation
+    - RESTRICTED: Only visible to organisation members with explicit ProductRoleAssignment
+
+    Attributes:
+        person (ForeignKey): Individual owner, mutually exclusive with organisation
+        organisation (ForeignKey): Organisational owner, mutually exclusive with person
+        visibility (CharField): Controls product visibility using Visibility choices
+    """
     class Visibility(models.TextChoices):
         GLOBAL = "GLOBAL", "Global"
         ORG_ONLY = "ORG_ONLY", "Organisation Only"
         RESTRICTED = "RESTRICTED", "Restricted"
 
-    # Fields migrated from ProductMixin (to be removed)
-    name = models.CharField(max_length=255)
-    short_description = models.TextField(max_length=256, blank=True, null=True)
-    full_description = models.TextField(blank=True, null=True)
-    website = models.URLField(max_length=255, blank=True, null=True)
-    detail_url = models.URLField(max_length=255, blank=True, null=True)
-    video_url = models.URLField(max_length=255, blank=True, null=True)
-    slug = models.SlugField(max_length=255, unique=True)
-    photo = models.ImageField(upload_to='products', blank=True, null=True)
+    visibility = models.CharField(
+        max_length=10,
+        choices=Visibility.choices,
+        default=Visibility.ORG_ONLY
+    )
 
-    # Existing Product fields
     person = models.ForeignKey(
         "talent.Person", 
         on_delete=models.CASCADE, 
@@ -98,11 +106,16 @@ class Product(LifecycleModelMixin, TimeStampMixin, UUIDMixin, common.AttachmentA
         blank=True,
         related_name='owned_products'
     )
-    visibility = models.CharField(
-        max_length=10,
-        choices=Visibility.choices,
-        default=Visibility.ORG_ONLY
-    )
+
+
+    name = models.CharField(max_length=255)
+    short_description = models.TextField(max_length=256, blank=True, null=True)
+    full_description = models.TextField(blank=True, null=True)
+    website = models.URLField(max_length=255, blank=True, null=True)
+    detail_url = models.URLField(max_length=255, blank=True, null=True)
+    video_url = models.URLField(max_length=255, blank=True, null=True)
+    slug = models.SlugField(max_length=255, unique=True)
+    photo = models.ImageField(upload_to='products', blank=True, null=True)
 
     class Meta:
         indexes = [
@@ -157,12 +170,17 @@ class Product(LifecycleModelMixin, TimeStampMixin, UUIDMixin, common.AttachmentA
         """Get the product photo URL or default image"""
         return self.photo.url if self.photo else f"{settings.STATIC_URL}images/product-empty.png"
 
+    # Validates owner exclusivity (person XOR org) and visibility rules for person-owned products
     def clean(self):
         """Validate that only one owner type is set"""
         if self.person and self.organisation:
             raise ValidationError("Product cannot have both person and organisation as owner")
         if not self.person and not self.organisation:
             raise ValidationError("Product must have either person or organisation as owner")
+        if self.is_owned_by_person() and self.visibility != self.Visibility.GLOBAL:
+            raise ValidationError({
+                'visibility': 'Person-owned products can only have GLOBAL visibility'
+            })
 
     @classmethod
     def check_slug_from_name(cls, name):

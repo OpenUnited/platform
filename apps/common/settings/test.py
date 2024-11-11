@@ -20,3 +20,5 @@ class DisableMigrations:
         return None
 
 MIGRATION_MODULES = DisableMigrations()
+
+SECRET_KEY = 'django-insecure-test-key-123'  # Only for testing

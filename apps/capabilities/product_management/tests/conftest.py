@@ -156,17 +156,26 @@ def product(person):
         slug="test-product",
         short_description="Test Description",
         visibility=Product.Visibility.GLOBAL,
-        person=person  # Using person field instead of created_by
+        person=person
     )
 
 
 @pytest.fixture
-def restricted_product(person):
-    """Restricted product fixture"""
+def restricted_product(organisation):
+    """Restricted product fixture - must use organisation for restricted visibility"""
     return Product.objects.create(
         name="Restricted Product",
         slug="restricted-product",
         short_description="Restricted Description",
         visibility=Product.Visibility.RESTRICTED,
-        person=person
+        organisation=organisation
+    )
+
+
+@pytest.fixture
+def organisation(db):
+    """Create a test organisation"""
+    return Organisation.objects.create(
+        name="Test Organisation",
+        slug="test-organisation"
     )

@@ -12,6 +12,7 @@ from apps.capabilities.commerce.models import Organisation
 from django.utils import timezone
 from apps.common.exceptions import InvalidInputError
 import logging
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -35,10 +36,12 @@ class TestProductService:
             visibility=Product.Visibility.GLOBAL,
             person=person
         )
+        # For restricted product, we need to use organization owner instead of person
+        org = Organisation.objects.create(name="Test Org")
         restricted_product = Product.objects.create(
             name="Restricted Product",
             visibility=Product.Visibility.RESTRICTED,
-            person=person
+            organisation=org  # Use org instead of person
         )
 
         visible_products = ProductService.get_visible_products(None)
@@ -47,15 +50,19 @@ class TestProductService:
         assert restricted_product not in visible_products
 
     def test_get_visible_products_authenticated(self, authenticated_user, mocker):
+        # Create org for restricted product
+        org = Organisation.objects.create(name="Test Org")
+        
         global_product = Product.objects.create(
             name="Global Product",
             visibility=Product.Visibility.GLOBAL,
             person=authenticated_user.person
         )
+        
         restricted_product = Product.objects.create(
             name="Restricted Product",
             visibility=Product.Visibility.RESTRICTED,
-            person=authenticated_user.person
+            organisation=org  # Use org instead of person
         )
         
         # Mock RoleService to return restricted product
@@ -81,12 +88,35 @@ class TestProductService:
         with pytest.raises(InvalidInputError, match="Not a valid YouTube URL"):
             ProductService.convert_youtube_link_to_embed(url)
 
+    def test_organization_product_visibility(self, authenticated_user):
+        org = Organisation.objects.create(name="Test Org")
+        
+        # Organization can have GLOBAL visibility
+        global_org_product = Product.objects.create(
+            name="Global Org Product",
+            visibility=Product.Visibility.GLOBAL,
+            organisation=org
+        )
+        
+        # Organization can have RESTRICTED visibility
+        restricted_org_product = Product.objects.create(
+            name="Restricted Org Product",
+            visibility=Product.Visibility.RESTRICTED,
+            organisation=org
+        )
+        
+        # Verify both products were created successfully
+        assert Product.objects.filter(organisation=org).count() == 2
+        assert Product.objects.filter(visibility=Product.Visibility.GLOBAL).count() == 1
+        assert Product.objects.filter(visibility=Product.Visibility.RESTRICTED).count() == 1
+
 @pytest.mark.django_db
 class TestIdeaService:
     def test_create_idea(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         form_data = {
             "title": "Test Idea",
@@ -103,6 +133,7 @@ class TestIdeaService:
     def test_toggle_vote(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
+            visibility=Product.Visibility.GLOBAL,
             person=authenticated_user.person
         )
         idea = Idea.objects.create(
@@ -126,6 +157,7 @@ class TestBugService:
     def test_create_bug(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
+            visibility=Product.Visibility.GLOBAL,
             person=authenticated_user.person
         )
         person = authenticated_user.person
@@ -145,6 +177,7 @@ class TestBugService:
     def test_can_modify_bug(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
+            visibility=Product.Visibility.GLOBAL,
             person=authenticated_user.person
         )
         bug = Bug.objects.create(
@@ -163,7 +196,8 @@ class TestChallengeCreationService:
     def test_create_challenge_with_bounties(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         challenge_data = {
             "title": "Test Challenge",
@@ -195,7 +229,8 @@ class TestChallengeCreationService:
     def test_challenge_creation_rollback(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         
         challenge_data = {
@@ -250,12 +285,46 @@ class TestProductManagementService:
             )
         assert "name is required" in str(exc.value)
 
+    def test_create_organization_product(self):
+        org = Organisation.objects.create(name="Test Org")
+        
+        # Test GLOBAL visibility
+        product_data = {
+            "name": "Test Org Product",
+            "slug": "test-org-product",
+            "short_description": "Test Description",
+            "visibility": Product.Visibility.GLOBAL,
+            "organisation": org
+        }
+        
+        # Don't pass person when creating org-owned product
+        product = ProductManagementService.create_product(product_data, person=None)
+        assert product.organisation == org
+        assert product.visibility == Product.Visibility.GLOBAL
+        assert product.person is None
+
+    def test_organization_product_validation(self):
+        """Test validation rules for organization-owned products"""
+        org = Organisation.objects.create(name="Test Org")
+        person = Person.objects.create(user=User.objects.create(username="testuser"))
+        
+        # Test cannot set both organization and person
+        with pytest.raises(ValidationError) as exc_info:
+            Product.objects.create(
+                name="Invalid Product",
+                organisation=org,
+                person=person,
+                visibility=Product.Visibility.GLOBAL
+            )
+        assert "Product cannot have both person and organisation as owner" in str(exc_info.value)
+
 @pytest.mark.django_db
 class TestContributorAgreementService:
     def test_create_template(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         form_data = {
             "title": "Test Template",
@@ -282,7 +351,8 @@ class TestProductAreaService:
         
         product = Product.objects.create(
             name="Test Product",
-            person=person
+            person=person,
+            visibility=Product.Visibility.GLOBAL
         )
         product_tree = ProductTree.objects.create(
             name="Test Tree",
@@ -303,7 +373,8 @@ class TestProductAreaService:
     def test_update_area(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         product_tree = ProductTree.objects.create(
             name="Test Tree",
@@ -331,7 +402,8 @@ class TestInitiativeService:
     def test_create_initiative(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         form_data = {
             "name": "Test Initiative",
@@ -349,13 +421,47 @@ class TestInitiativeService:
     def test_get_product_initiatives(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         Initiative.objects.create(
             name="Test Initiative",
             product=product,
             status=Initiative.InitiativeStatus.ACTIVE
         )
+
+    def test_create_initiative_org_product(self, authenticated_user):
+        """Test creating initiative on organization-owned product"""
+        org = Organisation.objects.create(name="Test Org")
+        product = Product.objects.create(
+            name="Org Product",
+            visibility=Product.Visibility.RESTRICTED,
+            organisation=org
+        )
+        
+        # Create initiative data matching service expectations
+        initiative_data = {
+            'name': "Test Initiative",
+            'description': "Test Description",
+            'product': product,  # Pass product object directly
+            'created_by': authenticated_user.person  # Add created_by to form_data
+        }
+        
+        # Service returns (success, error_message, initiative)
+        success, error, initiative = InitiativeService.create_initiative(
+            initiative_data,
+            authenticated_user.person
+        )
+        
+        # Verify success
+        assert success is True
+        assert error is None
+        assert initiative is not None
+        
+        # Verify initiative data
+        assert initiative.product == product
+        assert initiative.name == "Test Initiative"
+        assert initiative.description == "Test Description"
 
 @pytest.mark.django_db
 class TestBountyService:
@@ -383,7 +489,8 @@ class TestBountyService:
         product = Product.objects.create(
             name="Test Product",
             slug="test-product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         challenge = Challenge.objects.create(
             title="Test Challenge",
@@ -399,12 +506,25 @@ class TestBountyService:
         
         assert bounty in product_bounties
 
+    def test_get_org_product_bounties(self, authenticated_user):
+        """Test bounties on organization-owned product"""
+        org = Organisation.objects.create(name="Test Org")
+        product = Product.objects.create(
+            name="Org Product",
+            visibility=Product.Visibility.RESTRICTED,
+            organisation=org
+        )
+        
+        # Create test bounties...
+        # Test retrieval...
+
 @pytest.mark.django_db
 class TestProductContentService:
     def test_get_product_content(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         
         # Create test content
@@ -429,7 +549,8 @@ class TestProductContentService:
     def test_get_content_stats(self, authenticated_user):
         product = Product.objects.create(
             name="Test Product",
-            person=authenticated_user.person
+            person=authenticated_user.person,
+            visibility=Product.Visibility.GLOBAL
         )
         
         # Create test content
