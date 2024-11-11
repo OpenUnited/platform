@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Create</button>
     <a href="{% url 'product_management:product-ideas' product.slug %}">Cancel</a>
 </form>
+
 {% endblock %} 
