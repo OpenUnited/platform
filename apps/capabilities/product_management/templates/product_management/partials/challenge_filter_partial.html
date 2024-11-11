@@ -78,7 +78,7 @@
             <div class="font-semibold text-gray-500 shrink-0">Created By</div>
             <div class="text-gray-500">
                 <a class="font-medium text-blue-600 hover:underline"
-                href="{{ challenge.created_by|call:get_absolute_url  }}">{{ challenge.created_by|call:get_full_name  }}</a> at
+                href="{{ challenge.created_by.get_absolute_url }}">{{ challenge.created_by.get_full_name  }}</a> at
                 {{ challenge.created_at|date  }}
             </div>
             </div>
@@ -114,11 +114,11 @@
 
 <!-- Pagination -->
 <div class="flex justify-center gap-x-2 mt-10">
-    {% if page_obj|call:has_previous %}
+    {% if page_obj.has_previous %}
     <div class="flex items-center justify-center w-8 h-8 text-md hover:text-blue-400">
-        <a href="?page={{ page_obj|call:previous_page_number  }}">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
     </div>
-    {% endif  %}
+    {% endif %}
 
     {% for i in paginator.page_range %}
     {% if page_obj.number  == i %}
@@ -130,9 +130,9 @@
     {% endif  %}
     {% endfor  %}
 
-    {% if page_obj|call:has_next %}
+    {% if page_obj.has_next %}
     <div class="flex items-center justify-center w-8 h-8 text-md hover:text-blue-400">
-        <a href="?page={{ page_obj|call:next_page_number  }}">&raquo;</a>
+        <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
     </div>
-    {% endif  %}
+    {% endif %}
 </div>

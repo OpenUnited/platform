@@ -1,6 +1,6 @@
 {% if can_modify_product %}
     <button
-        onclick="event|call:preventDefault"
+        onclick="event.preventDefault(); openCreateRootNodeModal()"
         hx-swap="afterend"
         hx-get="{{ add_node_url }}"
         hx-target="#form_container"

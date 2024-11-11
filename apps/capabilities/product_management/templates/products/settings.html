@@ -22,7 +22,7 @@
                                        value="{{ value  }}" 
                                        id="owner_type_{{ value  }}"
                                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                       {% if form.owner_type|call:value  == value %}checked{% endif  %}>
+                                       {% if form.owner_type.value == value %}checked{% endif  %}>
                                 <label for="owner_type_{{ value  }}" class="ml-3 block text-sm font-medium leading-6 text-gray-900">
                                     {{ label  }}
                                 </label>
@@ -114,7 +114,6 @@
         </form>
     </div>
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ownerTypeInputs = document.querySelectorAll('input[name="owner_type"]');
@@ -140,3 +139,4 @@ document.addEventListener('DOMContentLoaded', function() {
     updateOwnerFields();
 });
 </script>
+

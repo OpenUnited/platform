@@ -28,12 +28,12 @@
         </div>
         <div class="flex items-center text-xs text-black/[0.85]">
             <strong>Created By: </strong>
-            <a href="{{ contributor_agreement_template.created_by|call:get_absolute_url  }}" class="flex items-center ml-4">
+            <a href="{{ contributor_agreement_template.created_by.get_absolute_url }}" class="flex items-center ml-4">
                 <div class="flex items-center justify-center shrink-0 w-8 h-8 mr-1.5">
                     <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                        src="{{ contributor_agreement_template.created_by|call:get_photo_url  }}" alt="Created By">
+                        src="{{ contributor_agreement_template.created_by.get_photo_url }}" alt="Created By">
                 </div>
-                <div class="text-neutral-800">{{ contributor_agreement_template.created_by|call:get_full_name  }}</div>
+                <div class="text-neutral-800">{{ contributor_agreement_template.created_by.get_full_name }}</div>
             </a>
             <span>&nbsp;at {{ contributor_agreement_template.created_at|date  }}</span>
         </div>

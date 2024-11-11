@@ -64,12 +64,12 @@
     });
 
     function openModal(event) {
-        event|call:preventDefault;
+        event.preventDefault();
         document.getElementById('search_modal').classList.remove('hidden');
     }
 
     function closeModal() {
-        event|call:preventDefault;
+        event.preventDefault();
         document.getElementById('search_modal').classList.add('hidden');
     }
 </script>

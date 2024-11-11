@@ -55,7 +55,7 @@
 
     document.addEventListener('htmx:confirm', function (event) {
         if (event.detail.elt.getAttribute('claim-bounty')) {
-            event|call:preventDefault;
+            event.preventDefault();
             {% if agreement_template %}
             claimConfirm(event, "{% url 'contributor-agreement-template-detail' bounty.challenge.product.slug agreement_template.id %}")
             {% else %}

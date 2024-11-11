@@ -7,14 +7,14 @@
 <div>
     <div class="flex items-center">
         <div class="mr-3 w-10 h-10">
-            <img class="w-full h-full rounded-full bg-gray-50 ring-2 ring-white"
-                src="{{ idea.person|call:get_photo_url  }}"
-                alt="">
+            <img class="h-8 w-8 rounded-full"
+                src="{{ idea.person.get_photo_url }}"
+                alt="User Photo">
         </div>
 
         <div>
             <span>
-                <a href="{{ idea.person|call:get_absolute_url  }}" class="font-semibold">{{ idea.person.user.username  }}</a> commented on
+                <a href="{{ idea.person.get_absolute_url }}" class="font-semibold">{{ idea.person.user.username  }}</a> commented on
                 <span class="text-gray-500">{{ idea.created_at|date  }}</span>
             </span>
         </div>

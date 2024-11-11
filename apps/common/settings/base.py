@@ -229,5 +229,5 @@ if os.environ.get("SENTRY_DSN"):
     )
 
 # Authentication settings
-LOGIN_URL = 'security:sign_in'  # Update this to use your sign-in URL
-LOGIN_REDIRECT_URL = '/'  # Where to redirect after successful login
+LOGIN_URL = '/security/sign-in/'
+LOGIN_REDIRECT_URL = '/'

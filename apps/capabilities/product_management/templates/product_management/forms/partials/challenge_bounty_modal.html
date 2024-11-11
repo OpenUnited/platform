@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     toggleButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            e|call:preventDefault;
-            e|call:stopPropagation;
+            e.preventDefault();
+            e.stopPropagation();
             
             const skillItem = this.closest('.skill-item');
             const childSkills = skillItem.querySelector('.child-skills');
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
-                        return response|call:text;
+                        return response.text();
                     })
                     .then(html => {
                         // Simply insert the HTML response directly
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Clear error message if it exists
                         const errorElement = document.querySelector('.expertise-error');
                         if (errorElement) {
-                            errorElement|call:remove;
+                            errorElement.remove();
                         }
                     })
                     .catch(error => {
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle form submission
     document.getElementById('bounty-form').addEventListener('submit', function(e) {
-        e|call:preventDefault;
+        e.preventDefault();
         
         // Get all selected expertise checkboxes
         const selectedExpertise = Array.from(document.querySelectorAll('input[name="expertise"]:checked'))
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
             },
         })
-        .then(response => response|call:json)
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 // Close modal and redirect if successful
@@ -259,7 +259,7 @@ function addBountyToList(bountyData) {
 }
 
 function removeBounty(element) {
-    element.closest('.bounty-item')|call:remove;
+    element.closest('.bounty-item').remove();
 }
 
 // Add this function to show the modal

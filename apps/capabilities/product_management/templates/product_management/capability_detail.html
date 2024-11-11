@@ -47,15 +47,15 @@
                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                             {{ challenge.title  }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="{{ challenge.created_by|call:get_absolute_url  }}"
+                            <a href="{{ challenge.created_by.get_absolute_url  }}"
                                 class="text-emerald-600 hover:text-emerald-900">{{ challenge.created_by  }}</a></td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="{{ challenge.product|call:get_absolute_url  }}"
+                            <a href="{{ challenge.product.get_absolute_url  }}"
                                 class="text-emerald-600 hover:text-emerald-900">{{ challenge.product  }}</a></td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {{ challenge.status  }}</td>
                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                            <a href="{{ challenge|call:get_absolute_url  }}"
+                            <a href="{{ challenge.get_absolute_url  }}"
                                 class="text-indigo-600 hover:text-indigo-900">Visit</a>
                         </td>
                     </tr>

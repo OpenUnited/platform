@@ -1,8 +1,8 @@
 {% load static %}
-{% include '"talent/helper/macro_fun.html" as macros_fun  ' %}
+{% include "talent/helper/macro_fun.html" as macros_fun %}
 
 <form method="post" enctype="multipart/form-data">
-    {% csrf_token  %}
+    {% csrf_token %}
     <div class="space-y-12">
         <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
             <div>
@@ -12,38 +12,37 @@
 
             <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
                 <div class="col-span-full">
-                    {% if form|call:non_field_errors %}
-                    <div
-                        class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+                    {% if form.non_field_errors %}
+                    <div class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
                             <img src="{% static 'images/error.svg' %}" alt="Error Icon">
                         </span>
-                        {% for error in form|call:non_field_errors %}
-                        <p>{{ error  }}</p>
-                        {% endfor  %}
+                        {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
                     </div>
-                    {% endif  %}
+                    {% endif %}
                 </div>
 
                 <div class="col-span-full">
-                    <label for="{{ form.title.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.title.label  }}</label>
-                        {{ form.title  }}
+                    <label for="{{ form.title.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.title.label }}</label>
+                        {{ form.title }}
                 </div>
 
                 <div class="col-span-full">
-                    <label for="{{ form.description.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.description.label  }}</label>
+                    <label for="{{ form.description.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.description.label }}</label>
                     <div class="mt-2">
-                        {{ form.description  }}
+                        {{ form.description }}
                     </div>
                 </div>
 
                 <div class="col-span-full">
-                    <label for="{{ form.points.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.points.label  }}</label>
+                    <label for="{{ form.points.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.points.label }}</label>
                     <div class="mt-2">
-                        {{ form.points  }}
+                        {{ form.points }}
                     </div>
                 </div>
 
@@ -54,7 +53,7 @@
                     <div class="mt-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-4 gap-y-6"
                             id="person_skill_container">
-                            <input type="hidden" name="skills-0-id" value="{{ form.instance.pk  }}" class="row">
+                            <input type="hidden" name="skills-0-id" value="{{ form.instance.pk }}" class="row">
                             <div id="id_skills-0-container"
                                 class="relative bg-white border border-gray-200 p-4 rounded-md shadow-md">
                                 <div class="mt-2">
@@ -64,13 +63,13 @@
                                             focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         hx-get="{% url 'get-expertise' %}" hx-vals=''
                                         hx-trigger="change" hx-target="#ul_expertise_0">
-                                        {{ macros_fun.skill_filter_tree(skills, [], True)  }}
+                                        {{ macros_fun.skill_filter_tree(skills, [], True) }}
                                     </select>
                                 </div>
                                 <div id="td_expertise" class="mt-4">
-                                    {% with index=0  %}
-                                        {% include "talent/helper/expertises.html"  %}
-                                    {% endwith  %}
+                                    {% with index=0 %}
+                                        {% include "talent/helper/expertises.html" %}
+                                    {% endwith %}
                                     <select class="hidden" id="id_skills-0-expertise" name="skills-0-expertise" multiple></select>
                                     <input type="hidden" id="id_expertise_ids" name="expertise_ids">
                                 </div>
@@ -80,32 +79,15 @@
                 </div>
 
                 <div class="col-span-full">
-                    <label for="{{ form.status.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.status.label  }}</label>
+                    <label for="{{ form.status.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.status.label }}</label>
                     <div class="mt-2">
-                        {{ form.status  }}
+                        {{ form.status }}
                     </div>
-                </div>
-
-                <div class="col-span-3">
-                    {% comment  %}
-                    <div class="mt-6 space-y-6">
-                        <div class="relative flex gap-x-3">
-                            <div class="flex h-6 items-center">
-                                {{ form.is_active  }}
-                            </div>
-                            <div class="text-sm leading-6">
-                                <label for="{{ form.is_active.id_for_label  }}"
-                                    class="font-medium text-gray-900">{{ form.is_active.label  }}</label>
-                                <p class="text-gray-500">{{ form.is_active.help_text  }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endcomment  %}
                 </div>
 
                 <div class="col-span-full">
-                    {% include "attachments.html"  %}
+                    {% include "attachments.html" %}
                 </div>
             </div>
         </div>

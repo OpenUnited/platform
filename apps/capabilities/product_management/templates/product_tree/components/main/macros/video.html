@@ -4,10 +4,10 @@
         <button
             class="appearance-none rounded border border-light-gray flex items-center whitespace-nowrap px-4 py-2"
             data-video="{{ child.video_link  }}"
-            onclick="event|call:preventDefault; openVideoModal('{{ child.video_link  }}')"
+            onclick="event.preventDefault(); openVideoModal('{{ child.video_link  }}')"
         >
             <img src="{% static 'images/play.svg' %}" class="btn-video__open w-[14px] h-[15px]" alt="#"
-                onclick="event|call:preventDefault;"
+                onclick="event.preventDefault();"
             >
             <span class="btn-video__open text-dark text-sm ml-[9px] font-normal font-medium">
                 {% if child.video_name %}

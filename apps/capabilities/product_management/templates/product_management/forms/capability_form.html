@@ -1,6 +1,6 @@
 {% load static %}
 <form method="post">
-    {% csrf_token  %}
+    {% csrf_token %}
     <div class="space-y-12">
         <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
             <div>
@@ -10,50 +10,49 @@
 
             <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
                 <div class="col-span-full">
-                    {% if form|call:non_field_errors %}
-                    <div
-                        class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
+                    {% if form.non_field_errors %}
+                    <div class="w-fit mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
                         <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
                             <img src="{% static 'images/error.svg' %}" alt="Error Icon">
                         </span>
-                        {% for error in form|call:non_field_errors %}
-                        <p>{{ error  }}</p>
-                        {% endfor  %}
+                        {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
                     </div>
-                    {% endif  %}
+                    {% endif %}
                 </div>
 
                 <div class="col-span-4">
-                    <label for="{{ form.root.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.root.label  }}</label>
+                    <label for="{{ form.root.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.root.label }}</label>
                     <div class="mt-2">
-                        {{ form.root  }}
-                        <p class="text-xs mt-2 ml-1 text-blue-500">{{ form.root.help_text  }}</p>
-                    </div>
-                </div>
-
-                <div class="col-span-4">
-                    <label for="{{ form.creation_method.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.creation_method.label  }}</label>
-                    <div class="mt-2">
-                        {{ form.creation_method  }}
-                        <p class="text-xs mt-2 ml-1 text-blue-500">{{ form.creation_method.help_text  }}</p>
+                        {{ form.root }}
+                        <p class="text-xs mt-2 ml-1 text-blue-500">{{ form.root.help_text }}</p>
                     </div>
                 </div>
 
                 <div class="col-span-4">
-                    <label for="{{ form.name.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.name.label  }}</label>
+                    <label for="{{ form.creation_method.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.creation_method.label }}</label>
                     <div class="mt-2">
-                        {{ form.name  }}
+                        {{ form.creation_method }}
+                        <p class="text-xs mt-2 ml-1 text-blue-500">{{ form.creation_method.help_text }}</p>
                     </div>
                 </div>
 
                 <div class="col-span-4">
-                    <label for="{{ form.description.id_for_label  }}"
-                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.description.label  }}</label>
+                    <label for="{{ form.name.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.name.label }}</label>
                     <div class="mt-2">
-                        {{ form.description  }}
+                        {{ form.name }}
+                    </div>
+                </div>
+
+                <div class="col-span-4">
+                    <label for="{{ form.description.id_for_label }}"
+                        class="block text-sm font-medium leading-6 text-gray-900">{{ form.description.label }}</label>
+                    <div class="mt-2">
+                        {{ form.description }}
                     </div>
                 </div>
             </div>

@@ -27,8 +27,7 @@
                 <div class="text-sm font-medium text-black">
                     <strong> Bounties </strong>
                     <div class="text-gray-500">
-                        {{ challenge.bounty_set|call:all|count  }}
-                        ({{ challenge.bounty_set.filter(status=bounty_status.AVAILABLE)|count  }} available)
+                        {{ challenge.bounty_set.all.count }}
                     </div>
                 </div>
             </div>

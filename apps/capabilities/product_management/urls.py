@@ -42,6 +42,7 @@ from .views.authenticated_marketplace_views import (
     CreateProductBug,
     UpdateProductBug,
     cast_vote_for_idea,
+    CreateIdeaView,
 )
 
 app_name = 'product_management'
@@ -108,4 +109,10 @@ urlpatterns += [
     path('ideas/<int:pk>/vote/', 
          cast_vote_for_idea, 
          name='cast-vote'),
+]
+
+urlpatterns += [
+    path('products/create/', CreateProductView.as_view(), name='create-product'),
+    path('products/<slug:product_slug>/ideas/create/', CreateIdeaView.as_view(), name='create-idea'),
+    path('products/<slug:product_slug>/ideas/<int:idea_id>/', ProductIdeaDetail.as_view(), name='idea-detail'),
 ]

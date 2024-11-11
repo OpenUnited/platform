@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const settingsLink = document.querySelector('a[data-settings-url]');
     if (settingsLink) {
         settingsLink.addEventListener('click', function(e) {
-            e|call:preventDefault;
+            e.preventDefault();
             const portalUrl = this.href;
             const settingsUrl = this.dataset.settingsUrl;
             

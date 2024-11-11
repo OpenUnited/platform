@@ -34,10 +34,13 @@ View Types and Visibility Enforcement
 
 
 from django.views.generic import ListView, DetailView, TemplateView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Count
 from itertools import groupby
 from operator import attrgetter
+from django.core.exceptions import PermissionDenied
+from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
 
 from ..models import (
     Product, 
@@ -99,10 +102,23 @@ class ProductSummaryView(ProductVisibilityCheckMixin, DetailView):
     slug_url_kwarg = 'product_slug'
     context_object_name = 'product'
 
+    def dispatch(self, request, *args, **kwargs):
+        product = self.get_product()
+        
+        # Allow public access for global products
+        if product.visibility == Product.Visibility.GLOBAL:
+            return super().dispatch(request, *args, **kwargs)
+            
+        # For restricted products, require authentication
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+            
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product_slug'] = self.kwargs['product_slug']
-        context['challenges'] = Challenge.objects.filter(product=self.object)
+        context['challenges'] = Challenge.objects.filter(product=self.get_object())
         return context
 
 

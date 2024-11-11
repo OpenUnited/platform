@@ -1,67 +1,47 @@
 {% load static %}
 {% if can_modify_product %}
-    <div class="flex gap-3 items-center view-node-group">
-      <button type="button" class="add_node w-5 h-5"
-          onclick="add_new_form(event, {{ id }})"
-          trigger="create_node_{{ id }}"
-          hx-target="#li_{{ id }}_ul_child"
-          hx-swap="afterbegin"
-          {% if product_slug %}
-              hx-get="{% url product-area product_slug,   %}"
-          {% else %}
-              hx-get="{% url canopy:add-node id,  %}"
-          {% endif  %}
-          hx-vals='{"margin_left":"{{ margin_left or 0  }}","has_post":"{{ True }}", "parent_id":"{{ id }}","depth": "{{ depth }}" }'>
-          <img src="{% static 'images/add.svg' %}" class="" alt="#">
-      </button>
+    <div class="flex items-center space-x-2">
+        <!-- Edit button -->
+        <button type="button" 
+            onclick="event.preventDefault(); editNode(this)"
+            class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            <svg class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+            </svg>
+            Edit
+        </button>
 
-      <button type="button"
-              class="edit_node w-5 h-5"
-              hx-target="#li_node_{{ id }}"
-              trigger="update_node_{{ id }}"
-              {% if product_slug %}
-                  hx-get="{% url product-area-update product_slug, id,   %}"
-              {% else %}
-                  hx-get="{% url canopy:update-node id,  %}"
-              {% endif  %}
-              hx-vals='{"margin_left":"{{ margin_left or 0  }}", "depth": "{{ depth }}" }'
-              onclick="event|call:preventDefault">
-          <img src="{% static 'images/edit_icon.svg' %}" class="edit" alt="#">
-      </button>
+        <!-- Delete button -->
+        <button type="button"
+            onclick="event.preventDefault(); deleteNode(this)"
+            class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+            <svg class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" />
+            </svg>
+            Delete
+        </button>
 
-        <button onclick="deleteNode(event, '{% url canopy:delete-node id,  %}', {{ id }})">
-          <img src="{% static 'images/delete.svg' %}" class="" alt="#">
+        <!-- Add Child button -->
+        <button type="button"
+            onclick="event.preventDefault(); addChildNode(this)"
+            class="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <svg class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+            </svg>
+            Add Child
         </button>
     </div>
 {% endif  %}
 
 <script>
-  function deleteNode(event, url, id){
-      event|call:preventDefault
-      showConfirm({}).then(async function(){
-          htmxRequest({
-            url: url,
-            method: 'DELETE',
-            target: `#li_node_${id}`
-          }).then(({event, data}) => {
-              const parentButton = document.getElementById(`toggleVisibility_${data.parent_id}`)
-              if (parentButton && data.parent_child_count<=1){
-                parentButton.classList.add("hidden");
-              }
-              event.detail.target|call:remove
-              showNotification({type: typeSuccess, message:data.message})
-          }).catch(({event, data}) => {
-              showNotification({message:data.error})
-          });
-      })
-  }
-
-  function add_new_form(event, id){
-      const childUl = document.getElementById(`li_${id}_ul_child`)
-      if (childUl.classList.contains('hidden')) {
-        childUl.classList.remove("hidden")
-        const icon = childUl.closest("li").querySelector(".icon-arrow");
-        icon.setAttribute("data-icon","circle-chevron-down");
-      }
-  }
+function deleteNode(element) {
+    const target = element.closest('.node');
+    if (target) {
+        target.remove();
+    }
+}
 </script>

@@ -5,47 +5,47 @@
         Create Challenge
     </h2>
 
-    {% include '"talent/helper/macro_fun.html" as macros_fun  ' %}
+    {% include 'talent/helper/macro_fun.html' as macros_fun %}
 
     <div class="grid grid-cols-12 sm:grid-cols-12 md:col-span-12 mb-5">
         <div class="col-span-full">
-            {% if form|call:non_field_errors %}
+            {% if form.non_field_errors %}
             <div
                 class="mx-auto flex items-center px-3 py-1.5 py-2.5 rounded-md border border-solid border-[#F5222D] text-sm text-black/[0.85] bg-[#f5222d]/[0.08]">
                 <span class="w-4 h-4 flex shrink-0 items-center justify-center mr-3">
                     <img src="{% static 'images/error.svg' %}" alt="Error Icon">
                 </span>
-                {% for error in form|call:non_field_errors %}
-                <p>{{ error  }}</p>
-                {% endfor  %}
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
             </div>
-            {% endif  %}
+            {% endif %}
         </div>
     </div>
 
     <div class="flex flex-col sm:flex-row space-y-8 sm:space-y-0 sm:space-x-4 sm:pb-8 lg:pb-12" data-current-step="1">
-        {% include 'product_management/forms/partials/challenge_step_nav.html'  %}
+        {% include 'product_management/forms/partials/challenge_step_nav.html' %}
         <form method="post" enctype="multipart/form-data"
             class="challenges-steps flex flex-col justify-between grow sm:px-5
                 lg:px-[34px] sm:py-6 lg:pb-9 lg:pt-[34px] mb-0 sm:border-[3px] border-solid border-[#F4F6F7]"
             id="challenge-form" novalidate>
-            {% csrf_token  %}
-            {{ form.media  }}
+            {% csrf_token %}
+            {{ form.media }}
 
             <div class="active flex-col space-y-6 sm:space-y-10 lg:space-y-12 mb-8 sm:mb-10" data-step-id="1">
-                {% include 'product_management/forms/partials/challenge_step_1.html'  %}
+                {% include 'product_management/forms/partials/challenge_step_1.html' %}
             </div>
             <div class="flex-col mb-10" data-step-id="2">
-                {% include 'product_management/forms/partials/challenge_step_2.html'  %}
+                {% include 'product_management/forms/partials/challenge_step_2.html' %}
             </div>
             <div class="flex-col mb-10" data-step-id="3">
-                {% include 'product_management/forms/partials/challenge_step_3.html'  %}
+                {% include 'product_management/forms/partials/challenge_step_3.html' %}
             </div>
             <div class="flex-col mb-10" data-step-id="4">
-                {% include 'product_management/forms/partials/challenge_step_4.html'  %}
+                {% include 'product_management/forms/partials/challenge_step_4.html' %}
             </div>
             <div class="flex-col mb-10" data-step-id="5">
-                {% include 'product_management/forms/partials/challenge_step_5.html'  %}
+                {% include 'product_management/forms/partials/challenge_step_5.html' %}
             </div>
 
             <div class="form-buttons__wrap flex-wrap">
@@ -85,7 +85,7 @@
         </form>
     </div>
 
-    {% include 'product_management/forms/partials/challenge_bounty_modal.html'  %}
+    {% include 'product_management/forms/partials/challenge_bounty_modal.html' %}
 
 </div>
 
