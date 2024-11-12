@@ -19,7 +19,7 @@
         {% endif  %}
 
         <div class="flex items-center mb-2">
-            <p>{{ challenge.description|linebreaksbr|safe  }}</p>
+            <div>{{ challenge.description|safe }}</div>
             {% if request.user.is_authenticated %}
             {% if request.user.person == challenge.created_by or challenge|can_delete:request.user.person %}
             <div class="ml-auto">

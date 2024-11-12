@@ -14,8 +14,7 @@
         <form id="challenge-form" 
               method="post" 
               enctype="multipart/form-data"
-              onsubmit="return false;"
-              data-product-slug="{{ product.slug }}"
+              data-bounty-table-url="{% url 'challenge_authoring:bounty_table' product.slug %}"
               action="{% url 'challenge_authoring:create' product.slug %}">
             {% csrf_token %}
             
@@ -30,7 +29,8 @@
                        class="input input-bordered w-full" 
                        placeholder="Enter challenge title"
                        value="{{ form.title.value|default:'' }}"
-                       maxlength="{{ form.title.field.max_length }}">
+                       maxlength="{{ form.title.field.max_length }}"
+                       autofocus>
                 {% if form.title.errors %}
                     <div class="text-error text-sm mt-1">
                         {{ form.title.errors|join:", " }}
@@ -114,6 +114,7 @@
                     {% endif %}
                 </div>
             {% endfor %}
+
         </form>
     </div>
 
@@ -138,118 +139,16 @@
     {% endif %}
 </div>
 
+<!-- Add this modal HTML before the closing </div> of your main content -->
 {% include "challenge_authoring/components/bounty_modal.html" %}
 {% endblock %}
 
 {% block page_scripts %}
 <!-- First, initialize the product slug -->
 <script>
-    window.PRODUCT_SLUG = "{{ product.slug }}";  // Using product.slug instead of product_slug
-    console.log('Setting PRODUCT_SLUG:', window.PRODUCT_SLUG);
+    window.PRODUCT_SLUG = "{{ product.slug }}";
 </script>
 
-<!-- Keep your existing DOMContentLoaded script -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Focus title input on page load
-    const titleInput = document.getElementById('title-input');
-    if (titleInput) {
-        titleInput.focus();
-    }
-
-    // Add bounty button click handler - Add this before other initializations
-    console.log('Setting up bounty button handler');
-    const addBountyBtn = document.getElementById('add-bounty-btn');
-    if (addBountyBtn) {
-        console.log('Found bounty button');
-        addBountyBtn.addEventListener('click', () => {
-            console.log('Add Bounty button clicked!');
-            showModal();
-        });
-    } else {
-        console.warn('Bounty button not found');
-    }
-
-    // Initialize Choices.js selects
-    const prioritySelect = new Choices('#priority-select', {
-        searchEnabled: false,
-        itemSelectText: '',
-        removeItemButton: false,
-        allowHTML: true
-    });
-
-    // Initialize Quill
-    if (window.Quill) {
-        const quill = new Quill('#editor', {
-            theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['link']
-                ]
-            },
-            placeholder: 'Enter description...'
-        });
-
-        // Update hidden input whenever Quill content changes
-        quill.on('text-change', function() {
-            const descriptionInput = document.getElementById('description');
-            descriptionInput.value = quill.root.innerHTML;
-        });
-
-        // Also update on form submit
-        const form = document.getElementById('challenge-form');
-        if (form) {
-            form.addEventListener('submit', function() {
-                const descriptionInput = document.getElementById('description');
-                descriptionInput.value = quill.root.innerHTML;
-            });
-        }
-    }
-
-    // Add modal functions
-    window.showModal = function() {
-        // Reset form fields
-        const skillSelect = document.getElementById('bounty-skill');
-        const titleInput = document.getElementById('bounty-title');
-        const pointsInput = document.getElementById('bounty-points');
-        
-        // Reset skill dropdown to first option
-        if (skillSelect) {
-            skillSelect.value = '';
-        }
-        
-        // Reset title and points
-        if (titleInput) {
-            titleInput.value = '';
-        }
-        if (pointsInput) {
-            pointsInput.value = '';
-        }
-        
-        // Reset Quill editor content if it exists
-        const editor = document.querySelector('#bounty-description-editor .ql-editor');
-        if (editor) {
-            editor.innerHTML = '';
-        }
-
-        // Show modal
-        document.getElementById('bounty-modal').classList.add('modal-open');
-    }
-
-    window.hideModal = function() {
-        document.getElementById('bounty-modal').classList.remove('modal-open');
-    }
-
-    window.saveBounty = function() {
-        // Add your bounty saving logic here
-        console.log('Saving bounty...');
-    }
-});
-</script>
-
-<!-- Keep your module script last -->
+<!-- Single module script -->
 <script type="module" src="{% static 'challenge_authoring/js/index.js' %}"></script>
 {% endblock %}

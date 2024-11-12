@@ -33,6 +33,7 @@ import re
 from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+import json
 
 from apps.capabilities.product_management.models import Challenge, Bounty, Product, FileAttachment, Initiative, Bounty
 from apps.capabilities.talent.models import Skill, Expertise
@@ -454,47 +455,59 @@ class ChallengeAuthoringService:
         ).order_by('name')
 
     @transaction.atomic
-    def create_challenge_with_bounties(self, challenge_data, user, request):
+    def create_challenge_with_bounties(self, challenge_data, person, request):
         """
         Service to create a challenge and its associated bounties
         
         Args:
-            challenge_data (dict): Challenge creation data
-            user: The user creating the challenge
-            request: The request object containing the session
-        
-        Returns:
-            Challenge: The created challenge instance
+            challenge_data (dict): The challenge form data
+            person (Person): The person creating the challenge
+            request (HttpRequest): The current request
         """
+        logger.debug(f"Creating challenge with data: {challenge_data}")
+        
         # Create the challenge
         challenge = Challenge.objects.create(
             title=challenge_data['title'],
             description=challenge_data['description'],
             priority=challenge_data['priority'],
             product=self.product,
-            created_by=user,
+            created_by=person,  # person is a Person instance
             status=Challenge.ChallengeStatus.DRAFT
         )
+        logger.debug(f"Created challenge: {challenge.id}")
         
-        # Get bounties from session
-        bounties_data = request.session.get('pending_bounties', [])
-        
-        # Create bounties
-        for bounty_data in bounties_data:
-            # Get skill_id from either snake_case or camelCase key
-            skill_id = bounty_data.get('skill_id') or bounty_data.get('skillId') or bounty_data['skill']['id']
+        # Get bounties from POST data
+        try:
+            bounties_json = request.POST.get('bounties')
+            logger.debug(f"Raw bounties data: {bounties_json}")
             
-            Bounty.objects.create(
-                title=bounty_data['title'],
-                description=bounty_data['description'],
-                points=int(bounty_data['points']),
-                skill=Skill.objects.get(id=skill_id),  # Use extracted skill_id
-                challenge=challenge,
-                status=Bounty.BountyStatus.AVAILABLE
-            )
-        
-        # Clear the session
-        if 'pending_bounties' in request.session:
-            del request.session['pending_bounties']
+            if bounties_json:
+                bounties_data = json.loads(bounties_json)
+                logger.debug(f"Parsed bounties data: {bounties_data}")
+                
+                # Create bounties
+                for bounty_data in bounties_data:
+                    skill_data = bounty_data.get('skill', {})
+                    skill_id = skill_data.get('id')
+                    
+                    if not skill_id:
+                        logger.error(f"No skill ID found in bounty data: {bounty_data}")
+                        continue
+                    
+                    bounty = Bounty.objects.create(
+                        challenge=challenge,
+                        title=bounty_data['title'],
+                        description=bounty_data['description'],
+                        points=int(bounty_data['points']),
+                        skill_id=skill_id,
+                        status=Bounty.BountyStatus.AVAILABLE
+                    )
+                    logger.debug(f"Created bounty: {bounty.id}")
+                    
+        except Exception as e:
+            logger.error(f"Error creating bounties: {str(e)}")
+            logger.error(f"Request POST data: {request.POST}")
+            raise
         
         return challenge

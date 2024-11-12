@@ -25,6 +25,7 @@ from .services import ChallengeAuthoringService
 import logging
 from django.forms import ModelForm, modelformset_factory
 from apps.capabilities.product_management.models import FileAttachment
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -55,14 +56,22 @@ class ChallengeAuthoringForm(BaseModelForm):
         # Log the cleaning process
         logger.debug(f"Cleaning form data: {cleaned_data}")
         
-        # Only check bounties if there are no other errors
-        if not self.errors:
-            bounties = self.request.session.get('pending_bounties', []) if hasattr(self, 'request') else []
-            logger.debug(f"Checking bounties in clean: {bounties}")
-            
-            if not bounties:
-                logger.debug("No bounties found, adding error")
-                self.add_error(None, 'At least one bounty is required')
+        # Get bounties from the POST data
+        bounties_json = self.data.get('bounties')
+        logger.debug(f"Raw bounties data: {bounties_json}")
+        
+        try:
+            if bounties_json:
+                bounties = json.loads(bounties_json)
+                logger.debug(f"Parsed bounties: {bounties}")
+                cleaned_data['bounties'] = bounties
+            else:
+                logger.warning("No bounties data found in form submission")
+                cleaned_data['bounties'] = []
+                
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse bounties JSON: {e}")
+            raise forms.ValidationError("Invalid bounties data format")
             
         return cleaned_data
 

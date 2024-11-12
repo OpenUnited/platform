@@ -1,31 +1,30 @@
+<!-- Debug info -->
+<!-- Number of bounties: {{ bounties|length }} -->
 {% if bounties %}
-    <div class="overflow-x-auto">
-        <table class="table w-full">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Points</th>
-                    <th>Skills</th>
-                    <th>Actions</th>
+    <table class="w-full text-sm text-left text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-6 py-3">Skill</th>
+                <th scope="col" class="px-6 py-3">Title</th>
+                <th scope="col" class="px-6 py-3">Points</th>
+                <th scope="col" class="px-6 py-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bounty in bounties %}
+                <tr data-description="{{ bounty.description }}" class="bg-white border-b">
+                    <td data-skill-id="{{ bounty.skill.id }}" class="px-6 py-4">{{ bounty.skill.name }}</td>
+                    <td class="px-6 py-4">{{ bounty.title }}</td>
+                    <td class="px-6 py-4">{{ bounty.points }}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="window.challengeFlowBounties.removeBounty({{ bounty.id }})" class="text-red-500 hover:text-red-700">
+                            Remove
+                        </button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for bounty in bounties %}
-                    <tr>
-                        <td>{{ bounty.title }}</td>
-                        <td>{{ bounty.points }}</td>
-                        <td>{{ bounty.skill.name }}</td>
-                        <td>
-                            <button onclick="removeBounty({{ bounty.id }})" 
-                                    class="btn btn-ghost btn-sm text-error">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
 {% else %}
     <div class="text-center py-8 text-gray-500">
         No bounties added yet. Click "Add Bounty" to create one.
