@@ -68,33 +68,25 @@ class ChallengeAuthoringForm(BaseModelForm):
 class BountyAuthoringForm(BaseModelForm):
     """Form for bounty creation within the challenge authoring flow."""
     
+    title = forms.CharField(max_length=255)
+    points = forms.IntegerField(min_value=1)
     skill = forms.ChoiceField(
         required=True,
-        choices=[],
-        label="Skill *"
-    )
-    title = forms.CharField(
-        max_length=255,
-        label="Title *"
-    )
-    description = forms.CharField(
-        widget=forms.Textarea,
-        label="Description *"
-    )
-    points = forms.IntegerField(
-        min_value=1,
-        label="Points *"
+        choices=[]
     )
 
     class Meta:
         model = Bounty
-        fields = ['skill', 'title', 'description', 'points']
+        fields = ['title', 'points', 'skill']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # Fetch all active skills
         skills = Skill.objects.filter(active=True).order_by('parent_id', 'name')
+        
+        # Debug: Log the number of skills fetched
+        print(f"DEBUG: Number of skills fetched: {skills.count()}")
         
         # Build hierarchical choices
         def build_choices(skills, parent=None, level=0):
@@ -113,8 +105,9 @@ class BountyAuthoringForm(BaseModelForm):
             return choices
         
         choices = build_choices(skills)
+        print(f"DEBUG: Number of choices prepared: {len(choices)}")
         
-        # Include all choices
+        # Include all choices, but disable non-selectable ones
         self.fields['skill'].choices = [('', 'Select a skill')] + choices
 
     def clean(self):

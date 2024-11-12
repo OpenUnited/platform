@@ -12,20 +12,6 @@
         <div class="space-y-4">
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text">Title <span class="text-red-500">*</span></span>
-                </label>
-                <input type="text" id="bounty-title" class="input input-bordered" placeholder="Enter bounty title" required>
-            </div>
-
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">Points <span class="text-red-500">*</span></span>
-                </label>
-                <input type="number" id="bounty-points" class="input input-bordered" placeholder="Enter points" required min="1">
-            </div>
-
-            <div class="form-control">
-                <label class="label">
                     <span class="label-text">Skill <span class="text-red-500">*</span></span>
                 </label>
                 <select id="bounty-skill" class="select select-bordered" required>
@@ -33,6 +19,28 @@
                         <option value="{{ value }}">{{ label }}</option>
                     {% endfor %}
                 </select>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Title <span class="text-red-500">*</span></span>
+                </label>
+                <input type="text" id="bounty-title" class="input input-bordered" placeholder="Enter bounty title" required>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Description <span class="text-red-500">*</span></span>
+                </label>
+                <div id="bounty-description-editor"></div>
+                <input type="hidden" id="bounty-description" required>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Points <span class="text-red-500">*</span></span>
+                </label>
+                <input type="number" id="bounty-points" class="input input-bordered" placeholder="Enter points" required min="1">
             </div>
         </div>
 
@@ -49,3 +57,71 @@
     </div>
 </div>
 
+<script>
+    // Initialize Quill editor
+    var bountyDescriptionEditor = new Quill('#bounty-description-editor', {
+        theme: 'snow',
+        placeholder: 'Enter bounty description',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link']
+            ]
+        }
+    });
+
+    // Update hidden input when editor content changes
+    bountyDescriptionEditor.on('text-change', function() {
+        document.getElementById('bounty-description').value = bountyDescriptionEditor.root.innerHTML;
+    });
+
+    function handleSkillChange(event) {
+        console.log('Skill selection changed');
+        const skillSelect = event.target;
+        const titleInput = document.getElementById('bounty-title');
+        
+        const selectedSkill = skillSelect.options[skillSelect.selectedIndex].text;
+        const challengeTitleInput = document.querySelector('input[name="title"]');
+        // Get the challenge description from the main editor
+        const challengeDescriptionEditor = Quill.find(document.querySelector('#editor'));
+        
+        // Debug logs
+        console.log('Selected Skill:', selectedSkill);
+        console.log('Challenge Title Input:', challengeTitleInput?.value);
+        console.log('Challenge Description Editor:', challengeDescriptionEditor);
+        
+        const challengeTitle = challengeTitleInput ? challengeTitleInput.value.trim() : '';
+        const challengeDescription = challengeDescriptionEditor ? challengeDescriptionEditor.root.innerHTML : '';
+        
+        // Remove any leading dashes/spaces from the skill name
+        const cleanSkillName = selectedSkill.replace(/^-+\s*/, '');
+        console.log('Clean Skill Name:', cleanSkillName);
+        
+        // Set the title if it's empty
+        if (!titleInput.value.trim()) {
+            console.log('Setting bounty title');
+            titleInput.value = `${cleanSkillName} - ${challengeTitle}`;
+        }
+        
+        // Set the description if it's empty
+        if (!bountyDescriptionEditor.getText().trim()) {
+            console.log('Setting bounty description');
+            console.log('Challenge Description:', challengeDescription);
+            const descriptionTemplate = `<p>Seeking a contributor with ${cleanSkillName} skills to help with this challenge.</p><p></p>${challengeDescription}`;
+            bountyDescriptionEditor.root.innerHTML = descriptionTemplate;
+        }
+    }
+
+    // Add the event listener directly to the skill select
+    document.getElementById('bounty-skill').addEventListener('change', handleSkillChange);
+
+    // Also add it when the modal is shown (as a backup)
+    const bountyModal = document.getElementById('bounty-modal');
+    bountyModal.addEventListener('show.bs.modal', function() {
+        console.log('Modal shown event triggered');
+        const skillSelect = document.getElementById('bounty-skill');
+        skillSelect.removeEventListener('change', handleSkillChange);
+        skillSelect.addEventListener('change', handleSkillChange);
+    });
+</script>
