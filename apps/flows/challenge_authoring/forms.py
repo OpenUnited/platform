@@ -18,50 +18,52 @@ The forms handle:
 
 from django import forms
 from apps.common.utils import BaseModelForm
-from apps.capabilities.product_management.models import Challenge, Initiative, Bounty
+from apps.capabilities.product_management.models import Challenge, Bounty
 from apps.capabilities.talent.models import Skill
 from apps.capabilities.talent.services import SkillService
 from .services import ChallengeAuthoringService
+import logging
+from django.forms import ModelForm, modelformset_factory
+from apps.capabilities.product_management.models import FileAttachment
+
+logger = logging.getLogger(__name__)
 
 class ChallengeAuthoringForm(BaseModelForm):
     """Form for challenge creation."""
     
     title = forms.CharField(max_length=ChallengeAuthoringService.MAX_TITLE_LENGTH)
     description = forms.CharField(widget=forms.HiddenInput())
-    initiative = forms.ModelChoiceField(
-        queryset=None,
-        required=False,
-        empty_label="Select Initiative"
-    )
-    status = forms.ChoiceField(
-        choices=Challenge.ChallengeStatus.choices,
-        initial=Challenge.ChallengeStatus.DRAFT
-    )
     priority = forms.ChoiceField(
         choices=Challenge.ChallengePriority.choices,
-        initial=Challenge.ChallengePriority.HIGH
+        initial=Challenge.ChallengePriority.HIGH,
+        required=True
     )
 
     class Meta:
         model = Challenge
-        fields = ['title', 'description', 'initiative', 'status', 'priority']
+        fields = ['title', 'description', 'priority']
 
     def __init__(self, *args, product=None, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         if user and product:
             self.service = ChallengeAuthoringService(user, product.slug)
-            self.fields['initiative'].queryset = self.service.get_initiatives_for_product(product)
-            
-            # Remove any existing widget attributes for priority
-            self.fields['priority'].widget.attrs = {}
-        else:
-            self.fields['initiative'].queryset = Initiative.objects.none()
+            # Remove initiative queryset setup
 
     def clean(self):
         cleaned_data = super().clean()
-        success, errors = self.service.validate_challenge_data(cleaned_data, [])
-        if not success:
-            raise forms.ValidationError(errors)
+        
+        # Log the cleaning process
+        logger.debug(f"Cleaning form data: {cleaned_data}")
+        
+        # Only check bounties if there are no other errors
+        if not self.errors:
+            bounties = self.request.session.get('pending_bounties', []) if hasattr(self, 'request') else []
+            logger.debug(f"Checking bounties in clean: {bounties}")
+            
+            if not bounties:
+                logger.debug("No bounties found, adding error")
+                self.add_error(None, 'At least one bounty is required')
+            
         return cleaned_data
 
 
@@ -122,3 +124,17 @@ class BountyAuthoringForm(BaseModelForm):
         if not cleaned_data.get('expertise_ids'):
             raise forms.ValidationError("At least one expertise must be selected")
         return cleaned_data
+
+class AttachmentForm(ModelForm):
+    class Meta:
+        model = FileAttachment
+        fields = ['file']
+
+AttachmentFormSet = modelformset_factory(
+    FileAttachment,
+    form=AttachmentForm,
+    fields=['file'],
+    extra=1,
+    can_delete=True,
+    max_num=10
+)

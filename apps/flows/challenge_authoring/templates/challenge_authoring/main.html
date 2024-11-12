@@ -1,4 +1,5 @@
 {% extends "challenge_authoring/base.html" %}
+{% load static %}
 
 {% block title %}Create Challenge{% endblock %}
 
@@ -8,15 +9,33 @@
     <div class="flex-grow bg-white rounded-lg border p-6">
         <h1 class="text-xl font-semibold mb-6">Create Challenge</h1>
         
-        <form id="challenge-form" method="post" enctype="multipart/form-data">
+        <div class="error-container hidden"></div>
+        
+        <form id="challenge-form" 
+              method="post" 
+              enctype="multipart/form-data"
+              onsubmit="return false;"
+              data-product-slug="{{ product.slug }}"
+              action="{% url 'challenge_authoring:create' product.slug %}">
             {% csrf_token %}
             
             <!-- Title -->
             <div class="form-control">
                 <label class="label">
-                    <span class="label-text text-sm font-medium">Title <span class="text-red-500">*</span></span>
+                    <span class="label-text text-sm font-medium">Title</span>
                 </label>
-                <input type="text" name="title" id="title" placeholder="Title" class="input" required>
+                <input type="text" 
+                       id="title-input"
+                       name="title" 
+                       class="input input-bordered w-full" 
+                       placeholder="Enter challenge title"
+                       value="{{ form.title.value|default:'' }}"
+                       maxlength="{{ form.title.field.max_length }}">
+                {% if form.title.errors %}
+                    <div class="text-error text-sm mt-1">
+                        {{ form.title.errors|join:", " }}
+                    </div>
+                {% endif %}
             </div>
 
             <!-- Description -->
@@ -42,43 +61,23 @@
                 <div id="bounties-container" class="mt-4 space-y-4"></div>
             </div>
 
-            <!-- Initiative -->
-            <div class="form-control mt-6">
-                <label class="label">
-                    <span class="label-text text-sm font-medium">Initiative</span>
-                </label>
-                <select id="initiative-select" class="select-choices">
-                    <option value="">Select Initiative</option>
-                    {% for initiative in form.initiative.field.queryset %}
-                        <option value="{{ initiative.id }}">{{ initiative.title }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Status -->
-            <div class="form-control mt-6">
-                <label class="label">
-                    <span class="label-text text-sm font-medium">Status <span class="text-red-500">*</span></span>
-                </label>
-                <select id="status-select" class="select-choices" required>
-                    <option value="">Select Status</option>
-                    {% for value, label in form.fields.status.choices %}
-                        <option value="{{ value }}">{{ label }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
             <!-- Priority -->
             <div class="form-control mt-6">
                 <label class="label">
-                    <span class="label-text text-sm font-medium">Priority <span class="text-red-500">*</span></span>
+                    <span class="label-text text-sm font-medium">Priority</span>
                 </label>
-                <select id="priority-select" class="select-choices" required>
-                    <option value="">Select Priority</option>
+                <select id="priority-select" name="priority" class="select select-bordered w-full">
                     {% for value, label in form.fields.priority.choices %}
-                        <option value="{{ value }}">{{ label }}</option>
+                        <option value="{{ value }}" {% if form.priority.value == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
                     {% endfor %}
                 </select>
+                {% if form.priority.errors %}
+                    <div class="text-error text-sm mt-1">
+                        {{ form.priority.errors|join:", " }}
+                    </div>
+                {% endif %}
             </div>
 
             <!-- File Upload Section -->
@@ -101,6 +100,20 @@
                 </div>
                 <div id="file-list" class="mt-4 space-y-2"></div>
             </div>
+
+            <!-- Attachments formset -->
+            {{ attachment_formset.management_form }}
+            {% for form in attachment_formset %}
+                {{ form.id }}
+                <div class="form-control">
+                    {{ form.file }}
+                    {% if form.file.errors %}
+                        <div class="text-error text-sm mt-1">
+                            {{ form.file.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
         </form>
     </div>
 
@@ -112,7 +125,7 @@
         </button>
         <button class="btn btn-primary btn-sm gap-2" type="submit" form="challenge-form">
             <i class="fas fa-check"></i>
-            Save
+            SAVE
         </button>
     </div>
 </div>
@@ -129,8 +142,21 @@
 {% endblock %}
 
 {% block page_scripts %}
+<!-- First, initialize the product slug -->
+<script>
+    window.PRODUCT_SLUG = "{{ product.slug }}";  // Using product.slug instead of product_slug
+    console.log('Setting PRODUCT_SLUG:', window.PRODUCT_SLUG);
+</script>
+
+<!-- Keep your existing DOMContentLoaded script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Focus title input on page load
+    const titleInput = document.getElementById('title-input');
+    if (titleInput) {
+        titleInput.focus();
+    }
+
     // Add bounty button click handler - Add this before other initializations
     console.log('Setting up bounty button handler');
     const addBountyBtn = document.getElementById('add-bounty-btn');
@@ -145,20 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize Choices.js selects
-    const initiativeSelect = new Choices('#initiative-select', {
-        searchEnabled: false,
-        itemSelectText: '',
-        removeItemButton: false,
-        allowHTML: true
-    });
-
-    const statusSelect = new Choices('#status-select', {
-        searchEnabled: false,
-        itemSelectText: '',
-        removeItemButton: false,
-        allowHTML: true
-    });
-
     const prioritySelect = new Choices('#priority-select', {
         searchEnabled: false,
         itemSelectText: '',
@@ -181,12 +193,17 @@ document.addEventListener('DOMContentLoaded', function() {
             placeholder: 'Enter description...'
         });
 
-        // Handle form submission
+        // Update hidden input whenever Quill content changes
+        quill.on('text-change', function() {
+            const descriptionInput = document.getElementById('description');
+            descriptionInput.value = quill.root.innerHTML;
+        });
+
+        // Also update on form submit
         const form = document.getElementById('challenge-form');
-        const descriptionInput = document.getElementById('description');
-        
         if (form) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function() {
+                const descriptionInput = document.getElementById('description');
                 descriptionInput.value = quill.root.innerHTML;
             });
         }
@@ -194,6 +211,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add modal functions
     window.showModal = function() {
+        // Reset form fields
+        const skillSelect = document.getElementById('bounty-skill');
+        const titleInput = document.getElementById('bounty-title');
+        const pointsInput = document.getElementById('bounty-points');
+        
+        // Reset skill dropdown to first option
+        if (skillSelect) {
+            skillSelect.value = '';
+        }
+        
+        // Reset title and points
+        if (titleInput) {
+            titleInput.value = '';
+        }
+        if (pointsInput) {
+            pointsInput.value = '';
+        }
+        
+        // Reset Quill editor content if it exists
+        const editor = document.querySelector('#bounty-description-editor .ql-editor');
+        if (editor) {
+            editor.innerHTML = '';
+        }
+
+        // Show modal
         document.getElementById('bounty-modal').classList.add('modal-open');
     }
 
@@ -207,4 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<!-- Keep your module script last -->
+<script type="module" src="{% static 'challenge_authoring/js/index.js' %}"></script>
 {% endblock %}

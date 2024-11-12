@@ -409,24 +409,25 @@ class ChallengeAuthoringService:
             logger.error(f"Error creating bounty: {str(e)}")
             raise
 
-    def validate_challenge_data(self, challenge_data, bounties_data):
+    def validate_challenge_data(self, data, bounties):
+        """Validates challenge data before creation."""
         errors = {}
         
-        if not challenge_data.get('title'):
+        # Validate title
+        if not data.get('title'):
             errors['title'] = ['Title is required']
-        if not challenge_data.get('description'):
+        elif len(data['title']) > self.MAX_TITLE_LENGTH:
+            errors['title'] = [f'Title must be less than {self.MAX_TITLE_LENGTH} characters']
+            
+        # Validate description
+        if not data.get('description'):
             errors['description'] = ['Description is required']
-        if challenge_data.get('status') not in ['draft', 'published']:
-            errors['status'] = ['Invalid status']
+        
+        # Validate bounties
+        if not bounties:
+            errors['non_field_errors'] = ['At least one bounty is required']
             
-        if len(bounties_data) > 10:
-            errors['bounties'] = ['Maximum 10 bounties allowed']
-            
-        total_points = sum(b.get('points', 0) for b in bounties_data)
-        if total_points > 1000:
-            errors['bounties'] = ['Total points cannot exceed 1000']
-            
-        return not bool(errors), errors
+        return len(errors) == 0, errors
 
     def get_file_attachments(self, challenge_id=None):
         """Get file attachments for a challenge"""
@@ -469,8 +470,8 @@ class ChallengeAuthoringService:
         challenge = Challenge.objects.create(
             title=challenge_data['title'],
             description=challenge_data['description'],
-            short_description=challenge_data.get('short_description', ''),
-            product_id=challenge_data['product_id'],
+            priority=challenge_data['priority'],
+            product=self.product,
             created_by=user,
             status=Challenge.ChallengeStatus.DRAFT
         )
@@ -480,11 +481,14 @@ class ChallengeAuthoringService:
         
         # Create bounties
         for bounty_data in bounties_data:
+            # Get skill_id from either snake_case or camelCase key
+            skill_id = bounty_data.get('skill_id') or bounty_data.get('skillId') or bounty_data['skill']['id']
+            
             Bounty.objects.create(
                 title=bounty_data['title'],
                 description=bounty_data['description'],
                 points=int(bounty_data['points']),
-                skill=Skill.objects.get(id=bounty_data['skillId']),
+                skill=Skill.objects.get(id=skill_id),  # Use extracted skill_id
                 challenge=challenge,
                 status=Bounty.BountyStatus.AVAILABLE
             )

@@ -16,7 +16,6 @@ from apps.capabilities.commerce.models import Organisation
 from . import forms
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.common.exceptions import ServiceException, InvalidInputError, ResourceNotFoundError
-from .forms import AttachmentFormSet
 
 logger = logging.getLogger(__name__)
 
@@ -487,63 +486,3 @@ class ProductContentService:
             'initiative_count': Initiative.objects.filter(product=product).count(),
             'challenge_count': Challenge.objects.filter(product=product).count()
         }
-
-class ChallengeAuthoringService:
-    @transaction.atomic
-    def create_challenge_with_bounties(
-        self, 
-        form_data: Dict,
-        attachments: AttachmentFormSet,
-        product: Product,
-        person: Person,
-        pending_bounties: List[Dict]
-    ) -> Challenge:
-        """
-        Creates a challenge with its bounties and attachments
-        
-        Args:
-            form_data: Cleaned form data for challenge
-            attachments: FormSet containing attachment data
-            product: Product the challenge belongs to
-            person: Person creating the challenge
-            pending_bounties: List of bounty data from session
-            
-        Returns:
-            Created Challenge instance
-            
-        Raises:
-            ValidationError: If data is invalid
-            Exception: For other errors during creation
-        """
-        try:
-            # Create challenge
-            challenge = Challenge.objects.create(
-                **form_data,
-                product=product,
-                created_by=person
-            )
-
-            # Save attachments
-            for attachment in attachments.save(commit=False):
-                attachment.challenge = challenge
-                attachment.save()
-
-            # Create bounties
-            for bounty_data in pending_bounties:
-                Bounty.objects.create(
-                    challenge=challenge,
-                    title=bounty_data['title'],
-                    description=bounty_data['description'],
-                    points=int(bounty_data['points']),
-                    skill_id=bounty_data['skillId'],
-                    created_by=person
-                )
-
-            return challenge
-            
-        except ValidationError as e:
-            logger.error(f"Validation error creating challenge: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Error creating challenge: {e}")
-            raise

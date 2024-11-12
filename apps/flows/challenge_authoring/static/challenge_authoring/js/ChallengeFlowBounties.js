@@ -122,33 +122,37 @@ export class ChallengeFlowBounties extends ChallengeFlowCore {
      * Updates bounty display table
      */
     updateBountyTable() {
-        if (!this.bountyTableBody) return;
+        if (this.updateTimeout) clearTimeout(this.updateTimeout);
         
-        this.bountyTableBody.innerHTML = '';
-        this.bounties.forEach((bounty, index) => {
-            const row = `
-                <tr class="border-b border-gray-200">
-                    <td class="py-4 pl-4 pr-3 text-sm">
-                        <div class="font-medium text-gray-900">${this.escapeHtml(bounty.title)}</div>
-                        <div class="text-gray-500">${this.escapeHtml(bounty.description)}</div>
-                    </td>
-                    <td class="py-4 px-3 text-sm text-center">${bounty.points}</td>
-                    <td class="py-4 px-3 text-sm text-right">
-                        <button type="button" 
-                                onclick="window.challengeFlow.handleBountyRemoved(${index})"
-                                class="text-red-600 hover:text-red-900">
-                            Remove
-                        </button>
-                    </td>
-                </tr>
-            `;
-            this.bountyTableBody.insertAdjacentHTML('beforeend', row);
-        });
+        this.updateTimeout = setTimeout(() => {
+            if (!this.bountyTableBody) return;
+            
+            this.bountyTableBody.innerHTML = '';
+            this.bounties.forEach((bounty, index) => {
+                const row = `
+                    <tr class="border-b border-gray-200">
+                        <td class="py-4 pl-4 pr-3 text-sm">
+                            <div class="font-medium text-gray-900">${this.escapeHtml(bounty.title)}</div>
+                            <div class="text-gray-500">${this.escapeHtml(bounty.description)}</div>
+                        </td>
+                        <td class="py-4 px-3 text-sm text-center">${bounty.points}</td>
+                        <td class="py-4 px-3 text-sm text-right">
+                            <button type="button" 
+                                    onclick="window.challengeFlow.handleBountyRemoved(${index})"
+                                    class="text-red-600 hover:text-red-900">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                this.bountyTableBody.insertAdjacentHTML('beforeend', row);
+            });
 
-        // Toggle empty state
-        if (this.bounties.length === 0) {
-            this.bountyArea.classList.add('hidden');
-        }
+            // Toggle empty state
+            if (this.bounties.length === 0) {
+                this.bountyArea.classList.add('hidden');
+            }
+        }, 250); // Wait 250ms before updating
     }
 
     /**

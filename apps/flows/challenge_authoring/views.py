@@ -29,8 +29,12 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 import json
 from django.db import transaction
+from apps.capabilities.talent.models import Person
 
+# Create a named logger for this module
 logger = logging.getLogger(__name__)
+# Set the log level
+logger.setLevel(logging.DEBUG)
 
 class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
     """Main view for challenge authoring flow."""
@@ -80,6 +84,19 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         return render(request, 'challenge_authoring/main.html', context)
         
     def post(self, request, *args, **kwargs):
+        logger.debug("==================== START POST REQUEST ====================")
+        
+        # Get Person instance for the user
+        try:
+            person = request.user.person
+            logger.debug(f"Found person: {person}")
+        except Person.DoesNotExist:
+            logger.error(f"No Person instance found for user {request.user}")
+            return JsonResponse({
+                'status': 'error',
+                'message': 'User profile not found'
+            }, status=400)
+        
         form = self.form_class(request.POST, product=self.product, user=request.user)
         attachment_formset = AttachmentFormSet(
             request.POST, 
@@ -87,16 +104,43 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
             queryset=FileAttachment.objects.none()
         )
         
-        if form.is_valid() and attachment_formset.is_valid():
+        # Attach request to form for bounty validation
+        form.request = request
+        
+        # Log validation process
+        logger.debug("Starting form validation")
+        form_valid = form.is_valid()
+        logger.debug(f"Form is_valid(): {form_valid}")
+        logger.debug(f"Form errors: {form.errors}")
+        logger.debug(f"Form cleaned data: {form.cleaned_data if form_valid else None}")
+        
+        formset_valid = attachment_formset.is_valid()
+        logger.debug(f"Formset is_valid(): {formset_valid}")
+        logger.debug(f"Formset errors: {attachment_formset.errors}")
+        
+        if form_valid and formset_valid:
+            logger.debug("Both form and formset are valid, proceeding with challenge creation")
             try:
-                service = ChallengeAuthoringService()
-                challenge = service.create_challenge_with_bounties(
-                    form_data=form.cleaned_data,
-                    attachments=attachment_formset,
-                    product=self.product,
-                    person=request.user.person,
-                    pending_bounties=request.session.get('pending_bounties', [])
+                # Get product slug from kwargs
+                product_slug = kwargs.get('product_slug')
+                logger.debug(f"Using product slug: {product_slug}")
+                
+                service = ChallengeAuthoringService(
+                    user=request.user,
+                    product_slug=product_slug
                 )
+                
+                challenge = service.create_challenge_with_bounties(
+                    challenge_data=form.cleaned_data,
+                    user=person,
+                    request=request  # Service will get bounties from session
+                )
+                
+                # Save attachments if any
+                attachments = attachment_formset.save()
+                if attachments:
+                    challenge.attachments.add(*attachments)
+                    logger.debug(f"Added {len(attachments)} attachments to challenge {challenge.id}")
                 
                 # Clear session after successful creation
                 if 'pending_bounties' in request.session:
@@ -106,17 +150,32 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
                     'status': 'success',
                     'redirect_url': challenge.get_absolute_url()
                 })
+                
             except Exception as e:
                 logger.error(f"Error creating challenge: {str(e)}")
                 return JsonResponse({
                     'status': 'error',
-                    'message': 'Failed to create challenge'
+                    'message': str(e)
                 }, status=500)
+        else:
+            # Initialize errors dict
+            errors = {}
+            
+            # Add form errors if any
+            if form.errors:
+                errors.update(form.errors)
                 
-        return JsonResponse({
-            'status': 'error',
-            'errors': form.errors
-        }, status=400)
+            # Add formset errors if any
+            if attachment_formset.errors:
+                errors['attachments'] = attachment_formset.errors
+                
+            logger.error(f"Validation failed. Combined errors: {errors}")
+            return JsonResponse({
+                'status': 'error',
+                'errors': errors
+            }, status=400)
+
+        logger.debug("==================== END POST REQUEST ====================")
 
     def get_success_url(self):
         return reverse('product_challenges', kwargs={'product_slug': self.kwargs['product_slug']})
@@ -124,6 +183,11 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         logger.error("DEBUG - get_context_data starting")
         context = super().get_context_data(**kwargs)
+        context['product'] = self.product
+        
+        # Add debug logging for product and slug
+        logger.error(f"DEBUG - Product: {self.product}")
+        logger.error(f"DEBUG - Product Slug: {self.kwargs.get('product_slug')}")
         
         # Create bounty form and debug its contents
         bounty_form = BountyAuthoringForm()
@@ -188,31 +252,27 @@ class BountyModalView(LoginRequiredMixin, View):
 
 @require_http_methods(["POST"])
 def bounty_table(request, product_slug):
+    logger.debug("==================== START BOUNTY TABLE UPDATE ====================")
     try:
         data = json.loads(request.body)
+        logger.debug(f"Received Data: {data}")
         bounties = data.get('bounties', [])
+        logger.debug(f"Extracted Bounties: {bounties}")
         
-        if not isinstance(bounties, list):
-            return JsonResponse({
-                'status': 'error',
-                'message': 'Bounties must be a list'
-            }, status=400)
-
-        # Update session with new bounties list
+        # Update session
         request.session['pending_bounties'] = bounties
         request.session.modified = True
-
-        # Render the updated table
-        return render(request, 'challenge_authoring/components/bounty_table.html', {
+        logger.debug(f"Updated Session Bounties: {request.session.get('pending_bounties')}")
+        
+        response = render(request, 'challenge_authoring/components/bounty_table.html', {
             'bounties': bounties
         })
+        logger.debug("Successfully rendered bounty table")
+        logger.debug("==================== END BOUNTY TABLE UPDATE ====================")
+        return response
 
-    except json.JSONDecodeError:
-        return JsonResponse({
-            'status': 'error',
-            'message': 'Invalid JSON data'
-        }, status=400)
     except Exception as e:
+        logger.exception("Error in bounty_table view")
         return JsonResponse({
             'status': 'error',
             'message': str(e)
@@ -220,9 +280,13 @@ def bounty_table(request, product_slug):
 
 @require_http_methods(["POST"])
 def remove_bounty(request, bounty_id):
-    bounties = request.session.get('bounties', [])
-    bounties = [b for b in b if b['id'] != bounty_id]
-    request.session['bounties'] = bounties
+    logger.info(f"Removing bounty {bounty_id}")
+    bounties = request.session.get('pending_bounties', [])
+    bounties = [b for b in bounties if b['id'] != bounty_id]
+    request.session['pending_bounties'] = bounties
+    request.session.modified = True
+    
+    logger.info(f"Updated bounties after removal: {bounties}")
     
     return render(request, 'challenge_authoring/components/bounty_table.html', {
         'bounties': bounties

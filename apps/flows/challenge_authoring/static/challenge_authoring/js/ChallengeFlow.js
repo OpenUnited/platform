@@ -11,9 +11,20 @@ import { ChallengeFlowBounties } from './ChallengeFlowBounties.js';
 
 export class ChallengeFlow extends ChallengeFlowBounties {
     constructor() {
+        console.log('ChallengeFlow constructor called');
         super();
         this.initializeElements();
         this.bindEvents();
+        console.log('ChallengeFlow initialization complete');
+    }
+
+    initializeElements() {
+        this.form = document.getElementById('challenge-form');
+        this.publishBtn = document.querySelector('.btn-primary[type="submit"]');
+        this.errorContainer = document.querySelector('.error-container');
+        
+        console.log('Form found:', !!this.form);
+        console.log('Publish button found:', !!this.publishBtn);
     }
 
     handleBountyAdded(bounty) {
@@ -34,9 +45,16 @@ export class ChallengeFlow extends ChallengeFlowBounties {
     bindEvents() {
         super.bindEvents();
         
-        // Form submission
         if (this.publishBtn) {
-            this.publishBtn.addEventListener('click', (e) => this.handleSubmit(e));
+            console.log('Binding click handler to save button');
+            this.publishBtn.addEventListener('click', (e) => {
+                console.log('Save button clicked'); // Debug log
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleSubmit(e);
+            });
+        } else {
+            console.error('Save button not found - check the selector');
         }
     }
 
@@ -44,57 +62,34 @@ export class ChallengeFlow extends ChallengeFlowBounties {
      * Handles form submission
      */
     async handleSubmit(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this.form);
-        
-        // Add files
-        this.fileUploadHandler.getFiles().forEach((file, index) => {
-            formData.append(`attachment-${index}`, file);
-        });
+        if (this.isSubmitting) return; // Prevent multiple submissions
+        this.isSubmitting = true;
         
         try {
-            const errors = this.validateStep(5);
-            if (errors.length > 0) {
-                this.showValidationErrors(errors);
-                return;
-            }
-
-            // Add bounty formset data
-            this.bounties.forEach((bounty, index) => {
-                formData.append(`bounty-${index}-title`, bounty.title);
-                formData.append(`bounty-${index}-description`, bounty.description);
-                formData.append(`bounty-${index}-points`, bounty.points);
-                formData.append(`bounty-${index}-skill`, bounty.skill);
-                formData.append(`bounty-${index}-expertise_ids`, bounty.expertise_ids);
-            });
-
-            // Django formset management form
-            formData.append('bounty-TOTAL_FORMS', this.bounties.length.toString());
-            formData.append('bounty-INITIAL_FORMS', '0');
-            formData.append('bounty-MIN_NUM_FORMS', '1');
-            formData.append('bounty-MAX_NUM_FORMS', '10');
-
-            const response = await fetch(this.endpoints.submit, {
+            const formData = new FormData(this.form);
+            const response = await fetch(this.form.action, {
                 method: 'POST',
+                body: formData,
                 headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
                     'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: formData
+                }
             });
 
             const data = await response.json();
-
+            
             if (data.status === 'success') {
-                localStorage.removeItem('challengeProgress');
                 window.location.href = data.redirect_url;
             } else {
-                this.showValidationErrors(this.formatServerErrors(data.errors));
+                this.showError(data.message || 'Submission failed');
             }
         } catch (error) {
-            this.handleError('Submission failed', error);
+            console.error('Submission error:', error);
+            this.showError('An unexpected error occurred');
+        } finally {
+            this.isSubmitting = false;
         }
+        
+        return false;
     }
 
     /**
@@ -218,15 +213,21 @@ export class ChallengeFlow extends ChallengeFlowBounties {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+
+    // Optional error display method
+    showError(message) {
+        // Add your error display logic here
+        console.error(message);
+    }
 }
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
     try {
         window.challengeFlow = new ChallengeFlow();
-        log.info('Challenge Flow mounted');
+        console.info('Challenge Flow mounted');
     } catch (error) {
-        log.error('Init failed:', error);
+        console.error('Init failed:', error);
         const errorContainer = document.createElement('div');
         errorContainer.className = 'error-message';
         errorContainer.textContent = 'Failed to initialize challenge flow. Please refresh.';

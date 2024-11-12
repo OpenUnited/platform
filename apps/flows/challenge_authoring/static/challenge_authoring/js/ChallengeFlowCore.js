@@ -8,7 +8,6 @@ const DEBUG = window.location.hostname === 'localhost' || window.location.hostna
 
 export class ChallengeFlowCore {
     constructor() {
-        this.currentStep = 1;
         this.bounties = [];
         this.DEBUG = DEBUG;
         this.autoSaveInterval = 30000; // 30 seconds
@@ -39,10 +38,11 @@ export class ChallengeFlowCore {
      * Sets up API endpoints
      */
     initializeEndpoints() {
-        const form = document.querySelector('form');
-        this.productSlug = form?.dataset.productSlug;
+        this.productSlug = window.PRODUCT_SLUG;
+
         if (!this.productSlug) {
-            throw new Error('Product slug not found on form');
+            console.error('Product slug not found in window context');
+            throw new Error('Product slug not found');
         }
 
         this.endpoints = {
@@ -57,14 +57,6 @@ export class ChallengeFlowCore {
      */
     initializeElements() {
         try {
-            // Step navigation
-            this.stepNumbs = document.querySelectorAll('[data-step-numb]');
-            this.stepForms = document.querySelectorAll('[data-step-id]');
-            this.stepCurrent = document.querySelector('[data-current-step]');
-            this.nextButtons = document.querySelectorAll('[data-step-next]');
-            this.prevButtons = document.querySelectorAll('[data-step-previous]');
-            this.publishBtn = document.querySelector('#publish-challenge-btn');
-            
             // Form elements
             this.form = document.querySelector('form');
             this.titleInput = document.querySelector('[name="title"]');
@@ -79,6 +71,11 @@ export class ChallengeFlowCore {
             
             // Error display
             this.errorContainer = document.getElementById('validation-errors');
+
+            // Set focus to title input
+            if (this.titleInput) {
+                this.titleInput.focus();
+            }
 
             this.validateRequiredElements();
             this.log.info('Elements initialized');
@@ -114,94 +111,13 @@ export class ChallengeFlowCore {
      * Binds core event listeners
      */
     bindEvents() {
-        // Navigation
-        this.nextButtons.forEach(btn => 
-            btn.addEventListener('click', () => this.nextStep()));
-        this.prevButtons.forEach(btn => 
-            btn.addEventListener('click', () => this.previousStep()));
-        
         // Form field changes
-        this.form.addEventListener('input', () => this.saveProgress());
-        this.form.addEventListener('change', () => this.saveProgress());
+        if (this.form) {
+            this.form.addEventListener('input', () => this.saveProgress());
+            this.form.addEventListener('change', () => this.saveProgress());
+        }
 
         this.log.info('Core events bound');
-    }
-
-    /**
-     * Moves to next step if validation passes
-     */
-    nextStep() {
-        const errors = this.validateStep(this.currentStep);
-        if (errors.length === 0) {
-            this.currentStep = Math.min(this.currentStep + 1, 5);
-            this.updateStepVisibility();
-            if (this.currentStep === 5) {
-                this.updateSummary();
-            }
-            this.log.info(`Moved to step ${this.currentStep}`);
-        } else {
-            this.showValidationErrors(errors);
-        }
-    }
-
-    /**
-     * Moves to previous step
-     */
-    previousStep() {
-        this.currentStep = Math.max(this.currentStep - 1, 1);
-        this.updateStepVisibility();
-        this.log.info(`Moved to step ${this.currentStep}`);
-    }
-
-    /**
-     * Updates step visibility
-     */
-    updateStepVisibility() {
-        this.stepForms.forEach(step => {
-            step.classList.toggle('hidden', step.dataset.stepId != this.currentStep);
-        });
-        this.stepCurrent.textContent = this.currentStep;
-    }
-
-    /**
-     * Validates current step
-     */
-    validateStep(stepNumber) {
-        const errors = [];
-
-        switch (stepNumber) {
-            case 1:
-                const rewardType = document.querySelector('input[name="reward_type"]:checked');
-                if (!rewardType) errors.push('Please select a reward type');
-                break;
-
-            case 2:
-                const title = this.titleInput.value;
-                const description = this.descriptionInput.value;
-                const shortDesc = this.shortDescriptionInput?.value;
-                const videoUrl = this.videoUrlInput?.value;
-
-                if (!title?.trim()) errors.push('Title is required');
-                if (title?.length > 255) errors.push('Title must be less than 255 characters');
-                if (!description?.trim()) errors.push('Description is required');
-                if (shortDesc && shortDesc.length > 140) {
-                    errors.push('Short description must be less than 140 characters');
-                }
-                if (videoUrl && !this.isValidVideoUrl(videoUrl)) {
-                    errors.push('Invalid video URL format (must be YouTube or Vimeo)');
-                }
-                break;
-
-            case 4:
-                const status = this.statusSelect?.value;
-                const priority = this.prioritySelect?.value;
-                
-                if (!status) errors.push('Status is required');
-                if (!priority) errors.push('Priority is required');
-                break;
-        }
-
-        return errors;
     }
 
     /**
