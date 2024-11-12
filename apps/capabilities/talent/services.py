@@ -402,20 +402,19 @@ class SkillService:
             return []
 
     @staticmethod
-    def get_all_active_skills() -> List[dict]:
-        """Get all active skills with caching"""
-        cache_key = 'active_skills'
-        cached_skills = cache.get(cache_key)
-        
-        if cached_skills is None:
-            skills = list(Skill.objects
+    def get_all_active_skills() -> QuerySet:
+        """Get all active and selectable skills"""
+        return (Skill.objects
+                .filter(active=True, selectable=True)
+                .order_by("-display_boost_factor", "name"))
+
+    @staticmethod
+    def get_skill_tree() -> QuerySet:
+        """Get hierarchical skill structure for display"""
+        return (Skill.objects
                 .filter(active=True)
-                .order_by("-display_boost_factor")
-                .values())
-            cache.set(cache_key, skills, timeout=3600)  # Cache for 1 hour
-            return skills
-            
-        return cached_skills
+                .select_related('parent')
+                .order_by("-display_boost_factor", "name"))
 
     @staticmethod
     def get_person_expertise(person: Person) -> Dict[str, List]:

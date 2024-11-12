@@ -30,6 +30,18 @@
                 </div>
             </div>
 
+            <!-- Bounties Section -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Bounties</span>
+                </label>
+                <button type="button" class="btn btn-outline btn-primary" id="add-bounty-btn">
+                    <i class="fas fa-plus"></i>
+                    Add Bounty
+                </button>
+                <div id="bounties-container" class="mt-4 space-y-4"></div>
+            </div>
+
             <!-- Initiative -->
             <div class="form-control mt-6">
                 <label class="label">
@@ -76,7 +88,7 @@
                 </label>
                 <div class="file-upload-area" id="file-upload-area">
                     <div class="text-center">
-                        <iconify-icon icon="lucide:upload" height="24" class="mb-2"></iconify-icon>
+                        <i class="fas fa-upload mb-2" style="font-size: 24px;"></i>
                         <p class="text-sm text-base-content/70">
                             Drag and drop files here or
                             <label class="text-primary cursor-pointer">
@@ -89,38 +101,49 @@
                 </div>
                 <div id="file-list" class="mt-4 space-y-2"></div>
             </div>
-
-            <!-- Bounties Section -->
-            <div class="form-control mt-6">
-                <label class="label">
-                    <span class="label-text text-sm font-medium">Bounties</span>
-                </label>
-                <button type="button" class="btn btn-outline btn-primary" id="add-bounty-btn">
-                    <iconify-icon icon="lucide:plus" height="18"></iconify-icon>
-                    Add Bounty
-                </button>
-                <div id="bounties-container" class="mt-4 space-y-4"></div>
-            </div>
         </form>
     </div>
 
     <!-- Fixed bottom bar -->
     <div class="sticky bottom-0 bg-white border-t px-6 py-4 flex justify-between items-center mt-6">
         <button class="btn btn-ghost btn-sm gap-2" type="button" id="cancel-btn">
-            <iconify-icon icon="lucide:x" height="18"></iconify-icon>
+            <i class="fas fa-times"></i>
             Cancel
         </button>
         <button class="btn btn-primary btn-sm gap-2" type="submit" form="challenge-form">
-            <iconify-icon icon="lucide:check" height="18"></iconify-icon>
+            <i class="fas fa-check"></i>
             Save
         </button>
     </div>
 </div>
+
+<!-- Add this debug output -->
+<div style="display:none">
+    DEBUG - Bounty Form Available: {{ bounty_form|yesno:"yes,no" }}
+    {% if bounty_form %}
+        Skills Count: {{ bounty_form.skill.field.queryset.count }}
+    {% endif %}
+</div>
+
+{% include "challenge_authoring/components/bounty_modal.html" %}
 {% endblock %}
 
 {% block page_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Add bounty button click handler - Add this before other initializations
+    console.log('Setting up bounty button handler');
+    const addBountyBtn = document.getElementById('add-bounty-btn');
+    if (addBountyBtn) {
+        console.log('Found bounty button');
+        addBountyBtn.addEventListener('click', () => {
+            console.log('Add Bounty button clicked!');
+            showModal();
+        });
+    } else {
+        console.warn('Bounty button not found');
+    }
+
     // Initialize Choices.js selects
     const initiativeSelect = new Choices('#initiative-select', {
         searchEnabled: false,
@@ -167,6 +190,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 descriptionInput.value = quill.root.innerHTML;
             });
         }
+    }
+
+    // Add modal functions
+    window.showModal = function() {
+        document.getElementById('bounty-modal').classList.add('modal-open');
+    }
+
+    window.hideModal = function() {
+        document.getElementById('bounty-modal').classList.remove('modal-open');
+    }
+
+    window.saveBounty = function() {
+        // Add your bounty saving logic here
+        console.log('Saving bounty...');
     }
 });
 </script>

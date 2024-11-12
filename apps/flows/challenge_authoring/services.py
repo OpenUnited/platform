@@ -34,7 +34,7 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from apps.capabilities.product_management.models import Challenge, Bounty, Product, FileAttachment
+from apps.capabilities.product_management.models import Challenge, Bounty, Product, FileAttachment, Initiative
 from apps.capabilities.talent.models import Skill, Expertise
 from apps.capabilities.security.services import RoleService
 
@@ -323,7 +323,7 @@ class ChallengeAuthoringService:
     def get_skills_tree(self) -> List[Dict]:
         """Get hierarchical skills structure for the challenge form"""
         skills = Skill.objects.filter(
-            selectable=True  # Only include selectable skills
+            selectable=True
         ).select_related('parent')
         
         skill_tree = []
@@ -445,3 +445,9 @@ class ChallengeAuthoringService:
             file_attachment.save()
             saved_attachments.append(file_attachment)
         return saved_attachments
+
+    def get_initiatives_for_product(self, product):
+        """Get all initiatives for a given product."""
+        return Initiative.objects.filter(
+            product=product
+        ).order_by('name')

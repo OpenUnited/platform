@@ -18,7 +18,9 @@ The forms handle:
 
 from django import forms
 from apps.common.utils import BaseModelForm
-from apps.capabilities.product_management.models import Challenge, Initiative
+from apps.capabilities.product_management.models import Challenge, Initiative, Bounty
+from apps.capabilities.talent.models import Skill
+from apps.capabilities.talent.services import SkillService
 from .services import ChallengeAuthoringService
 
 class ChallengeAuthoringForm(BaseModelForm):
@@ -67,16 +69,46 @@ class BountyAuthoringForm(BaseModelForm):
     """Form for bounty creation within the challenge authoring flow."""
     
     title = forms.CharField(max_length=255)
-    description = forms.CharField(widget=forms.Textarea)
     points = forms.IntegerField(min_value=1)
-    skill = forms.ModelChoiceField(
-        queryset=None,  # Set in __init__
-        widget=forms.Select(attrs={"class": "skill-select"})
+    skill = forms.ChoiceField(
+        required=True,
+        choices=[]
     )
-    expertise_ids = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
+
+    class Meta:
+        model = Bounty
+        fields = ['title', 'points', 'skill']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Fetch all active skills
+        skills = Skill.objects.filter(active=True).order_by('parent_id', 'name')
+        
+        # Debug: Log the number of skills fetched
+        print(f"DEBUG: Number of skills fetched: {skills.count()}")
+        
+        # Build hierarchical choices
+        def build_choices(skills, parent=None, level=0):
+            choices = []
+            for skill in skills:
+                if skill.parent_id == parent:
+                    indent = '--' * level
+                    # Add non-selectable parents as headers
+                    if not skill.selectable:
+                        choices.append((None, f"{indent} {skill.name}"))
+                    # Recursively add children
+                    choices.extend(build_choices(skills, skill.id, level + 1))
+                    # Add selectable skills
+                    if skill.selectable:
+                        choices.append((skill.id, f"{indent} {skill.name}"))
+            return choices
+        
+        choices = build_choices(skills)
+        print(f"DEBUG: Number of choices prepared: {len(choices)}")
+        
+        # Include all choices, but disable non-selectable ones
+        self.fields['skill'].choices = [('', 'Select a skill')] + choices
 
     def clean(self):
         cleaned_data = super().clean()

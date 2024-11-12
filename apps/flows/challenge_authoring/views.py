@@ -19,9 +19,13 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404
 from django.urls import reverse
 from apps.capabilities.product_management.models import Product, FileAttachment
-from .forms import ChallengeAuthoringForm
+from .forms import ChallengeAuthoringForm, BountyAuthoringForm
 from .services import ChallengeAuthoringService, RoleService
 from apps.common.forms import AttachmentFormSet
+from apps.capabilities.talent.services import SkillService
+import logging
+
+logger = logging.getLogger(__name__)
 
 class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
     """Main view for challenge authoring flow."""
@@ -32,6 +36,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         return reverse('security:sign_in')
     
     def dispatch(self, request, *args, **kwargs):
+        logger.error("DEBUG - dispatch called")
         # Check authentication first (LoginRequiredMixin handles this)
         if not request.user.is_authenticated:
             return self.handle_no_permission()
@@ -55,10 +60,16 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
         
     def get(self, request, *args, **kwargs):
+        logger.error("DEBUG - get called")
+        
+        # Create bounty form with initial data
+        initial = {'product': self.product}
+        bounty_form = BountyAuthoringForm(initial=initial)
+        
         context = {
             'product': self.product,
-            'form': self.form_class(product=self.product),
-            'attachment_formset': AttachmentFormSet(queryset=FileAttachment.objects.none())
+            'form': self.form_class(product=self.product, user=request.user),
+            'bounty_form': bounty_form
         }
         return render(request, 'challenge_authoring/main.html', context)
         
@@ -94,8 +105,31 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         return reverse('product_challenges', kwargs={'product_slug': self.kwargs['product_slug']})
 
     def get_context_data(self, **kwargs):
+        logger.error("DEBUG - get_context_data starting")
         context = super().get_context_data(**kwargs)
-        context['product'] = self.product
+        
+        # Create bounty form and debug its contents
+        bounty_form = BountyAuthoringForm()
+        logger.error(f"DEBUG - Bounty form created with {bounty_form.fields['skill'].queryset.count()} skills")
+        
+        # Debug skill queryset
+        skill_queryset = bounty_form.fields['skill'].queryset
+        print(f"Skill queryset type: {type(skill_queryset)}")
+        print(f"Skills count: {skill_queryset.count()}")
+        
+        if skill_queryset:
+            first_skills = list(skill_queryset[:3])
+            print(f"First few skills: {first_skills}")
+        else:
+            print("No skills found in queryset")
+            
+        # Update context
+        context.update({
+            'product': self.product,
+            'form': self.form_class(product=self.product, user=self.request.user),
+            'bounty_form': bounty_form
+        })
+        logger.error("DEBUG - get_context_data finished")
         return context
 
     def form_invalid(self, form):

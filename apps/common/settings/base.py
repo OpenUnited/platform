@@ -246,11 +246,6 @@ CSP_SCRIPT_SRC = (
     "https://cdn.tailwindcss.com",
     "https://cdnjs.cloudflare.com",
     "https://cdn.jsdelivr.net",
-    "https://rsms.me",
-    "https://code.iconify.design",
-    "https://api.iconify.design",
-    "https://api.simplesvg.com",
-    "https://api.unisvg.com",
 )
 CSP_STYLE_SRC = (
     "'self'",
@@ -279,10 +274,6 @@ CSP_CONNECT_SRC = (
     "'self'",
     "https://cdn.quilljs.com",
     "https://cdn.jsdelivr.net",
-    "https://code.iconify.design",
-    "https://*.iconify.design",       # Wildcard for all iconify.design subdomains
-    "https://*.simplesvg.com",        # Wildcard for all simplesvg.com subdomains
-    "https://*.unisvg.com",           # Wildcard for all unisvg.com subdomains
 )
 
 # If using AWS S3 or similar, add the domain to the CSP

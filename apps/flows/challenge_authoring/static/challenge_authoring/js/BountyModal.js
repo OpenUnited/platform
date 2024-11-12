@@ -2,53 +2,21 @@ export class BountyModal {
     constructor() {
         this.modal = document.getElementById('bounty-modal');
         this.bindEvents();
-        this.initialize();
-    }
-
-    initialize() {
-        // Add modal HTML if it doesn't exist
-        if (!this.modal) {
-            const modalHTML = `
-                <div id="bounty-modal" class="modal">
-                    <div class="modal-box">
-                        <h3 class="font-bold text-lg">Add Bounty</h3>
-                        <div class="py-4">
-                            <!-- Bounty Form -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text">Title</span>
-                                </label>
-                                <input type="text" id="bounty-title" class="input input-bordered" />
-                            </div>
-                            <div class="form-control mt-4">
-                                <label class="label">
-                                    <span class="label-text">Points</span>
-                                </label>
-                                <input type="number" id="bounty-points" class="input input-bordered" />
-                            </div>
-                        </div>
-                        <div class="modal-action">
-                            <button class="btn btn-ghost" onclick="window.hideModal()">Cancel</button>
-                            <button class="btn btn-primary" onclick="window.addBounty()">Add</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            this.modal = document.getElementById('bounty-modal');
-        }
     }
 
     bindEvents() {
         // Expose methods to window for button clicks
         window.showModal = () => this.show();
         window.hideModal = () => this.hide();
-        window.addBounty = () => this.addBounty();
+        window.saveBounty = () => this.saveBounty();
 
         // Add button click handler
         const addBountyBtn = document.getElementById('add-bounty-btn');
         if (addBountyBtn) {
-            addBountyBtn.addEventListener('click', () => this.show());
+            addBountyBtn.addEventListener('click', () => {
+                console.log('Add Bounty button clicked!');
+                this.show();
+            });
         }
     }
 
@@ -58,14 +26,19 @@ export class BountyModal {
 
     hide() {
         this.modal.classList.remove('modal-open');
+        // Clear form
+        document.getElementById('bounty-title').value = '';
+        document.getElementById('bounty-points').value = '';
+        document.getElementById('bounty-skill').value = '';
     }
 
-    addBounty() {
+    saveBounty() {
         const title = document.getElementById('bounty-title').value;
         const points = document.getElementById('bounty-points').value;
+        const skill = document.getElementById('bounty-skill').value;
 
-        if (!title || !points) {
-            alert('Please fill in all fields');
+        if (!title || !points || !skill) {
+            alert('Please fill in all required fields');
             return;
         }
 
@@ -79,15 +52,12 @@ export class BountyModal {
                     <p class="text-sm text-base-content/70">${points} points</p>
                 </div>
                 <button onclick="this.closest('.card').remove()" class="btn btn-ghost btn-sm btn-square">
-                    <iconify-icon icon="lucide:x" height="18"></iconify-icon>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
         `;
         container.appendChild(bountyElement);
 
-        // Clear form and close modal
-        document.getElementById('bounty-title').value = '';
-        document.getElementById('bounty-points').value = '';
         this.hide();
     }
 }
