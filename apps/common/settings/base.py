@@ -246,6 +246,8 @@ CSP_SCRIPT_SRC = (
     "https://cdn.tailwindcss.com",
     "https://cdnjs.cloudflare.com",
     "https://cdn.jsdelivr.net",
+    "openunited-staging.s3.amazonaws.com",
+    "https://ams3.digitaloceanspaces.com",
 )
 CSP_STYLE_SRC = (
     "'self'",
@@ -255,6 +257,8 @@ CSP_STYLE_SRC = (
     "https://cdnjs.cloudflare.com",
     "https://rsms.me",
     "https://cdn.jsdelivr.net",
+    "openunited-staging.s3.amazonaws.com",
+    "https://ams3.digitaloceanspaces.com",
 )
 CSP_FONT_SRC = (
     "'self'",
@@ -292,3 +296,18 @@ CORS_ORIGIN_WHITELIST = CORS_ALLOWED_ORIGINS  # Use your existing CORS_ALLOWED_O
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Update storage section to handle both S3 and DigitalOcean Spaces
+STORAGE_DOMAINS = [
+    "openunited-staging.s3.amazonaws.com",
+    "https://ams3.digitaloceanspaces.com",
+]
+
+if os.getenv("AWS_STORAGE_BUCKET_NAME"):
+    aws_bucket_domain = f'{os.getenv("AWS_STORAGE_BUCKET_NAME")}.s3.amazonaws.com'
+    STORAGE_DOMAINS.append(aws_bucket_domain)
+    
+    CSP_DEFAULT_SRC += tuple(STORAGE_DOMAINS)
+    CSP_IMG_SRC += tuple(STORAGE_DOMAINS)
+    CSP_SCRIPT_SRC += tuple(STORAGE_DOMAINS)
+    CSP_STYLE_SRC += tuple(STORAGE_DOMAINS)
