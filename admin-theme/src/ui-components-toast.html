@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Toast Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Toast</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Toast</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+
+                        <!-- Start: Default Toast -->
+
+                        <div class="mt-1 flex">
+                          <button
+                            id="default_alert_btn"
+                            onclick="showAlert('default_alert')"
+                            class="btn">
+                            Show Default
+                          </button>
+                          <div class="toast toast-end toast-bottom hidden" id="default_alert">
+                            Default toast
+                          </div>
+                        </div>
+
+                        <!-- End: Default Toast -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Alert</div>
+
+                        <!-- Start: Toast With Alert -->
+
+                        <div class="mt-1 flex">
+                          <button id="show_alert_btn" onclick="showAlert('info_alert')" class="btn">
+                            Show Alert
+                          </button>
+                          <div class="toast toast-end toast-bottom hidden" id="info_alert">
+                            <div role="alert" class="alert alert-info">New message arrived.</div>
+                          </div>
+                        </div>
+
+                        <!-- End: Toast With Alert -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Multiple</div>
+
+                        <!-- Start: Multiple Toast -->
+
+                        <div class="mt-1 flex">
+                          <button
+                            id="show_multiple_alert_btn"
+                            class="btn"
+                            onclick="showAlert('multiple_alert')">
+                            Show Multiple
+                          </button>
+                          <div class="toast toast-end toast-bottom hidden" id="multiple_alert">
+                            <div role="alert" class="alert alert-info">New message arrived.</div>
+                            <div role="alert" class="alert alert-success">
+                              Message sent successfully.
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- End: Multiple Toast -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+
+    <script>
+      const showAlert = (...toastIds) => {
+        document.querySelectorAll(".toast").forEach((toast) => {
+          toast.classList.add("hidden")
+        })
+        toastIds.forEach((toastId) => {
+          document.getElementById(toastId).classList.remove("hidden")
+        })
+      }
+    </script>
+  </body>
+</html>

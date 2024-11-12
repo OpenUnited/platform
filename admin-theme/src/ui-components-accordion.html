@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Accordion Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Accordion</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Accordion</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+
+                        <!--  Start: Default Accordion -->
+
+                        <div class="mt-1 space-y-1">
+                          <div class="collapse bg-base-200">
+                            <input
+                              aria-label="Accordion radio"
+                              type="radio"
+                              checked=""
+                              name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #1</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #2</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #3</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--  End: Default Accordion -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Arrow</div>
+
+                        <!-- Start: Arrow Accordion -->
+
+                        <div class="mt-1 space-y-1">
+                          <div class="collapse collapse-arrow bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #1</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse collapse-arrow bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #2</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse collapse-arrow bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #3</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- End: Arrow Accordion -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Plus/Minus</div>
+
+                        <!-- Start: Plus/Minus Accordion -->
+
+                        <div class="mt-1 space-y-1">
+                          <div class="collapse collapse-plus bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #1</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse collapse-plus bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #2</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse collapse-plus bg-base-200">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #3</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- End: Plus/Minus Accordion -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Joined</div>
+
+                        <!-- Start: Joined Accordion -->
+
+                        <div class="join join-vertical mt-1">
+                          <div class="collapse join-item collapse-plus border border-base-300">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #1</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse join-item collapse-plus border border-base-300">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #2</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                          <div class="collapse join-item collapse-plus border border-base-300">
+                            <input aria-label="Accordion radio" type="radio" name="accordion" />
+                            <div class="collapse-title text-xl font-medium">Accordion #3</div>
+                            <div class="collapse-content">
+                              <p>Here are some hidden content, which is now public</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- End: Joined Accordion -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

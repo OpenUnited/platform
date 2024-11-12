@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Progress Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Progress</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Progress</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+
+                        <!-- Start: Default Progress -->
+
+                        <div class="mt-1 flex flex-col gap-y-2">
+                          <progress max="100" value="0" class="progress w-56"></progress>
+                          <progress max="100" value="30" class="progress w-56"></progress>
+                          <progress max="100" value="40" class="progress w-56"></progress>
+                          <progress max="100" value="75" class="progress w-56"></progress>
+                          <progress max="100" value="100" class="progress w-56"></progress>
+                          <progress max="100" class="progress progress-primary w-56"></progress>
+                        </div>
+
+                        <!-- End: Default Progress -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Colors</div>
+
+                        <!-- Start: Progress With Color -->
+
+                        <div class="mt-1 flex flex-col gap-y-2">
+                          <progress
+                            max="100"
+                            value="20"
+                            class="progress progress-primary w-56"></progress>
+                          <progress
+                            max="100"
+                            value="30"
+                            class="progress progress-secondary w-56"></progress>
+                          <progress
+                            max="100"
+                            value="40"
+                            class="progress progress-success w-56"></progress>
+                          <progress
+                            max="100"
+                            value="60"
+                            class="progress progress-warning w-56"></progress>
+                          <progress
+                            max="100"
+                            value="75"
+                            class="progress progress-info w-56"></progress>
+                          <progress
+                            max="100"
+                            value="90"
+                            class="progress progress-error w-56"></progress>
+                        </div>
+
+                        <!-- End: Progress With Color -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Radial</div>
+
+                        <!-- Start: Radial Progress -->
+
+                        <div class="mt-1 flex flex-wrap gap-4">
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            72%
+                          </div>
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress border-4 border-primary bg-primary text-primary-content"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            72%
+                          </div>
+                        </div>
+
+                        <!-- End: Radial Progress -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Radial Color</div>
+
+                        <!-- Start: Radial Color Progress -->
+
+                        <div class="mt-1 flex flex-wrap gap-4">
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress text-primary"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            72%
+                          </div>
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress text-secondary"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            65%
+                          </div>
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress text-success"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            85%
+                          </div>
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress text-info"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            57%
+                          </div>
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress text-warning"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            20%
+                          </div>
+                          <div
+                            role="progressbar"
+                            aria-valuenow="72"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-label="Radial progress"
+                            class="radial-progress text-error"
+                            style="--value: 72; --size: 4rem; --thickness: 4px">
+                            40%
+                          </div>
+                        </div>
+
+                        <!-- End: Radial Color Progress -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

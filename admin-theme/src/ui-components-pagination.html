@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Pagination Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Pagination</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Pagination</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1">
+                          <!-- Start: Default Pagination -->
+
+                          <div class="join">
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item btn-active">2</button>
+                            <button class="btn join-item">3</button>
+                            <button class="btn join-item">4</button>
+                          </div>
+
+                          <!-- End: Default Pagination -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Disabled</div>
+                        <div class="mt-1">
+                          <!-- Start: Disabled Pagination -->
+
+                          <div class="join">
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item">2</button>
+                            <button class="btn btn-disabled join-item" disabled="">...</button>
+                            <button class="btn join-item">99</button>
+                            <button class="btn join-item">100</button>
+                          </div>
+
+                          <!-- End: Disabled Pagination -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Control</div>
+                        <div class="mt-1">
+                          <!-- Start: Control Pagination -->
+
+                          <div class="join">
+                            <button class="btn join-item">«</button>
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item btn-active">2</button>
+                            <button class="btn join-item">3</button>
+                            <button class="btn join-item">4</button>
+                            <button class="btn join-item">»</button>
+                          </div>
+
+                          <!-- End: Control Pagination -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Control</div>
+                        <div class="mt-1">
+                          <!-- Start: Control Pagination With Previous/Next Label -->
+
+                          <div class="join">
+                            <button class="btn join-item">Previous</button>
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item btn-active">2</button>
+                            <button class="btn join-item">3</button>
+                            <button class="btn join-item">Next</button>
+                          </div>
+
+                          <!-- End: Control Pagination With Previous/Next Label -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Sizes</div>
+
+                        <!-- Start: Pagination With Sizes -->
+
+                        <div class="mt-1 flex flex-col items-center gap-3">
+                          <div class="join">
+                            <button class="btn join-item btn-xs">1</button>
+                            <button class="btn join-item btn-active btn-xs">2</button>
+                            <button class="btn join-item btn-xs">3</button>
+                            <button class="btn join-item btn-xs">4</button>
+                          </div>
+                          <div class="join">
+                            <button class="btn join-item btn-sm">1</button>
+                            <button class="btn join-item btn-active btn-sm">2</button>
+                            <button class="btn join-item btn-sm">3</button>
+                            <button class="btn join-item btn-sm">4</button>
+                          </div>
+                          <div class="join">
+                            <button class="btn join-item btn-md">1</button>
+                            <button class="btn join-item btn-active btn-md">2</button>
+                            <button class="btn join-item btn-md">3</button>
+                            <button class="btn join-item btn-md">4</button>
+                          </div>
+                          <div class="join">
+                            <button class="btn join-item btn-lg">1</button>
+                            <button class="btn join-item btn-active btn-lg">2</button>
+                            <button class="btn join-item btn-lg">3</button>
+                            <button class="btn join-item btn-lg">4</button>
+                          </div>
+                        </div>
+
+                        <!-- End: Pagination With Sizes -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

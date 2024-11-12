@@ -18,65 +18,49 @@ The forms handle:
 
 from django import forms
 from apps.common.utils import BaseModelForm
-from apps.capabilities.product_management.models import Challenge, ProductArea, Initiative
+from apps.capabilities.product_management.models import Challenge, Initiative
+from .services import ChallengeAuthoringService
 
 class ChallengeAuthoringForm(BaseModelForm):
-    """Form for challenge creation within the challenge authoring flow."""
+    """Form for challenge creation."""
     
-    title = forms.CharField(max_length=255)
-    description = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(max_length=ChallengeAuthoringService.MAX_TITLE_LENGTH)
+    description = forms.CharField(widget=forms.HiddenInput())
     initiative = forms.ModelChoiceField(
         queryset=None,
         required=False,
         empty_label="Select Initiative"
     )
-    product_area = forms.ModelChoiceField(
-        queryset=None,
-        required=False,
-        empty_label="Select Product Area"
-    )
-    video_url = forms.URLField(required=False)
     status = forms.ChoiceField(
         choices=Challenge.ChallengeStatus.choices,
-        initial=Challenge.ChallengeStatus.DRAFT,
-        required=True
+        initial=Challenge.ChallengeStatus.DRAFT
     )
     priority = forms.ChoiceField(
         choices=Challenge.ChallengePriority.choices,
-        initial=Challenge.ChallengePriority.HIGH,
-        required=True
+        initial=Challenge.ChallengePriority.HIGH
     )
 
     class Meta:
         model = Challenge
-        fields = ['title', 'description', 'initiative', 'product_area', 'video_url', 'status', 'priority']
+        fields = ['title', 'description', 'initiative', 'status', 'priority']
 
-    def __init__(self, *args, **kwargs):
-        product = kwargs.pop('product', None)
+    def __init__(self, *args, product=None, user=None, **kwargs):
         super().__init__(*args, **kwargs)
-        
-        if product:
-            # Set the queryset for initiatives
-            self.fields['initiative'].queryset = Initiative.objects.filter(product=product)
+        if user and product:
+            self.service = ChallengeAuthoringService(user, product.slug)
+            self.fields['initiative'].queryset = self.service.get_initiatives_for_product(product)
             
-            # Set the queryset for product areas - filter through product_tree
-            self.fields['product_area'].queryset = ProductArea.objects.filter(
-                product_tree__product=product
-            )
+            # Remove any existing widget attributes for priority
+            self.fields['priority'].widget.attrs = {}
         else:
             self.fields['initiative'].queryset = Initiative.objects.none()
-            self.fields['product_area'].queryset = ProductArea.objects.none()
 
-    class Media:
-        js = [
-            'js/ChallengeFlowCore.js',
-            'js/ChallengeFlowBounties.js',
-            'js/ChallengeFlow.js',
-            'js/BountyModal.js'
-        ]
-        css = {
-            'all': ['css/bounty_modal.css']
-        }
+    def clean(self):
+        cleaned_data = super().clean()
+        success, errors = self.service.validate_challenge_data(cleaned_data, [])
+        if not success:
+            raise forms.ValidationError(errors)
+        return cleaned_data
 
 
 class BountyAuthoringForm(BaseModelForm):

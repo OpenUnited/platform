@@ -1,0 +1,173 @@
+{% extends "challenge_authoring/base.html" %}
+
+{% block title %}Create Challenge{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col">
+    <!-- Main content -->
+    <div class="flex-grow bg-white rounded-lg border p-6">
+        <h1 class="text-xl font-semibold mb-6">Create Challenge</h1>
+        
+        <form id="challenge-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Title -->
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Title <span class="text-red-500">*</span></span>
+                </label>
+                <input type="text" name="title" id="title" placeholder="Title" class="input" required>
+            </div>
+
+            <!-- Description -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Description <span class="text-red-500">*</span></span>
+                </label>
+                <div class="editor-container">
+                    <input type="hidden" name="description" id="description">
+                    <div id="editor"></div>
+                </div>
+            </div>
+
+            <!-- Initiative -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Initiative</span>
+                </label>
+                <select id="initiative-select" class="select-choices">
+                    <option value="">Select Initiative</option>
+                    {% for initiative in form.initiative.field.queryset %}
+                        <option value="{{ initiative.id }}">{{ initiative.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Status -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Status <span class="text-red-500">*</span></span>
+                </label>
+                <select id="status-select" class="select-choices" required>
+                    <option value="">Select Status</option>
+                    {% for value, label in form.fields.status.choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Priority -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Priority <span class="text-red-500">*</span></span>
+                </label>
+                <select id="priority-select" class="select-choices" required>
+                    <option value="">Select Priority</option>
+                    {% for value, label in form.fields.priority.choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Attachments</span>
+                </label>
+                <div class="file-upload-area" id="file-upload-area">
+                    <div class="text-center">
+                        <iconify-icon icon="lucide:upload" height="24" class="mb-2"></iconify-icon>
+                        <p class="text-sm text-base-content/70">
+                            Drag and drop files here or
+                            <label class="text-primary cursor-pointer">
+                                browse
+                                <input type="file" multiple class="hidden" id="file-input">
+                            </label>
+                        </p>
+                        <p class="text-xs text-base-content/50 mt-1">Maximum file size: 10MB</p>
+                    </div>
+                </div>
+                <div id="file-list" class="mt-4 space-y-2"></div>
+            </div>
+
+            <!-- Bounties Section -->
+            <div class="form-control mt-6">
+                <label class="label">
+                    <span class="label-text text-sm font-medium">Bounties</span>
+                </label>
+                <button type="button" class="btn btn-outline btn-primary" id="add-bounty-btn">
+                    <iconify-icon icon="lucide:plus" height="18"></iconify-icon>
+                    Add Bounty
+                </button>
+                <div id="bounties-container" class="mt-4 space-y-4"></div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Fixed bottom bar -->
+    <div class="sticky bottom-0 bg-white border-t px-6 py-4 flex justify-between items-center mt-6">
+        <button class="btn btn-ghost btn-sm gap-2" type="button" id="cancel-btn">
+            <iconify-icon icon="lucide:x" height="18"></iconify-icon>
+            Cancel
+        </button>
+        <button class="btn btn-primary btn-sm gap-2" type="submit" form="challenge-form">
+            <iconify-icon icon="lucide:check" height="18"></iconify-icon>
+            Save
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Choices.js selects
+    const initiativeSelect = new Choices('#initiative-select', {
+        searchEnabled: false,
+        itemSelectText: '',
+        removeItemButton: false,
+        allowHTML: true
+    });
+
+    const statusSelect = new Choices('#status-select', {
+        searchEnabled: false,
+        itemSelectText: '',
+        removeItemButton: false,
+        allowHTML: true
+    });
+
+    const prioritySelect = new Choices('#priority-select', {
+        searchEnabled: false,
+        itemSelectText: '',
+        removeItemButton: false,
+        allowHTML: true
+    });
+
+    // Initialize Quill
+    if (window.Quill) {
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link']
+                ]
+            },
+            placeholder: 'Enter description...'
+        });
+
+        // Handle form submission
+        const form = document.getElementById('challenge-form');
+        const descriptionInput = document.getElementById('description');
+        
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                descriptionInput.value = quill.root.innerHTML;
+            });
+        }
+    }
+});
+</script>
+{% endblock %}

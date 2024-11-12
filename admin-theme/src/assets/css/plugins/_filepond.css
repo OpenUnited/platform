@@ -1,0 +1,27 @@
+.filepond--root .filepond--drop-label,
+.filepond--panel-center.filepond--panel-root,
+.filepond--panel-bottom.filepond--panel-root {
+    @apply rounded bg-base-200 text-base-content;
+}
+
+.filepond-file-upload .filepond--root .filepond--panel-top,
+.filepond-file-upload .filepond--root .filepond--panel-center,
+.filepond-file-upload .filepond--root .filepond--panel-bottom {
+    @apply bg-transparent;
+}
+
+.filepond--panel-root {
+    @apply bg-base-200;
+}
+
+.filepond-file-upload .filepond--root .filepond--drop-label {
+    @apply h-full rounded-sm border-2 border-dashed border-base-300 bg-base-100;
+}
+
+.filepond-file-upload .filepond--root .filepond--panel {
+    @apply bg-base-300/40;
+}
+
+.filepond-file-upload .filepond--root {
+    @apply !font-body;
+}

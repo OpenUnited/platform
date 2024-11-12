@@ -1,0 +1,1614 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>File Manager App - Nexus (HTML - DaisyUI)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/filepond/4.31.2/filepond.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/filepond-plugin-image-preview@4.6.12/dist/filepond-plugin-image-preview.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+                  <div class="col-span-1 xl:col-span-9">
+                    <div class="flex items-center justify-between">
+                      <h3 class="text-lg font-medium">File Manager</h3>
+                      <div class="inline-flex items-center gap-3">
+                        <button
+                          class="btn btn-ghost btn-sm inline gap-2 border-base-content/20 xl:hidden"
+                          onclick="storage_overview_drawer_toggle.click()">
+                          <iconify-icon icon="lucide:folder-kanban" height="16"></iconify-icon>
+                        </button>
+                        <button
+                          aria-label="Upload file"
+                          class="btn btn-ghost btn-sm gap-2 border-base-content/20"
+                          onclick="file_upload_modal.showModal()">
+                          <iconify-icon icon="lucide:upload" height="16"></iconify-icon>
+
+                          Upload
+                        </button>
+                        <dialog aria-label="Modal" class="modal" id="file_upload_modal">
+                          <div class="modal-box">
+                            <div class="flex items-center justify-between">
+                              <p class="font-medium">Upload Files</p>
+                              <form method="dialog">
+                                <button
+                                  aria-label="Close upload file modal"
+                                  class="btn btn-circle btn-ghost btn-sm gap-2">
+                                  <iconify-icon icon="lucide:x" height="20"></iconify-icon>
+                                </button>
+                              </form>
+                            </div>
+                            <div class="mt-4">
+                              <input
+                                type="file"
+                                data-component="filepond"
+                                class="filepond"
+                                name="filepond"
+                                multiple
+                                data-max-files="3" />
+                              <div class="mt-8 text-end">
+                                <button class="btn btn-primary btn-sm gap-2">
+                                  <iconify-icon
+                                    icon="lucide:arrow-down-to-line"
+                                    height="16"></iconify-icon>
+
+                                  Import
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <form class="modal-backdrop" method="dialog">
+                            <button>close</button>
+                          </form>
+                        </dialog>
+                      </div>
+                    </div>
+
+                    <!--  Start: Storage Stat -->
+
+                    <div class="mt-6 grid gap-6 md:grid-cols-2 2xl:grid-cols-4">
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer bg-base-100 transition-[transform,border] duration-300 hover:-translate-y-0.5 hover:border-base-content/20">
+                        <div class="card-body">
+                          <div class="inline w-fit rounded bg-primary bg-opacity-5 p-2">
+                            <img
+                              alt=""
+                              loading="lazy"
+                              class="size-6"
+                              src="./assets/images/apps/files/one_drive.svg" />
+                          </div>
+                          <div class="flex items-center justify-between">
+                            <p class="font-medium">One Drive</p>
+                            <span class="text-sm text-base-content/80">34%</span>
+                          </div>
+                          <progress
+                            max="250"
+                            value="85"
+                            class="progress progress-primary h-1.5 bg-base-content/10"></progress>
+                          <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">85 GB</span>
+                            <span class="text-xs text-base-content/80">250 GB</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer bg-base-100 transition-[transform,border] duration-300 hover:-translate-y-0.5 hover:border-base-content/20">
+                        <div class="card-body">
+                          <div class="inline w-fit rounded bg-warning bg-opacity-5 p-2">
+                            <img
+                              alt=""
+                              loading="lazy"
+                              class="size-6"
+                              src="./assets/images/apps/files/google_drive.svg" />
+                          </div>
+                          <div class="flex items-center justify-between">
+                            <p class="font-medium">Google Drive</p>
+                            <span class="text-sm text-base-content/80">56%</span>
+                          </div>
+                          <progress
+                            max="100"
+                            value="56"
+                            class="progress progress-warning h-1.5 bg-base-content/10"></progress>
+                          <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">56 GB</span>
+                            <span class="text-xs text-base-content/80">100 GB</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer bg-base-100 transition-[transform,border] duration-300 hover:-translate-y-0.5 hover:border-base-content/20">
+                        <div class="card-body">
+                          <div class="inline w-fit rounded bg-error bg-opacity-5 p-2">
+                            <img
+                              alt=""
+                              loading="lazy"
+                              class="size-6"
+                              src="./assets/images/apps/files/mega.svg" />
+                          </div>
+                          <div class="flex items-center justify-between">
+                            <p class="font-medium">Mega</p>
+                            <span class="text-sm text-base-content/80">85.33%</span>
+                          </div>
+                          <progress
+                            max="150"
+                            value="128"
+                            class="progress progress-error h-1.5 bg-base-content/10"></progress>
+                          <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">128 GB</span>
+                            <span class="text-xs text-base-content/80">150 GB</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer bg-base-100 transition-[transform,border] duration-300 hover:-translate-y-0.5 hover:border-base-content/20">
+                        <div class="card-body">
+                          <div class="inline w-fit rounded bg-info bg-opacity-5 p-2">
+                            <img
+                              alt=""
+                              loading="lazy"
+                              class="size-6"
+                              src="./assets/images/apps/files/dropbox.svg" />
+                          </div>
+                          <div class="flex items-center justify-between">
+                            <p class="font-medium">Dropbox</p>
+                            <span class="text-sm text-base-content/80">55%</span>
+                          </div>
+                          <progress
+                            max="40"
+                            value="22"
+                            class="progress progress-info h-1.5 bg-base-content/10"></progress>
+                          <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">22 GB</span>
+                            <span class="text-xs text-base-content/80">40 GB</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--  End: Storage Stat -->
+
+                    <h3 class="mt-6 text-base font-medium">Folders</h3>
+
+                    <!--  Start: Folders -->
+
+                    <div class="mt-3 grid grid-cols-1 gap-6 md:grid-cols-3 2xl:grid-cols-5">
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer border border-base-content/10 bg-base-100 transition-all hover:border-base-content/15 active:border-base-content/25">
+                        <div class="card-body gap-0 p-3">
+                          <div class="flex items-center gap-2">
+                            <div class="rounded-sm bg-primary bg-opacity-5 p-1 text-primary">
+                              <iconify-icon icon="lucide:image" height="20"></iconify-icon>
+                            </div>
+                            <span class="text-sm font-medium">My Images</span>
+                            <div class="ms-auto">
+                              <div class="dropdown dropdown-left">
+                                <label tabindex="0" class="btn btn-circle btn-ghost btn-xs">
+                                  <iconify-icon
+                                    icon="lucide:more-vertical"
+                                    height="16"></iconify-icon>
+                                </label>
+                                <ul
+                                  tabindex="0"
+                                  class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                                  role="menu">
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:arrow-down-to-line"
+                                        height="16"></iconify-icon>
+
+                                      Download
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:pen-line"
+                                        height="16"></iconify-icon>
+
+                                      Rename
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:user-plus"
+                                        height="16"></iconify-icon>
+
+                                      Share
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+
+                                      Move to bin
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-1 flex items-center">
+                            <span class="text-sm text-base-content/70">450 files</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer border border-base-content/10 bg-base-100 transition-all hover:border-base-content/15 active:border-base-content/25">
+                        <div class="card-body gap-0 p-3">
+                          <div class="flex items-center gap-2">
+                            <div class="rounded-sm bg-success bg-opacity-5 p-1 text-success">
+                              <iconify-icon icon="lucide:folder-archive" height="20"></iconify-icon>
+                            </div>
+                            <span class="text-sm font-medium">Archive</span>
+                            <div class="ms-auto">
+                              <div class="dropdown dropdown-left">
+                                <label tabindex="0" class="btn btn-circle btn-ghost btn-xs">
+                                  <iconify-icon
+                                    icon="lucide:more-vertical"
+                                    height="16"></iconify-icon>
+                                </label>
+                                <ul
+                                  tabindex="0"
+                                  class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                                  role="menu">
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:arrow-down-to-line"
+                                        height="16"></iconify-icon>
+
+                                      Download
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:pen-line"
+                                        height="16"></iconify-icon>
+
+                                      Rename
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:user-plus"
+                                        height="16"></iconify-icon>
+
+                                      Share
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+
+                                      Move to bin
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-1 flex items-center">
+                            <span class="text-sm text-base-content/70">54 files</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer border border-base-content/10 bg-base-100 transition-all hover:border-base-content/15 active:border-base-content/25">
+                        <div class="card-body gap-0 p-3">
+                          <div class="flex items-center gap-2">
+                            <div class="rounded-sm bg-warning bg-opacity-5 p-1 text-warning">
+                              <iconify-icon icon="lucide:music" height="20"></iconify-icon>
+                            </div>
+                            <span class="text-sm font-medium">Music</span>
+                            <div class="ms-auto">
+                              <div class="dropdown dropdown-left">
+                                <label tabindex="0" class="btn btn-circle btn-ghost btn-xs">
+                                  <iconify-icon
+                                    icon="lucide:more-vertical"
+                                    height="16"></iconify-icon>
+                                </label>
+                                <ul
+                                  tabindex="0"
+                                  class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                                  role="menu">
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:arrow-down-to-line"
+                                        height="16"></iconify-icon>
+
+                                      Download
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:pen-line"
+                                        height="16"></iconify-icon>
+
+                                      Rename
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:user-plus"
+                                        height="16"></iconify-icon>
+
+                                      Share
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+
+                                      Move to bin
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-1 flex items-center">
+                            <span class="text-sm text-base-content/70">874 files</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer border border-base-content/10 bg-base-100 transition-all hover:border-base-content/15 active:border-base-content/25">
+                        <div class="card-body gap-0 p-3">
+                          <div class="flex items-center gap-2">
+                            <div class="rounded-sm bg-info bg-opacity-5 p-1 text-info">
+                              <iconify-icon icon="lucide:video" height="20"></iconify-icon>
+                            </div>
+                            <span class="text-sm font-medium">Videos</span>
+                            <div class="ms-auto">
+                              <div class="dropdown dropdown-left">
+                                <label tabindex="0" class="btn btn-circle btn-ghost btn-xs">
+                                  <iconify-icon
+                                    icon="lucide:more-vertical"
+                                    height="16"></iconify-icon>
+                                </label>
+                                <ul
+                                  tabindex="0"
+                                  class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                                  role="menu">
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:arrow-down-to-line"
+                                        height="16"></iconify-icon>
+
+                                      Download
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:pen-line"
+                                        height="16"></iconify-icon>
+
+                                      Rename
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:user-plus"
+                                        height="16"></iconify-icon>
+
+                                      Share
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+
+                                      Move to bin
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-1 flex items-center">
+                            <span class="text-sm text-base-content/70">125 files</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-label="Card"
+                        class="card card-bordered cursor-pointer border border-base-content/10 bg-base-100 transition-all hover:border-base-content/15 active:border-base-content/25">
+                        <div class="card-body gap-0 p-3">
+                          <div class="flex items-center gap-2">
+                            <div class="rounded-sm bg-error bg-opacity-5 p-1 text-error">
+                              <iconify-icon icon="lucide:shield-check" height="20"></iconify-icon>
+                            </div>
+                            <span class="text-sm font-medium">Private</span>
+                            <div class="ms-auto">
+                              <div class="dropdown dropdown-left">
+                                <label tabindex="0" class="btn btn-circle btn-ghost btn-xs">
+                                  <iconify-icon
+                                    icon="lucide:more-vertical"
+                                    height="16"></iconify-icon>
+                                </label>
+                                <ul
+                                  tabindex="0"
+                                  class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                                  role="menu">
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:arrow-down-to-line"
+                                        height="16"></iconify-icon>
+
+                                      Download
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:pen-line"
+                                        height="16"></iconify-icon>
+
+                                      Rename
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:user-plus"
+                                        height="16"></iconify-icon>
+
+                                      Share
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+
+                                      Move to bin
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-1 flex items-center">
+                            <span class="text-sm text-base-content/70">8 files</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--  End: Folders -->
+
+                    <h3 class="mt-6 text-base font-medium">Your Files</h3>
+                    <div class="mt-3">
+                      <!--  Start: Files -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body p-0">
+                          <!--  Start: Files Filter Option -->
+
+                          <div class="flex items-center justify-between gap-3 px-5 pt-5">
+                            <div class="inline-flex items-center gap-3">
+                              <div class="dropdown">
+                                <label
+                                  tabindex="0"
+                                  class="btn btn-ghost btn-xs h-8 border border-base-content/20">
+                                  <iconify-icon icon="lucide:plus" height="16"></iconify-icon>
+                                </label>
+                                <ul
+                                  tabindex="0"
+                                  class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                                  role="menu">
+                                  <li>
+                                    <div>
+                                      <iconify-icon icon="lucide:folder" height="16"></iconify-icon>
+
+                                      New Folder
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:folder-up"
+                                        height="16"></iconify-icon>
+
+                                      Upload Folder
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:file-up"
+                                        height="16"></iconify-icon>
+
+                                      Upload File
+                                    </div>
+                                  </li>
+                                  <hr class="-mx-2 my-1 border-base-content/10" />
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:file-text"
+                                        height="16"></iconify-icon>
+
+                                      Create Document
+                                    </div>
+                                  </li>
+                                  <li>
+                                    <div>
+                                      <iconify-icon
+                                        icon="lucide:file-spreadsheet"
+                                        height="16"></iconify-icon>
+
+                                      Create Sheet
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+                              <button
+                                class="btn btn-ghost btn-sm hidden border-base-content/20 sm:flex">
+                                <iconify-icon icon="lucide:folder-git-2" height="16"></iconify-icon>
+
+                                <span>Organize</span>
+                              </button>
+                            </div>
+                            <div class="inline-flex items-center gap-3">
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 ps-3">
+                                <iconify-icon icon="lucide:search" height="16"></iconify-icon>
+
+                                <input
+                                  placeholder="Search along files"
+                                  class="input input-sm w-full transition-all focus:border-transparent focus:outline-0 focus:outline-offset-0"
+                                  name="search"
+                                  value="" />
+                              </div>
+                              <div class="hidden w-48 sm:block">
+                                <select data-choice aria-label="Select Type">
+                                  <option value="">Type</option>
+                                  <option value="images">Images</option>
+                                  <option value="videos">Videos</option>
+                                  <option value="documents">Documents</option>
+                                  <option value="archives">Archives</option>
+                                  <option value="other">Other</option>
+                                </select>
+                              </div>
+                              <div class="join border border-base-content/20">
+                                <button
+                                  aria-label="List view"
+                                  class="btn btn-ghost join-item btn-sm bg-base-content/10 text-base-content"
+                                  id="filter_list_view">
+                                  <iconify-icon icon="lucide:list" height="16"></iconify-icon>
+                                </button>
+                                <button
+                                  aria-label="Grid view"
+                                  class="false btn btn-ghost join-item btn-sm text-base-content/80"
+                                  id="filter_grid_view">
+                                  <iconify-icon icon="lucide:grid-2x2" height="16"></iconify-icon>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!--  End: Files Filter Option -->
+
+                          <div class="overflow-auto">
+                            <!--  Start: File Table -->
+
+                            <table
+                              class="table mt-2 rounded-box"
+                              id="file_table"
+                              data-component="table">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <input
+                                      id="file_check_all"
+                                      aria-label="Check all"
+                                      data-slot="all-checkbox"
+                                      type="checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <th>
+                                    <span class="text-sm font-medium text-base-content/80">
+                                      Name
+                                    </span>
+                                  </th>
+                                  <th>
+                                    <span class="text-sm font-medium text-base-content/80">
+                                      Size
+                                    </span>
+                                  </th>
+                                  <th>
+                                    <span class="text-sm font-medium text-base-content/80">
+                                      Created At
+                                    </span>
+                                  </th>
+                                  <th>
+                                    <span class="text-sm font-medium text-base-content/80">
+                                      Owner
+                                    </span>
+                                  </th>
+                                  <th>
+                                    <span class="text-sm font-medium text-base-content/80">
+                                      Shared With
+                                    </span>
+                                  </th>
+                                  <th>
+                                    <span class="text-sm font-medium text-base-content/80">
+                                      Action
+                                    </span>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr class="cursor-pointer hover:bg-base-200/40">
+                                  <th>
+                                    <input
+                                      aria-label="Single check"
+                                      type="checkbox"
+                                      data-slot="single-checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <td>
+                                    <div class="flex items-center space-x-3 truncate">
+                                      <div
+                                        class="rounded bg-base-content/5 p-1.5 text-base-content/80">
+                                        <iconify-icon
+                                          icon="lucide:video"
+                                          height="20"></iconify-icon>
+                                      </div>
+                                      <div class="text-sm font-medium">Latest Video</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <div class="text-sm">5.1 GiB</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="text-sm">21 Jun 2024</div>
+                                  </td>
+                                  <td>
+                                    <div>Withden</div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <span class="text-base-content/60">3 members</span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <button
+                                        aria-label="Show file"
+                                        class="btn btn-square btn-ghost btn-sm">
+                                        <iconify-icon icon="lucide:eye" height="16"></iconify-icon>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-base-200/40">
+                                  <th>
+                                    <input
+                                      aria-label="Single check"
+                                      type="checkbox"
+                                      data-slot="single-checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <td>
+                                    <div class="flex items-center space-x-3 truncate">
+                                      <div
+                                        class="rounded bg-base-content/5 p-1.5 text-base-content/80">
+                                        <iconify-icon
+                                          icon="lucide:file-text"
+                                          height="20"></iconify-icon>
+                                      </div>
+                                      <div class="text-sm font-medium">Company Documents</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <div class="text-sm">7.8 MiB</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="text-sm">20 Jun 2024</div>
+                                  </td>
+                                  <td>
+                                    <div>Company</div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <span class="flex items-center gap-2 text-error">
+                                        <iconify-icon
+                                          icon="lucide:shield"
+                                          height="15"></iconify-icon>
+
+                                        Private
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <button
+                                        aria-label="Show file"
+                                        class="btn btn-square btn-ghost btn-sm">
+                                        <iconify-icon icon="lucide:eye" height="16"></iconify-icon>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-base-200/40">
+                                  <th>
+                                    <input
+                                      aria-label="Single check"
+                                      type="checkbox"
+                                      data-slot="single-checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <td>
+                                    <div class="flex items-center space-x-3 truncate">
+                                      <div
+                                        class="rounded bg-base-content/5 p-1.5 text-base-content/80">
+                                        <iconify-icon
+                                          icon="lucide:figma"
+                                          height="20"></iconify-icon>
+                                      </div>
+                                      <div class="text-sm font-medium">Figma Design</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <div class="text-sm">1.4 MiB</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="text-sm">18 Jun 2024</div>
+                                  </td>
+                                  <td>
+                                    <div>Turkes Duis</div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <span class="text-base-content/60">7 members</span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <button
+                                        aria-label="Show file"
+                                        class="btn btn-square btn-ghost btn-sm">
+                                        <iconify-icon icon="lucide:eye" height="16"></iconify-icon>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-base-200/40">
+                                  <th>
+                                    <input
+                                      aria-label="Single check"
+                                      type="checkbox"
+                                      data-slot="single-checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <td>
+                                    <div class="flex items-center space-x-3 truncate">
+                                      <div
+                                        class="rounded bg-base-content/5 p-1.5 text-base-content/80">
+                                        <iconify-icon
+                                          icon="lucide:music"
+                                          height="20"></iconify-icon>
+                                      </div>
+                                      <div class="text-sm font-medium">Top Music</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <div class="text-sm">4.8 MiB</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="text-sm">14 Jun 2024</div>
+                                  </td>
+                                  <td>
+                                    <div>Me</div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <span class="flex items-center gap-2 text-success">
+                                        <iconify-icon
+                                          icon="lucide:globe"
+                                          height="15"></iconify-icon>
+
+                                        Public
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <button
+                                        aria-label="Show file"
+                                        class="btn btn-square btn-ghost btn-sm">
+                                        <iconify-icon icon="lucide:eye" height="16"></iconify-icon>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-base-200/40">
+                                  <th>
+                                    <input
+                                      aria-label="Single check"
+                                      type="checkbox"
+                                      data-slot="single-checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <td>
+                                    <div class="flex items-center space-x-3 truncate">
+                                      <div
+                                        class="rounded bg-base-content/5 p-1.5 text-base-content/80">
+                                        <iconify-icon
+                                          icon="lucide:file-spreadsheet"
+                                          height="20"></iconify-icon>
+                                      </div>
+                                      <div class="text-sm font-medium">Office Sheet</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <div class="text-sm">56 KiB</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="text-sm">06 Jun 2024</div>
+                                  </td>
+                                  <td>
+                                    <div>Mr. Boss</div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <span class="text-base-content/60">3 members</span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <button
+                                        aria-label="Show file"
+                                        class="btn btn-square btn-ghost btn-sm">
+                                        <iconify-icon icon="lucide:eye" height="16"></iconify-icon>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr class="cursor-pointer hover:bg-base-200/40">
+                                  <th>
+                                    <input
+                                      aria-label="Single check"
+                                      type="checkbox"
+                                      data-slot="single-checkbox"
+                                      class="checkbox checkbox-xs" />
+                                  </th>
+                                  <td>
+                                    <div class="flex items-center space-x-3 truncate">
+                                      <div
+                                        class="rounded bg-base-content/5 p-1.5 text-base-content/80">
+                                        <iconify-icon
+                                          icon="lucide:message-circle"
+                                          height="20"></iconify-icon>
+                                      </div>
+                                      <div class="text-sm font-medium">Chat Backup</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <div class="text-sm">252 KiB</div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="text-sm">02 Jun 2024</div>
+                                  </td>
+                                  <td>
+                                    <div>Withden</div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <span class="flex items-center gap-2 text-error">
+                                        <iconify-icon
+                                          icon="lucide:shield"
+                                          height="15"></iconify-icon>
+
+                                        Private
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div>
+                                      <button
+                                        aria-label="Show file"
+                                        class="btn btn-square btn-ghost btn-sm">
+                                        <iconify-icon icon="lucide:eye" height="16"></iconify-icon>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+                            <!--  End: File Table -->
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End: Files -->
+                    </div>
+                  </div>
+                  <div class="hidden xl:col-span-3 xl:block">
+                    <!--  Start: Storage Overview -->
+
+                    <div
+                      aria-label="Card"
+                      class="card card-bordered rounded-br-none rounded-tl-none border-0 bg-base-100">
+                      <div class="card-body gap-0">
+                        <div class="flex items-center justify-between">
+                          <p class="font-medium">Storage Overview</p>
+                          <button class="btn btn-ghost btn-sm text-success hover:bg-success/20">
+                            Upgrade Now
+                          </button>
+                        </div>
+                        <div class="mt-3 rounded bg-primary/5 p-4">
+                          <div class="flex items-center gap-3">
+                            <iconify-icon
+                              icon="lucide:hard-drive"
+                              height="18"
+                              class="text-primary"></iconify-icon>
+
+                            <span class="text-base font-medium text-primary">Your Local</span>
+                            <span class="ms-auto text-sm font-semibold text-primary">250 GB</span>
+                          </div>
+                          <p class="mt-3 text-sm font-medium text-base-content/70">Used of 160GB</p>
+                          <progress
+                            max="250"
+                            value="160"
+                            class="progress progress-primary mt-0 h-1.5 bg-primary/20"></progress>
+                        </div>
+                        <p class="mt-6 text-sm font-medium text-base-content/70">In Process</p>
+                        <div class="mt-3">
+                          <div
+                            class="space-y-2 rounded-box border border-base-content/20 px-4 pb-2 pt-3">
+                            <div>
+                              <div class="flex items-center justify-between">
+                                <span class="font-medium">my_video.mp4</span>
+                                <div class="inline-flex gap-2">
+                                  <iconify-icon icon="lucide:pause" height="14"></iconify-icon>
+                                  <iconify-icon
+                                    icon="lucide:x-circle"
+                                    height="14"
+                                    class="text-error"></iconify-icon>
+                                </div>
+                              </div>
+                              <div class="mt-1 flex items-center justify-between">
+                                <span class="text-sm text-base-content/70">70%</span>
+                                <span class="text-xs text-base-content/70">52 MiB</span>
+                              </div>
+                              <progress
+                                max="100"
+                                value="70"
+                                class="progress progress-success mt-0 h-1 bg-base-content/10 align-super"></progress>
+                            </div>
+                            <div>
+                              <div class="flex items-center justify-between">
+                                <span class="font-medium">company_tasks.doc</span>
+                                <div class="inline-flex gap-2">
+                                  <iconify-icon icon="lucide:play" height="14"></iconify-icon>
+
+                                  <iconify-icon
+                                    icon="lucide:x-circle"
+                                    height="14"
+                                    class="text-error"></iconify-icon>
+                                </div>
+                              </div>
+                              <div class="mt-1 flex items-center justify-between">
+                                <span class="text-sm text-base-content/70">20%</span>
+                                <span class="text-xs text-base-content/70">209 KiB</span>
+                              </div>
+                              <progress
+                                max="100"
+                                value="20"
+                                class="progress progress-error mt-0 h-1 bg-base-content/10 align-super"></progress>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-6">
+                          <div role="tablist" class="tabs tabs-lifted grid grid-cols-2">
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Usages"
+                              type="radio"
+                              checked
+                              name="my_tabs_1" />
+                            <div role="tabpanel" class="tab-content mt-5 overflow-hidden">
+                              <div class="space-y-4" id="storage_usage_tab_content">
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-success bg-opacity-5 p-2 text-success">
+                                      <iconify-icon
+                                        icon="lucide:file-text"
+                                        height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Documents</p>
+                                      <p class="text-xs text-base-content/80">124 files</p>
+                                    </div>
+                                    <span class="font-semibold">1.2 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="40"
+                                    class="progress progress-success h-1 bg-base-content/10"></progress>
+                                </div>
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-info bg-opacity-5 p-2 text-info">
+                                      <iconify-icon icon="lucide:image" height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Images</p>
+                                      <p class="text-xs text-base-content/80">425 files</p>
+                                    </div>
+                                    <span class="font-semibold">3 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="15"
+                                    class="progress progress-info h-1 bg-base-content/10"></progress>
+                                </div>
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-error bg-opacity-5 p-2 text-error">
+                                      <iconify-icon icon="lucide:video" height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Videos</p>
+                                      <p class="text-xs text-base-content/80">102 files</p>
+                                    </div>
+                                    <span class="font-semibold">8 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="60"
+                                    class="progress progress-error h-1 bg-base-content/10"></progress>
+                                </div>
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-warning bg-opacity-5 p-2 text-warning">
+                                      <iconify-icon icon="lucide:server" height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Other</p>
+                                      <p class="text-xs text-base-content/80">256 files</p>
+                                    </div>
+                                    <span class="font-semibold">5.5 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="30"
+                                    class="progress progress-warning h-1 bg-base-content/10"></progress>
+                                </div>
+                              </div>
+                            </div>
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Activity"
+                              type="radio"
+                              name="my_tabs_1" />
+                            <div role="tabpanel" class="tab-content mt-5 overflow-hidden">
+                              <ul
+                                class="timeline-hr-sm timeline timeline-vertical -ms-[100%] ps-10"
+                                id="storage_activity_tab_content">
+                                <li>
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-primary/10 p-2 text-primary">
+                                      <iconify-icon icon="lucide:pencil" height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Olivia Duncan</span>
+                                        <span class="text-xs text-base-content/70">Just Now</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Edited package.json in e-commerce
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-primary/10 p-2 text-primary">
+                                      <iconify-icon
+                                        icon="lucide:arrow-up-from-line"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Tillie Frank</span>
+                                        <span class="text-xs text-base-content/70">22 hours</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Uploaded app.tsx file in react directory
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-error/10 p-2 text-error">
+                                      <iconify-icon icon="lucide:trash" height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Zaid Pope</span>
+                                        <span class="text-xs text-base-content/70">3 days</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Removed style.css &amp; images folder from root
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-primary/10 p-2 text-primary">
+                                      <iconify-icon
+                                        icon="lucide:folder-input"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Grover Russo</span>
+                                        <span class="text-xs text-base-content/70">week ago</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Moved folders to inner directory
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-success/10 p-2 text-success">
+                                      <iconify-icon
+                                        icon="lucide:folder-plus"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Qasim Cotton</span>
+                                        <span class="text-xs text-base-content/70">this month</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Created the root project
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-base-content/10 p-2">
+                                      <iconify-icon
+                                        icon="lucide:more-horizontal"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <button
+                                      class="btn btn-ghost btn-sm font-medium hover:bg-primary/10 hover:text-primary">
+                                      View Full Activity
+                                    </button>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--  End: Storage Overview -->
+                  </div>
+                </div>
+
+                <!--  Start: Side Drawer Storage Overview -->
+
+                <div class="drawer drawer-end">
+                  <input
+                    id="storage_overview_drawer_toggle"
+                    aria-label="Drawer handler"
+                    type="checkbox"
+                    class="drawer-toggle"
+                    readonly="" />
+                  <div class="drawer-content"></div>
+                  <div class="drawer-side z-[100]">
+                    <label
+                      class="drawer-overlay"
+                      onclick="storage_overview_drawer_toggle.click()"></label>
+                    <div
+                      aria-label="Card"
+                      class="card card-bordered rounded-br-none rounded-tl-none border-0 bg-base-100">
+                      <div class="card-body gap-0">
+                        <div class="flex items-center justify-between">
+                          <p class="font-medium">Storage Overview</p>
+                          <button class="btn btn-ghost btn-sm text-success hover:bg-success/20">
+                            Upgrade Now
+                          </button>
+                        </div>
+                        <div class="mt-3 rounded bg-primary/5 p-4">
+                          <div class="flex items-center gap-3">
+                            <iconify-icon
+                              icon="lucide:hard-drive"
+                              height="18"
+                              class="text-primary"></iconify-icon>
+
+                            <span class="text-base font-medium text-primary">Your Local</span>
+                            <span class="ms-auto text-sm font-semibold text-primary">250 GB</span>
+                          </div>
+                          <p class="mt-3 text-sm font-medium text-base-content/70">Used of 160GB</p>
+                          <progress
+                            max="250"
+                            value="160"
+                            class="progress progress-primary mt-0 h-1.5 bg-primary/20"></progress>
+                        </div>
+                        <p class="mt-6 text-sm font-medium text-base-content/70">In Process</p>
+                        <div class="mt-3">
+                          <div
+                            class="space-y-2 rounded-box border border-base-content/20 px-4 pb-2 pt-3">
+                            <div>
+                              <div class="flex items-center justify-between">
+                                <span class="font-medium">my_video.mp4</span>
+                                <div class="inline-flex gap-2">
+                                  <iconify-icon icon="lucide:pause" height="14"></iconify-icon>
+                                  <iconify-icon
+                                    icon="lucide:x-circle"
+                                    height="14"
+                                    class="text-error"></iconify-icon>
+                                </div>
+                              </div>
+                              <div class="mt-1 flex items-center justify-between">
+                                <span class="text-sm text-base-content/70">70%</span>
+                                <span class="text-xs text-base-content/70">52 MiB</span>
+                              </div>
+                              <progress
+                                max="100"
+                                value="70"
+                                class="progress progress-success mt-0 h-1 bg-base-content/10 align-super"></progress>
+                            </div>
+                            <div>
+                              <div class="flex items-center justify-between">
+                                <span class="font-medium">company_tasks.doc</span>
+                                <div class="inline-flex gap-2">
+                                  <iconify-icon icon="lucide:play" height="14"></iconify-icon>
+                                  <iconify-icon
+                                    icon="lucide:x-circle"
+                                    height="14"
+                                    class="text-error"></iconify-icon>
+                                </div>
+                              </div>
+                              <div class="mt-1 flex items-center justify-between">
+                                <span class="text-sm text-base-content/70">20%</span>
+                                <span class="text-xs text-base-content/70">209 KiB</span>
+                              </div>
+                              <progress
+                                max="100"
+                                value="20"
+                                class="progress progress-error mt-0 h-1 bg-base-content/10 align-super"></progress>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-6">
+                          <div role="tablist" class="tabs tabs-lifted grid grid-cols-2">
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Usages"
+                              type="radio"
+                              checked
+                              name="overview_drawer_radio" />
+                            <div role="tabpanel" class="tab-content mt-5 overflow-hidden">
+                              <div class="space-y-4" id="storage_usage_tab_drawer_content">
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-success bg-opacity-5 p-2 text-success">
+                                      <iconify-icon
+                                        icon="lucide:file-text"
+                                        height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Documents</p>
+                                      <p class="text-xs text-base-content/80">124 files</p>
+                                    </div>
+                                    <span class="font-semibold">1.2 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="40"
+                                    class="progress progress-success h-1 bg-base-content/10"></progress>
+                                </div>
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-info bg-opacity-5 p-2 text-info">
+                                      <iconify-icon icon="lucide:image" height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Images</p>
+                                      <p class="text-xs text-base-content/80">425 files</p>
+                                    </div>
+                                    <span class="font-semibold">3 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="15"
+                                    class="progress progress-info h-1 bg-base-content/10"></progress>
+                                </div>
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-error bg-opacity-5 p-2 text-error">
+                                      <iconify-icon icon="lucide:video" height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Videos</p>
+                                      <p class="text-xs text-base-content/80">102 files</p>
+                                    </div>
+                                    <span class="font-semibold">8 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="60"
+                                    class="progress progress-error h-1 bg-base-content/10"></progress>
+                                </div>
+                                <div class="rounded-box border border-base-content/10 p-3 py-2">
+                                  <div class="flex items-center gap-3">
+                                    <div class="rounded bg-warning bg-opacity-5 p-2 text-warning">
+                                      <iconify-icon icon="lucide:server" height="16"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                      <p class="text-sm font-medium">Other</p>
+                                      <p class="text-xs text-base-content/80">256 files</p>
+                                    </div>
+                                    <span class="font-semibold">5.5 GB</span>
+                                  </div>
+                                  <progress
+                                    max="100"
+                                    value="30"
+                                    class="progress progress-warning h-1 bg-base-content/10"></progress>
+                                </div>
+                              </div>
+                            </div>
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Activity"
+                              type="radio"
+                              name="overview_drawer_radio" />
+                            <div role="tabpanel" class="tab-content mt-5 overflow-hidden">
+                              <ul
+                                class="timeline-hr-sm timeline timeline-vertical -ms-[100%] ps-10"
+                                id="storage_activity_tab_drawer_content">
+                                <li>
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-primary/10 p-2 text-primary">
+                                      <iconify-icon icon="lucide:pencil" height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Olivia Duncan</span>
+                                        <span class="text-xs text-base-content/70">Just Now</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Edited package.json in e-commerce
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-primary/10 p-2 text-primary">
+                                      <iconify-icon
+                                        icon="lucide:arrow-up-from-line"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Tillie Frank</span>
+                                        <span class="text-xs text-base-content/70">22 hours</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Uploaded app.tsx file in react directory
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-error/10 p-2 text-error">
+                                      <iconify-icon icon="lucide:trash" height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Zaid Pope</span>
+                                        <span class="text-xs text-base-content/70">3 days</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Removed style.css &amp; images folder from root
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-primary/10 p-2 text-primary">
+                                      <iconify-icon
+                                        icon="lucide:folder-input"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Grover Russo</span>
+                                        <span class="text-xs text-base-content/70">week ago</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Moved folders to inner directory
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-success/10 p-2 text-success">
+                                      <iconify-icon
+                                        icon="lucide:folder-plus"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <div>
+                                      <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium">Qasim Cotton</span>
+                                        <span class="text-xs text-base-content/70">this month</span>
+                                      </div>
+                                      <p class="text-sm text-base-content/80">
+                                        Created the root project
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <hr />
+                                </li>
+                                <li>
+                                  <hr />
+                                  <div class="timeline-middle">
+                                    <div class="rounded-full bg-base-content/10 p-2">
+                                      <iconify-icon
+                                        icon="lucide:more-horizontal"
+                                        height="14"></iconify-icon>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="timeline-end timeline-box w-full border-0 shadow-none">
+                                    <button
+                                      class="btn btn-ghost btn-sm font-medium hover:bg-primary/10 hover:text-primary">
+                                      View Full Activity
+                                    </button>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--  End: Side Drawer Storage Overview -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/filepond/4.31.2/filepond.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/filepond-plugin-image-preview@4.6.12/dist/filepond-plugin-image-preview.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"></script>
+    <script src="/assets/js/components/table.js"></script>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

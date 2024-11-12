@@ -12,25 +12,24 @@ Flow Steps:
 """
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import View
-from django.http import Http404, JsonResponse, HttpResponseForbidden, HttpResponseNotFound
-from django.shortcuts import redirect, render, get_object_or_404
+from django.views import View
+from django.views.generic import CreateView
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import Http404
 from django.urls import reverse
-from apps.capabilities.security.services import RoleService
-from django.conf import settings
-import json
-
-from .forms import ChallengeAuthoringForm, BountyAuthoringForm
-from .services import ChallengeAuthoringService
-from apps.capabilities.product_management.models import Product, FileAttachment, Challenge
-from apps.capabilities.talent.models import Skill, Expertise
+from apps.capabilities.product_management.models import Product, FileAttachment
+from .forms import ChallengeAuthoringForm
+from .services import ChallengeAuthoringService, RoleService
 from apps.common.forms import AttachmentFormSet
 
-class ChallengeAuthoringView(LoginRequiredMixin, View):
+class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
     """Main view for challenge authoring flow."""
     form_class = ChallengeAuthoringForm
-    template_name = 'main.html'
-    login_url = '/login/'
+    template_name = 'challenge_authoring/main.html'
+
+    def get_login_url(self):
+        return reverse('security:sign_in')
     
     def dispatch(self, request, *args, **kwargs):
         # Check authentication first (LoginRequiredMixin handles this)
@@ -61,7 +60,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
             'form': self.form_class(product=self.product),
             'attachment_formset': AttachmentFormSet(queryset=FileAttachment.objects.none())
         }
-        return render(request, 'main.html', context)
+        return render(request, 'challenge_authoring/main.html', context)
         
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, product=self.product)
@@ -89,7 +88,7 @@ class ChallengeAuthoringView(LoginRequiredMixin, View):
             'form': form,
             'attachment_formset': attachment_formset
         }
-        return render(request, 'main.html', context)
+        return render(request, 'challenge_authoring/main.html', context)
 
     def get_success_url(self):
         return reverse('product_challenges', kwargs={'product_slug': self.kwargs['product_slug']})
@@ -109,26 +108,19 @@ class SkillsListView(LoginRequiredMixin, View):
     """View for retrieving skills list"""
     login_url = '/login/'
     
-    def get(self, request, product_slug):
-        skills = Skill.objects.all().values('id', 'name')
-        return JsonResponse({'skills': list(skills)})
+    def get(self, request, *args, **kwargs):
+        service = ChallengeAuthoringService(request.user, kwargs.get('product_slug'))
+        skills = service.get_skills_list()
+        return JsonResponse({'skills': skills})
 
 class ExpertiseListView(LoginRequiredMixin, View):
     """View for retrieving expertise tree for a skill"""
     login_url = '/login/'
     
-    def get(self, request, product_slug, skill_id):
-        try:
-            skill = Skill.objects.get(id=skill_id)
-        except Skill.DoesNotExist:
-            return HttpResponseNotFound("Skill not found")
-            
-        expertise = Expertise.objects.filter(
-            skill=skill,
-            selectable=True
-        ).order_by('name').values('id', 'name')
-        
-        return JsonResponse({'expertise': list(expertise)})
+    def get(self, request, skill_id, *args, **kwargs):
+        service = ChallengeAuthoringService(request.user, kwargs.get('product_slug'))
+        expertise = service.get_expertise_for_skill(skill_id)
+        return JsonResponse({'expertise': expertise})
 
 class BountyModalView(LoginRequiredMixin, View):
     def get(self, request, product_slug):

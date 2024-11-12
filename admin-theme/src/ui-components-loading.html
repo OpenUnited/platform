@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Loading Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Loading</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Loading</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 flex">
+                          <!-- Start: Default Single Loading -->
+
+                          <span class="loading loading-spinner"></span>
+
+                          <!-- End: Default Single Loading -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+
+                        <!-- Start: Default Loading -->
+
+                        <div class="mt-1 flex flex-wrap items-center gap-3">
+                          <span class="loading loading-spinner"></span>
+                          <span class="loading loading-spinner text-primary"></span>
+                          <span class="loading loading-spinner text-secondary"></span>
+                          <span class="loading loading-spinner text-success"></span>
+                          <span class="loading loading-spinner text-warning"></span>
+                          <span class="loading loading-spinner text-error"></span>
+                          <span class="loading loading-spinner text-info"></span>
+                          <span class="loading loading-spinner text-accent"></span>
+                          <span class="text-ghost loading loading-spinner"></span>
+                        </div>
+
+                        <!-- End: Default Loading -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Variant</div>
+
+                        <!-- Start: Loading Variant -->
+
+                        <div class="mt-1 flex flex-wrap items-center gap-3">
+                          <span class="loading loading-spinner text-primary"></span>
+                          <span class="loading loading-dots text-primary"></span>
+                          <span class="loading loading-ring text-primary"></span>
+                          <span class="loading loading-ball text-primary"></span>
+                          <span class="loading loading-bars text-primary"></span>
+                          <span class="loading loading-infinity text-primary"></span>
+                        </div>
+
+                        <!-- End: Loading Variant -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Size</div>
+
+                        <!-- Start: Loading With Size -->
+
+                        <div class="mt-1 flex flex-wrap items-center gap-3">
+                          <span class="loading loading-spinner loading-xs"></span>
+                          <span class="loading loading-spinner loading-sm"></span>
+                          <span class="loading loading-spinner loading-md"></span>
+                          <span class="loading loading-spinner loading-lg"></span>
+                        </div>
+
+                        <!-- End: Loading With Size -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

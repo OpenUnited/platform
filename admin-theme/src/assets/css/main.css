@@ -1,0 +1,12 @@
+@import "_root.css";
+
+/* Custom Styling */
+@import "custom/_animation.css";
+@import "custom/_components.css";
+@import "custom/_forms.css";
+@import "custom/_layout.css";
+
+/* Plugin Overriding */
+@import "plugins/_filepond.css";
+@import "plugins/_apexcharts.css";
+@import "plugins/_select.css";

@@ -1,0 +1,17 @@
+{% comment %}Reusable input component{% endcomment %}
+<div class="form-control">
+    <label class="label">
+        <span class="label-text">{{ label }}</span>
+        {% if required %}
+        <span class="label-text-alt text-error">Required</span>
+        {% endif %}
+    </label>
+    <div class="form-control-wrapper">
+        {{ field }}
+    </div>
+    {% if field.errors %}
+    <label class="label">
+        <span class="label-text-alt text-error">{{ field.errors|join:", " }}</span>
+    </label>
+    {% endif %}
+</div> 

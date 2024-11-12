@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Step Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Step</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Step</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered overflow-auto bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 overflow-auto">
+                          <!-- Start: Default Step -->
+
+                          <ul aria-label="Steps" role="group" class="steps overflow-auto">
+                            <li aria-label="Step" class="step step-primary">Register</li>
+                            <li aria-label="Step" class="step step-primary">Choose plan</li>
+                            <li aria-label="Step" class="step">Purchase</li>
+                            <li aria-label="Step" class="step">Receive Product</li>
+                          </ul>
+
+                          <!-- End: Default Step -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Responsive</div>
+                        <div class="mt-1">
+                          <!-- Start: Responsive Step -->
+
+                          <ul
+                            aria-label="Steps"
+                            role="group"
+                            class="steps steps-vertical lg:steps-horizontal">
+                            <li aria-label="Step" class="step step-primary">Register</li>
+                            <li aria-label="Step" class="step step-primary">Choose plan</li>
+                            <li aria-label="Step" class="step">Purchase</li>
+                            <li aria-label="Step" class="step">Receive Product</li>
+                          </ul>
+
+                          <!-- End: Responsive Step -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered overflow-auto bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Contents</div>
+                        <div class="mt-1">
+                          <!-- Start: Contents Step -->
+
+                          <ul aria-label="Steps" role="group" class="steps">
+                            <li aria-label="Step" data-content="?" class="step">Step 1</li>
+                            <li aria-label="Step" data-content="!" class="step">Step 2</li>
+                            <li aria-label="Step" data-content="✓" class="step">Step 3</li>
+                            <li aria-label="Step" data-content="✕" class="step">Step 4</li>
+                            <li aria-label="Step" data-content="!" class="step">Step 5</li>
+                            <li aria-label="Step" data-content="" class="step">Step 6</li>
+                            <li aria-label="Step" data-content="●" class="step">Step 7</li>
+                          </ul>
+
+                          <!-- End: Contents Step -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Color</div>
+                        <div class="mt-1">
+                          <!-- Start: Color Step -->
+
+                          <ul aria-label="Steps" role="group" class="steps">
+                            <li aria-label="Step" class="step step-info">Fly to the moon</li>
+                            <li aria-label="Step" class="step step-info">Shrink the moon</li>
+                            <li aria-label="Step" class="step step-info">Grab the moon</li>
+                            <li aria-label="Step" data-content="?" class="step step-error">
+                              Sit in the bathroom
+                            </li>
+                          </ul>
+
+                          <!-- End: Color Step -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

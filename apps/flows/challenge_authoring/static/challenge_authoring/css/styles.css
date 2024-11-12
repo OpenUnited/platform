@@ -1,0 +1,230 @@
+/* Base input styles */
+.input, .select, .textarea {
+    @apply w-full px-3 py-2 border rounded-md;
+    @apply focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary;
+}
+
+/* Modal */
+.modal {
+    @apply invisible opacity-0 fixed inset-0 z-50 flex items-center justify-center bg-black/50;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.modal.modal-open {
+    @apply visible opacity-100;
+}
+
+/* Labels */
+label {
+    @apply text-sm font-medium text-gray-700;
+}
+
+/* Form Controls */
+.form-control input,
+.form-control select,
+.form-control textarea,
+.choices__inner,
+.ql-container.ql-snow,
+.ql-toolbar.ql-snow {
+    @apply w-full rounded-md border border-base-content/20 bg-base-200 px-3 py-2;
+    @apply text-sm placeholder:text-base-content/50;
+    @apply focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50;
+}
+
+.form-control textarea {
+    @apply min-h-[120px];
+}
+
+/* Labels */
+.label {
+    @apply flex items-center justify-between py-1.5;
+}
+
+.label-text {
+    @apply text-sm font-medium text-base-content;
+}
+
+.label-text-alt {
+    @apply text-xs;
+}
+
+/* File Upload Area */
+.file-upload-area {
+    @apply flex min-h-[200px] items-center justify-center rounded-lg border-2 border-dashed border-base-content/20;
+    @apply bg-base-200/50 p-6;
+    @apply transition-all hover:border-primary/50;
+}
+
+/* Cards */
+.card.card-bordered {
+    @apply border border-base-content/10;
+    @apply bg-base-100;
+}
+
+.card-title {
+    @apply text-base font-semibold;
+}
+
+/* Modal */
+.modal-box {
+    @apply bg-white rounded-lg shadow-xl w-full max-w-md mx-4 transform scale-95 opacity-0 transition-all;
+}
+
+.modal.modal-open .modal-box {
+    @apply scale-100 opacity-100;
+}
+
+.modal-action {
+    @apply flex justify-end gap-2 mt-6;
+}
+
+/* Form Controls */
+.form-control select {
+    @apply w-full rounded-md bg-base-100;
+    @apply text-sm;
+    @apply focus:outline-none focus:ring-0;
+    @apply border-0;
+}
+
+.form-control .select-container {
+    @apply flex flex-row items-center rounded-box border border-base-content/20 px-3;
+    @apply bg-base-100;
+}
+
+/* Choices.js styles */
+.choices-container {
+    margin-bottom: 0;
+    border-radius: 0.5rem;
+}
+
+.choices-list {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    min-height: 42px;
+    padding: 6px 12px;
+}
+
+.choices-list-single {
+    padding: 2px 16px 2px 4px;
+}
+
+.choices-dropdown {
+    border-color: #e5e7eb;
+}
+
+.choices-selectable {
+    padding: 6px 12px;
+}
+
+.choices-selectable:hover {
+    background-color: #f3f4f6;
+}
+
+/* Container styling */
+.form-control .select-container {
+    @apply flex flex-row items-center rounded-box border border-base-content/20;
+    @apply bg-base-100;
+    min-height: 2rem; /* Adjust this value as needed */
+}
+
+.form-control select {
+    display: none;
+}
+
+.choices__list--dropdown .choices__item--selectable {
+    padding-right: 0.75rem;
+}
+
+.choices.is-focused .choices__inner {
+    border-color: rgb(var(--color-primary) / 0.5);
+    box-shadow: 0 0 0 1px rgb(var(--color-primary) / 0.5);
+}
+
+/* Make all select containers consistent */
+.form-control .choices {
+    width: 100% !important;
+}
+
+/* Remove any specific styling for priority select */
+#priority-item {
+    width: 100%;
+}
+
+/* Ensure dropdown button is properly aligned */
+.choices[data-type*="select-one"]::after {
+    border-color: #666 transparent transparent transparent !important;
+    right: 12px !important;
+}
+
+/* Quill Editor Styles */
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+    border: none !important;
+}
+
+.ql-toolbar.ql-snow {
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 8px 12px;
+    background-color: white;
+}
+
+.ql-container.ql-snow {
+    background-color: white;
+}
+
+.ql-editor {
+    min-height: 200px;
+    padding: 12px;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: white;
+}
+
+.ql-formats button {
+    margin: 0 4px !important;
+}
+
+.ql-formats button:hover {
+    color: rgb(var(--color-primary));
+}
+
+/* Choices.js Styles - Updated to use DaisyUI variables */
+.choices {
+    margin-bottom: 0 !important;
+}
+
+.choices__inner {
+    background-color: hsl(var(--b1));
+    border: 1px solid hsl(var(--bc) / 0.2);
+    border-radius: 0.5rem !important;
+    min-height: 42px;
+    padding: 4px 8px;
+}
+
+.choices__list--dropdown {
+    border: 1px solid hsl(var(--bc) / 0.2);
+    border-radius: 0.5rem;
+    margin-top: 4px;
+}
+
+.choices__list--dropdown .choices__item--selectable {
+    padding: 8px 12px;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background-color: hsl(var(--bc) / 0.1);
+}
+
+.choices[data-type*="select-one"]:after {
+    border-color: hsl(var(--bc) / 0.5) transparent transparent transparent;
+    right: 12px;
+}
+
+.choices[data-type*="select-one"].is-open:after {
+    border-color: transparent transparent hsl(var(--bc) / 0.5) transparent;
+}
+
+.choices.is-focused .choices__inner {
+    border-color: hsl(var(--p) / 0.5);
+}
+  

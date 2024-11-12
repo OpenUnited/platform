@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Rating Form Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Rating</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Forms</li>
+                      <li>Rating</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <!--  Start: Default Rating -->
+
+                          <div class="rating">
+                            <input
+                              type="radio"
+                              name="rating-1"
+                              class="mask mask-star"
+                              aria-label="Radio" />
+                            <input
+                              type="radio"
+                              name="rating-1"
+                              aria-label="Radio"
+                              class="mask mask-star"
+                              checked="checked" />
+                            <input
+                              type="radio"
+                              name="rating-1"
+                              class="mask mask-star"
+                              aria-label="Radio" />
+                            <input
+                              type="radio"
+                              name="rating-1"
+                              class="mask mask-star"
+                              aria-label="Radio" />
+                            <input
+                              type="radio"
+                              name="rating-1"
+                              class="mask mask-star"
+                              aria-label="Radio" />
+                          </div>
+
+                          <!--  End: Default Rating -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Color</div>
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <!--  Start: Color Rating -->
+
+                          <div class="rating">
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-2"
+                              class="mask mask-star-2 bg-orange-400" />
+                            <input
+                              type="radio"
+                              name="rating-2"
+                              aria-label="Radio"
+                              class="mask mask-star-2 bg-orange-400"
+                              checked="checked" />
+                            <input
+                              type="radio"
+                              name="rating-2"
+                              aria-label="Radio"
+                              class="mask mask-star-2 bg-orange-400" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-2"
+                              class="mask mask-star-2 bg-orange-400" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-2"
+                              class="mask mask-star-2 bg-orange-400" />
+                          </div>
+
+                          <!--  End: Color Rating -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Icon</div>
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <!--  Start: Rating With Icon -->
+
+                          <div class="rating gap-1">
+                            <input
+                              type="radio"
+                              name="rating-3"
+                              aria-label="Radio"
+                              class="mask mask-heart bg-red-400" />
+                            <input
+                              type="radio"
+                              name="rating-3"
+                              aria-label="Radio"
+                              class="mask mask-heart bg-orange-400"
+                              checked="checked" />
+                            <input
+                              type="radio"
+                              name="rating-3"
+                              aria-label="Radio"
+                              class="mask mask-heart bg-yellow-400" />
+                            <input
+                              type="radio"
+                              name="rating-3"
+                              aria-label="Radio"
+                              class="mask mask-heart bg-lime-400" />
+                            <input
+                              type="radio"
+                              name="rating-3"
+                              aria-label="Radio"
+                              class="mask mask-heart bg-green-400" />
+                          </div>
+
+                          <!--  End: Rating With Icon -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Half Star</div>
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <!--  Start: Half-Star Rating -->
+
+                          <div class="rating rating-half rating-md">
+                            <input
+                              type="radio"
+                              name="rating-10"
+                              class="rating-hidden"
+                              aria-label="Radio" />
+                            <input
+                              type="radio"
+                              name="rating-10"
+                              aria-label="Radio"
+                              class="mask mask-half-1 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-2 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-1 mask-star-2 bg-green-500"
+                              checked="checked" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-2 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-1 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-2 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-1 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-2 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-1 mask-star-2 bg-green-500" />
+                            <input
+                              type="radio"
+                              aria-label="Radio"
+                              name="rating-10"
+                              class="mask mask-half-2 mask-star-2 bg-green-500" />
+                          </div>
+
+                          <!--  End: Half-Star Rating -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

@@ -1,0 +1,15 @@
+.animate-bounce-2 {
+    -webkit-animation: bounce-2 2s infinite alternate;
+    animation: bounce-2 2s infinite alternate;
+}
+
+@keyframes bounce-2 {
+    0% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    to {
+        -webkit-transform: translateY(-8px);
+        transform: translateY(-8px);
+    }
+}

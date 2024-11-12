@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chat App - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-9">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium">Chat</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6">
+                <div class="grid gap-6 lg:grid-cols-12">
+                  <!--  Start: Chat List -->
+
+                  <div class="lg:col-span-5 xl:col-span-4 2xl:col-span-3">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="flex items-center gap-3">
+                          <div
+                            class="form-control flex grow flex-row items-center rounded-box border border-base-content/20 px-2">
+                            <iconify-icon icon="lucide:search" height="15"></iconify-icon>
+
+                            <input
+                              aria-label="Search chat"
+                              placeholder="Search along chats"
+                              class="input input-sm w-full focus:border-transparent focus:outline-0 focus:outline-offset-0" />
+                          </div>
+                          <div
+                            role="tooltip"
+                            aria-label="New contact"
+                            data-tip="New Contact"
+                            class="tooltip">
+                            <button
+                              aria-label="New contact"
+                              class="btn btn-ghost btn-sm gap-2 border border-base-content/20 p-2">
+                              <iconify-icon icon="lucide:plus" height="14"></iconify-icon>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="mt-2">
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box bg-base-content/10 p-2 px-3 transition-all hover:bg-base-content/15 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/2.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Debra C. Glen</p>
+                                  <span class="text-xs text-base-content/60">10:42 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">
+                                    Great! Let me know what you think after watching.
+                                  </p>
+                                  <div
+                                    aria-label="Badge"
+                                    class="badge badge-success badge-xs px-1 py-1.5 text-xs">
+                                    2
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-2 px-3 transition-all hover:bg-base-content/5 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/3.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Gary N. Roache</p>
+                                  <span class="text-xs text-base-content/60">10:42 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">Yeah</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-2 px-3 transition-all hover:bg-base-content/5 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/4.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Roberta K. Simons</p>
+                                  <span class="text-xs text-base-content/60">10:27 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">
+                                    Have you seen the new movie everyone is talking about?
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-2 px-3 transition-all hover:bg-base-content/5 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/5.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Michael S. Gillen</p>
+                                  <span class="text-xs text-base-content/60">10:27 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">
+                                    Looking forward to the weekend. Any fun plans?
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-2 px-3 transition-all hover:bg-base-content/5 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/6.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Pamela W. Boggess</p>
+                                  <span class="text-xs text-base-content/60">10:27 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">
+                                    Found a great podcast - 'Mindful Moments.' Highly recommended!
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-2 px-3 transition-all hover:bg-base-content/5 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/7.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Troy G. Ward</p>
+                                  <span class="text-xs text-base-content/60">10:27 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">
+                                    Any book recommendations
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-2 px-3 transition-all hover:bg-base-content/5 active:scale-[.98]">
+                              <img
+                                alt="avatar"
+                                loading="lazy"
+                                width="44"
+                                height="44"
+                                class="mask mask-squircle size-11 bg-base-content/10 p-0.5"
+                                src="/assets/images/avatars/8.png" />
+                              <div class="grow">
+                                <div class="flex justify-between">
+                                  <p class="text-sm font-medium">Alicia W. Calvillo</p>
+                                  <span class="text-xs text-base-content/60">10:27 PM</span>
+                                </div>
+                                <div class="flex justify-between gap-3">
+                                  <p class="line-clamp-1 text-sm text-base-content/80">
+                                    Just tried a new recipe. It turned out amazing!
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-2 text-center">
+                          <button
+                            class="btn btn-ghost btn-sm gap-2 text-primary hover:bg-primary/10">
+                            <iconify-icon icon="lucide:users" height="14"></iconify-icon>
+
+                            Join a Community
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--  End: Chat List -->
+
+                  <div class="lg:col-span-7 xl:col-span-8 2xl:col-span-9">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <!--  Start: Chat Header With Option -->
+
+                      <div class="flex items-center gap-3 p-3">
+                        <img
+                          alt="avatar"
+                          loading="lazy"
+                          width="40"
+                          height="40"
+                          class="size-10"
+                          src="/assets/images/avatars/2.png" />
+                        <div class="grow">
+                          <p class="text-base/none font-medium">Debra C. Glen</p>
+                          <div class="mt-1 flex items-center gap-2">
+                            <div class="size-2 rounded-full bg-success"></div>
+                            <p class="text-sm/none text-base-content/70">Active</p>
+                          </div>
+                        </div>
+                        <div class="inline-flex items-center gap-3">
+                          <div role="tooltip" data-tip="Audio Call" class="tooltip">
+                            <button
+                              aria-label="Phone"
+                              class="btn btn-ghost btn-sm gap-2 border border-base-content/20 p-2"
+                              onclick="call_modal.showModal()">
+                              <iconify-icon icon="lucide:phone" height="14"></iconify-icon>
+                            </button>
+                          </div>
+                          <div role="tooltip" data-tip="Video Call" class="tooltip hidden sm:block">
+                            <button
+                              aria-label="Video"
+                              class="btn btn-ghost btn-sm gap-2 border border-base-content/20 p-2"
+                              onclick="call_modal.showModal()">
+                              <iconify-icon icon="lucide:video" height="14"></iconify-icon>
+                            </button>
+                          </div>
+                          <div role="tooltip" data-tip="Add to Friend" class="tooltip">
+                            <button
+                              aria-label="Add user"
+                              class="btn btn-ghost btn-sm gap-2 border border-base-content/20 p-2">
+                              <iconify-icon icon="lucide:user-plus" height="14"></iconify-icon>
+                            </button>
+                          </div>
+                          <div class="dropdown dropdown-end dropdown-bottom">
+                            <label
+                              tabindex="0"
+                              class="btn btn-ghost btn-sm border border-base-content/20 p-2">
+                              <iconify-icon icon="lucide:more-vertical" height="16"></iconify-icon>
+                            </label>
+                            <ul
+                              tabindex="0"
+                              class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                              role="menu">
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:user" height="16"></iconify-icon>
+                                  View Profile
+                                </div>
+                              </li>
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:pin" height="16"></iconify-icon>
+
+                                  Pin
+                                </div>
+                              </li>
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:bell-dot" height="16"></iconify-icon>
+
+                                  Mute Notification
+                                </div>
+                              </li>
+                              <hr class="-mx-2 my-1 border-base-content/10" />
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:archive" height="16"></iconify-icon>
+
+                                  Archive
+                                </div>
+                              </li>
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+
+                                  Delete Chat
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End: Chat Header With Option -->
+
+                      <hr class="border-base-content/10" />
+                      <div
+                        data-simplebar
+                        class="simplebar-scrollable-y p-5"
+                        style="height: calc(-312px + 100vh)">
+                        <div>
+                          <div class="chat chat-start">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/2.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/10 py-3 text-base/none text-base-content">
+                              Conversation Started
+                            </div>
+                            <time class="text-xs opacity-50">07:22 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-start">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/2.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/10 py-3 text-base/none text-base-content">
+                              Hey, how's it going?
+                            </div>
+                            <time class="text-xs opacity-50">08:22 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-end">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/1.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/5 py-3 text-base/none text-base-content">
+                              I'm doing well, thanks! How about you?
+                            </div>
+                            <time class="text-xs opacity-50">09:02 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-start">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/2.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/10 py-3 text-base/none text-base-content">
+                              Just finished a great book. Have any recommendations?
+                            </div>
+                            <time class="text-xs opacity-50">09:48 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-end">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/1.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/5 py-3 text-base/none text-base-content">
+                              That's awesome! I'd recommend 'The Silent Observer.'
+                            </div>
+                            <time class="text-xs opacity-50">10:02 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-start">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/2.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/10 py-3 text-base/none text-base-content">
+                              Thanks! I'll check it out.
+                            </div>
+                            <time class="text-xs opacity-50">10:07 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-end">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/1.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/5 py-3 text-base/none text-base-content">
+                              Did you catch the latest movie? It's fantastic!
+                            </div>
+                            <time class="text-xs opacity-50">10:17 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-start">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/2.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/10 py-3 text-base/none text-base-content">
+                              No, I haven't. What's the title?
+                            </div>
+                            <time class="text-xs opacity-50">10:27 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-end">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/1.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/5 py-3 text-base/none text-base-content">
+                              It's called 'Dreamscape.' A must-watch!
+                            </div>
+                            <time class="text-xs opacity-50">10:37 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-start">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/2.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/10 py-3 text-base/none text-base-content">
+                              Sounds intriguing. I'll add it to my watchlist.
+                            </div>
+                            <time class="text-xs opacity-50">10:40 PM</time>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="chat chat-end">
+                            <div aria-label="Avatar photo" class="avatar chat-image">
+                              <div class="h-10 w-10 rounded-btn bg-base-content/10 p-0.5">
+                                <img src="/assets/images/avatars/1.png" alt="Debra C. Glen" />
+                              </div>
+                            </div>
+                            <div
+                              class="chat-bubble min-h-fit bg-base-content/5 py-3 text-base/none text-base-content">
+                              Great! Let me know what you think after watching.
+                            </div>
+                            <time class="text-xs opacity-50">10:42 PM</time>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mt-3">
+                        <!--  Start: Message Send Form -->
+
+                        <form class="flex gap-3 bg-base-content/5 p-4">
+                          <button aria-label="Attachment" class="btn btn-circle btn-ghost btn-sm">
+                            <iconify-icon icon="lucide:paperclip" height="18"></iconify-icon>
+                          </button>
+                          <div class="grow">
+                            <div
+                              class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                              <input
+                                aria-label="Input message"
+                                class="input input-sm input-bordered w-full transition-all focus:outline-offset-0"
+                                value=""
+                                name="message" />
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Send message"
+                            class="btn btn-circle btn-primary btn-sm">
+                            <iconify-icon icon="lucide:send-horizontal" height="18"></iconify-icon>
+                          </button>
+                        </form>
+
+                        <!--  End: Message Send Form -->
+                      </div>
+
+                      <!--  Start: Call Option Center Modal -->
+
+                      <dialog aria-label="Modal" class="modal" id="call_modal">
+                        <div class="modal-box">
+                          <div class="text-center">
+                            <img
+                              alt="avatar"
+                              loading="lazy"
+                              width="48"
+                              height="48"
+                              class="mask mask-squircle inline bg-base-content/10 p-0.5"
+                              src="/assets/images/avatars/2.png" />
+                            <p class="mt-1 font-medium">Debra C. Glen</p>
+                            <p class="mt-1 text-sm text-base-content/60">02 : 55</p>
+                          </div>
+                          <div class="mt-8 grid grid-cols-4 text-center">
+                            <div
+                              class="cursor-pointer rounded bg-transparent py-3 transition-all hover:bg-base-content/10 active:bg-base-content/20">
+                              <iconify-icon icon="lucide:mic-off" height="24"></iconify-icon>
+
+                              <p class="mt-2">Mute</p>
+                            </div>
+                            <div
+                              class="cursor-pointer rounded bg-transparent py-3 transition-all hover:bg-base-content/10 active:bg-base-content/20">
+                              <iconify-icon icon="lucide:pause" height="24"></iconify-icon>
+
+                              <p class="mt-2">Hold</p>
+                            </div>
+                            <div
+                              class="cursor-pointer rounded bg-transparent py-3 transition-all hover:bg-base-content/10 active:bg-base-content/20">
+                              <iconify-icon icon="lucide:disc" height="24"></iconify-icon>
+
+                              <p class="mt-2">Record</p>
+                            </div>
+                            <div
+                              class="cursor-pointer rounded bg-transparent py-3 transition-all hover:bg-base-content/10 active:bg-base-content/20">
+                              <iconify-icon icon="lucide:book-user" height="24"></iconify-icon>
+
+                              <p class="mt-2">Contact</p>
+                            </div>
+                          </div>
+                          <div class="mt-8 grid grid-cols-3 text-center">
+                            <div>
+                              <button aria-label="Phone" class="btn btn-circle btn-ghost gap-2">
+                                <iconify-icon icon="lucide:user-plus" height="28"></iconify-icon>
+                              </button>
+                            </div>
+                            <form method="dialog">
+                              <div class="mt-8">
+                                <button
+                                  aria-label="End call"
+                                  class="btn btn-circle btn-error gap-2">
+                                  <iconify-icon
+                                    icon="lucide:phone"
+                                    height="24"
+                                    class="rotate-[135deg]"></iconify-icon>
+                                </button>
+                              </div>
+                            </form>
+                            <div>
+                              <button
+                                aria-label="More option"
+                                class="btn btn-circle btn-ghost gap-2">
+                                <iconify-icon
+                                  icon="lucide:more-horizontal"
+                                  height="28"
+                                  class="inline"></iconify-icon>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <form method="dialog" class="modal-backdrop">
+                          <button>close</button>
+                        </form>
+                      </dialog>
+
+                      <!--  End: Call Option Center Modal -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

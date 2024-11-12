@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>E-commerce Create Product - Nexus (HTML - DaisyUI)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/filepond/4.31.2/filepond.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/filepond-plugin-image-preview@4.6.12/dist/filepond-plugin-image-preview.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Create Product</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li><a href="./apps-ecommerce-products.html">Products</a></li>
+                      <li>Create</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <form>
+                    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                      <!--  Start: Basic Information -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body gap-0">
+                          <div class="card-title">Basic Information</div>
+                          <div class="mt-1 grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                            <div>
+                              <label for="product_name" class="label">
+                                <span class="label-text cursor-pointer">Name</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="product_name"
+                                  placeholder="Name"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  required
+                                  name="name" />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="product_category" class="label">
+                                <span class="label-text cursor-pointer">Category</span>
+                              </label>
+                              <div>
+                                <div class="form-control">
+                                  <select
+                                    data-choice
+                                    aria-label="Select Category"
+                                    id="product_category"
+                                    class="w-full">
+                                    <option value="" selected disabled>Select</option>
+                                    <option value="fashion">Fashion</option>
+                                    <option value="daily_need">Daily Need</option>
+                                    <option value="cosmetic">Cosmetic</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="food">Food</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-span-1 md:col-span-2">
+                              <label for="description" class="label">
+                                <span class="label-text cursor-pointer">Description</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 px-3">
+                                <textarea
+                                  name="description"
+                                  id="description"
+                                  placeholder="Description"
+                                  class="textarea textarea-bordered textarea-sm w-full border-0 px-0 transition-all focus:outline-0 focus:outline-offset-0"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  ENd: Basic Information -->
+
+                      <!--  Start:  Upload Image -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body">
+                          <div class="card-title">Upload Image</div>
+                          <div class="mt-1">
+                            <input
+                              type="file"
+                              data-component="filepond"
+                              class="filepond"
+                              name="filepond" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End:  Upload Image -->
+
+                      <!--  Start: Pricing -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body gap-0">
+                          <div class="card-title">Pricing</div>
+                          <div class="mt-1 grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                            <div>
+                              <label for="cost_price" class="label">
+                                <span class="label-text cursor-pointer">Cost Price</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 ps-3">
+                                <div class="text-base-content/70">$</div>
+                                <input
+                                  min="0"
+                                  id="cost_price"
+                                  placeholder="Cost Price"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  required
+                                  name="costPrice" />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="sale_price" class="label">
+                                <span class="label-text cursor-pointer">Sale Price</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 ps-3">
+                                <div class="text-base-content/70">$</div>
+                                <input
+                                  min="0"
+                                  id="sale_price"
+                                  placeholder="Sale Price"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="salePrice"
+                                  required />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="discount_percentage" class="label">
+                                <span class="label-text cursor-pointer">Discount</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 pe-3">
+                                <input
+                                  min="0"
+                                  max="100"
+                                  id="discount_percentage"
+                                  placeholder="Discount"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="discountPercentage" />
+                                <div class="ms-2 text-base-content/70">%</div>
+                              </div>
+                            </div>
+                            <div>
+                              <label for="discount_price" class="label">
+                                <span class="label-text cursor-pointer">Discount Price</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 bg-base-content/10">
+                                <input
+                                  id="discount_price"
+                                  disabled
+                                  placeholder="Discount Price"
+                                  class="input input-sm input-bordered w-full border-0 !bg-transparent transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="discountPrice" />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="tax_percentage" class="label">
+                                <span class="label-text cursor-pointer">Tax</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 pe-3">
+                                <input
+                                  min="0"
+                                  max="100"
+                                  id="tax_percentage"
+                                  placeholder="Tax"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="taxPercentage"
+                                  required />
+                                <div class="ms-2 text-base-content/70">%</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End: Pricing -->
+
+                      <!--  Start: Inventory -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body gap-0">
+                          <div class="card-title">Inventory</div>
+                          <div class="mt-1 grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                            <div class="col-span-1 md:col-span-2">
+                              <label for="sku" class="label">
+                                <span class="label-text cursor-pointer">SKU</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="sku"
+                                  placeholder="SKU (Stock Keeping Unit)"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  name="sku"
+                                  required />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="stock" class="label">
+                                <span class="label-text cursor-pointer">Stock</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  min="0"
+                                  id="stock"
+                                  placeholder="Stock"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="stock"
+                                  required />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="stock_alert" class="label">
+                                <span class="label-text cursor-pointer">Stock Alert</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  min="0"
+                                  id="stock_alert"
+                                  placeholder="Stock Alert"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="stockAlert"
+                                  required />
+                              </div>
+                            </div>
+                            <div class="flex items-center gap-5">
+                              <label for="in_stock" class="label">
+                                <span class="label-text cursor-pointer">In Stock</span>
+                              </label>
+                              <input
+                                id="in_stock"
+                                class="toggle toggle-sm"
+                                type="checkbox"
+                                value="false"
+                                name="stockStatus" />
+                            </div>
+                            <div class="flex items-center gap-5">
+                              <label for="display_availability" class="label">
+                                <span class="label-text cursor-pointer">Display Avail</span>
+                              </label>
+                              <input
+                                id="display_availability"
+                                class="toggle toggle-sm"
+                                type="checkbox"
+                                value="false"
+                                name="displayAvailability" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End: Inventory -->
+
+                      <!--  Start:  SEO -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body gap-0">
+                          <div class="card-title">SEO</div>
+                          <div class="mt-1 grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                            <div>
+                              <label for="slug" class="label">
+                                <span class="label-text cursor-pointer">Slug</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="slug"
+                                  placeholder="Slug"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  required
+                                  name="slug" />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="meta_title" class="label">
+                                <span class="label-text cursor-pointer">Meta Title</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="meta_title"
+                                  placeholder="Meta Title"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  required
+                                  name="metaTitle" />
+                              </div>
+                            </div>
+                            <div class="col-span-1 md:col-span-2">
+                              <label for="meta_description" class="label">
+                                <span class="label-text cursor-pointer">Meta Description</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 px-3">
+                                <textarea
+                                  name="metaDescription"
+                                  id="meta_description"
+                                  required
+                                  placeholder="Meta Description"
+                                  class="textarea textarea-bordered textarea-sm w-full border-0 px-0 transition-all focus:outline-0 focus:outline-offset-0"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End:  SEO -->
+
+                      <!--  Start:  Shipping -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body gap-0">
+                          <div class="card-title">Shipping</div>
+                          <div class="mt-1 grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                            <div>
+                              <label for="weight" class="label">
+                                <span class="label-text cursor-pointer">Weight</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 pe-3">
+                                <input
+                                  min="0"
+                                  id="weight"
+                                  placeholder="Weight"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="weight" />
+                                <div class="text-base-content/70">gm</div>
+                              </div>
+                            </div>
+                            <div>
+                              <label for="width" class="label">
+                                <span class="label-text cursor-pointer">Width</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 pe-3">
+                                <input
+                                  min="0"
+                                  id="width"
+                                  placeholder="Width"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="width" />
+                                <div class="text-base-content/70">In</div>
+                              </div>
+                            </div>
+                            <div>
+                              <label for="height" class="label">
+                                <span class="label-text cursor-pointer">Height</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 pe-3">
+                                <input
+                                  min="0"
+                                  id="height"
+                                  placeholder="Height"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="height" />
+                                <div class="text-base-content/70">In</div>
+                              </div>
+                            </div>
+                            <div>
+                              <label for="depth" class="label">
+                                <span class="label-text cursor-pointer">Depth</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20 pe-3">
+                                <input
+                                  min="0"
+                                  id="depth"
+                                  placeholder="Depth"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  type="number"
+                                  value="0"
+                                  name="depth" />
+                                <div class="text-base-content/70">In</div>
+                              </div>
+                            </div>
+                            <div class="flex items-center gap-5">
+                              <label for="free_shipping" class="label">
+                                <span class="label-text cursor-pointer">Free Shipping</span>
+                              </label>
+                              <input
+                                id="free_shipping"
+                                class="toggle toggle-sm"
+                                type="checkbox"
+                                value="false"
+                                name="freeShipping" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End:  Shipping -->
+                    </div>
+                    <div class="mt-6 flex justify-end gap-6">
+                      <!--  Start: Action Button -->
+
+                      <button class="btn btn-ghost btn-sm gap-2 bg-base-content/10" type="reset">
+                        <iconify-icon icon="lucide:x" height="18"></iconify-icon>
+                        Cancel
+                      </button>
+                      <button class="btn btn-primary btn-sm gap-2" type="submit">
+                        <iconify-icon icon="lucide:check" height="18"></iconify-icon>
+                        Save
+                      </button>
+
+                      <!--  End: Action Button -->
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/filepond/4.31.2/filepond.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/filepond-plugin-image-preview@4.6.12/dist/filepond-plugin-image-preview.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"></script>
+    <load src="partials/footer.html" />
+  </body>
+</html>

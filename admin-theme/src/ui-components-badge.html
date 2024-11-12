@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Badge Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Badge</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Badge</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 space-y-1">
+                          <!-- Start: Default Badge -->
+
+                          <div aria-label="Badge" class="badge">Badge</div>
+
+                          <!-- End: Default Badge -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Colors</div>
+
+                        <!-- Start: Color Badge -->
+
+                        <div class="mt-1 flex flex-wrap gap-2">
+                          <div aria-label="Badge" class="badge">Default</div>
+                          <div aria-label="Badge" class="badge badge-primary">Primary</div>
+                          <div aria-label="Badge" class="badge badge-secondary">Secondary</div>
+                          <div aria-label="Badge" class="badge badge-success">Success</div>
+                          <div aria-label="Badge" class="badge badge-warning">Warning</div>
+                          <div aria-label="Badge" class="badge badge-info">Info</div>
+                          <div aria-label="Badge" class="badge badge-error">Error</div>
+                          <div aria-label="Badge" class="badge badge-neutral">Neutral</div>
+                          <div aria-label="Badge" class="badge badge-ghost">Ghost</div>
+                        </div>
+
+                        <!-- End: Color Badge -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Outline</div>
+
+                        <!-- Start: Outline Badge -->
+
+                        <div class="mt-1 flex flex-wrap gap-2">
+                          <div aria-label="Badge" class="badge badge-primary badge-outline">
+                            Primary
+                          </div>
+                          <div aria-label="Badge" class="badge badge-secondary badge-outline">
+                            Secondary
+                          </div>
+                          <div aria-label="Badge" class="badge badge-success badge-outline">
+                            Success
+                          </div>
+                          <div aria-label="Badge" class="badge badge-warning badge-outline">
+                            Warning
+                          </div>
+                          <div aria-label="Badge" class="badge badge-info badge-outline">Info</div>
+                          <div aria-label="Badge" class="badge badge-error badge-outline">
+                            Error
+                          </div>
+                        </div>
+
+                        <!-- End: Outline Badge -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Sizes</div>
+
+                        <!-- Start: Badge With Different Size -->
+
+                        <div class="mt-1 flex flex-wrap items-end gap-2">
+                          <div aria-label="Badge" class="badge badge-outline badge-lg">Large</div>
+                          <div aria-label="Badge" class="badge badge-outline badge-md">Medium</div>
+                          <div aria-label="Badge" class="badge badge-outline badge-sm">Small</div>
+                          <div aria-label="Badge" class="badge badge-outline badge-xs">Tiny</div>
+                        </div>
+
+                        <!-- End: Badge With Different Size -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Empty</div>
+
+                        <!-- Start: Empty Badge -->
+
+                        <div class="mt-1 flex flex-wrap items-center gap-2">
+                          <div aria-label="Badge" class="badge badge-primary badge-lg"></div>
+                          <div aria-label="Badge" class="badge badge-primary badge-md"></div>
+                          <div aria-label="Badge" class="badge badge-primary badge-sm"></div>
+                          <div aria-label="Badge" class="badge badge-primary badge-xs"></div>
+                        </div>
+
+                        <!-- End: Empty Badge -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Use case</div>
+
+                        <!-- Start: Badge Use Case -->
+
+                        <div class="mt-1 flex flex-wrap items-center gap-2">
+                          <button class="btn">
+                            Inbox
+                            <span aria-label="Badge" class="badge">+99</span>
+                          </button>
+                          <button class="btn">
+                            Inbox
+                            <span aria-label="Badge" class="badge badge-secondary">+99</span>
+                          </button>
+                        </div>
+
+                        <!-- End: Badge Use Case -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Tab Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Tab</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Tab</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 flex">
+                          <!-- Start: Default Tab -->
+
+                          <div role="tablist" class="tabs tabs-bordered">
+                            <a role="tab" class="tab">Tab 1</a>
+                            <a role="tab" class="tab tab-active">Tab 2</a>
+                            <a role="tab" class="tab">Tab 3</a>
+                          </div>
+
+                          <!-- End: Default Tab -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Boxed</div>
+                        <div class="mt-1 flex">
+                          <!-- Start: Boxed Tab -->
+
+                          <div role="tablist" class="tabs-boxed tabs">
+                            <a role="tab" class="tab">Tab 1</a>
+                            <a role="tab" class="tab tab-active">Tab 2</a>
+                            <a role="tab" class="tab">Tab 3</a>
+                          </div>
+
+                          <!-- End: Boxed Tab -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Lifted</div>
+                        <div class="mt-1 flex">
+                          <!-- Start: Lifted Tab -->
+
+                          <div role="tablist" class="tabs tabs-lifted">
+                            <a role="tab" class="tab">Tab 1</a>
+                            <a role="tab" class="tab tab-active">Tab 2</a>
+                            <a role="tab" class="tab">Tab 3</a>
+                          </div>
+
+                          <!-- End: Lifted Tab -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Radio</div>
+                        <div class="mt-1 flex">
+                          <!-- Start: Radio Tab -->
+
+                          <div role="tablist" class="tabs tabs-bordered">
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Tab 1"
+                              type="radio"
+                              name="my_tabs_1" />
+                            <div class="tab-content pt-4">Tab content 1</div>
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Tab 2"
+                              type="radio"
+                              checked=""
+                              name="my_tabs_1" />
+                            <div class="tab-content pt-4">Tab content 2</div>
+                            <input
+                              class="tab"
+                              role="tab"
+                              aria-label="Tab 3"
+                              type="radio"
+                              name="my_tabs_1" />
+                            <div class="tab-content pt-4">Tab content 3</div>
+                          </div>
+
+                          <!-- End: Radio Tab -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Sizes</div>
+
+                        <!-- Start: Tab With Different Sizes -->
+
+                        <div class="mt-1 flex flex-col items-center gap-6">
+                          <div role="tablist" class="tabs-boxed tabs tabs-xs">
+                            <a role="tab" class="tab">Tiny</a>
+                            <a role="tab" class="tab tab-active">Tiny</a>
+                            <a role="tab" class="tab">Tiny</a>
+                          </div>
+                          <div role="tablist" class="tabs-boxed tabs tabs-sm">
+                            <a role="tab" class="tab">Small</a>
+                            <a role="tab" class="tab tab-active">Small</a>
+                            <a role="tab" class="tab">Small</a>
+                          </div>
+                          <div role="tablist" class="tabs-boxed tabs tabs-md">
+                            <a role="tab" class="tab">Normal</a>
+                            <a role="tab" class="tab tab-active">Normal</a>
+                            <a role="tab" class="tab">Normal</a>
+                          </div>
+                          <div role="tablist" class="tabs-boxed tabs tabs-lg">
+                            <a role="tab" class="tab">Large</a>
+                            <a role="tab" class="tab tab-active">Large</a>
+                            <a role="tab" class="tab">Large</a>
+                          </div>
+                        </div>
+
+                        <!-- End: Tab With Different Sizes -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

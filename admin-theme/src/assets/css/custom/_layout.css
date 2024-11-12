@@ -1,0 +1,56 @@
+:root {
+    --leftbar-width: 240px;
+}
+
+[ignore-variables] {
+    --leftmenu-background: initial;
+    --main-content-background: initial;
+    --topbar-background: initial;
+}
+
+.leftmenu-wrapper {
+    width: var(--leftbar-width);
+    transition: all 0.3s;
+    background: var(--leftmenu-background);
+    @apply sticky bottom-0 top-0 h-screen min-w-60 border-e-[1px] border-base-200;
+}
+
+[data-leftbar-type="mobile"] .leftmenu-wrapper {
+    @apply fixed z-50;
+}
+
+.leftmenu-wrapper.hide {
+    margin-inline-start: calc(var(--leftbar-width) * -1);
+}
+
+.leftmenu-wrapper .menu li a.active {
+    @apply bg-base-content/10;
+    @apply text-inherit;
+}
+
+[data-leftbar-hide] .leftmenu-wrapper {
+    margin-inline-start: calc(var(--leftbar-width) * -1);
+}
+
+[data-leftbar-type="mobile"]:not([data-leftbar-hide]) .leftbar-backdrop {
+    @apply fixed inset-0 z-40 bg-gray-900 bg-opacity-50 transition-all;
+}
+
+.topbar-wrapper {
+    background: var(--topbar-background);
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 100vw;
+    height: 100vh;
+    background: var(--main-content-background);
+}
+
+.content-wrapper {
+    @apply grow p-6 transition-all;
+}
+
+.pro-badge {
+    @apply ms-0 rounded bg-base-content/10 px-1.5 py-[3px] text-[12px]/none opacity-70;
+}

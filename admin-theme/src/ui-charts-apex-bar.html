@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Apex Bar Charts - Nexus (HTML - DaisyUI)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.53.0/apexcharts.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Bar Charts</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Apex Charts</li>
+                      <li>Bar</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="mt-6 grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Bar With Goals</p>
+
+                        <!--  Start: Bar With Goals Chart -->
+
+                        <div id="chart_with_goals_bar"></div>
+
+                        <!--  End: Bar With Goals Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Grouped Bar</p>
+
+                        <!--  Start: Grouped Bar Chart -->
+
+                        <div id="chart_grouped_bar"></div>
+
+                        <!--  End: Grouped Bar Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Stacked Bar</p>
+
+                        <!--  Start: Stacked Bar Chart -->
+
+                        <div id="chart_stacked_bar"></div>
+
+                        <!--  End: Stacked Bar Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Negative Value</p>
+
+                        <!--  Start: Negative Value Chart -->
+
+                        <div id="chart_negative_value_bar"></div>
+
+                        <!--  End: Negative Value Chart -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.53.0/apexcharts.min.js"></script>
+    <script src="/assets/js/pages/charts/apex-bar.js"></script>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

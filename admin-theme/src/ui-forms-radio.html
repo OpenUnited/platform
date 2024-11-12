@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Radio Form Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Radio</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Forms</li>
+                      <li>Radio</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+
+                        <!--  Start: Default Radio -->
+
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio"
+                            name="radio1"
+                            checked="" />
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio"
+                            name="radio1" />
+                          <input
+                            aria-label="Radio example"
+                            disabled=""
+                            type="radio"
+                            class="radio"
+                            name="radio1" />
+                          <input
+                            aria-label="Radio example"
+                            disabled=""
+                            type="radio"
+                            class="radio"
+                            name="radio2"
+                            checked="" />
+                        </div>
+
+                        <!--  End: Default Radio -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Colors</div>
+
+                        <!--  Start: Radio With Color -->
+
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio-primary radio"
+                            checked="" />
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio-secondary radio"
+                            checked="" />
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio-success radio"
+                            checked="" />
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio-warning radio"
+                            checked="" />
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio-info radio"
+                            checked="" />
+                          <input
+                            aria-label="Radio example"
+                            type="radio"
+                            class="radio-error radio"
+                            checked="" />
+                        </div>
+
+                        <!--  End: Radio With Color -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Form Control</div>
+
+                        <!--  Start: Radio Form Control -->
+
+                        <div class="mt-1 w-64 rounded-lg bg-base-200 p-4">
+                          <form role="form" class="form-control">
+                            <label class="label">
+                              <span class="label-text cursor-pointer">Red Pill</span>
+                              <input
+                                aria-label="Radio example"
+                                type="radio"
+                                class="radio checked:bg-red-500"
+                                name="radio3"
+                                checked="" />
+                            </label>
+                          </form>
+                          <form role="form" class="form-control">
+                            <label class="label">
+                              <span class="label-text cursor-pointer">Blue Pill</span>
+                              <input
+                                aria-label="Radio example"
+                                type="radio"
+                                class="radio checked:bg-blue-500"
+                                name="radio3"
+                                checked="" />
+                            </label>
+                          </form>
+                        </div>
+
+                        <!--  End: Radio Form Control -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

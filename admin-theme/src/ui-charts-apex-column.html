@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Apex Column Charts - Nexus (HTML - DaisyUI)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.53.0/apexcharts.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Column Charts</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Apex Charts</li>
+                      <li>Column</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="mt-6 grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Stacked Column</p>
+
+                        <!--  Start: Stacked Column Chart -->
+
+                        <div id="chart_stacked_column"></div>
+
+                        <!--  End: Stacked Column Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Dumbbell Column</p>
+
+                        <!--  Start: Dumbbell Column Chart -->
+
+                        <div id="chart_dumbbell_column"></div>
+
+                        <!--  End: Dumbbell Column Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Range Column</p>
+
+                        <!--  Start: Range Column Chart -->
+
+                        <div id="chart_range_column"></div>
+
+                        <!--  End: Range Column Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Dynamic Desaturate Column</p>
+
+                        <!--  Start: Dynamic Desaturate Column Chart -->
+
+                        <div class="flex">
+                          <div class="flex-1">
+                            <div id="chart_dynamic_loading_column"></div>
+                          </div>
+                          <div
+                            class="hidden flex-1"
+                            id="container_chart_dynamic_loading_target_column">
+                            <div id="chart_dynamic_loading_target_column"></div>
+                          </div>
+                        </div>
+
+                        <!--  End: Dynamic Desaturate Column Chart -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.53.0/apexcharts.min.js"></script>
+    <script src="/assets/js/pages/charts/apex-column.js"></script>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

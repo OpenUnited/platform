@@ -1,0 +1,7 @@
+<div class="skill-tree">
+    {% for skill in skills %}
+        {% with modified_skill=skill %}
+            {% include "challenge_authoring/components/skill_tree_item.html" %}
+        {% endwith %}
+    {% endfor %}
+</div> 

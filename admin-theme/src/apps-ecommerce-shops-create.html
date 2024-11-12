@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>E-commerce Create Shop - Nexus (HTML - DaisyUI)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Create Shop</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li><a href="./apps-ecommerce-shops.html">Shops</a></li>
+                      <li>Create</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-5">
+                  <form>
+                    <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+                      <!--  Start: Basic Information -->
+
+                      <div aria-label="Card" class="card card-bordered bg-base-100">
+                        <div class="card-body gap-0">
+                          <div class="card-title">Basic Information</div>
+                          <div class="mt-1 grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                            <div>
+                              <label for="name" class="label">
+                                <span class="label-text cursor-pointer">Name</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="name"
+                                  placeholder="Name"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  name="name" />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="seller_id" class="label">
+                                <span class="label-text cursor-pointer">Seller</span>
+                              </label>
+                              <div>
+                                <div class="form-control">
+                                  <select data-choice aria-label="Select Seller" id="seller_id">
+                                    <option value="" selected>Select Seller</option>
+                                    <option value="Anthony S. Amaya">Anthony S. Amaya</option>
+                                    <option value="Crystal R. Taylor">Crystal R. Taylor</option>
+                                    <option value="Jeremy M. Simon">Jeremy M. Simon</option>
+                                    <option value="Jane B. Bush">Jane B. Bush</option>
+                                    <option value="Francis A. Bisson">Francis A. Bisson</option>
+                                    <option value="Lydia P. Barnett">Lydia P. Barnett</option>
+                                    <option value="John B. Lopez">John B. Lopez</option>
+                                    <option value="Detra M. Rogers">Detra M. Rogers</option>
+                                    <option value="Antonio D. Goss">Antonio D. Goss</option>
+                                    <option value="Brenda R. Holmes">Brenda R. Holmes</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <label for="email" class="label">
+                                <span class="label-text cursor-pointer">Email</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="email"
+                                  placeholder="Email"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  name="email" />
+                              </div>
+                            </div>
+                            <div>
+                              <label for="mobile" class="label">
+                                <span class="label-text cursor-pointer">Mobile</span>
+                              </label>
+                              <div
+                                class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                <input
+                                  id="mobile"
+                                  placeholder="Mobile"
+                                  class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                  value=""
+                                  name="mobileNumber" />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-5">
+                            <label for="description" class="label">
+                              <span class="label-text cursor-pointer">Description</span>
+                            </label>
+                            <div
+                              class="form-control flex flex-row items-center rounded-box border border-base-content/20 px-3">
+                              <textarea
+                                name="description"
+                                id="description"
+                                placeholder="Description"
+                                class="textarea textarea-bordered textarea-sm w-full border-0 px-0 transition-all focus:outline-0 focus:outline-offset-0"></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!--  End: Basic Information -->
+
+                      <div class="space-y-5">
+                        <!--  Start: Address -->
+
+                        <div aria-label="Card" class="card card-bordered bg-base-100">
+                          <div class="card-body gap-0">
+                            <div class="card-title">Address</div>
+                            <div class="grid grid-cols-1 gap-5 gap-y-3 md:grid-cols-2">
+                              <div>
+                                <label for="street_address" class="label">
+                                  <span class="label-text cursor-pointer">Street Address</span>
+                                </label>
+                                <div
+                                  class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                  <input
+                                    id="street_address"
+                                    placeholder="Street Address"
+                                    class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                    value=""
+                                    name="address" />
+                                </div>
+                              </div>
+                              <div>
+                                <label for="city" class="label">
+                                  <span class="label-text cursor-pointer">City</span>
+                                </label>
+                                <div
+                                  class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                  <input
+                                    id="city"
+                                    placeholder="City"
+                                    class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                    value=""
+                                    name="city" />
+                                </div>
+                              </div>
+                              <div>
+                                <label for="state" class="label">
+                                  <span class="label-text cursor-pointer">State</span>
+                                </label>
+                                <div
+                                  class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                  <input
+                                    id="state"
+                                    placeholder="State"
+                                    class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                    value=""
+                                    name="state" />
+                                </div>
+                              </div>
+                              <div>
+                                <label for="postal_code" class="label">
+                                  <span class="label-text cursor-pointer">Postal Code</span>
+                                </label>
+                                <div
+                                  class="form-control flex flex-row items-center rounded-box border border-base-content/20">
+                                  <input
+                                    id="postal_code"
+                                    placeholder="Postal Code"
+                                    class="input input-sm input-bordered w-full border-0 transition-all focus:outline-0 focus:outline-offset-0"
+                                    value=""
+                                    name="postalCode" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--  End: Address -->
+
+                        <!--  Start: Status -->
+
+                        <div aria-label="Card" class="card card-bordered bg-base-100">
+                          <div class="card-body gap-0">
+                            <div class="card-title">Status</div>
+                            <div class="mt-1 flex items-center gap-4">
+                              <label for="verified" class="label">
+                                <span class="label-text cursor-pointer">Verified</span>
+                              </label>
+                              <input
+                                id="verified"
+                                class="toggle toggle-sm"
+                                type="checkbox"
+                                value="false"
+                                name="verified" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--  End: Status -->
+                      </div>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-6">
+                      <!--  Start: Action Button -->
+
+                      <button class="btn btn-ghost btn-sm gap-2 bg-base-content/10" type="reset">
+                        <iconify-icon icon="lucide:x" height="18"></iconify-icon>
+                        Cancel
+                      </button>
+                      <button class="btn btn-primary btn-sm gap-2">
+                        <iconify-icon icon="lucide:check" height="18"></iconify-icon>
+                        Save
+                      </button>
+
+                      <!--  End: Action Button -->
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"></script>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

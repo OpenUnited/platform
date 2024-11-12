@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Pagination Component - Nexus (HTML - DaisyUI)</title>
+    <meta charset="UTF-8" />
+<link
+        rel="shortcut icon"
+        href="./assets/images/logo/favicon-dark.png"
+        media="(prefers-color-scheme: dark)" />
+<link
+        rel="shortcut icon"
+        href="./assets/images/logo/favicon-light.png"
+        media="(prefers-color-scheme: light)" />
+
+<script>
+  try {
+    document.documentElement.setAttribute("data-theme", JSON.parse(localStorage.getItem("__NEXUS__HTML__ADMIN__LAYOUT__")).theme)
+  } catch (e) {}
+</script>
+
+    <link rel="stylesheet" href="./assets/main.css">
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <div class="leftmenu-wrapper">
+  <a class="flex h-16 items-center justify-center" href="./dashboards-ecommerce.html">
+    <!--  Start: Logo -->
+
+    <div class="inline">
+      <img
+        alt="logo-dark"
+        loading="lazy"
+        class="hidden h-6 dark:inline"
+        src="./assets/images/logo/logo-dark.png" />
+      <img
+        alt="logo-light"
+        loading="lazy"
+        class="inline h-6 dark:hidden"
+        src="./assets/images/logo/logo-light.png" />
+    </div>
+
+    <!--  End: Logo -->
+  </a>
+  <div data-simplebar class="h-[calc(100vh-64px)] lg:h-[calc(100vh-230px)]">
+    <ul class="menu mb-6">
+      <!--  Start: Dashboard -->
+
+      <li class="mb-0.5">
+        <a class="hover:bg-base-content/15" href="./dashboards-ecommerce.html">
+          <div class="flex items-center gap-2">
+            <iconify-icon icon="lucide:airplay" height="18"></iconify-icon>
+            Dashboard
+          </div>
+        </a>
+      </li>
+
+      <!--  End: Dashboard -->
+      <!--  Start: Apps -->
+
+      <li class="menu-title font-semibold">Apps</li>
+      <li class="mb-0.5">
+        <details>
+          <summary>
+            <div class="flex items-center gap-2">
+              <iconify-icon icon="lucide:store" height="18"></iconify-icon>
+              Ecommerce
+              <div class="pro-badge">Pro</div>
+            </div>
+          </summary>
+          <ul>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./apps-ecommerce-orders.html">
+                <div class="flex items-center gap-2">
+                  Orders
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./apps-ecommerce-products.html">
+                <div class="flex items-center gap-2">
+                  Products
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./apps-ecommerce-sellers.html">
+                <div class="flex items-center gap-2">
+                  Sellers
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./apps-ecommerce-customers.html">
+                <div class="flex items-center gap-2">
+                  Customers
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./apps-ecommerce-shops.html">
+                <div class="flex items-center gap-2">
+                  Shops
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+      <li class="mb-0.5">
+        <a class="hover:bg-base-content/15" href="./apps-file-manager.html">
+          <div class="flex items-center gap-2">
+            <iconify-icon icon="lucide:server" height="18"></iconify-icon>
+            File Manager
+            <div class="pro-badge">Pro</div>
+          </div>
+        </a>
+      </li>
+      <li class="mb-0.5">
+        <a class="hover:bg-base-content/15" href="./apps-chat.html">
+          <div class="flex items-center gap-2">
+            <iconify-icon icon="lucide:messages-square" height="18"></iconify-icon>
+            Chat
+            <div class="pro-badge">Pro</div>
+          </div>
+        </a>
+      </li>
+
+      <!--  End: Apps -->
+      <!--  Start: Pages -->
+      <li class="menu-title font-semibold">Pages</li>
+      <li class="mb-0.5">
+        <a class="hover:bg-base-content/15" href="./landing.html">
+          <div class="flex items-center gap-2">
+            <iconify-icon icon="lucide:file" height="18"></iconify-icon>
+            Landing
+            <div class="pro-badge">Pro</div>
+          </div>
+        </a>
+      </li>
+      <li class="mb-0.5">
+        <details>
+          <summary>
+            <div class="flex items-center gap-2">
+              <iconify-icon icon="lucide:shield-check" height="18"></iconify-icon>
+              Auth
+              <div class="pro-badge">Pro</div>
+            </div>
+          </summary>
+          <ul>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./auth-login.html">
+                <div class="flex items-center gap-2">
+                  Login
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./auth-register.html">
+                <div class="flex items-center gap-2">
+                  Register
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./auth-forgot-password.html">
+                <div class="flex items-center gap-2">
+                  Forgot Password
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./auth-reset-password.html">
+                <div class="flex items-center gap-2">
+                  Reset Password
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+
+      <!--  End: Pages -->
+      <!--  Start: UI Showcase -->
+      <li class="menu-title font-semibold">UI Showcase</li>
+      <li class="mb-0.5">
+        <details>
+          <summary>
+            <div class="flex items-center gap-2">
+              <iconify-icon icon="lucide:package" height="18"></iconify-icon>
+              Components
+              <div class="pro-badge">Pro</div>
+            </div>
+          </summary>
+          <ul>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-accordion.html">
+                <div class="flex items-center gap-2">
+                  Accordion
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-alert.html">
+                <div class="flex items-center gap-2">
+                  Alert
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-avatar.html">
+                <div class="flex items-center gap-2">
+                  Avatar
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-badge.html">
+                <div class="flex items-center gap-2">
+                  Badge
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-breadcrumb.html">
+                <div class="flex items-center gap-2">
+                  Breadcrumb
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-button.html">
+                <div class="flex items-center gap-2">
+                  Button
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-countdown.html">
+                <div class="flex items-center gap-2">
+                  Countdown
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-drawer.html">
+                <div class="flex items-center gap-2">
+                  Drawer
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-dropdown.html">
+                <div class="flex items-center gap-2">
+                  Dropdown
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-loading.html">
+                <div class="flex items-center gap-2">
+                  Loading
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-menu.html">
+                <div class="flex items-center gap-2">
+                  Menu
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-modal.html">
+                <div class="flex items-center gap-2">
+                  Modal
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-pagination.html">
+                <div class="flex items-center gap-2">
+                  Pagination
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-progress.html">
+                <div class="flex items-center gap-2">
+                  Progress
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-step.html">
+                <div class="flex items-center gap-2">
+                  Step
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-tab.html">
+                <div class="flex items-center gap-2">
+                  Tab
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-timeline.html">
+                <div class="flex items-center gap-2">
+                  Timeline
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-toast.html">
+                <div class="flex items-center gap-2">
+                  Toast
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-components-tooltip.html">
+                <div class="flex items-center gap-2">
+                  Tooltip
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+      <li class="mb-0.5">
+        <details>
+          <summary>
+            <div class="flex items-center gap-2">
+              <iconify-icon icon="lucide:file-text" height="18"></iconify-icon>
+              Forms
+              <div class="pro-badge">Pro</div>
+            </div>
+          </summary>
+          <ul>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-checkbox.html">
+                <div class="flex items-center gap-2">
+                  Checkbox
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-file.html">
+                <div class="flex items-center gap-2">
+                  File
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-input.html">
+                <div class="flex items-center gap-2">
+                  Input
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-radio.html">
+                <div class="flex items-center gap-2">
+                  Radio
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-range.html">
+                <div class="flex items-center gap-2">
+                  Range
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-rating.html">
+                <div class="flex items-center gap-2">
+                  Rating
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+            <li class="mb-0.5">
+              <a class="hover:bg-base-content/15" href="./ui-forms-toggle.html">
+                <div class="flex items-center gap-2">
+                  Toggle
+                  <div class="pro-badge">Pro</div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+      <li class="mb-0.5">
+        <details>
+          <summary>
+            <div class="flex items-center gap-2">
+              <iconify-icon icon="lucide:bar-chart-big" height="18"></iconify-icon>
+              Charts
+              <div class="pro-badge">Pro</div>
+            </div>
+          </summary>
+          <ul>
+            <li class="mb-0.5">
+              <details>
+                <summary>
+                  <div class="flex items-center gap-2">
+                    Apex
+                    <div class="pro-badge">Pro</div>
+                  </div>
+                </summary>
+                <ul>
+                  <li class="mb-0.5">
+                    <a class="hover:bg-base-content/15" href="./ui-charts-apex-area.html">
+                      <div class="flex items-center gap-2">
+                        Area
+                        <div class="pro-badge">Pro</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="mb-0.5">
+                    <a class="hover:bg-base-content/15" href="./ui-charts-apex-bar.html">
+                      <div class="flex items-center gap-2">
+                        Bar
+                        <div class="pro-badge">Pro</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="mb-0.5">
+                    <a class="hover:bg-base-content/15" href="./ui-charts-apex-column.html">
+                      <div class="flex items-center gap-2">
+                        Column
+                        <div class="pro-badge">Pro</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="mb-0.5">
+                    <a class="hover:bg-base-content/15" href="./ui-charts-apex-line.html">
+                      <div class="flex items-center gap-2">
+                        Line
+                        <div class="pro-badge">Pro</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="mb-0.5">
+                    <a class="hover:bg-base-content/15" href="./ui-charts-apex-pie.html">
+                      <div class="flex items-center gap-2">
+                        Pie
+                        <div class="pro-badge">Pro</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </details>
+      </li>
+
+      <!--  End: UI Showcase -->
+      <!--  Start: Others -->
+
+      <li class="menu-title font-semibold">Other</li>
+      <li class="mb-0.5">
+        <a class="hover:bg-base-content/15" href="https://nexus.daisyui.com/docs/introduction" target="_blank">
+          <div class="flex items-center gap-2">
+            <iconify-icon icon="lucide:book-open-text" height="18"></iconify-icon>
+            Documentation
+          </div>
+        </a>
+      </li>
+
+      <!--  End: Others -->
+    </ul>
+  </div>
+
+  <!--  Start: Note With Action -->
+
+  <div class="mx-4 hidden rounded bg-base-200 px-3 py-4 lg:block">
+    <p class="text-center text-base font-medium">Need Premium?</p>
+    <p class="mt-3 text-center text-sm">Access all features with single time purchase</p>
+    <div class="mt-3 text-center">
+      <a target="_blank" href="https://daisyui.com/store/">
+        <button class="btn btn-primary btn-sm">Purchase</button>
+      </a>
+    </div>
+  </div>
+
+  <!--  End: Note With Action -->
+</div>
+<div class="leftbar-backdrop"></div>
+
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <div
+  role="navigation"
+  aria-label="Navbar"
+  class="topbar-wrapper navbar z-10 border-b border-base-200 px-3">
+  <div class="navbar-start gap-3">
+    <!--  Start: Left Menu Toggle -->
+
+    <button
+      aria-label="Leftmenu toggle"
+      data-action="leftbar-toggle"
+      class="btn btn-square btn-ghost btn-sm">
+      <iconify-icon icon="lucide:menu" height="20"></iconify-icon>
+    </button>
+
+    <!--  End: Left Menu Toggle -->
+    <!--  Start: Search Button -->
+
+    <button
+      aria-label="Search button"
+      onclick="search_modal.showModal()"
+      class="btn btn-outline btn-sm hidden h-9 w-48 items-center justify-start gap-3 border-base-content/20 hover:border-transparent hover:bg-base-content/20 sm:flex">
+      <iconify-icon icon="lucide:search" height="16" class="text-base-content/60"></iconify-icon>
+
+      <span class="text-base-content/60">Search</span>
+    </button>
+
+    <!--  End: Search Button -->
+    <button
+      aria-label="Search button"
+      onclick="search_modal.showModal()"
+      class="btn btn-circle btn-outline btn-sm flex border-base-content/20 hover:border-transparent hover:bg-base-content/20 sm:hidden">
+      <iconify-icon icon="lucide:search" height="16" class="text-base-content/60"></iconify-icon>
+    </button>
+    <!--  Start: Search Modal -->
+
+    <dialog aria-label="Modal" class="modal" id="search_modal">
+      <div class="modal-box p-0">
+        <div class="form-control flex-row items-center rounded-box p-2 px-5">
+          <iconify-icon
+            icon="lucide:search"
+            height="18"
+            class="text-base-content/70"></iconify-icon>
+
+          <input
+            placeholder="Search along files"
+            class="input input-sm w-full text-base focus:border-transparent focus:outline-0 focus:outline-offset-0" />
+          <form method="dialog">
+            <button aria-label="Close search modal" class="btn btn-circle btn-ghost btn-sm gap-2">
+              <iconify-icon icon="lucide:x" height="16"></iconify-icon>
+            </button>
+          </form>
+        </div>
+        <div class="border-t border-base-content/10">
+          <ul class="menu">
+            <li class="menu-title">Actions</li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:folder-plus" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Create a new folder</p>
+              </div>
+            </li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:file-plus" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Upload new document</p>
+              </div>
+            </li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:user-plus" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Invite to project</p>
+              </div>
+            </li>
+            <hr class="-mx-2 mt-3 h-px border-base-content/10" />
+            <li class="menu-title">Quick Links</li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:folders" height="18"></iconify-icon>
+
+                <p class="grow text-sm">File Manager</p>
+              </div>
+            </li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:user" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Profile</p>
+              </div>
+            </li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:layout-dashboard" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Dashboard</p>
+              </div>
+            </li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:help-circle" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Support</p>
+              </div>
+            </li>
+            <li class="">
+              <div>
+                <iconify-icon icon="lucide:keyboard" height="18"></iconify-icon>
+
+                <p class="grow text-sm">Keyboard Shortcuts</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+
+    <!--  End: Search Modal -->
+  </div>
+  <div class="navbar-center"></div>
+  <div class="navbar-end gap-1.5">
+    <!--  Start: Theme Toggle -->
+
+    <button
+      aria-label="Theme toggler"
+      class="btn btn-circle btn-ghost btn-sm"
+      data-action="theme-toggle">
+      <iconify-icon icon="lucide:sun" height="20" class="hidden dark:inline"></iconify-icon>
+      <iconify-icon icon="lucide:moon" height="20" class="inline dark:hidden"></iconify-icon>
+    </button>
+
+    <!--  End: Theme Toggle -->
+
+    <div>
+      <!--  Start: Notification -->
+
+      <div class="dropdown dropdown-end dropdown-bottom">
+        <label tabindex="0" class="btn btn-circle btn-ghost btn-sm">
+          <iconify-icon icon="lucide:bell" height="20"></iconify-icon>
+        </label>
+        <ul
+          tabindex="0"
+          class="menu card dropdown-content card-compact m-1 w-96 rounded-box bg-base-100 p-3 shadow"
+          role="menu">
+          <div class="flex items-center justify-between px-2">
+            <p class="text-base font-medium">Notification</p>
+            <button class="btn btn-circle btn-ghost btn-sm gap-2">
+              <iconify-icon icon="lucide:x" height="16"></iconify-icon>
+            </button>
+          </div>
+          <div class="flex items-center justify-center">
+            <div class="rounded-full border border-base-content/10 px-3 text-center">
+              <p class="text-xs text-base-content/80">Today</p>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div
+              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-1.5 transition-all hover:bg-base-content/5 active:scale-[.98]">
+              <img
+                alt=""
+                loading="lazy"
+                class="mask mask-circle size-9 bg-base-content/10 p-0.5"
+                src="./assets/images/avatars/1.png" />
+              <div class="grow">
+                <p class="text-sm">Customer has requested a return for item</p>
+                <p class="text-xs text-base-content/60">1 Hour ago</p>
+              </div>
+            </div>
+            <div
+              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-1.5 transition-all hover:bg-base-content/5 active:scale-[.98]">
+              <img
+                alt=""
+                loading="lazy"
+                class="mask mask-circle size-9 bg-base-content/10 p-0.5"
+                src="./assets/images/avatars/2.png" />
+              <div class="grow">
+                <p class="text-sm">A new review has been submitted for product</p>
+                <p class="text-xs text-base-content/60">1 Hour ago</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 flex items-center justify-center">
+            <div class="rounded-full border border-base-content/10 px-3 text-center">
+              <p class="text-xs text-base-content/80">Yesterday</p>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div
+              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-1.5 transition-all hover:bg-base-content/5 active:scale-[.98]">
+              <img
+                alt=""
+                loading="lazy"
+                class="mask mask-circle size-9 bg-base-content/10 p-0.5"
+                src="./assets/images/avatars/3.png" />
+              <div class="grow">
+                <p class="text-sm">Prepare for the upcoming weekend promotion</p>
+                <p class="text-xs text-base-content/60">1 Hour ago</p>
+              </div>
+            </div>
+            <div
+              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-1.5 transition-all hover:bg-base-content/5 active:scale-[.98]">
+              <img
+                alt=""
+                loading="lazy"
+                class="mask mask-circle size-9 bg-base-content/10 p-0.5"
+                src="./assets/images/avatars/4.png" />
+              <div class="grow">
+                <p class="text-sm">Product 'ABC123' is running low in stock.</p>
+                <p class="text-xs text-base-content/60">1 Hour ago</p>
+              </div>
+            </div>
+            <div
+              class="my-0.5 flex cursor-pointer items-center gap-3 rounded-box p-1.5 transition-all hover:bg-base-content/5 active:scale-[.98]">
+              <img
+                alt=""
+                loading="lazy"
+                class="mask mask-circle size-9 bg-base-content/10 p-0.5"
+                src="./assets/images/avatars/5.png" />
+              <div class="grow">
+                <p class="text-sm">Payment received for Order ID: #67890</p>
+                <p class="text-xs text-base-content/60">1 Hour ago</p>
+              </div>
+            </div>
+          </div>
+          <hr class="-mx-2 mt-2 border-base-content/10" />
+          <div class="flex items-center justify-between pt-2">
+            <button class="btn btn-ghost btn-sm text-primary hover:bg-primary/10">View All</button>
+            <button class="btn btn-ghost btn-sm text-base-content/80 hover:bg-base-content/10">
+              Mark as read
+            </button>
+          </div>
+        </ul>
+      </div>
+
+      <!--  End: Notification -->
+    </div>
+    <!--  Start: Profile With Action Item -->
+
+    <div class="dropdown dropdown-end dropdown-bottom">
+      <label tabindex="0" class="btn btn-ghost rounded-btn px-1.5 hover:bg-base-content/20">
+        <div class="flex items-center gap-2">
+          <div aria-label="Avatar photo" class="avatar">
+            <div class="mask mask-squircle" style="width: 30px; height: 30px">
+              <img src="./assets/images/avatars/1.png" alt="Avatar" />
+            </div>
+          </div>
+          <div class="flex flex-col items-start">
+            <p class="text-sm/none">Deep</p>
+            <p class="mt-1 text-xs/none text-primary">Edit</p>
+          </div>
+        </div>
+      </label>
+      <ul
+        tabindex="0"
+        class="menu dropdown-content mt-4 w-52 rounded-box bg-base-100 p-2 shadow"
+        role="menu">
+        <li>
+          <div>
+            <iconify-icon icon="lucide:user" height="16"></iconify-icon>
+
+            My Profile
+          </div>
+        </li>
+        <li>
+          <div>
+            <iconify-icon icon="lucide:bell" height="16"></iconify-icon>
+            Notification
+          </div>
+        </li>
+        <hr class="-mx-2 my-1 border-base-content/10" />
+        <li>
+          <div class="text-error">
+            <iconify-icon icon="lucide:log-out" height="16"></iconify-icon>
+            Logout
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!--  End: Profile With Action Item -->
+  </div>
+</div>
+
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Pagination</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Pagination</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1">
+                          <!-- Start: Default Pagination -->
+
+                          <div class="join">
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item btn-active">2</button>
+                            <button class="btn join-item">3</button>
+                            <button class="btn join-item">4</button>
+                          </div>
+
+                          <!-- End: Default Pagination -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Disabled</div>
+                        <div class="mt-1">
+                          <!-- Start: Disabled Pagination -->
+
+                          <div class="join">
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item">2</button>
+                            <button class="btn btn-disabled join-item" disabled="">...</button>
+                            <button class="btn join-item">99</button>
+                            <button class="btn join-item">100</button>
+                          </div>
+
+                          <!-- End: Disabled Pagination -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Control</div>
+                        <div class="mt-1">
+                          <!-- Start: Control Pagination -->
+
+                          <div class="join">
+                            <button class="btn join-item">«</button>
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item btn-active">2</button>
+                            <button class="btn join-item">3</button>
+                            <button class="btn join-item">4</button>
+                            <button class="btn join-item">»</button>
+                          </div>
+
+                          <!-- End: Control Pagination -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Control</div>
+                        <div class="mt-1">
+                          <!-- Start: Control Pagination With Previous/Next Label -->
+
+                          <div class="join">
+                            <button class="btn join-item">Previous</button>
+                            <button class="btn join-item">1</button>
+                            <button class="btn join-item btn-active">2</button>
+                            <button class="btn join-item">3</button>
+                            <button class="btn join-item">Next</button>
+                          </div>
+
+                          <!-- End: Control Pagination With Previous/Next Label -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Sizes</div>
+
+                        <!-- Start: Pagination With Sizes -->
+
+                        <div class="mt-1 flex flex-col items-center gap-3">
+                          <div class="join">
+                            <button class="btn join-item btn-xs">1</button>
+                            <button class="btn join-item btn-active btn-xs">2</button>
+                            <button class="btn join-item btn-xs">3</button>
+                            <button class="btn join-item btn-xs">4</button>
+                          </div>
+                          <div class="join">
+                            <button class="btn join-item btn-sm">1</button>
+                            <button class="btn join-item btn-active btn-sm">2</button>
+                            <button class="btn join-item btn-sm">3</button>
+                            <button class="btn join-item btn-sm">4</button>
+                          </div>
+                          <div class="join">
+                            <button class="btn join-item btn-md">1</button>
+                            <button class="btn join-item btn-active btn-md">2</button>
+                            <button class="btn join-item btn-md">3</button>
+                            <button class="btn join-item btn-md">4</button>
+                          </div>
+                          <div class="join">
+                            <button class="btn join-item btn-lg">1</button>
+                            <button class="btn join-item btn-active btn-lg">2</button>
+                            <button class="btn join-item btn-lg">3</button>
+                            <button class="btn join-item btn-lg">4</button>
+                          </div>
+                        </div>
+
+                        <!-- End: Pagination With Sizes -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" async></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplebar/6.2.7/simplebar.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/simplebar/6.2.7/simplebar.css" />
+<script src="./assets/js/app.js"></script>
+
+  </body>
+</html>

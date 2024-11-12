@@ -88,3 +88,4 @@ virtualenv==20.27.1
 wcwidth==0.2.13
 websockets==11.0.3
 whitenoise==6.6.0
+django-csp==3.8

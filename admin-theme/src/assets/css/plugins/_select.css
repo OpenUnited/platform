@@ -1,0 +1,43 @@
+/* Override Base style */
+.choices__inner {
+    padding: 2px 4px 2px 4px !important;
+    min-height: 2rem !important;
+    @apply border-base-content/20 bg-transparent;
+}
+
+.is-focused .choices__inner {
+    @apply !border-base-content/30;
+}
+
+.choices__list--dropdown {
+    @apply !border-base-content/20 !bg-base-100;
+}
+
+.choices__input {
+    @apply !border-base-content/20 !bg-base-100;
+    padding: 6px 10px !important;
+}
+
+.choices__list--dropdown .choices__list {
+    margin: 4px 0;
+}
+
+.choices__list.choices__list--dropdown .choices__item--selectable {
+    margin: 0 4px;
+    padding: 6px !important;
+    @apply rounded;
+}
+
+.choices__list.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    @apply !bg-base-200;
+}
+
+.choices__list.choices__list--dropdown .choices__item--selectable:hover {
+    @apply !bg-base-200;
+}
+
+.react-select.react-select__size-sm .react-select__control {
+    min-height: 2rem;
+    border-width: 1px;
+    padding: 0;
+}

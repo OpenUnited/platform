@@ -1,0 +1,1082 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>E-commerce Sellers - Nexus (HTML - DaisyUI)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Sellers</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Ecommerce</li>
+                      <li>Sellers</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-5">
+                  <div aria-label="Card" class="card card-bordered bg-base-100">
+                    <div class="card-body p-0">
+                      <div class="flex items-center justify-between px-5 pt-5">
+                        <!--  Start: Seller Table Filter Input -->
+
+                        <div class="inline-flex items-center gap-3">
+                          <div
+                            class="form-control flex flex-row items-center rounded-box border border-base-content/20 ps-3">
+                            <iconify-icon
+                              icon="lucide:search"
+                              height="15"
+                              class="text-base-content/60"></iconify-icon>
+                            <input
+                              placeholder="Search along sellers"
+                              aria-label="Search"
+                              class="input input-sm w-full transition-all focus:border-transparent focus:outline-0 focus:outline-offset-0"
+                              value=""
+                              name="search" />
+                          </div>
+                          <div class="hidden sm:block">
+                            <div>
+                              <div class="form-control w-48">
+                                <select data-choice aria-label="Select Verification Status">
+                                  <option value="">Verification Status</option>
+                                  <option value="verified">Verified</option>
+                                  <option value="unverified">Unverified</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--  End: Seller Table Filter Input -->
+
+                        <!--  Start: Seller Action -->
+
+                        <div class="inline-flex items-center gap-3">
+                          <a aria-label="Create seller" href="./apps-ecommerce-sellers-create.html">
+                            <button class="btn btn-primary btn-sm inline-flex">
+                              <iconify-icon icon="lucide:plus" height="16"></iconify-icon>
+                              <span class="hidden md:inline">New Seller</span>
+                            </button>
+                          </a>
+                          <div class="dropdown dropdown-left dropdown-bottom hidden md:inline">
+                            <label
+                              tabindex="0"
+                              class="btn btn-ghost btn-xs h-8 border border-base-content/20">
+                              <iconify-icon icon="lucide:settings-2" height="16"></iconify-icon>
+                            </label>
+                            <ul
+                              tabindex="0"
+                              class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                              role="menu">
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:wand" height="16"></iconify-icon>
+                                  Bulk Actions
+                                </div>
+                              </li>
+                              <hr class="-mx-2 my-1 border-base-content/10" />
+                              <li>
+                                <div>
+                                  <iconify-icon
+                                    icon="lucide:download-cloud"
+                                    height="16"></iconify-icon>
+                                  Import from Store
+                                </div>
+                              </li>
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:copy-plus" height="16"></iconify-icon>
+                                  Create from Existing
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <!--  End: Seller Action -->
+                      </div>
+                      <div class="overflow-auto">
+                        <!--  Start: Seller Table -->
+
+                        <table
+                          class="table mt-2 rounded-box"
+                          id="seller_table"
+                          data-component="table">
+                          <thead>
+                            <tr>
+                              <th>
+                                <input
+                                  id="seller_check_all"
+                                  aria-label="Check all"
+                                  data-slot="all-checkbox"
+                                  class="checkbox checkbox-xs"
+                                  type="checkbox" />
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">ID</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Name</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Shop</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Email</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Mobile</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Sales</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">
+                                  Earning
+                                </span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">
+                                  Verified
+                                </span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">
+                                  Joined Date
+                                </span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Action</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">1</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/9.png" />
+                                  <div>
+                                    <div class="font-medium">Anthony S. Amaya</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      male
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Urban Chic Boutique</div>
+                              </td>
+                              <td>
+                                <div>antho.am@yahoo.com</div>
+                              </td>
+                              <td>
+                                <div>402-788-1602</div>
+                              </td>
+                              <td>
+                                <div>20</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$350</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Mar 2024</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">2</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/10.png" />
+                                  <div>
+                                    <div class="font-medium">Crystal R. Taylor</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      female
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Whimsical Wares Emporium</div>
+                              </td>
+                              <td>
+                                <div>crystal_taylor@hotmail.com</div>
+                              </td>
+                              <td>
+                                <div>469-632-2611</div>
+                              </td>
+                              <td>
+                                <div>24</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$360</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Apr 2024</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">3</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/7.png" />
+                                  <div>
+                                    <div class="font-medium">Jeremy M. Simon</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      male
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Serene Styles Haven</div>
+                              </td>
+                              <td>
+                                <div>jer.sim@gmail.com</div>
+                              </td>
+                              <td>
+                                <div>207-538-1345</div>
+                              </td>
+                              <td>
+                                <div>34</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$574</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Nov 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">4</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/8.png" />
+                                  <div>
+                                    <div class="font-medium">Jane B. Bush</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      female
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Posh Picks Boutique</div>
+                              </td>
+                              <td>
+                                <div>jane@bush.com</div>
+                              </td>
+                              <td>
+                                <div>612-326-9186</div>
+                              </td>
+                              <td>
+                                <div>54</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$487</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Jan 2024</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">5</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/5.png" />
+                                  <div>
+                                    <div class="font-medium">Francis A. Bisson</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      male
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Blissful Finds Co.</div>
+                              </td>
+                              <td>
+                                <div>francis.biss@outlook.com</div>
+                              </td>
+                              <td>
+                                <div>317-949-1232</div>
+                              </td>
+                              <td>
+                                <div>67</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$784</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Dec 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">6</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/6.png" />
+                                  <div>
+                                    <div class="font-medium">Lydia P. Barnett</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      female
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Trendy Threads Emporium</div>
+                              </td>
+                              <td>
+                                <div>lydia.p@mail.com</div>
+                              </td>
+                              <td>
+                                <div>936-895-2100</div>
+                              </td>
+                              <td>
+                                <div>74</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$657</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-x"
+                                  height="18"
+                                  class="text-error"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Jun 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">7</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/3.png" />
+                                  <div>
+                                    <div class="font-medium">John B. Lopez</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      male
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Luxe Loft Creations</div>
+                              </td>
+                              <td>
+                                <div>john@lopez.com</div>
+                              </td>
+                              <td>
+                                <div>262-849-4319</div>
+                              </td>
+                              <td>
+                                <div>45</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$354</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Jul 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">8</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/4.png" />
+                                  <div>
+                                    <div class="font-medium">Detra M. Rogers</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      female
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Vintage Vogue Hub</div>
+                              </td>
+                              <td>
+                                <div>detra@rogers.com</div>
+                              </td>
+                              <td>
+                                <div>847-452-0238</div>
+                              </td>
+                              <td>
+                                <div>21</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$352</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Dec 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">9</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/1.png" />
+                                  <div>
+                                    <div class="font-medium">Antonio D. Goss</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      male
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Coastal Charm Marketplace</div>
+                              </td>
+                              <td>
+                                <div>goss@ant.com</div>
+                              </td>
+                              <td>
+                                <div>203-250-6265</div>
+                              </td>
+                              <td>
+                                <div>29</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$920</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-x"
+                                  height="18"
+                                  class="text-error"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Apr 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  class="checkbox checkbox-xs"
+                                  data-slot="single-checkbox"
+                                  type="checkbox" />
+                              </th>
+                              <td>
+                                <div class="font-medium">10</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center space-x-3 truncate">
+                                  <img
+                                    alt="Seller Image"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mask mask-squircle size-10 bg-base-content/10"
+                                    src="./assets/images/avatars/2.png" />
+                                  <div>
+                                    <div class="font-medium">Brenda R. Holmes</div>
+                                    <div
+                                      class="text-xs font-medium capitalize text-base-content/70">
+                                      female
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Dapper Designs Depot</div>
+                              </td>
+                              <td>
+                                <div>brenda.holmes@mail.com</div>
+                              </td>
+                              <td>
+                                <div>325-480-1291</div>
+                              </td>
+                              <td>
+                                <div>67</div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$874</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Mar 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-sellers-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <!--  End: Seller Table -->
+                      </div>
+                      <div class="flex items-center justify-end px-5 pb-5 pt-3">
+                        <!--  Start: Seller Table Pagination -->
+
+                        <div class="join">
+                          <button aria-label="pagination-prev" class="btn join-item btn-sm gap-2">
+                            <iconify-icon icon="lucide:chevron-left" height="16"></iconify-icon>
+                          </button>
+                          <button
+                            aria-label="pagination-1"
+                            class="btn btn-primary join-item btn-active btn-sm">
+                            1
+                          </button>
+                          <button aria-label="pagination-2" class="btn join-item btn-sm">2</button>
+                          <button aria-label="pagination-next" class="btn join-item btn-sm gap-2">
+                            <iconify-icon icon="lucide:chevron-right" height="16"></iconify-icon>
+                          </button>
+                        </div>
+
+                        <!--  End: Seller Table Pagination -->
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--  Start: Seller Delete Confirmation Modal -->
+
+                  <dialog aria-label="Modal" class="modal" id="delete_modal">
+                    <div class="modal-box">
+                      <form method="dialog">
+                        <button
+                          aria-label="Close modal"
+                          class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                          <iconify-icon icon="lucide:x" height="14"></iconify-icon>
+                        </button>
+                      </form>
+                      <div class="mb-8 w-full text-xl font-bold">Confirm Delete</div>
+                      <div>
+                        You are about to delete
+                        <b>Seller</b>
+                        . Would you like to proceed further ?
+                      </div>
+                      <div class="modal-action">
+                        <form method="dialog">
+                          <button class="btn btn-error btn-sm">No</button>
+                        </form>
+                        <form method="dialog">
+                          <button class="btn btn-primary btn-sm">Yes</button>
+                        </form>
+                      </div>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+
+                  <!--  End: Seller Delete Confirmation Modal -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"></script>
+    <script src="/assets/js/components/table.js"></script>
+    <load src="partials/footer.html" />
+  </body>
+</html>

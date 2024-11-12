@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 import sentry_sdk
+from django.core.exceptions import ImproperlyConfigured
 
 DEBUG = True
 
@@ -41,6 +42,7 @@ THIRD_PARTIES = [
     "django_filters",
     "corsheaders",
     "tinymce",
+    "csp",
 ]
 BUILTIN_APPS = [
     "django.contrib.admin",
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 
@@ -83,6 +86,7 @@ TEMPLATES = [
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
             ],
+            "debug": True,
         },
     },
 ]
@@ -231,3 +235,69 @@ if os.environ.get("SENTRY_DSN"):
 # Authentication settings
 LOGIN_URL = '/security/sign-in/'
 LOGIN_REDIRECT_URL = '/'
+
+# CSP settings
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+    "'unsafe-eval'",
+    "https://cdn.quilljs.com",
+    "https://cdn.tailwindcss.com",
+    "https://cdnjs.cloudflare.com",
+    "https://cdn.jsdelivr.net",
+    "https://rsms.me",
+    "https://code.iconify.design",
+    "https://api.iconify.design",
+    "https://api.simplesvg.com",
+    "https://api.unisvg.com",
+)
+CSP_STYLE_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+    "https://cdn.quilljs.com",
+    "https://cdn.tailwindcss.com",
+    "https://cdnjs.cloudflare.com",
+    "https://rsms.me",
+    "https://cdn.jsdelivr.net",
+)
+CSP_FONT_SRC = (
+    "'self'",
+    "https://rsms.me",
+    "https://cdn.tailwindcss.com",
+)
+CSP_IMG_SRC = (
+    "'self'",
+    "data:",
+    "https:",
+)
+CSP_FRAME_SRC = (
+    "'self'",
+    "https://www.youtube.com",
+)
+CSP_CONNECT_SRC = (
+    "'self'",
+    "https://cdn.quilljs.com",
+    "https://cdn.jsdelivr.net",
+    "https://code.iconify.design",
+    "https://*.iconify.design",       # Wildcard for all iconify.design subdomains
+    "https://*.simplesvg.com",        # Wildcard for all simplesvg.com subdomains
+    "https://*.unisvg.com",           # Wildcard for all unisvg.com subdomains
+)
+
+# If using AWS S3 or similar, add the domain to the CSP
+if os.getenv("AWS_STORAGE_BUCKET_NAME"):
+    aws_bucket_domain = f'{os.getenv("AWS_STORAGE_BUCKET_NAME")}.s3.amazonaws.com'
+    CSP_DEFAULT_SRC += (aws_bucket_domain,)
+    CSP_IMG_SRC += (aws_bucket_domain,)
+    CSP_SCRIPT_SRC += (aws_bucket_domain,)
+    CSP_STYLE_SRC += (aws_bucket_domain,)
+
+# Add CORS settings if not already present
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = CORS_ALLOWED_ORIGINS  # Use your existing CORS_ALLOWED_ORIGINS
+
+# Security headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'

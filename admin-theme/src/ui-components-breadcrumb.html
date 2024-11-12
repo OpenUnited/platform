@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Breadcrumb Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Breadcrumb</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Breadcrumb</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 space-y-1">
+                          <!-- Start: Default Breadcrumb -->
+
+                          <div aria-label="Breadcrumbs" class="breadcrumbs text-sm">
+                            <ul>
+                              <li><a href="#">Home</a></li>
+                              <li><a href="#">Documents</a></li>
+                              <li><a href="#">Add Document</a></li>
+                            </ul>
+                          </div>
+
+                          <!-- End: Default Breadcrumb -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">With Icons</div>
+                        <div class="mt-1 space-y-1">
+                          <!-- Start: Breadcrumb With Icons -->
+
+                          <div aria-label="Breadcrumbs" class="breadcrumbs text-sm">
+                            <ul>
+                              <li>
+                                <a href="#">
+                                  <iconify-icon
+                                    icon="lucide:home"
+                                    height="14"
+                                    class="me-2"></iconify-icon>
+
+                                  Home
+                                </a>
+                              </li>
+                              <li>
+                                <a href="#">
+                                  <iconify-icon
+                                    icon="lucide:home"
+                                    height="14"
+                                    class="me-2"></iconify-icon>
+
+                                  UI
+                                </a>
+                              </li>
+                              <li>
+                                <a href="#">
+                                  <iconify-icon
+                                    icon="lucide:bar-chart-3"
+                                    height="14"
+                                    class="me-2"></iconify-icon>
+
+                                  Charts
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <!-- End: Breadcrumb With Icons -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">With Dropdown</div>
+                        <div class="mt-1 space-y-1">
+                          <!-- Start: Breadcrumb With Dropdown -->
+
+                          <div
+                            aria-label="Breadcrumbs"
+                            class="breadcrumbs overflow-x-visible text-sm">
+                            <ul>
+                              <li>
+                                <a href="#">
+                                  <iconify-icon
+                                    icon="lucide:home"
+                                    height="14"
+                                    class="me-2"></iconify-icon>
+
+                                  Home
+                                </a>
+                              </li>
+                              <li>
+                                <div class="dropdown">
+                                  <label tabindex="0" class="flex items-center">
+                                    <div
+                                      class="cursor-pointer rounded bg-base-200 px-3 py-0 transition-all hover:bg-base-300">
+                                      •••
+                                    </div>
+                                  </label>
+                                  <ul
+                                    tabindex="0"
+                                    class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 shadow"
+                                    role="menu">
+                                    <li>
+                                      <div>
+                                        <iconify-icon icon="lucide:box" height="16"></iconify-icon>
+
+                                        Element
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <div>
+                                        <iconify-icon
+                                          icon="lucide:layers-2"
+                                          height="16"></iconify-icon>
+
+                                        Components
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </li>
+                              <li>
+                                <a href="#">
+                                  <iconify-icon
+                                    icon="lucide:bar-chart-3"
+                                    height="14"
+                                    class="me-2"></iconify-icon>
+                                  Charts
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <!-- End: Breadcrumb With Dropdown -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Range Form Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Range</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Forms</li>
+                      <li>Range</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <!--  Start: Default Range -->
+
+                          <input aria-label="Range example" class="range" type="range" />
+
+                          <!--  End: Default Range -->
+                        </div>
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Step</div>
+
+                        <!--  Start: Step Range -->
+
+                        <div class="mt-1 flex flex-wrap gap-5">
+                          <input aria-label="Range example" step="10" class="range" type="range" />
+                          <div class="flex w-full justify-between px-2 text-xs">
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                            <span>|</span>
+                          </div>
+                        </div>
+
+                        <!--  End: Step Range -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Color</div>
+
+                        <!--  Start: Range With Color -->
+
+                        <div class="mt-1 flex flex-col gap-3">
+                          <input
+                            aria-label="Range example"
+                            class="range range-primary range-sm"
+                            type="range" />
+                          <input
+                            aria-label="Range example"
+                            class="range range-secondary range-sm"
+                            type="range" />
+                          <input
+                            aria-label="Range example"
+                            class="range range-success range-sm"
+                            type="range" />
+                          <input
+                            aria-label="Range example"
+                            class="range range-warning range-sm"
+                            type="range" />
+                          <input
+                            aria-label="Range example"
+                            class="range range-info range-sm"
+                            type="range" />
+                          <input
+                            aria-label="Range example"
+                            class="range range-error range-sm"
+                            type="range" />
+                        </div>
+
+                        <!--  End: Range With Color -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Size</div>
+
+                        <!--  Start: Range Size -->
+
+                        <div class="mt-1 flex flex-col gap-3">
+                          <input aria-label="Range example" class="range range-xs" type="range" />
+                          <input aria-label="Range example" class="range range-sm" type="range" />
+                          <input aria-label="Range example" class="range range-md" type="range" />
+                          <input aria-label="Range example" class="range range-lg" type="range" />
+                        </div>
+
+                        <!--  End: Range Size -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

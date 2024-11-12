@@ -1,0 +1,27 @@
+.apexcharts-canvas * {
+    font-family: var(--body-font-family), serif !important;
+}
+
+.apexcharts-canvas .apexcharts-gridline {
+    @apply stroke-base-content/20;
+}
+
+.apexcharts-theme-dark .apexcharts-toolbar .apexcharts-menu {
+    @apply border-base-300;
+}
+
+.apexcharts-canvas .apexcharts-xaxis line {
+    @apply stroke-base-content/20;
+}
+
+.apexcharts-canvas .apexcharts-inner .apexcharts-grid-borders line {
+    @apply stroke-base-content/20;
+}
+
+.apexcharts-canvas .apexcharts-yaxis line {
+    @apply stroke-base-content/20;
+}
+
+.apexcharts-canvas .apexcharts-xaxis-tick {
+    @apply stroke-base-content/20;
+}

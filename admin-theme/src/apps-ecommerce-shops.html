@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>E-commerce Shops - Nexus (HTML - DaisyUI)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Shops</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Ecommerce</li>
+                      <li>Shops</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-5">
+                  <div aria-label="Card" class="card card-bordered bg-base-100">
+                    <div class="card-body p-0">
+                      <div class="flex items-center justify-between px-5 pt-5">
+                        <!--  Start: Shop Table Filter Input -->
+
+                        <div class="inline-flex items-center gap-3">
+                          <div
+                            class="form-control flex flex-row items-center rounded-box border border-base-content/20 ps-3">
+                            <iconify-icon
+                              icon="lucide:search"
+                              height="15"
+                              class="text-base-content/60"></iconify-icon>
+                            <input
+                              placeholder="Search along shops"
+                              aria-label="Search"
+                              class="input input-sm w-full transition-all focus:border-transparent focus:outline-0 focus:outline-offset-0"
+                              name="search"
+                              value="" />
+                          </div>
+                          <div class="hidden sm:block">
+                            <div>
+                              <div class="form-control w-48">
+                                <select data-choice aria-label="Select Verification Status">
+                                  <option value="">Verification Status</option>
+                                  <option value="verified">Verified</option>
+                                  <option value="unverified">Unverified</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--  End: Shop Table Filter Input -->
+
+                        <!--  Start: Shop Action -->
+
+                        <div class="inline-flex items-center gap-3">
+                          <a aria-label="Create Shop" href="./apps-ecommerce-shops-create.html">
+                            <button class="btn btn-primary btn-sm">
+                              <iconify-icon icon="lucide:plus" height="16"></iconify-icon>
+                              <span class="hidden sm:inline">New Shop</span>
+                            </button>
+                          </a>
+                          <div class="dropdown dropdown-left dropdown-bottom hidden md:inline">
+                            <label
+                              tabindex="0"
+                              class="btn btn-ghost btn-xs h-8 border border-base-content/20">
+                              <iconify-icon icon="lucide:settings-2" height="16"></iconify-icon>
+                            </label>
+                            <ul
+                              tabindex="0"
+                              class="menu dropdown-content w-52 rounded-box bg-base-100 p-2 text-sm shadow"
+                              role="menu">
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:wand" height="16"></iconify-icon>
+                                  Bulk Actions
+                                </div>
+                              </li>
+                              <hr class="-mx-2 my-1 border-base-content/10" />
+                              <li>
+                                <div>
+                                  <iconify-icon
+                                    icon="lucide:download-cloud"
+                                    height="16"></iconify-icon>
+                                  Import from Store
+                                </div>
+                              </li>
+                              <li>
+                                <div>
+                                  <iconify-icon icon="lucide:copy-plus" height="16"></iconify-icon>
+                                  Create from Existing
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <!--  End: Shop Action -->
+                      </div>
+                      <div class="overflow-auto">
+                        <!--  Start: Shop Table -->
+
+                        <table
+                          class="table mt-2 rounded-box"
+                          id="shop_table"
+                          data-component="table">
+                          <thead>
+                            <tr>
+                              <th>
+                                <input
+                                  id="shop_check_all"
+                                  aria-label="Check all"
+                                  data-slot="all-checkbox"
+                                  type="checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">ID</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Name</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Seller</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Email</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Mobile</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Sales</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Rating</span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">
+                                  Earning
+                                </span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">
+                                  Verified
+                                </span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">
+                                  Joined Date
+                                </span>
+                              </th>
+                              <th>
+                                <span class="text-sm font-medium text-base-content/80">Action</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">1</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Urban Chic Boutique</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Anthony S. Amaya</div>
+                              </td>
+                              <td>
+                                <div>urban.chic@yahoo.com</div>
+                              </td>
+                              <td>
+                                <div>402-788-1602</div>
+                              </td>
+                              <td>
+                                <div>20</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-success"></iconify-icon>
+
+                                  4.4
+                                  <span class="text-sm text-base-content/70">(124)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$350</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Mar 2024</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">2</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Whimsical Wares Emporium</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Crystal R. Taylor</div>
+                              </td>
+                              <td>
+                                <div>whimscal_ware@hotmail.com</div>
+                              </td>
+                              <td>
+                                <div>469-632-2611</div>
+                              </td>
+                              <td>
+                                <div>24</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-success"></iconify-icon>
+
+                                  4.7
+                                  <span class="text-sm text-base-content/70">(241)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$360</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Apr 2024</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">3</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Serene Styles Haven</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Jeremy M. Simon</div>
+                              </td>
+                              <td>
+                                <div>serene.styles@gmail.com</div>
+                              </td>
+                              <td>
+                                <div>207-538-1345</div>
+                              </td>
+                              <td>
+                                <div>34</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-success"></iconify-icon>
+
+                                  4.2
+                                  <span class="text-sm text-base-content/70">(104)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$574</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Nov 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">4</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Posh Picks Boutique</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Jane B. Bush</div>
+                              </td>
+                              <td>
+                                <div>posh_picks@bush.com</div>
+                              </td>
+                              <td>
+                                <div>612-326-9186</div>
+                              </td>
+                              <td>
+                                <div>54</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-warning"></iconify-icon>
+
+                                  3.8
+                                  <span class="text-sm text-base-content/70">(261)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$487</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Jan 2024</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">5</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Blissful Finds Co.</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Francis A. Bisson</div>
+                              </td>
+                              <td>
+                                <div>blissful_co@outlook.com</div>
+                              </td>
+                              <td>
+                                <div>317-949-1232</div>
+                              </td>
+                              <td>
+                                <div>67</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-warning"></iconify-icon>
+
+                                  3.4
+                                  <span class="text-sm text-base-content/70">(195)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$784</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-x"
+                                  height="18"
+                                  class="text-error"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Dec 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">6</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Trendy Threads Emporium</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Lydia P. Barnett</div>
+                              </td>
+                              <td>
+                                <div>trendy_te@mail.com</div>
+                              </td>
+                              <td>
+                                <div>936-895-2100</div>
+                              </td>
+                              <td>
+                                <div>74</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-success"></iconify-icon>
+
+                                  4.6
+                                  <span class="text-sm text-base-content/70">(135)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$657</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Jun 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">7</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Luxe Loft Creations</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">John B. Lopez</div>
+                              </td>
+                              <td>
+                                <div>luxe.loft@lopez.com</div>
+                              </td>
+                              <td>
+                                <div>262-849-4319</div>
+                              </td>
+                              <td>
+                                <div>45</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-success"></iconify-icon>
+
+                                  4.9
+                                  <span class="text-sm text-base-content/70">(321)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$354</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Jul 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">8</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Vintage Vogue Hub</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Detra M. Rogers</div>
+                              </td>
+                              <td>
+                                <div>vintage_hub@rogers.com</div>
+                              </td>
+                              <td>
+                                <div>847-452-0238</div>
+                              </td>
+                              <td>
+                                <div>21</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-error"></iconify-icon>
+
+                                  2.8
+                                  <span class="text-sm text-base-content/70">(12)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$352</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Dec 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">9</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Coastal Charm Marketplace</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Antonio D. Goss</div>
+                              </td>
+                              <td>
+                                <div>antonio_gross@ant.com</div>
+                              </td>
+                              <td>
+                                <div>203-250-6265</div>
+                              </td>
+                              <td>
+                                <div>29</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-warning"></iconify-icon>
+
+                                  3.4
+                                  <span class="text-sm text-base-content/70">(238)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$920</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-x"
+                                  height="18"
+                                  class="text-error"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Apr 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr class="cursor-pointer hover:bg-base-200/40">
+                              <th>
+                                <input
+                                  aria-label="Single check"
+                                  type="checkbox"
+                                  data-slot="single-checkbox"
+                                  class="checkbox checkbox-xs" />
+                              </th>
+                              <td>
+                                <div class="font-medium">10</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Dapper Designs Depot</div>
+                              </td>
+                              <td>
+                                <div class="font-medium">Brenda R. Holmes</div>
+                              </td>
+                              <td>
+                                <div>dapper.designs@mail.com</div>
+                              </td>
+                              <td>
+                                <div>325-480-1291</div>
+                              </td>
+                              <td>
+                                <div>67</div>
+                              </td>
+                              <td>
+                                <div class="flex items-center gap-2">
+                                  <iconify-icon
+                                    icon="lucide:star"
+                                    height="16"
+                                    class="text-success"></iconify-icon>
+
+                                  4.1
+                                  <span class="text-sm text-base-content/70">(541)</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="text-sm font-medium">$874</div>
+                              </td>
+                              <td>
+                                <iconify-icon
+                                  icon="lucide:badge-check"
+                                  height="18"
+                                  class="text-success"></iconify-icon>
+                              </td>
+                              <td>
+                                <div class="text-sm">29 Mar 2023</div>
+                              </td>
+                              <td>
+                                <div class="inline-flex w-fit">
+                                  <a
+                                    aria-label="Edit product link"
+                                    href="./apps-ecommerce-shops-edit.html">
+                                    <button
+                                      aria-label="Edit product"
+                                      class="btn btn-square btn-ghost btn-sm">
+                                      <iconify-icon
+                                        icon="lucide:pencil"
+                                        height="15"
+                                        class="text-base-content/70"></iconify-icon>
+                                    </button>
+                                  </a>
+                                  <button
+                                    aria-label="Dummy show product"
+                                    class="btn btn-square btn-ghost btn-sm">
+                                    <iconify-icon
+                                      icon="lucide:eye"
+                                      height="16"
+                                      class="text-base-content/70"></iconify-icon>
+                                  </button>
+                                  <button
+                                    onclick="delete_modal.showModal()"
+                                    aria-label="Dummy delete product"
+                                    class="btn btn-square btn-ghost btn-sm text-error/70 hover:bg-error/20">
+                                    <iconify-icon icon="lucide:trash" height="16"></iconify-icon>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <!--  End: Shop Table -->
+                      </div>
+                      <div class="flex items-center justify-end px-5 pb-5 pt-3">
+                        <!--  Start: Shop Table Pagination -->
+
+                        <div class="join">
+                          <button aria-label="pagination-prev" class="btn join-item btn-sm gap-2">
+                            <iconify-icon icon="lucide:chevron-left" height="16"></iconify-icon>
+                          </button>
+                          <button
+                            aria-label="pagination-1"
+                            class="btn btn-primary join-item btn-active btn-sm">
+                            1
+                          </button>
+                          <button aria-label="pagination-2" class="btn join-item btn-sm">2</button>
+                          <button aria-label="pagination-next" class="btn join-item btn-sm gap-2">
+                            <iconify-icon icon="lucide:chevron-right" height="16"></iconify-icon>
+                          </button>
+                        </div>
+
+                        <!--  End: Shop Table Pagination -->
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--  Start: Shop Delete Confirmation Modal -->
+
+                  <dialog aria-label="Modal" class="modal" id="delete_modal">
+                    <div class="modal-box">
+                      <form method="dialog">
+                        <button
+                          aria-label="Close modal"
+                          class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2">
+                          <iconify-icon icon="lucide:x" height="14"></iconify-icon>
+                        </button>
+                      </form>
+                      <div class="mb-8 w-full text-xl font-bold">Confirm Delete</div>
+                      <div>
+                        You are about to delete
+                        <b>Shop</b>
+                        . Would you like to proceed further ?
+                      </div>
+                      <div class="modal-action">
+                        <form method="dialog">
+                          <button class="btn btn-error btn-sm">No</button>
+                        </form>
+                        <form method="dialog">
+                          <button class="btn btn-primary btn-sm">Yes</button>
+                        </form>
+                      </div>
+                    </div>
+                    <form class="modal-backdrop" method="dialog">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+
+                  <!--  End: Shop Delete Confirmation Modal -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/choices.js/10.2.0/choices.min.js"></script>
+    <script src="/assets/js/components/table.js"></script>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

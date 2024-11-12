@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Tooltip Component - Nexus (HTML - DaisyUI)</title>
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Tooltip</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Components</li>
+                      <li>Tooltip</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Default</div>
+
+                        <!-- Start: Default Tooltip -->
+
+                        <div class="mt-1 flex flex-wrap gap-3">
+                          <div role="tooltip" data-tip="It's tooltip" class="tooltip">
+                            <button class="btn">Hover me</button>
+                          </div>
+                          <div role="tooltip" data-tip="I'm never go" class="tooltip tooltip-open">
+                            <button class="btn">Hover me</button>
+                          </div>
+                        </div>
+
+                        <!-- End: Default Tooltip -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Position</div>
+
+                        <!-- Start: Position Tooltip -->
+
+                        <div class="mt-1 flex flex-wrap gap-3">
+                          <div role="tooltip" data-tip="Left" class="tooltip tooltip-left">
+                            <button class="btn">Left</button>
+                          </div>
+                          <div role="tooltip" data-tip="Top" class="tooltip tooltip-top">
+                            <button class="btn">Top</button>
+                          </div>
+                          <div role="tooltip" data-tip="Right" class="tooltip tooltip-right">
+                            <button class="btn">Right</button>
+                          </div>
+                          <div role="tooltip" data-tip="Bottom" class="tooltip tooltip-bottom">
+                            <button class="btn">Bottom</button>
+                          </div>
+                        </div>
+
+                        <!-- End: Position Tooltip -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body">
+                        <div class="card-title">Color</div>
+
+                        <!-- Start: Color Tooltip -->
+
+                        <div class="mt-1 flex flex-wrap gap-3">
+                          <div role="tooltip" data-tip="Primary" class="tooltip tooltip-primary">
+                            <button class="btn btn-primary">Primary</button>
+                          </div>
+                          <div
+                            role="tooltip"
+                            data-tip="Secondary"
+                            class="tooltip tooltip-secondary">
+                            <button class="btn btn-secondary">Secondary</button>
+                          </div>
+                          <div role="tooltip" data-tip="Success" class="tooltip tooltip-success">
+                            <button class="btn btn-success">Success</button>
+                          </div>
+                          <div role="tooltip" data-tip="Warning" class="tooltip tooltip-warning">
+                            <button class="btn btn-warning">Warning</button>
+                          </div>
+                          <div role="tooltip" data-tip="Info" class="tooltip tooltip-info">
+                            <button class="btn btn-info">Info</button>
+                          </div>
+                          <div role="tooltip" data-tip="Error" class="tooltip tooltip-error">
+                            <button class="btn btn-error">Error</button>
+                          </div>
+                        </div>
+
+                        <!-- End: Color Tooltip -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

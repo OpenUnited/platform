@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Apex Line Charts - Nexus (HTML - DaisyUI)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.53.0/apexcharts.min.css" />
+
+    <load src="partials/head.html" />
+  </head>
+
+  <body>
+    <div class="size-full">
+      <div class="flex overflow-hidden">
+        <load src="partials/leftbar.html" />
+
+        <div class="main-wrapper overflow-auto">
+          <div class="flex h-full flex-col">
+            <load src="partials/topbar.html" />
+
+            <div class="content-wrapper">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium">Line Charts</h3>
+                  <div aria-label="Breadcrumbs" class="breadcrumbs hidden p-0 text-sm sm:inline">
+                    <ul>
+                      <li>Nexus</li>
+                      <li>Apex Charts</li>
+                      <li>Line</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-6">
+                  <div class="mt-6 grid gap-6 xl:grid-cols-2">
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Label Line</p>
+
+                        <!--  Start: Label Line Chart -->
+
+                        <div id="chart_label_line"></div>
+
+                        <!--  End: Label Line Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Step Line</p>
+
+                        <!--  Start: Step Line Chart -->
+
+                        <div id="chart_step_line"></div>
+
+                        <!--  End: Step Line Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Syncing Line</p>
+
+                        <!--  Start: Syncing Line Chart -->
+
+                        <div id="chart_order_syncing_line"></div>
+                        <div id="chart_order_revenue_syncing_line"></div>
+                        <div id="chart_order_average_syncing_line"></div>
+
+                        <!--  End: Syncing Line Chart -->
+                      </div>
+                    </div>
+                    <div aria-label="Card" class="card card-bordered bg-base-100">
+                      <div class="card-body gap-3 pb-0">
+                        <p class="font-medium">Annotation Line</p>
+
+                        <!--  Start: Annotation Line Chart -->
+
+                        <div id="chart_annotation_line"></div>
+
+                        <!--  End: Annotation Line Chart -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.53.0/apexcharts.min.js"></script>
+    <script src="/assets/js/pages/charts/apex-line.js"></script>
+
+    <load src="partials/footer.html" />
+  </body>
+</html>

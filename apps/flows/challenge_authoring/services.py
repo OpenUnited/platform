@@ -34,7 +34,7 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from apps.capabilities.product_management.models import Challenge, Bounty, Product
+from apps.capabilities.product_management.models import Challenge, Bounty, Product, FileAttachment
 from apps.capabilities.talent.models import Skill, Expertise
 from apps.capabilities.security.services import RoleService
 
@@ -427,3 +427,21 @@ class ChallengeAuthoringService:
             errors['bounties'] = ['Total points cannot exceed 1000']
             
         return not bool(errors), errors
+
+    def get_file_attachments(self, challenge_id=None):
+        """Get file attachments for a challenge"""
+        if challenge_id:
+            return FileAttachment.objects.filter(challenge_id=challenge_id)
+        return FileAttachment.objects.none()
+
+    def save_file_attachments(self, challenge, attachments):
+        """Save file attachments for a challenge"""
+        saved_attachments = []
+        for attachment in attachments:
+            file_attachment = FileAttachment(
+                challenge=challenge,
+                file=attachment
+            )
+            file_attachment.save()
+            saved_attachments.append(file_attachment)
+        return saved_attachments
