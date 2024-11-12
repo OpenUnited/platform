@@ -18,12 +18,17 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFoun
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import Http404
 from django.urls import reverse
-from apps.capabilities.product_management.models import Product, FileAttachment
+from apps.capabilities.product_management.models import Product, FileAttachment, Bounty
 from .forms import ChallengeAuthoringForm, BountyAuthoringForm
 from .services import ChallengeAuthoringService, RoleService
 from apps.common.forms import AttachmentFormSet
 from apps.capabilities.talent.services import SkillService
 import logging
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
+import json
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -69,12 +74,13 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         context = {
             'product': self.product,
             'form': self.form_class(product=self.product, user=request.user),
-            'bounty_form': bounty_form
+            'bounty_form': bounty_form,
+            'attachment_formset': AttachmentFormSet(queryset=FileAttachment.objects.none())
         }
         return render(request, 'challenge_authoring/main.html', context)
         
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, product=self.product)
+        form = self.form_class(request.POST, product=self.product, user=request.user)
         attachment_formset = AttachmentFormSet(
             request.POST, 
             request.FILES,
@@ -82,24 +88,35 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         )
         
         if form.is_valid() and attachment_formset.is_valid():
-            challenge = form.save(commit=False)
-            challenge.product = self.product
-            challenge.save()
-            
-            # Save attachments
-            attachments = attachment_formset.save(commit=False)
-            for attachment in attachments:
-                attachment.challenge = challenge
-                attachment.save()
+            try:
+                service = ChallengeAuthoringService()
+                challenge = service.create_challenge_with_bounties(
+                    form_data=form.cleaned_data,
+                    attachments=attachment_formset,
+                    product=self.product,
+                    person=request.user.person,
+                    pending_bounties=request.session.get('pending_bounties', [])
+                )
                 
-            return redirect(challenge.get_absolute_url())
-            
-        context = {
-            'product': self.product,
-            'form': form,
-            'attachment_formset': attachment_formset
-        }
-        return render(request, 'challenge_authoring/main.html', context)
+                # Clear session after successful creation
+                if 'pending_bounties' in request.session:
+                    del request.session['pending_bounties']
+                    
+                return JsonResponse({
+                    'status': 'success',
+                    'redirect_url': challenge.get_absolute_url()
+                })
+            except Exception as e:
+                logger.error(f"Error creating challenge: {str(e)}")
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Failed to create challenge'
+                }, status=500)
+                
+        return JsonResponse({
+            'status': 'error',
+            'errors': form.errors
+        }, status=400)
 
     def get_success_url(self):
         return reverse('product_challenges', kwargs={'product_slug': self.kwargs['product_slug']})
@@ -126,8 +143,10 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
         # Update context
         context.update({
             'product': self.product,
+            'product_slug': self.kwargs.get('product_slug'),
             'form': self.form_class(product=self.product, user=self.request.user),
-            'bounty_form': bounty_form
+            'bounty_form': bounty_form,
+            'attachment_formset': AttachmentFormSet(queryset=FileAttachment.objects.none())
         })
         logger.error("DEBUG - get_context_data finished")
         return context
@@ -166,3 +185,45 @@ class BountyModalView(LoginRequiredMixin, View):
     def post(self, request, product_slug):
         # Handle bounty creation/update
         pass
+
+@require_http_methods(["POST"])
+def bounty_table(request, product_slug):
+    try:
+        data = json.loads(request.body)
+        bounties = data.get('bounties', [])
+        
+        if not isinstance(bounties, list):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Bounties must be a list'
+            }, status=400)
+
+        # Update session with new bounties list
+        request.session['pending_bounties'] = bounties
+        request.session.modified = True
+
+        # Render the updated table
+        return render(request, 'challenge_authoring/components/bounty_table.html', {
+            'bounties': bounties
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid JSON data'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
+
+@require_http_methods(["POST"])
+def remove_bounty(request, bounty_id):
+    bounties = request.session.get('bounties', [])
+    bounties = [b for b in b if b['id'] != bounty_id]
+    request.session['bounties'] = bounties
+    
+    return render(request, 'challenge_authoring/components/bounty_table.html', {
+        'bounties': bounties
+    })

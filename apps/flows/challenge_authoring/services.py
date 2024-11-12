@@ -34,7 +34,7 @@ from django.db.models import QuerySet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from apps.capabilities.product_management.models import Challenge, Bounty, Product, FileAttachment, Initiative
+from apps.capabilities.product_management.models import Challenge, Bounty, Product, FileAttachment, Initiative, Bounty
 from apps.capabilities.talent.models import Skill, Expertise
 from apps.capabilities.security.services import RoleService
 
@@ -451,3 +451,46 @@ class ChallengeAuthoringService:
         return Initiative.objects.filter(
             product=product
         ).order_by('name')
+
+    @transaction.atomic
+    def create_challenge_with_bounties(self, challenge_data, user, request):
+        """
+        Service to create a challenge and its associated bounties
+        
+        Args:
+            challenge_data (dict): Challenge creation data
+            user: The user creating the challenge
+            request: The request object containing the session
+        
+        Returns:
+            Challenge: The created challenge instance
+        """
+        # Create the challenge
+        challenge = Challenge.objects.create(
+            title=challenge_data['title'],
+            description=challenge_data['description'],
+            short_description=challenge_data.get('short_description', ''),
+            product_id=challenge_data['product_id'],
+            created_by=user,
+            status=Challenge.ChallengeStatus.DRAFT
+        )
+        
+        # Get bounties from session
+        bounties_data = request.session.get('pending_bounties', [])
+        
+        # Create bounties
+        for bounty_data in bounties_data:
+            Bounty.objects.create(
+                title=bounty_data['title'],
+                description=bounty_data['description'],
+                points=int(bounty_data['points']),
+                skill=Skill.objects.get(id=bounty_data['skillId']),
+                challenge=challenge,
+                status=Bounty.BountyStatus.AVAILABLE
+            )
+        
+        # Clear the session
+        if 'pending_bounties' in request.session:
+            del request.session['pending_bounties']
+        
+        return challenge

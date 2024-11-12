@@ -16,7 +16,7 @@ from apps.capabilities.talent.models import BountyClaim, Person
 from apps.utility import utils as global_utils
 from apps.capabilities.security.services import RoleService
 
-from .models import Bounty, Bug, Challenge, Idea, Initiative, Product, ProductArea, ProductContributorAgreementTemplate
+from .models import Bounty, Bug, Challenge, Idea, Initiative, Product, ProductArea, ProductContributorAgreementTemplate, FileAttachment
 
 
 class DateInput(forms.DateInput):
@@ -508,3 +508,10 @@ class ProductForm(forms.ModelForm):
         if not cleaned_data.get('organisation') and not cleaned_data.get('make_me_owner'):
             raise ValidationError("Either organization or make_me_owner must be specified")
         return cleaned_data
+
+AttachmentFormSet = modelformset_factory(
+    FileAttachment,
+    fields=('file',),
+    extra=1,
+    can_delete=True
+)

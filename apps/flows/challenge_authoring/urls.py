@@ -3,6 +3,8 @@ from .views import (
     ChallengeAuthoringView,
     SkillsListView,
     ExpertiseListView,
+    bounty_table,
+    remove_bounty,
 )
 
 app_name = 'challenge_authoring'
@@ -14,6 +16,11 @@ urlpatterns = [
         name="create"
     ),
     path(
+        "product/<str:product_slug>/flows/challenge-authoring/bounty-table/",
+        bounty_table,
+        name="bounty_table"
+    ),
+    path(
         "skills/",
         SkillsListView.as_view(),
         name="skills"
@@ -23,5 +30,6 @@ urlpatterns = [
         ExpertiseListView.as_view(),
         name="expertise"
     ),
+    path('bounty/<int:bounty_id>/remove/', remove_bounty, name='remove_bounty'),
 ]
 

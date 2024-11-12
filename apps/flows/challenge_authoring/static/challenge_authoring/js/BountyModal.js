@@ -1,23 +1,67 @@
 export class BountyModal {
     constructor() {
         this.modal = document.getElementById('bounty-modal');
+        this.bountiesContainer = document.getElementById('bounties-container');
         this.bindEvents();
     }
 
     bindEvents() {
-        // Expose methods to window for button clicks
         window.showModal = () => this.show();
         window.hideModal = () => this.hide();
         window.saveBounty = () => this.saveBounty();
+    }
 
-        // Add button click handler
-        const addBountyBtn = document.getElementById('add-bounty-btn');
-        if (addBountyBtn) {
-            addBountyBtn.addEventListener('click', () => {
-                console.log('Add Bounty button clicked!');
-                this.show();
-            });
+    async saveBounty() {
+        const skillSelect = document.getElementById('bounty-skill');
+        const skillId = skillSelect.value;
+        const skillName = skillSelect.options[skillSelect.selectedIndex].text.replace(/^-+\s*/, '');
+        const title = document.getElementById('bounty-title').value;
+        const description = document.querySelector('#bounty-description-editor .ql-editor').innerHTML;
+        const points = document.getElementById('bounty-points').value;
+
+        if (!title || !points || !skillId) {
+            alert('Please fill in all required fields');
+            return;
         }
+
+        const bounty = {
+            id: Date.now(),
+            skill: {
+                id: skillId,
+                name: skillName
+            },
+            title: title,
+            description: description,
+            points: points
+        };
+
+        try {
+            const response = await fetch(BOUNTY_TABLE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ bounties: [bounty] })
+            });
+
+            if (!response.ok) throw new Error('Failed to save bounty');
+            
+            const html = await response.text();
+            this.bountiesContainer.innerHTML = html;
+            this.hide();
+            this.clearForm();
+        } catch (error) {
+            console.error('Error saving bounty:', error);
+            alert('Failed to save bounty. Please try again.');
+        }
+    }
+
+    clearForm() {
+        document.getElementById('bounty-skill').value = '';
+        document.getElementById('bounty-title').value = '';
+        document.querySelector('#bounty-description-editor .ql-editor').innerHTML = '';
+        document.getElementById('bounty-points').value = '';
     }
 
     show() {
@@ -26,38 +70,6 @@ export class BountyModal {
 
     hide() {
         this.modal.classList.remove('modal-open');
-        // Clear form
-        document.getElementById('bounty-title').value = '';
-        document.getElementById('bounty-points').value = '';
-        document.getElementById('bounty-skill').value = '';
-    }
-
-    saveBounty() {
-        const title = document.getElementById('bounty-title').value;
-        const points = document.getElementById('bounty-points').value;
-        const skill = document.getElementById('bounty-skill').value;
-
-        if (!title || !points || !skill) {
-            alert('Please fill in all required fields');
-            return;
-        }
-
-        const container = document.getElementById('bounties-container');
-        const bountyElement = document.createElement('div');
-        bountyElement.className = 'card bg-base-100 border shadow-sm';
-        bountyElement.innerHTML = `
-            <div class="card-body p-4 flex-row justify-between items-center">
-                <div>
-                    <h3 class="font-medium">${title}</h3>
-                    <p class="text-sm text-base-content/70">${points} points</p>
-                </div>
-                <button onclick="this.closest('.card').remove()" class="btn btn-ghost btn-sm btn-square">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-        container.appendChild(bountyElement);
-
-        this.hide();
+        this.clearForm();
     }
 }

@@ -124,4 +124,121 @@
         skillSelect.removeEventListener('change', handleSkillChange);
         skillSelect.addEventListener('change', handleSkillChange);
     });
+
+    // Initialize bounties array
+    let bounties = [];
+
+    // Add these at the top of the script to get server-side values
+    const BOUNTY_TABLE_URL = '{% url "challenge_authoring:bounty_table" product_slug=product.slug %}';
+
+    window.saveBounty = function() {
+        console.log('Saving bounty...');
+        
+        // Get all the bounty data
+        const skillSelect = document.getElementById('bounty-skill');
+        const skillId = skillSelect.value;
+        const skillName = skillSelect.options[skillSelect.selectedIndex].text.replace(/^-+\s*/, '');
+        const title = document.getElementById('bounty-title').value;
+        const description = bountyDescriptionEditor.root.innerHTML;
+        const points = document.getElementById('bounty-points').value;
+
+        console.log('Collected bounty data:', {
+            skillId,
+            skillName,
+            title,
+            description,
+            points
+        });
+
+        // Create bounty object
+        const bounty = {
+            id: Date.now(),
+            skill: {
+                id: skillId,
+                name: skillName
+            },
+            title: title,
+            description: description,
+            points: points
+        };
+
+        // Add to bounties array
+        bounties.push(bounty);
+
+        // Use the server-provided URL
+        fetch(BOUNTY_TABLE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({ bounties: bounties })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+            console.log('Received HTML:', html);
+            document.getElementById('bounties-container').innerHTML = html;
+            
+            // Clear the form
+            skillSelect.value = '';
+            document.getElementById('bounty-title').value = '';
+            bountyDescriptionEditor.setText('');
+            document.getElementById('bounty-points').value = '';
+            
+            // Close the modal using the existing hideModal function
+            hideModal();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to save bounty. Please try again.');
+        });
+
+        // Prevent default button behavior
+        return false;
+    }
+
+    // Add event listener when the document is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find the Save Bounty button and attach the event listener
+        const saveBountyButton = document.querySelector('#bounty-modal .modal-action button.btn-primary');
+        if (saveBountyButton) {
+            saveBountyButton.addEventListener('click', saveBounty);
+            console.log('Save bounty button listener attached');
+        } else {
+            console.error('Save bounty button not found');
+        }
+    });
+
+    window.removeBounty = function(bountyId) {
+        if (confirm('Are you sure you want to remove this bounty?')) {
+            // Get the product slug from the URL or data attribute
+            const productSlug = window.location.pathname.split('/')[2]; // This gets "openunited-platform" from your URL
+            
+            // Use the correct URL pattern
+            fetch(`/product/${productSlug}/flows/challenge-authoring/bounty-table/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ 
+                    bounties: bounties.filter(b => b.id !== bountyId)
+                })
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('bounties-container').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to remove bounty. Please try again.');
+            });
+        }
+    }
 </script>
