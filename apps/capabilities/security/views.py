@@ -139,7 +139,7 @@ class SignInView(TemplateView):
                     return redirect("product_management:bounty-list")
             else:
                 if user_obj.password_reset_required:
-                    return redirect("password_reset_required")
+                    return redirect("security:password_reset_required")
                 else:
                     user_obj.update_failed_login_budget_and_check_reset()
                     form.add_error(None, _("The given credentials are not correct!"))
