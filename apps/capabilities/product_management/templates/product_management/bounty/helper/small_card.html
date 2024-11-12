@@ -1,15 +1,15 @@
-{% with bounty=elem.bounty   %}
+{% with bounty=elem.bounty claimed_by=elem.claimed_by %}
 
 
 <div class="bg-white space-y-3 p-4  rounded-lg shadow border-gray-2 border border-solid border-gray grid grid-cols-3 md:grid-cols-3 gap-4">
     <div class="col-span-full">
         <a class="text-indigo-900 font-bold "
-            href="{% url bounty-detail challenge.product.slug, challenge.id, bounty.id,   %}">
+            href="{% url 'product_management:bounty-detail' challenge.product.slug challenge.id bounty.id %}">
             {{ bounty.title  }}
         </a>
         <div class="mt-1 text-gray-500">{{ bounty.skill  }}
-            {% if bounty.get-expertise_as_str() %}
-                ({{ bounty.get-expertise_as_str() }})
+            {% if bounty.get_expertise_as_str %}
+                ({{ bounty.get_expertise_as_str }})
             {% endif  %}
 
         </div>
@@ -37,8 +37,6 @@
         <div class="text-sm font-medium text-black">
             <strong> Claimed By </strong>
             <div class="text-gray-500">
-                {% with claimed_by = elem.claimed_by   %}
-
                 {% if elem.bounty.status  == BountyStatus.AVAILABLE %}
                     Unclaimed
                 {% elif claimed_by  %}
@@ -71,3 +69,5 @@
 
 
 </div>
+
+{% endwith %}

@@ -41,6 +41,7 @@ from operator import attrgetter
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
+from django.utils.safestring import mark_safe
 
 from ..models import (
     Product, 
@@ -63,6 +64,8 @@ from apps.capabilities.product_management.services import (
     ProductPeopleService,
     BountyService
 )
+from apps.capabilities.product_management.models import Challenge, Bounty
+from apps.capabilities.security.services import RoleService
 
 
 class PublicBountyListView(ListView):
@@ -253,14 +256,39 @@ class ChallengeDetailView(ProductVisibilityCheckMixin, DetailView):
     def get_product(self):
         return get_object_or_404(Product, slug=self.kwargs['product_slug'])
 
+    def get_object(self):
+        return Challenge.objects.select_related(
+            'product',
+            'created_by'
+        ).prefetch_related(
+            'bounty_set'  # Prefetch bounties for better performance
+        ).get(pk=self.kwargs['pk'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['product'] = self.get_product()
-        if self.request.user.is_authenticated:
-            context['can_manage'] = RoleService.has_product_management_access(
+        challenge = self.get_object()
+        product = self.get_product()
+        
+        # Structure the bounties data as expected by the template
+        bounties = challenge.bounty_set.all()
+        bounty_data = [
+            {
+                'bounty': bounty,
+                'status': bounty.status,
+                'claimed_by': bounty.claimed_by if hasattr(bounty, 'claimed_by') else None
+            }
+            for bounty in bounties
+        ]
+        
+        context.update({
+            'product': product,
+            'bounty_data': bounty_data,
+            'does_have_permission': self.request.user.is_authenticated and RoleService.has_product_management_access(
                 self.request.user.person,
-                context['product']
-            )
+                product
+            ),
+            'BountyStatus': Bounty.BountyStatus
+        })
         return context
 
 
@@ -394,6 +422,9 @@ class BountyDetailView(ProductVisibilityCheckMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         bounty = self.get_object()
+        
+        # Mark the description as safe HTML
+        context['bounty'].description = mark_safe(bounty.description)
         
         # Package everything in a 'data' dict to match template expectations
         context['data'] = {
