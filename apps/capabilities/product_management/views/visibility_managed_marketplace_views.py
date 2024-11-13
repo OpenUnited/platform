@@ -76,7 +76,11 @@ class PublicBountyListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return BountyService.get_visible_bounties(self.request.user)
+        bounties = BountyService.get_visible_bounties(self.request.user)
+        # Mark descriptions as safe HTML
+        for bounty in bounties:
+            bounty.description = mark_safe(bounty.description)
+        return bounties
 
 
 class ProductBountyListView(ProductVisibilityCheckMixin, ListView):

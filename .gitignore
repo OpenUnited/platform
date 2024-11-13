@@ -103,3 +103,4 @@ create_superuser.py
 
 *.DS_Store
 admin-theme/
+marketing-theme/

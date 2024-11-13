@@ -2,9 +2,10 @@
 {% load static %}
 
 {% block media %}
-    <!-- DaisyUI -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css">
-
+    <!-- DaisyUI (move this before Tailwind) -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Rest of your styles -->
     <style>
         /* Quill Editor Styles */
         .editor-container {
@@ -57,6 +58,10 @@
           'light-indigo': 'rgb(54 42 255 / 8%)'
         }
       }
+    },
+    plugins: [require("daisyui")],
+    daisyui: {
+      themes: ["bumblebee"],
     }
   }
 </script>
