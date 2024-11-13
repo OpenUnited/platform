@@ -333,16 +333,21 @@ class DeleteBountyClaimView(BaseProductView, DeleteView):
                              'challenge_id': self.object.bounty.challenge.id,
                              'pk': self.object.bounty.id})
 
-class UpdateChallengeView(BaseManagementProductView):
-    """View for updating challenges"""
+class UpdateChallengeView(BaseManagementProductView, UpdateView):
     model = Challenge
+    template_name = 'product_management/forms/update_challenge_form.html'
     form_class = ChallengeForm
-    template_name = "product_management/update_challenge.html"
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.object.product
+        return context
 
     def get_success_url(self):
         return reverse('product_management:challenge-detail', 
-                      kwargs={'product_slug': self.kwargs['product_slug'], 
-                             'pk': self.object.pk})
+                      kwargs={'product_slug': self.object.product.slug, 
+                             'pk': self.object.id})
 
 class DeleteChallengeView(BaseManagementProductView):
     """View for deleting challenges"""

@@ -85,35 +85,16 @@
                 <label class="label">
                     <span class="label-text text-sm font-medium">Attachments</span>
                 </label>
-                <div class="file-upload-area" id="file-upload-area">
-                    <div class="text-center">
-                        <i class="fas fa-upload mb-2" style="font-size: 24px;"></i>
-                        <p class="text-sm text-base-content/70">
-                            Drag and drop files here or
-                            <label class="text-primary cursor-pointer">
-                                browse
-                                <input type="file" multiple class="hidden" id="file-input">
-                            </label>
-                        </p>
-                        <p class="text-xs text-base-content/50 mt-1">Maximum file size: 10MB</p>
-                    </div>
-                </div>
+                <input 
+                    type="file" 
+                    id="file-input" 
+                    name="attachments" 
+                    multiple 
+                    accept="image/*,.pdf,.doc,.docx,.txt"
+                    class="file-input file-input-bordered w-full"
+                >
                 <div id="file-list" class="mt-4 space-y-2"></div>
             </div>
-
-            <!-- Attachments formset -->
-            {{ attachment_formset.management_form }}
-            {% for form in attachment_formset %}
-                {{ form.id }}
-                <div class="form-control">
-                    {{ form.file }}
-                    {% if form.file.errors %}
-                        <div class="text-error text-sm mt-1">
-                            {{ form.file.errors|join:", " }}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
 
         </form>
     </div>
@@ -152,3 +133,23 @@
 <!-- Single module script -->
 <script type="module" src="{% static 'challenge_authoring/js/index.js' %}"></script>
 {% endblock %}
+
+<!-- Add this to your existing styles -->
+<style>
+    .file-upload-area {
+        transition: all 0.2s ease-in-out;
+    }
+    .file-upload-area:hover,
+    .file-upload-area.border-primary {
+        border-color: var(--primary);
+        background-color: rgba(var(--primary-rgb), 0.05);
+    }
+    #file-list {
+        min-height: 0;
+        transition: min-height 0.2s ease-in-out;
+    }
+    #file-list:not(:empty) {
+        padding: 0.5rem;
+        border: 1px solid #e5e7eb;
+    }
+</style>

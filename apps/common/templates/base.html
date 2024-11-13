@@ -1,6 +1,40 @@
 {% extends 'base_html.html'  %}
 {% load static %}
 
+{% block media %}
+    <!-- DaisyUI -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css">
+
+    <style>
+        /* Quill Editor Styles */
+        .editor-container {
+            @apply border rounded-lg overflow-hidden;
+        }
+        
+        .ql-toolbar.ql-snow {
+            @apply border-0 border-b bg-base-100;
+        }
+        
+        .ql-container.ql-snow {
+            @apply border-0 bg-base-100;
+        }
+        
+        .ql-editor {
+            min-height: 200px;
+        }
+
+        /* Custom select styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
+{% endblock %}
+
 {% block header   %}
 {% include 'header_without_discord.html'  %}
 {% endblock  %}

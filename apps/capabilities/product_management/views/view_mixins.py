@@ -131,13 +131,21 @@ class ProductContextMixin:
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # If this is a Challenge, get the photo URL from its product
+        if hasattr(self.object, 'product'):
+            photo_url = self.object.product.get_photo_url()
+        else:
+            # Otherwise assume it's a Product
+            photo_url = self.object.get_photo_url()
+        
         context.update({
             'can_manage': RoleService.has_product_management_access(
                 self.request.user.person, 
                 self.object
             ),
             'product': self.object,
-            'product_photo_url': self.object.get_photo_url()
+            'product_photo_url': photo_url
         })
         return context
 

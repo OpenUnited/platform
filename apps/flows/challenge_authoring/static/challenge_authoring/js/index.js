@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fileInput && fileList && dropArea) {
         // File input change handler
         fileInput.addEventListener('change', (e) => {
+            console.log('File input change event triggered'); // Debug log
             const files = e.target.files;
             handleFiles(files);
         });
@@ -142,19 +143,32 @@ document.addEventListener('DOMContentLoaded', () => {
         // Drag and drop handlers
         dropArea.addEventListener('dragover', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             dropArea.classList.add('border-primary');
         });
 
-        dropArea.addEventListener('dragleave', () => {
+        dropArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             dropArea.classList.remove('border-primary');
         });
 
         dropArea.addEventListener('drop', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             dropArea.classList.remove('border-primary');
             const files = e.dataTransfer.files;
             handleFiles(files);
         });
+
+        // Make the browse link work
+        const browseLink = dropArea.querySelector('label.text-primary');
+        if (browseLink) {
+            browseLink.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.click();
+            });
+        }
     }
 
     // Initialize bounties handling
@@ -171,17 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const formData = new FormData(form);
             
-            // Explicitly stringify the bounties array
-            if (window.bounties && window.bounties.length > 0) {
-                console.log('Adding bounties to form:', window.bounties);
-                formData.append('bounties', JSON.stringify(window.bounties));
-            } else {
-                formData.append('bounties', JSON.stringify([]));
+            // Add all files from the file list
+            const fileList = document.getElementById('file-list');
+            if (fileList) {
+                const files = fileInput.files;
+                Array.from(files).forEach((file, index) => {
+                    formData.append(`attachments_${index}`, file);
+                });
             }
             
-            // Log all form data for debugging
-            for (let pair of formData.entries()) {
-                console.log('Form data:', pair[0], pair[1]);
+            // Add bounties data
+            if (window.bounties && window.bounties.length > 0) {
+                formData.append('bounties', JSON.stringify(window.bounties));
             }
             
             fetch(form.action, {
@@ -192,15 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                 }
             })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        console.error('Server response:', text);
-                        throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
-                    });
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.redirect_url) {
                     window.location.href = data.redirect_url;
@@ -231,16 +238,114 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100);
 });
 
-// File handling function
+// Simplified file handling function
 function handleFiles(files) {
+    console.log('Handling files:', files);
     const fileList = document.getElementById('file-list');
-    if (!fileList) return;
+    
+    if (!fileList) {
+        console.error('File list container not found');
+        return;
+    }
 
     Array.from(files).forEach(file => {
-        // Add your file handling logic here
-        console.log('Handling file:', file.name);
+        console.log('Adding file to list:', file.name);
+        
+        // Create simple file item
+        const fileItem = document.createElement('div');
+        fileItem.className = 'border p-2 mb-2 rounded';
+        fileItem.innerHTML = `
+            <div class="flex justify-between items-center">
+                <span>${file.name}</span>
+                <button type="button" class="text-red-500">×</button>
+            </div>
+        `;
+        
+        // Add remove functionality
+        const removeBtn = fileItem.querySelector('button');
+        removeBtn.onclick = () => fileItem.remove();
+        
+        // Add to display
+        fileList.appendChild(fileItem);
+        
+        // Add file to form data
+        const formData = new FormData(document.getElementById('challenge-form'));
+        formData.append('attachments', file);
     });
 }
+
+// Simplified initialization
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing file upload');
+    const fileInput = document.getElementById('file-input');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            console.log('File input change detected');
+            if (e.target.files.length > 0) {
+                handleFiles(e.target.files);
+            }
+        });
+    } else {
+        console.error('File input not found');
+    }
+});
+
+// Update the file input event listener
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing file upload handlers'); // Debug log
+    
+    const fileInput = document.getElementById('file-input');
+    const fileList = document.getElementById('file-list');
+    const dropArea = document.getElementById('file-upload-area');
+
+    if (!fileInput || !fileList || !dropArea) {
+        console.error('Required elements not found:', {
+            fileInput: !!fileInput,
+            fileList: !!fileList,
+            dropArea: !!dropArea
+        });
+        return;
+    }
+
+    // File input change handler
+    fileInput.addEventListener('change', (e) => {
+        console.log('File input change event triggered', e.target.files); // Debug log
+        if (e.target.files && e.target.files.length > 0) {
+            handleFiles(e.target.files);
+        }
+    });
+
+    // Drag and drop handlers
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.add('border-primary');
+    });
+
+    dropArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.remove('border-primary');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.remove('border-primary');
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+    });
+
+    // Make the browse link work
+    const browseLink = dropArea.querySelector('label.text-primary');
+    if (browseLink) {
+        browseLink.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+    }
+});
 
 // Update saveBounty function to use the global bounties array
 window.saveBounty = function(event) {
@@ -335,5 +440,93 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add single click listener
         newBtn.addEventListener('click', saveBounty);
+    }
+});
+
+// Simplified file handling and form submission
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('challenge-form');
+    const fileInput = document.getElementById('file-input');
+    const fileList = document.getElementById('file-list');
+
+    // File input handler
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            console.log('Files selected:', e.target.files);
+            const files = e.target.files;
+            
+            if (files.length > 0) {
+                // Clear existing list
+                fileList.innerHTML = '';
+                
+                // Show each selected file
+                Array.from(files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'border p-2 mb-2 rounded';
+                    fileItem.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>${file.name}</span>
+                            <span class="text-sm text-gray-500">${(file.size / 1024).toFixed(1)} KB</span>
+                        </div>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            }
+        });
+    }
+
+    // Form submission handler
+    if (form) {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            console.log('Form submitted');
+            
+            const formData = new FormData(form);
+            
+            // Add files
+            if (fileInput.files.length > 0) {
+                // Remove any existing attachment fields
+                formData.delete('attachments');
+                
+                // Add each file individually
+                Array.from(fileInput.files).forEach((file, index) => {
+                    formData.append('attachments', file);
+                });
+            }
+            
+            // Add bounties
+            if (window.bounties && window.bounties.length > 0) {
+                formData.append('bounties', JSON.stringify(window.bounties));
+            }
+            
+            // Log form data for debugging
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Form submission failed');
+                }
+
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Failed to save challenge: ' + error.message);
+            }
+        });
     }
 }); 

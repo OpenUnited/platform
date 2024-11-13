@@ -93,41 +93,63 @@ class ChallengeAuthoringView(LoginRequiredMixin, CreateView):
             logger.debug(f"Found person: {person}")
             
             logger.debug("Starting form validation")
-            form = ChallengeAuthoringForm(request.POST, product=self.product, user=request.user)
-            formset = AttachmentFormSet(request.POST, request.FILES)
+            form = ChallengeAuthoringForm(request.POST, request.FILES)
             
-            if form.is_valid() and formset.is_valid():
-                logger.debug("Form and formset are valid")
+            if form.is_valid():
+                challenge = form.save(commit=False)
+                challenge.product = get_object_or_404(Product, slug=kwargs.get('product_slug'))
+                challenge.created_by = person
+                challenge.save()
                 
-                # Use the service to create the challenge with bounties
-                service = ChallengeAuthoringService(request.user, self.kwargs.get('product_slug'))
-                challenge = service.create_challenge_with_bounties(
-                    challenge_data=form.cleaned_data,
-                    person=person,
-                    request=request
-                )
+                # Save bounties
+                bounties_json = request.POST.get('bounties')
+                if bounties_json:
+                    bounties_data = json.loads(bounties_json)
+                    logger.debug(f"Processing bounties: {bounties_data}")
+                    
+                    for bounty_data in bounties_data:
+                        skill_data = bounty_data.get('skill', {})
+                        skill_id = skill_data.get('id')
+                        
+                        bounty = Bounty.objects.create(
+                            challenge=challenge,
+                            title=bounty_data['title'],
+                            description=bounty_data['description'],
+                            points=int(bounty_data['points']),
+                            skill_id=skill_id,
+                            status=Bounty.BountyStatus.AVAILABLE
+                        )
+                
+                # Handle file attachments
+                files = request.FILES.getlist('attachments')
+                logger.debug(f"Processing {len(files)} attachments")
+                for file in files:
+                    logger.debug(f"Saving attachment: {file.name}")
+                    try:
+                        # Create FileAttachment first
+                        attachment = FileAttachment.objects.create(file=file)
+                        # Add it to the challenge's attachments
+                        challenge.attachments.add(attachment)
+                        logger.debug(f"Successfully saved attachment: {attachment.id}")
+                    except Exception as e:
+                        logger.error(f"Error saving attachment {file.name}: {str(e)}")
                 
                 return JsonResponse({
                     'status': 'success',
                     'redirect_url': reverse('product_management:challenge-detail', kwargs={
-                        'product_slug': challenge.product.slug,
+                        'product_slug': kwargs.get('product_slug'),
                         'pk': challenge.id
                     })
                 })
-                
             else:
-                logger.error(f"Form errors: {form.errors}")
-                logger.error(f"Formset errors: {formset.errors}")
+                logger.error(f"Form validation errors: {form.errors}")
                 return JsonResponse({
                     'status': 'error',
-                    'errors': {
-                        'form': form.errors,
-                        'formset': formset.errors
-                    }
+                    'errors': form.errors
                 }, status=400)
                 
         except Exception as e:
-            logger.exception("Error in challenge creation")
+            logger.exception("Error creating challenge")
             return JsonResponse({
                 'status': 'error',
                 'message': str(e)
@@ -237,53 +259,71 @@ def remove_bounty(request, bounty_id):
 
 @require_http_methods(["GET", "POST"])
 def create(request, product_slug):
-    if request.method == "POST":
-        logger.debug("==================== START POST REQUEST ====================")
+    logger.debug("==================== START POST REQUEST ====================")
+    
+    try:
+        person = request.user.person
+        logger.debug(f"Found person: {person}")
         
-        try:
-            # Get bounties from POST data
+        logger.debug("Starting form validation")
+        form = ChallengeAuthoringForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            challenge = form.save(commit=False)
+            challenge.product = get_object_or_404(Product, slug=product_slug)
+            challenge.created_by = person
+            challenge.save()
+            
+            # Save bounties
             bounties_json = request.POST.get('bounties')
-            logger.debug(f"Received bounties: {bounties_json}")
-            
-            form = ChallengeAuthoringForm(request.POST)
-            
-            if form.is_valid():
-                challenge = form.save(commit=False)
-                challenge.product = get_object_or_404(Product, slug=product_slug)
-                challenge.created_by = request.person
-                challenge.save()
+            if bounties_json:
+                bounties_data = json.loads(bounties_json)
+                logger.debug(f"Processing bounties: {bounties_data}")
                 
-                # Save bounties
-                bounties = form.cleaned_data['bounties']
-                for bounty_data in bounties:
-                    bounty = Bounty(
+                for bounty_data in bounties_data:
+                    skill_data = bounty_data.get('skill', {})
+                    skill_id = skill_data.get('id')
+                    
+                    bounty = Bounty.objects.create(
                         challenge=challenge,
-                        skill_id=bounty_data['skill']['id'],
                         title=bounty_data['title'],
                         description=bounty_data['description'],
-                        points=bounty_data['points']
+                        points=int(bounty_data['points']),
+                        skill_id=skill_id,
+                        status=Bounty.BountyStatus.AVAILABLE
                     )
-                    bounty.save()
-                
-                return JsonResponse({
-                    'status': 'success',
-                    'redirect_url': reverse('challenge_detail', kwargs={
-                        'product_slug': product_slug,
-                        'challenge_id': challenge.id
-                    })
+            
+            # Handle file attachments
+            files = request.FILES.getlist('attachments')
+            logger.debug(f"Processing {len(files)} attachments")
+            for file in files:
+                logger.debug(f"Saving attachment: {file.name}")
+                try:
+                    # Create FileAttachment first
+                    attachment = FileAttachment.objects.create(file=file)
+                    # Add it to the challenge's attachments
+                    challenge.attachments.add(attachment)
+                    logger.debug(f"Successfully saved attachment: {attachment.id}")
+                except Exception as e:
+                    logger.error(f"Error saving attachment {file.name}: {str(e)}")
+            
+            return JsonResponse({
+                'status': 'success',
+                'redirect_url': reverse('product_management:challenge-detail', kwargs={
+                    'product_slug': product_slug,
+                    'pk': challenge.id
                 })
-            else:
-                logger.error(f"Form validation errors: {form.errors}")
-                return JsonResponse({
-                    'status': 'error',
-                    'errors': form.errors
-                }, status=400)
-                
-        except Exception as e:
-            logger.exception("Error creating challenge")
+            })
+        else:
+            logger.error(f"Form validation errors: {form.errors}")
             return JsonResponse({
                 'status': 'error',
-                'message': str(e)
-            }, status=500)
-    
-    # Your existing GET logic...
+                'errors': form.errors
+            }, status=400)
+            
+    except Exception as e:
+        logger.exception("Error creating challenge")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)

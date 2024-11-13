@@ -1,6 +1,7 @@
 {% extends 'base.html'  %}
 
 {% load product_management_tags %}
+{% load product_management_filters %}
 
 {% block title   %}Challenge Detail{% endblock  %}
 
@@ -66,6 +67,28 @@
 
     <div class="flex flex-col">
         {% include 'product_management/partials/bounty_detail_table.html'  %}
+    </div>
+
+    <div class="mt-6">
+        <h3 class="text-lg font-medium">Attachments</h3>
+        <div class="mt-2 space-y-2">
+            {% if challenge.attachments.exists %}
+                {% for attachment in challenge.attachments.all %}
+                    <div class="flex items-center justify-between p-2 border rounded">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-file text-gray-500"></i>
+                            <a href="{{ attachment.file.url }}" 
+                               target="_blank"
+                               class="text-primary hover:underline">
+                                {{ attachment.file.name|basename }}
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-500">No attachments</p>
+            {% endif %}
+        </div>
     </div>
 
 </div>

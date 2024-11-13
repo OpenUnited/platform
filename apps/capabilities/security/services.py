@@ -466,16 +466,23 @@ class RoleService:
         return False
 
     @staticmethod
-    def has_product_management_access(person: Person, product: Product) -> bool:
+    def has_product_management_access(person: Person, product_or_challenge) -> bool:
         """
         Check if person has management-level access to the product
         
-        Management access is granted if person:
-        1. Has admin role in the product
-        2. Has manager role in the product
-        3. Is the direct owner of the product
-        4. Has owner/manager access through organization roles
+        Args:
+            person: Person object to check access for
+            product_or_challenge: Product object or any object with a product attribute
+            
+        Returns:
+            bool indicating if person has management access
         """
+        # Get the actual product object if we were passed something else
+        if hasattr(product_or_challenge, 'product'):
+            product = product_or_challenge.product
+        else:
+            product = product_or_challenge
+            
         # Direct product ownership
         if product.person == person:
             return True

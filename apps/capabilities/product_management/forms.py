@@ -161,32 +161,9 @@ class OrganisationForm(forms.ModelForm):
 
 
 class ChallengeForm(forms.ModelForm):
-    class_names = (
-        "block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
-        " placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["reward_type"].help_text = "Liquid points can be redeemed for money, Non-Liquid points cannot."
-
-        for key, field in self.fields.items():
-            attributes = {"class": self.class_names}
-            if key in ["title", "description"]:
-                attributes["cols"] = 40
-                attributes["rows"] = 2
-            if key != "reward_type":
-                field.widget.attrs.update(**attributes)
-
     class Meta:
         model = Challenge
-        fields = ["title", "description", "reward_type", "priority", "status", "product_area", "initiative"]
-
-        widgets = {
-            "reward_type": forms.RadioSelect(
-                attrs={"class": "h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"}
-            ),
-        }
+        fields = ['title', 'description', 'status', 'priority']
 
 
 class BountyForm(forms.ModelForm):
