@@ -102,3 +102,4 @@ node_modules/
 create_superuser.py
 
 *.DS_Store
+admin-theme/
