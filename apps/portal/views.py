@@ -47,6 +47,7 @@ import logging
 from django.db import connection
 from django.db.models import Q
 from apps.capabilities.product_management.services import ProductManagementService
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -793,23 +794,36 @@ class CreateOrganisationView(PortalBaseView):
     """View for creating new organisations"""
     template_name = "portal/organisation/create.html"
 
+    def get(self, request):
+        context = self.get_context_data()
+        context['form'] = CreateOrganisationForm()
+        return render(request, self.template_name, context)
+
     def post(self, request):
         form = CreateOrganisationForm(request.POST, request.FILES)
         if form.is_valid():
-            organisation = form.save()
-            
-            # Use RoleService to assign the owner role
-            RoleService.assign_organisation_role(
-                person=request.user.person,
-                organisation=organisation,
-                role=OrganisationPersonRoleAssignment.OrganisationRoles.OWNER
-            )
-            
-            logger.info(f"Created organisation {organisation.name} with owner {request.user.person.id}")
-            
-            messages.success(request, "Organisation created successfully")
-            return redirect('portal:organisation-detail', org_id=organisation.id)
-            
+            try:
+                with transaction.atomic():
+                    organisation = form.save()
+                    
+                    # Use RoleService to assign the owner role
+                    RoleService.assign_organisation_role(
+                        person=request.user.person,
+                        organisation=organisation,
+                        role=OrganisationPersonRoleAssignment.OrganisationRoles.OWNER
+                    )
+                    
+                    # Switch to the newly created organisation
+                    request.session['current_organisation_id'] = organisation.id
+                    request.session.modified = True
+                    
+                    logger.info(f"Created organisation {organisation.name} with owner {request.user.person.id}")
+                    messages.success(request, "Organisation created successfully")
+                    return redirect('portal:organisation-detail', org_id=organisation.id)
+            except Exception as e:
+                logger.error(f"Failed to create organisation: {str(e)}")
+                messages.error(request, "Failed to create organisation")
+                
         context = self.get_context_data()
         context['form'] = form
         return render(request, self.template_name, context)

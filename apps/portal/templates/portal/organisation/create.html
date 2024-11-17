@@ -20,7 +20,12 @@
                            class="block text-sm font-medium mb-2">
                         Organisation Name
                     </label>
-                    {{ form.name }}
+                    <input type="text" 
+                           name="{{ form.name.name }}"
+                           id="{{ form.name.id_for_label }}"
+                           class="input input-bordered w-full"
+                           value="{{ form.name.value|default:'' }}"
+                           required>
                     {% if form.name.errors %}
                         <div class="text-error text-sm mt-1">{{ form.name.errors.0 }}</div>
                     {% endif %}
@@ -32,13 +37,16 @@
                            class="block text-sm font-medium mb-2">
                         Username
                     </label>
-                    {{ form.username }}
+                    <input type="text" 
+                           name="{{ form.username.name }}"
+                           id="{{ form.username.id_for_label }}"
+                           class="input input-bordered w-full"
+                           value="{{ form.username.value|default:'' }}"
+                           required>
                     {% if form.username.errors %}
                         <div class="text-error text-sm mt-1">{{ form.username.errors.0 }}</div>
                     {% endif %}
-                    {% if form.username.help_text %}
-                        <div class="text-sm text-base-content/70 mt-1">{{ form.username.help_text }}</div>
-                    {% endif %}
+                    <div class="text-sm text-base-content/70 mt-1">Username may only contain letters and numbers</div>
                 </div>
 
                 <!-- Photo -->
@@ -47,13 +55,15 @@
                            class="block text-sm font-medium mb-2">
                         Organisation Photo
                     </label>
-                    {{ form.photo }}
+                    <input type="file" 
+                           name="{{ form.photo.name }}"
+                           id="{{ form.photo.id_for_label }}"
+                           class="file-input file-input-bordered w-full"
+                           accept="image/*">
                     {% if form.photo.errors %}
                         <div class="text-error text-sm mt-1">{{ form.photo.errors.0 }}</div>
                     {% endif %}
-                    {% if form.photo.help_text %}
-                        <div class="text-sm text-base-content/70 mt-1">{{ form.photo.help_text }}</div>
-                    {% endif %}
+                    <div class="text-sm text-base-content/70 mt-1">Upload an image for your organisation</div>
                 </div>
 
                 <!-- Submit Button -->

@@ -7,6 +7,24 @@
 <div class="min-h-screen flex flex-col">
     <!-- Main content -->
     <div class="flex-grow bg-white rounded-lg border p-6">
+        <!-- Add breadcrumb navigation here -->
+        <div class="text-sm breadcrumbs mb-4">
+            <ul>
+                <li>
+                    <a href="{% url 'portal:organisation-detail' product.organisation.id %}" 
+                       class="link link-hover text-base-content/70">
+                        {{ product.organisation.name }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'portal:product-summary' product.slug %}" 
+                       class="link link-hover text-base-content/70">
+                        {{ product.name }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
         <h1 class="text-xl font-semibold mb-6">Create Challenge</h1>
         
         <div class="error-container hidden"></div>
