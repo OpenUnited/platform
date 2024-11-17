@@ -37,4 +37,21 @@ urlpatterns = [
          views.PortalUpdateProductUserView.as_view(), name='product-user-update'),
     path('product/<slug:product_slug>/bounties/<int:pk>/claims/<int:claim_id>/actions/',
          views.BountyClaimActionView.as_view(), name='product-bounty-claim-actions'),
+    
+    # Organisation management
+    path('organisations/', 
+         views.OrganisationListView.as_view(), 
+         name='organisations'),
+    path('organisations/<int:org_id>/', 
+         views.OrganisationDetailView.as_view(), 
+         name='organisation-detail'),
+    path('organisations/<int:org_id>/switch/', 
+         views.SwitchOrganisationView.as_view(), 
+         name='switch-organisation'),
+    path('organisations/<int:org_id>/settings/', 
+         views.OrganisationSettingsView.as_view(), 
+         name='organisation-settings'),
+    path('organisations/<int:org_id>/members/', 
+         views.OrganisationMembersView.as_view(), 
+         name='organisation-members'),
 ]

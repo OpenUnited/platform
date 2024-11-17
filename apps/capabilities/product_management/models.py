@@ -23,6 +23,9 @@ class FileAttachment(models.Model):
 
     def __str__(self):
         return f"{self.file.name}"
+    
+    class Meta:
+        verbose_name_plural = "File Attachments"
 
 
 class ProductTree(common.AbstractModel):
@@ -38,6 +41,9 @@ class ProductTree(common.AbstractModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = "Product Trees"
 
 
 class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
@@ -63,6 +69,9 @@ class ProductArea(MP_Node, common.AbstractModel, common.AttachmentAbstract):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name_plural = "Product Areas"
 
 
 class Product(TimeStampMixin, UUIDMixin, common.AttachmentAbstract):
@@ -482,6 +491,8 @@ class Bounty(TimeStampMixin, common.AttachmentAbstract):
 
     class Meta:
         ordering = ("-created_at",)
+        verbose_name_plural = "Bounties"
+        
 
     @property
     def has_claimed(self):

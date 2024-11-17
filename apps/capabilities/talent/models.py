@@ -150,6 +150,9 @@ class PersonSkill(models.Model):
     def __str__(self):
         expertises = ", ".join([str(exp) for exp in self.expertise.all()])
         return f"{self.person} - {self.skill} - {expertises}"
+    
+    class Meta:
+        verbose_name_plural = "Person Skills"
 
 
 class Skill(AncestryMixin):
@@ -263,6 +266,7 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     class Meta:
         unique_together = ("bounty", "person")
         ordering = ("-created_at",)
+        verbose_name_plural = "Bounty Claims"
 
     def get_challenge_detail_url(self):
         return self.bounty.challenge.get_absolute_url()
@@ -354,6 +358,7 @@ class BountyDeliveryAttempt(TimeStampMixin, AttachmentAbstract):
 
     class Meta:
         ordering = ("-created_at",)
+        verbose_name_plural = "Product Delivery Attempts"
 
     def get_absolute_url(self):
         return reverse(

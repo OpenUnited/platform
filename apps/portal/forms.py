@@ -11,6 +11,7 @@ from django.views.generic import View
 from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.talent.models import Person
 from apps.capabilities.product_management.models import ProductContributorAgreementTemplate
+from apps.capabilities.security.models import OrganisationPersonRoleAssignment
 
 class PortalBaseForm(forms.ModelForm):
     """Base form with common styling and functionality."""
@@ -170,3 +171,31 @@ class AgreementTemplateForm(PortalBaseForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 10}),
         }
+
+class OrganisationSettingsForm(PortalBaseForm):
+    """Form for editing organisation settings"""
+    
+    class Meta:
+        model = Organisation
+        fields = [
+            'name',
+            'username',
+            'photo'
+        ]
+        widgets = {
+            'photo': forms.FileInput(attrs={
+                'class': 'file-input file-input-bordered w-full max-w-xs',
+                'accept': 'image/*'
+            })
+        }
+        help_texts = {
+            'username': 'Username may only contain letters and numbers',
+            'photo': 'Upload an image for your organisation'
+        }
+
+class OrganisationMemberForm(PortalBaseForm):
+    """Form for adding/editing organisation members"""
+    
+    class Meta:
+        model = OrganisationPersonRoleAssignment
+        fields = ['person', 'role']

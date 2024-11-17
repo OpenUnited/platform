@@ -45,6 +45,7 @@ THIRD_PARTIES = [
     "csp",
 ]
 BUILTIN_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -75,7 +76,10 @@ ROOT_URLCONF = "apps.common.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "common/templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -163,6 +167,86 @@ SESSION_COOKIE_AGE = 30 * 24 * 60 * 60  # 30 days in seconds
 # be accessible via http://<domain_name>/abc/admin
 # Note: Don't include slash
 ADMIN_CONTEXT = os.getenv("ADMIN_CONTEXT", None)
+
+JAZZMIN_SETTINGS = {
+    # Site branding
+    "site_title": "OpenUnited",
+    "site_header": "OpenUnited",
+    "site_brand": " ",
+    "site_logo": "images/logo.svg",
+    "site_logo_classes": "",
+    
+    # Completely disable UI builder and customization options
+    "show_ui_builder": False,
+    "show_sidebar_ui_builder": False,
+    
+    # Remove all icons and custom UI elements
+    "icons": None,
+    "custom_css": None,
+    "custom_js": None,
+    
+    # Remove user interface customizations
+    "welcome_sign": None,
+    "search_model": None,
+    "user_avatar": None,
+    
+    # Navigation settings
+    "navigation_expanded": True,
+    "hide_apps": [
+        "social_django",
+        "auth",
+    ],
+    "hide_models": [],
+    
+    # Remove all menu customizations
+    "usermenu_links": [],
+    "show_sidebar": True,
+    "default_icon_parents": "",
+    "default_icon_children": "",
+    
+    # Minimal top menu
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ],
+    "root_icon": None,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-primary",
+    "navbar": "navbar-primary navbar-dark",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "default",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "actions_sticky_top": False,
+    "sidebar_nav_expanded": True,
+    "navigation_expanded": True,
+    "navbar_fixed": True,
+    "sidebar_fixed": True,
+}
 
 AUTHENTICATION_BACKENDS = []
 
@@ -311,3 +395,9 @@ if os.getenv("AWS_STORAGE_BUCKET_NAME"):
     CSP_IMG_SRC += tuple(STORAGE_DOMAINS)
     CSP_SCRIPT_SRC += tuple(STORAGE_DOMAINS)
     CSP_STYLE_SRC += tuple(STORAGE_DOMAINS)
+
+# Add this to include your custom CSS
+class Media:
+    css = {
+        'all': ['admin/css/custom_admin.css']
+    }

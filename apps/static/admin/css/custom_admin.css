@@ -1,0 +1,32 @@
+/* Hide user tools area */
+#user-tools {
+    display: none !important;
+}
+
+/* Remove icons */
+.nav-sidebar .nav-item i,
+.nav-sidebar .nav-item svg {
+    display: none !important;
+}
+
+/* Force menu items to stay expanded */
+.nav-treeview {
+    display: block !important;
+}
+
+.nav-item.has-treeview {
+    display: block !important;
+}
+
+/* Make logo area match header and remove shadow */
+.brand-link {
+    background-color: #007bff !important;
+    box-shadow: none !important;
+    padding: 15px 20px !important;
+}
+
+/* Remove logo background/shadow if any */
+.brand-image {
+    box-shadow: none !important;
+    margin: 0 !important;
+}

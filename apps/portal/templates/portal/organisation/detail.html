@@ -1,0 +1,118 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="dashboard-content">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">{{ organisation.name }}</h1>
+        {% if can_manage %}
+            <a href="{% url 'portal:organisation-settings' organisation.id %}" 
+               class="btn btn-ghost btn-sm">
+                Settings
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Organisation Info -->
+    <div class="card bg-base-100 shadow-xl mb-8">
+        <div class="card-body">
+            <div class="flex items-center gap-4 mb-4">
+                {% if organisation.logo %}
+                    <img src="{{ organisation.logo.url }}" alt="{{ organisation.name }}" class="w-16 h-16 rounded-full">
+                {% endif %}
+                <div>
+                    <h2 class="card-title">{{ organisation.name }}</h2>
+                    {% if organisation.website %}
+                        <a href="{{ organisation.website }}" target="_blank" class="link link-primary">
+                            {{ organisation.website }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if organisation.description %}
+                <p class="text-base-content/70">{{ organisation.description }}</p>
+            {% endif %}
+
+            <div class="stats shadow mt-4">
+                <div class="stat">
+                    <div class="stat-title">Products</div>
+                    <div class="stat-value">{{ products.count }}</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-title">Members</div>
+                    <div class="stat-value">{{ members_count }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="mb-8">
+        <h2 class="text-xl font-bold mb-4">Products</h2>
+        {% if products %}
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {% for product in products %}
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ product.name }}</h3>
+                            {% if product.short_description %}
+                                <p class="text-base-content/70">{{ product.short_description }}</p>
+                            {% endif %}
+                            <div class="card-actions justify-end">
+                                <a href="{% url 'portal:product-summary' product.slug %}" 
+                                   class="btn btn-primary btn-sm">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <span>No products available.</span>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if can_manage %}
+        <!-- Members Section -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Members</h2>
+                <a href="{% url 'portal:organisation-members' organisation.id %}" 
+                   class="btn btn-ghost btn-sm">
+                    Manage Members
+                </a>
+            </div>
+            
+            {% if members %}
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                                <tr>
+                                    <td>{{ member.person.get_full_name }}</td>
+                                    <td>{{ member.get_role_display }}</td>
+                                    <td>{{ member.created_at|date }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <span>No members found.</span>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

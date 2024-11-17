@@ -1,0 +1,74 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="dashboard-content max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">{{ organisation.name }} Settings</h1>
+        <a href="{% url 'portal:organisation-detail' organisation.id %}" 
+           class="btn btn-ghost btn-sm">
+            ← Back to Organisation
+        </a>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Organisation Name -->
+                <div>
+                    <label for="{{ form.name.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Organisation Name
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Username -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Username
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.username.help_text %}
+                        <div class="text-sm text-base-content/70 mt-1">{{ form.username.help_text }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Photo -->
+                <div>
+                    <label for="{{ form.photo.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Organisation Photo
+                    </label>
+                    {% if organisation.photo %}
+                        <div class="mb-4">
+                            <img src="{{ organisation.photo.url }}" 
+                                 alt="{{ organisation.name }}" 
+                                 class="w-32 h-32 object-cover rounded-lg">
+                        </div>
+                    {% endif %}
+                    {{ form.photo }}
+                    {% if form.photo.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.photo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

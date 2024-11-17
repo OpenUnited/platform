@@ -31,7 +31,10 @@ class User(AbstractUser, TimeStampMixin):
         self.save()
 
     def __str__(self):
-        return f"{self.username} - {self.remaining_budget_for_failed_logins} - {self.password_reset_required}"
+        base = f"User #{self.pk} {self.username}"
+        if hasattr(self, 'person'):
+            return f"{base} (Person #{self.person.pk} {self.person.full_name})"
+        return base
 
     class Meta:
         app_label = 'security'
@@ -48,8 +51,10 @@ class SignUpRequest(TimeStampMixin):
 
     def __str__(self):
         return f"{self.user} - {self.successful}"
-
-
+    
+    class Meta:
+        verbose_name_plural = "Sign Up Requests"
+        
 class SignInAttempt(TimeStampMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     device_hash = models.CharField(max_length=64, null=True, blank=True)
@@ -60,6 +65,9 @@ class SignInAttempt(TimeStampMixin):
 
     def __str__(self):
         return f"{self.region_code} - {self.city} - {self.country}"
+    
+    class Meta:
+        verbose_name_plural = "Sign In Attempts"
 
 
 class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
@@ -91,6 +99,7 @@ class ProductRoleAssignment(TimeStampMixin, UUIDMixin):
         indexes = [
             models.Index(fields=['person', 'product', 'role'])
         ]
+        verbose_name_plural = "Product Role Assignments"
 
     def __str__(self):
         return f"{self.person} - {self.role}"
@@ -126,6 +135,7 @@ class OrganisationPersonRoleAssignment(TimeStampMixin):
         indexes = [
             models.Index(fields=['person', 'organisation', 'role'])
         ]
+        verbose_name_plural = "Org Role Assignments"
 
     def __str__(self):
         return f"{self.person} - {self.organisation} - {self.role}"
@@ -138,3 +148,5 @@ class BlacklistedUsernames(models.Model):
 
     class Meta:
         db_table = "black_listed_usernames"
+        verbose_name = "Blacklisted Username"
+        verbose_name_plural = "Blacklisted Usernames"

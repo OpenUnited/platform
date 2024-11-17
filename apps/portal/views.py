@@ -11,9 +11,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from apps.capabilities.product_management.models import Product
+from apps.capabilities.commerce.models import Organisation
+from apps.capabilities.security.models import OrganisationPersonRoleAssignment
+
 
 from apps.common.mixins import AttachmentMixin
-from apps.portal.forms import PortalProductForm, PortalProductRoleAssignmentForm, ProductSettingsForm, AgreementTemplateForm
+from apps.portal.forms import (
+    PortalProductForm, 
+    PortalProductRoleAssignmentForm, 
+    ProductSettingsForm, 
+    AgreementTemplateForm,
+    OrganisationSettingsForm,
+)
 from .services import (
     PortalService,
     BountyService,
@@ -37,6 +46,7 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
     """Base view for portal pages."""
     login_url = 'sign_in'
     portal_service = PortalService()
+    role_service = RoleService()
     
     def handle_service_error(self, error: PortalError):
         """Handle service layer errors consistently."""
@@ -64,6 +74,37 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
         if 'product_slug' in self.kwargs:
             context['current_product_slug'] = self.kwargs['product_slug']
             
+        # Get current org ID from session or URL
+        current_org_id = self.request.session.get('current_organisation_id')
+        if 'org_id' in self.kwargs:
+            current_org_id = self.kwargs['org_id']
+            
+        # Get user's organizations and roles
+        person = self.request.user.person
+        roles_summary = self.role_service.get_person_roles_summary(person)
+        user_orgs = [item['organisation'] for item in roles_summary['organisations']]
+        
+        # Get current org and its products
+        current_org = None
+        org_products = []
+        if user_orgs:
+            if current_org_id:
+                current_org = next((org for org in user_orgs if org.id == current_org_id), user_orgs[0])
+            else:
+                current_org = user_orgs[0]
+                
+            if current_org:
+                org_products = Product.objects.filter(organisation=current_org)
+        
+        context.update({
+            'user_organisations': user_orgs,
+            'current_organisation': current_org,
+            'organisation_products': org_products,
+            'can_manage_org': current_org and self.role_service.is_organisation_manager(
+                person, 
+                current_org
+            ) if current_org else False
+        })
         return context
 
 
@@ -521,3 +562,128 @@ class CreateAgreementTemplateView(PortalBaseView, LoginRequiredMixin):
             
         except PortalError as e:
             return self.handle_service_error(e)
+
+
+class OrganisationBaseView(PortalBaseView):
+    """Base view for organisation-related views"""
+    
+    def dispatch(self, request, *args, **kwargs):
+        if 'org_id' in kwargs:
+            org_id = kwargs['org_id']
+            user_orgs = self.organisation_service.get_user_organisations(request.user.person)
+            if not user_orgs.filter(id=org_id).exists():
+                messages.error(request, "Access denied to this organisation")
+                return redirect('portal:dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class OrganisationListView(OrganisationBaseView):
+    """View for listing user's organisations"""
+    template_name = "portal/organisation/list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = "My Organisations"
+        return context
+
+
+class OrganisationDetailView(OrganisationBaseView):
+    """View for organisation details and overview"""
+    template_name = "portal/organisation/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        org_id = self.kwargs['org_id']
+        organisation = get_object_or_404(Organisation, id=org_id)
+        person = self.request.user.person
+        
+        if not RoleService.has_organisation_role(person, organisation, 
+            ['OWNER', 'MANAGER', 'MEMBER']):
+            raise PermissionDenied("You don't have access to this organisation")
+        
+        context.update({
+            'organisation': organisation,
+            'products': Product.objects.filter(organisation=organisation),
+            'members': RoleService.get_organisation_roles(organisation=organisation),
+            'page_title': organisation.name
+        })
+        return context
+
+
+class SwitchOrganisationView(OrganisationBaseView):
+    """Handle switching between organisations"""
+    
+    def post(self, request, org_id):
+        person = request.user.person
+        organisation = get_object_or_404(Organisation, id=org_id)
+        
+        # Verify user has access to this organisation
+        if not RoleService.has_organisation_role(person, organisation, 
+            ['OWNER', 'MANAGER', 'MEMBER']):
+            messages.error(request, "Access denied to this organisation")
+            return redirect('portal:dashboard')
+            
+        request.session['current_organisation_id'] = org_id
+        messages.success(request, "Organisation context switched successfully")
+        return redirect(request.META.get('HTTP_REFERER', 'portal:dashboard'))
+
+
+class OrganisationSettingsView(OrganisationBaseView):
+    """View for managing organisation settings"""
+    template_name = "portal/organisation/settings.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        org_id = self.kwargs['org_id']
+        organisation = get_object_or_404(Organisation, id=org_id)
+        person = self.request.user.person
+        
+        if not RoleService.is_organisation_manager(person, organisation):
+            raise PermissionDenied("You don't have permission to manage this organisation")
+            
+        context.update({
+            'organisation': organisation,
+            'form': OrganisationSettingsForm(instance=organisation),
+            'page_title': f"Settings - {organisation.name}"
+        })
+        return context
+
+    def post(self, request, org_id):
+        organisation = get_object_or_404(Organisation, id=org_id)
+        person = request.user.person
+        
+        if not RoleService.is_organisation_manager(person, organisation):
+            raise PermissionDenied("You don't have permission to manage this organisation")
+            
+        form = OrganisationSettingsForm(request.POST, request.FILES, instance=organisation)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Organisation settings updated successfully")
+            return redirect('portal:organisation-detail', org_id=org_id)
+            
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
+class OrganisationMembersView(OrganisationBaseView):
+    """View for managing organisation members"""
+    template_name = "portal/organisation/members.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        org_id = self.kwargs['org_id']
+        organisation = get_object_or_404(Organisation, id=org_id)
+        person = self.request.user.person
+        
+        if not RoleService.has_organisation_role(person, organisation, 
+            ['OWNER', 'MANAGER', 'MEMBER']):
+            raise PermissionDenied("You don't have access to this organisation")
+        
+        context.update({
+            'organisation': organisation,
+            'members': RoleService.get_organisation_roles(organisation=organisation),
+            'can_manage': RoleService.is_organisation_manager(person, organisation),
+            'page_title': f"Members - {organisation.name}"
+        })
+        return context

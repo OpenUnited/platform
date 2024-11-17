@@ -557,3 +557,52 @@ class RoleService:
             )
         
         return False
+
+
+class OrganisationRoleService:
+    """Handles organisation-specific role operations and validations"""
+    
+    @staticmethod
+    def get_user_organisations(person: Person) -> QuerySet:
+        """Get all organisations the person has access to"""
+        return Organisation.objects.filter(
+            person_role_assignments__person=person
+        ).distinct().order_by('name')
+    
+    @staticmethod
+    def get_organisation_products(organisation: Organisation) -> QuerySet:
+        """Get all products associated with an organisation"""
+        return Product.objects.filter(
+            organisation=organisation
+        ).order_by('name')
+    
+    @staticmethod
+    def get_user_organisation_context(person: Person, current_org_id: Optional[int] = None) -> Dict:
+        """
+        Get organisation context for the user including:
+        - List of organisations they have access to
+        - Currently selected organisation
+        - Products for the current organisation
+        """
+        user_orgs = OrganisationRoleService.get_user_organisations(person)
+        
+        # If no current_org_id provided, use first available org
+        if not current_org_id and user_orgs.exists():
+            current_org = user_orgs.first()
+        else:
+            current_org = user_orgs.filter(id=current_org_id).first() or user_orgs.first()
+            
+        # Get products for current org if one is selected
+        org_products = []
+        if current_org:
+            org_products = OrganisationRoleService.get_organisation_products(current_org)
+            
+        return {
+            'user_organisations': user_orgs,
+            'current_organisation': current_org,
+            'organisation_products': org_products,
+            'can_manage_org': current_org and RoleService.is_organisation_manager(
+                person, 
+                current_org
+            ) if current_org else False
+        }

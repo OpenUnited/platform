@@ -34,7 +34,18 @@ class ExpertiseAdmin(admin.ModelAdmin):
 
 @admin.register(models.Person)
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ["pk", "full_name", "user"]
+    list_display = ['user', 'get_full_name']
+    search_fields = [
+        'user__username',
+        'user__email',
+        'user__first_name',
+        'user__last_name'
+    ]
+    ordering = ('user__username',)
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        return queryset, use_distinct
 
 
 @admin.register(models.PersonSkill)

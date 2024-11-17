@@ -1,0 +1,165 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="dashboard-content">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">{{ organisation.name }} Members</h1>
+        <div class="flex gap-2">
+            {% if can_manage %}
+                <button class="btn btn-primary btn-sm" 
+                        onclick="document.getElementById('add-member-modal').showModal()">
+                    Add Member
+                </button>
+            {% endif %}
+            <a href="{% url 'portal:organisation-detail' organisation.id %}" 
+               class="btn btn-ghost btn-sm">
+                ← Back to Organisation
+            </a>
+        </div>
+    </div>
+
+    <!-- Members List -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            {% if members %}
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                {% if can_manage %}
+                                    <th>Actions</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                                <tr>
+                                    <td class="flex items-center gap-2">
+                                        <div class="avatar">
+                                            <div class="w-8 rounded-full">
+                                                <img src="{{ member.person.get_photo_url }}" 
+                                                     alt="{{ member.person.get_full_name }}">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold">{{ member.person.get_full_name }}</div>
+                                            <div class="text-sm opacity-50">@{{ member.person.get_username }}</div>
+                                        </div>
+                                    </td>
+                                    <td>{{ member.get_role_display }}</td>
+                                    <td>{{ member.created_at|date }}</td>
+                                    {% if can_manage %}
+                                        <td>
+                                            <div class="flex gap-2">
+                                                <button class="btn btn-ghost btn-xs"
+                                                        onclick="editMember({{ member.id }})">
+                                                    Edit
+                                                </button>
+                                                {% if member.role != 'Owner' %}
+                                                    <button class="btn btn-error btn-xs"
+                                                            onclick="removeMember({{ member.id }})">
+                                                        Remove
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <span>No members found.</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if can_manage %}
+        <!-- Add Member Modal -->
+        <dialog id="add-member-modal" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg mb-4">Add New Member</h3>
+                <form method="post" action="{% url 'portal:organisation-members' organisation.id %}">
+                    {% csrf_token %}
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Person</label>
+                            {{ form.person }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Role</label>
+                            {{ form.role }}
+                        </div>
+                    </div>
+                    <div class="modal-action">
+                        <button type="submit" class="btn btn-primary">Add Member</button>
+                        <button type="button" 
+                                class="btn btn-ghost"
+                                onclick="document.getElementById('add-member-modal').close()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+        <!-- Edit Member Modal -->
+        <dialog id="edit-member-modal" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg mb-4">Edit Member Role</h3>
+                <form id="edit-member-form" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Role</label>
+                            {{ form.role }}
+                        </div>
+                    </div>
+                    <div class="modal-action">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" 
+                                class="btn btn-ghost"
+                                onclick="document.getElementById('edit-member-modal').close()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+    {% endif %}
+</div>
+
+{% if can_manage %}
+    <script>
+        function editMember(memberId) {
+            const modal = document.getElementById('edit-member-modal');
+            const form = document.getElementById('edit-member-form');
+            form.action = `{% url 'portal:organisation-members' organisation.id %}?member_id=${memberId}`;
+            modal.showModal();
+        }
+
+        function removeMember(memberId) {
+            if (confirm('Are you sure you want to remove this member?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `{% url 'portal:organisation-members' organisation.id %}?member_id=${memberId}`;
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = '{{ csrf_token }}';
+                form.appendChild(csrfInput);
+                
+                form.submit();
+            }
+        }
+    </script>
+{% endif %}
+{% endblock %} 
