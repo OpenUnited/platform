@@ -90,3 +90,4 @@ wcwidth==0.2.13
 websockets==11.0.3
 whitenoise==6.6.0
 django-csp==3.8
+django-widget-tweaks==1.5.0

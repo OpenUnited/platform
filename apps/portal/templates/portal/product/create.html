@@ -3,7 +3,15 @@
 {% block content %}
 <div class="dashboard-content max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold">Create New Product</h1>
+        <div class="space-y-1">
+            <!-- Organization breadcrumb -->
+            <div class="text-sm text-base-content/60">
+                <a href="{% url 'portal:organisation-detail' organisation.id %}" class="hover:text-base-content">
+                    {{ organisation.name }}
+                </a>
+            </div>
+            <h1 class="text-2xl font-bold">Create New Product</h1>
+        </div>
         <a href="{% url 'portal:dashboard' %}" class="btn btn-ghost btn-sm">
             ← Back to Dashboard
         </a>

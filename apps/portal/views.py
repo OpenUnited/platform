@@ -617,7 +617,17 @@ class OrganisationBaseView(PortalBaseView):
             if not user_orgs.filter(id=org_id).exists():
                 messages.error(request, "Access denied to this organisation")
                 return redirect('portal:dashboard')
+            # Set the current organisation ID in session when viewing org pages
+            request.session['current_organisation_id'] = org_id
+            request.session.modified = True
         return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add current_organisation_id to context for menu highlighting
+        if 'org_id' in self.kwargs:
+            context['current_organisation_id'] = int(self.kwargs['org_id'])
+        return context
 
 
 class OrganisationListView(OrganisationBaseView):
