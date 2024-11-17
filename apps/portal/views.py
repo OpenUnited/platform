@@ -54,12 +54,18 @@ logger = logging.getLogger(__name__)
 
 class PortalBaseView(LoginRequiredMixin, TemplateView):
     """Base view for portal pages."""
-    login_url = 'sign_in'
+    def get_login_url(self):
+        return reverse('security:sign_in')
+    
     portal_service = PortalService()
     role_service = RoleService()
     
     def get_current_organisation(self, request):
         """Get the current organisation from session or default to first available."""
+        # Add safety check for anonymous users
+        if not request.user.is_authenticated:
+            return None
+            
         current_org_id = request.session.get('current_organisation_id')
         person = request.user.person
         
@@ -79,6 +85,10 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
     
     def dispatch(self, request, *args, **kwargs):
         """Common permission checking and org context setting."""
+        # Add safety check for anonymous users
+        if not request.user.is_authenticated:
+            return redirect(self.get_login_url())
+            
         try:
             # Set current_organisation as an instance variable
             self.current_organisation = self.get_current_organisation(request)
