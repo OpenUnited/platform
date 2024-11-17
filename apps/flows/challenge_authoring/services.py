@@ -88,9 +88,9 @@ class ChallengeAuthoringService:
         self.product = get_object_or_404(Product, slug=product_slug)
         self.role_service = RoleService()
         
-        # Check if user is product manager
-        if not self.role_service.is_product_manager(self.user.person, self.product):
-            raise PermissionDenied("Must be product manager")
+        # Check for either manager or admin role
+        if not RoleService.has_product_management_access(self.user.person, self.product):
+            raise PermissionDenied("Must be product manager or admin")
 
     def create_challenge(self, challenge_data, bounties_data):
         errors = {}

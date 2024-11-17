@@ -299,18 +299,48 @@ class IdeasAndBugsService:
 
 class ProductManagementService:
     @staticmethod
-    def create_product(form_data: dict, person: Person) -> Product:
+    def create_product(form_data: dict, person: Person, organisation: Organisation = None) -> Product:
+        """
+        Create a product and assign the creator as admin
+        
+        Args:
+            form_data: Cleaned form data
+            person: Person creating the product
+            organisation: Optional organisation to own the product
+            
+        Returns:
+            Created Product instance
+        """
+        logger.info(f"Creating product - person: {person}, org: {organisation}")
+        
         if not form_data.get('name'):
             raise InvalidInputError("Product name is required")
             
         try:
-            product = Product.objects.create(
-                **form_data,
-                person=person
+            product_data = form_data.copy()
+            if organisation:
+                product_data['organisation'] = organisation
+            
+            # Create the product
+            product = Product.objects.create(**product_data)
+            logger.info(f"Product created: {product.id} - {product.name}")
+            
+            # Assign creator as admin
+            RoleService.assign_product_role(
+                person=person,
+                product=product,
+                role=ProductRoleAssignment.ProductRoles.ADMIN
             )
+            logger.info(f"Assigned {person} as ADMIN for product {product.id}")
+            
             return product
+            
         except ValidationError as e:
+            logger.error(f"Validation error creating product: {str(e)}")
             raise InvalidInputError(str(e))
+        except Exception as e:
+            logger.error(f"Error creating product: {str(e)}", exc_info=True)
+            raise InvalidInputError(f"Failed to create product: {str(e)}")
 
     @staticmethod
     def update_product(product: Product, form_data: Dict) -> Tuple[bool, Optional[str]]:

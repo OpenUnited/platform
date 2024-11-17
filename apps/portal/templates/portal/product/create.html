@@ -1,0 +1,120 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="dashboard-content max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Create New Product</h1>
+        <a href="{% url 'portal:dashboard' %}" class="btn btn-ghost btn-sm">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <form method="post" 
+                  action="{{ request.path }}"
+                  enctype="multipart/form-data" 
+                  class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Product Name -->
+                <div>
+                    <label for="{{ form.name.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Product Name
+                    </label>
+                    <input type="text" 
+                           name="{{ form.name.name }}"
+                           id="{{ form.name.id_for_label }}"
+                           class="input input-bordered w-full"
+                           value="{{ form.name.value|default:'' }}"
+                           required>
+                    {% if form.name.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- URL Slug -->
+                <div>
+                    <label for="{{ form.slug.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        URL Slug
+                    </label>
+                    <input type="text" 
+                           name="{{ form.slug.name }}"
+                           id="{{ form.slug.id_for_label }}"
+                           class="input input-bordered w-full"
+                           value="{{ form.slug.value|default:'' }}"
+                           required>
+                    {% if form.slug.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.slug.errors.0 }}</div>
+                    {% endif %}
+                    <div class="text-sm text-base-content/70 mt-1">URL-friendly name (e.g., "my-product"). Letters, numbers, and hyphens only.</div>
+                </div>
+
+                <!-- Short Description -->
+                <div>
+                    <label for="{{ form.short_description.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Short Description
+                    </label>
+                    <textarea name="{{ form.short_description.name }}"
+                              id="{{ form.short_description.id_for_label }}"
+                              class="textarea textarea-bordered w-full"
+                              rows="3"
+                              required>{{ form.short_description.value|default:'' }}</textarea>
+                    {% if form.short_description.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.short_description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Visibility -->
+                <div>
+                    <label for="{{ form.visibility.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Visibility
+                    </label>
+                    <select name="{{ form.visibility.name }}"
+                            id="{{ form.visibility.id_for_label }}"
+                            class="select select-bordered w-full"
+                            required>
+                        {% for value, label in form.fields.visibility.choices %}
+                            <option value="{{ value }}" 
+                                    {% if form.visibility.value == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.visibility.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.visibility.errors.0 }}</div>
+                    {% endif %}
+                    <div class="text-sm text-base-content/70 mt-1">Who can see this product</div>
+                </div>
+
+                <!-- Photo -->
+                <div>
+                    <label for="{{ form.photo.id_for_label }}" 
+                           class="block text-sm font-medium mb-2">
+                        Product Photo
+                    </label>
+                    <input type="file" 
+                           name="{{ form.photo.name }}"
+                           id="{{ form.photo.id_for_label }}"
+                           class="file-input file-input-bordered w-full"
+                           accept="image/*">
+                    {% if form.photo.errors %}
+                        <div class="text-error text-sm mt-1">{{ form.photo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Create Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -13,7 +13,7 @@ from django.contrib import messages
 from apps.capabilities.product_management.models import Product
 from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.security.models import OrganisationPersonRoleAssignment
-from apps.capabilities.security.services import RoleService, OrganisationRoleService
+from apps.capabilities.security.services import RoleService
 from django.conf import settings
 
 from apps.common.mixins import AttachmentMixin
@@ -23,6 +23,9 @@ from apps.portal.forms import (
     ProductSettingsForm, 
     AgreementTemplateForm,
     OrganisationSettingsForm,
+    CreateOrganisationForm,
+    CreateProductForm,
+    ProductForm,
 )
 from .services import (
     PortalService,
@@ -43,6 +46,7 @@ from django.core.exceptions import PermissionDenied
 import logging
 from django.db import connection
 from django.db.models import Q
+from apps.capabilities.product_management.services import ProductManagementService
 
 logger = logging.getLogger(__name__)
 
@@ -53,14 +57,30 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
     portal_service = PortalService()
     role_service = RoleService()
     
-    def handle_service_error(self, error: PortalError):
-        """Handle service layer errors consistently."""
-        messages.error(self.request, str(error))
-        return redirect('portal:dashboard')
+    def get_current_organisation(self, request):
+        """Get the current organisation from session or default to first available."""
+        current_org_id = request.session.get('current_organisation_id')
+        person = request.user.person
+        
+        # Get user's organizations
+        roles_summary = self.role_service.get_person_roles_summary(person)
+        user_orgs = [item['organisation'] for item in roles_summary['organisations']]
+        
+        if user_orgs:
+            if current_org_id:
+                # Try to find the org from session
+                current_org = next((org for org in user_orgs if org.id == current_org_id), None)
+                if current_org:
+                    return current_org
+            # If no org in session or not found, default to first
+            return user_orgs[0]
+        return None
     
     def dispatch(self, request, *args, **kwargs):
-        """Common permission checking."""
+        """Common permission checking and org context setting."""
         try:
+            # Set current_organisation as an instance variable
+            self.current_organisation = self.get_current_organisation(request)
             return super().dispatch(request, *args, **kwargs)
         except PortalError as e:
             return self.handle_service_error(e)
@@ -69,48 +89,49 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
         """Add common context data."""
         context = super().get_context_data(**kwargs)
         try:
-            context.update(self.portal_service.get_user_context(self.request.user.person))
-        except PortalError as e:
-            messages.warning(self.request, str(e))
-        # Add user's products to context for the sidebar using RoleService
-        context['user_products'] = RoleService.get_user_products(self.request.user.person)
-        
-        # Add current product slug if it exists in the URL kwargs
-        if 'product_slug' in self.kwargs:
-            context['current_product_slug'] = self.kwargs['product_slug']
+            person = self.request.user.person
             
-        # Get current org ID from session or URL
-        current_org_id = self.request.session.get('current_organisation_id')
-        if 'org_id' in self.kwargs:
-            current_org_id = self.kwargs['org_id']
+            # Get current organisation from session
+            current_org_id = self.request.session.get('current_organisation_id')
+            logger.info(f"Current org ID from session: {current_org_id}")
             
-        # Get user's organizations and roles
-        person = self.request.user.person
-        roles_summary = self.role_service.get_person_roles_summary(person)
-        user_orgs = [item['organisation'] for item in roles_summary['organisations']]
-        
-        # Get current org and its products
-        current_org = None
-        org_products = []
-        if user_orgs:
+            # Get all user organizations
+            user_orgs = RoleService.get_user_organisations(person)
+            
+            # Get current org
+            current_org = None
             if current_org_id:
-                current_org = next((org for org in user_orgs if org.id == current_org_id), user_orgs[0])
-            else:
-                current_org = user_orgs[0]
+                current_org = Organisation.objects.filter(id=current_org_id).first()
+            if not current_org and user_orgs.exists():
+                current_org = user_orgs.first()
                 
+            logger.info(f"Selected organization: {current_org.name if current_org else None}")
+            
+            # Get products specifically for the current organization
+            organisation_products = []
             if current_org:
-                org_products = Product.objects.filter(organisation=current_org)
-        
-        context.update({
-            'user_organisations': user_orgs,
-            'current_organisation': current_org,
-            'organisation_products': org_products,
-            'can_manage_org': current_org and self.role_service.is_organisation_manager(
-                person, 
-                current_org
-            ) if current_org else False
-        })
+                organisation_products = RoleService.get_organisation_products(current_org)
+                logger.info(f"Found {len(organisation_products)} products for org {current_org.name}")
+            
+            context.update({
+                'current_organisation': current_org,
+                'user_organisations': user_orgs,
+                'organisation_products': organisation_products,
+                'can_manage_org': current_org and RoleService.is_organisation_manager(
+                    person, 
+                    current_org
+                ) if current_org else False
+            })
+            
+        except Exception as e:
+            logger.error(f"Error in PortalBaseView.get_context_data: {str(e)}")
+            messages.error(self.request, "Error loading portal context")
         return context
+    
+    def handle_service_error(self, error: PortalError):
+        """Handle service layer errors consistently."""
+        messages.error(self.request, str(error))
+        return redirect('portal:dashboard')
 
 
 class PortalProductSummaryView(PortalBaseView, AttachmentMixin):
@@ -575,7 +596,7 @@ class OrganisationBaseView(PortalBaseView):
     def dispatch(self, request, *args, **kwargs):
         if 'org_id' in kwargs:
             org_id = kwargs['org_id']
-            user_orgs = OrganisationRoleService.get_user_organisations(request.user.person)
+            user_orgs = RoleService.get_user_organisations(request.user.person)
             if not user_orgs.filter(id=org_id).exists():
                 messages.error(request, "Access denied to this organisation")
                 return redirect('portal:dashboard')
@@ -588,6 +609,9 @@ class OrganisationListView(OrganisationBaseView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['user_organisations'] = RoleService.get_person_organisations_with_roles(
+            self.request.user.person
+        )
         context['page_title'] = "My Organisations"
         return context
 
@@ -598,57 +622,18 @@ class OrganisationDetailView(OrganisationBaseView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        org_id = self.kwargs['org_id']
-        organisation = get_object_or_404(Organisation, id=org_id)
-        person = self.request.user.person
+        organisation = get_object_or_404(Organisation, id=self.kwargs['org_id'])
         
-        # Debug logging
-        logger.info(f"Checking access for person {person.id} to org {organisation.id}")
-        
-        # Get the raw assignment record
-        from apps.capabilities.security.models import OrganisationPersonRoleAssignment
-        assignment = OrganisationPersonRoleAssignment.objects.filter(
-            person=person,
-            organisation=organisation
-        ).first()
-        
-        if assignment:
-            logger.info(f"Found role assignment: {assignment.role}")
-            
-            # Check specific role access using constants from model
-            has_role = RoleService.has_organisation_role(
-                person, 
-                organisation,
-                [
-                    OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
-                    OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER,
-                    OrganisationPersonRoleAssignment.OrganisationRoles.MEMBER
-                ]
-            )
-            logger.info(f"Has required role: {has_role}")
-
-            if not has_role:
-                logger.warning(f"Access denied despite having role {assignment.role}")
-                raise PermissionDenied("You don't have access to this organisation")
-        else:
-            logger.warning(f"No role assignment found for person {person.id} and org {organisation.id}")
-            raise PermissionDenied("You don't have access to this organisation")
-        
-        # Get all organization members using the correct method
-        members = RoleService.get_organisation_members(organisation)
-        
-        # Get the role assignments for display
-        member_roles = OrganisationPersonRoleAssignment.objects.filter(
-            organisation=organisation
-        ).select_related('person')
+        # Update to use RoleService
+        user_orgs = RoleService.get_user_organisations(self.request.user.person)
         
         context.update({
             'organisation': organisation,
-            'products': OrganisationRoleService.get_organisation_products(organisation),
-            'members': member_roles,  # Contains the role information for the table
-            'members_count': members.count(),  # Use the members queryset for the count
-            'page_title': organisation.name,
-            'can_manage': RoleService.is_organisation_manager(person, organisation)
+            'products': RoleService.get_organisation_products(organisation),
+            'can_manage': RoleService.is_organisation_manager(
+                self.request.user.person,
+                organisation
+            )
         })
         return context
 
@@ -657,18 +642,45 @@ class SwitchOrganisationView(OrganisationBaseView):
     """Handle switching between organisations"""
     
     def post(self, request, org_id):
+        logger.info(f"Attempting to switch to organisation {org_id}")
         person = request.user.person
         organisation = get_object_or_404(Organisation, id=org_id)
         
-        # Verify user has access to this organisation
-        if not RoleService.has_organisation_role(person, organisation, 
-            ['OWNER', 'MANAGER', 'MEMBER']):
+        logger.info(f"Found organisation: {organisation.name}")
+        
+        # Debug current roles
+        roles = RoleService.get_organisation_roles(person, organisation)
+        logger.info(f"User roles for org: {[r.role for r in roles]}")
+        
+        # Verify user has access to this organisation using RoleService
+        has_access = RoleService.has_organisation_role(
+            person, 
+            organisation,
+            [
+                OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER,
+                OrganisationPersonRoleAssignment.OrganisationRoles.MEMBER
+            ]
+        )
+        logger.info(f"User has access: {has_access}")
+        
+        if not has_access:
+            logger.warning(f"Access denied for user {person.id} to org {org_id}")
             messages.error(request, "Access denied to this organisation")
-            return redirect('portal:dashboard')
+            return redirect('portal:organisations')
             
-        request.session['current_organisation_id'] = org_id
-        messages.success(request, "Organisation context switched successfully")
-        return redirect(request.META.get('HTTP_REFERER', 'portal:dashboard'))
+        # Debug session before
+        logger.info(f"Session before switch: {dict(request.session)}")
+        
+        # Update the session with the new organisation
+        request.session['current_organisation_id'] = organisation.id
+        request.session.modified = True
+        
+        # Debug session after
+        logger.info(f"Session after switch: {dict(request.session)}")
+        
+        messages.success(request, f"Switched to {organisation.name}")
+        return redirect('portal:dashboard')
 
 
 class OrganisationSettingsView(OrganisationBaseView):
@@ -775,3 +787,83 @@ class ProductSummaryView(PortalBaseView):
             'debug': settings.DEBUG,
         })
         return context
+
+
+class CreateOrganisationView(PortalBaseView):
+    """View for creating new organisations"""
+    template_name = "portal/organisation/create.html"
+
+    def post(self, request):
+        form = CreateOrganisationForm(request.POST, request.FILES)
+        if form.is_valid():
+            organisation = form.save()
+            
+            # Use RoleService to assign the owner role
+            RoleService.assign_organisation_role(
+                person=request.user.person,
+                organisation=organisation,
+                role=OrganisationPersonRoleAssignment.OrganisationRoles.OWNER
+            )
+            
+            logger.info(f"Created organisation {organisation.name} with owner {request.user.person.id}")
+            
+            messages.success(request, "Organisation created successfully")
+            return redirect('portal:organisation-detail', org_id=organisation.id)
+            
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
+class CreateProductView(PortalBaseView):
+    template_name = 'portal/product/create.html'
+    
+    def get(self, request, org_id):
+        context = self.get_context_data()
+        logger.info(f"CreateProductView GET - org_id: {org_id}, current_org: {self.current_organisation}")
+        
+        if not self.current_organisation:
+            messages.error(request, "Please select or create an organisation first")
+            return redirect('portal:dashboard')
+            
+        form = CreateProductForm(organisation=self.current_organisation)
+        context.update({
+            'form': form,
+            'organisation': self.current_organisation
+        })
+        return render(request, self.template_name, context)
+    
+    def post(self, request, org_id):
+        logger.info(f"CreateProductView POST - org_id: {org_id}")
+        logger.info(f"Current organisation: {self.current_organisation}")
+        
+        form = CreateProductForm(
+            request.POST, 
+            request.FILES,
+            organisation=self.current_organisation
+        )
+        
+        if form.is_valid():
+            logger.info(f"Form is valid, cleaned_data: {form.cleaned_data}")
+            try:
+                # Pass both person and organisation
+                product = ProductManagementService.create_product(
+                    form_data=form.cleaned_data,
+                    person=request.user.person,  # Add this
+                    organisation=self.current_organisation
+                )
+                logger.info(f"Product created successfully: {product.id} - {product.name}")
+                messages.success(request, "Product created successfully")
+                return redirect('portal:product-summary', product_slug=product.slug)
+            except InvalidInputError as e:
+                logger.error(f"Error creating product: {str(e)}")
+                messages.error(request, str(e))
+        else:
+            logger.warning(f"Form validation failed: {form.errors}")
+            
+        context = self.get_context_data()
+        context.update({
+            'form': form,
+            'organisation': self.current_organisation
+        })
+        return render(request, self.template_name, context)

@@ -2,35 +2,40 @@
 
 {% block content %}
 <div class="dashboard-content">
-    <h1 class="text-2xl font-bold mb-6">My Organisations</h1>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">My Organisations</h1>
+        <a href="{% url 'portal:create-organisation' %}" class="btn btn-primary btn-sm">
+            Create Organisation
+        </a>
+    </div>
 
     {% if user_organisations %}
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {% for org in user_organisations %}
+            {% for assignment in user_organisations %}
                 <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-200">
                     <div class="card-body">
                         <div class="flex items-center gap-4 mb-4">
-                            {% if org.logo %}
-                                <img src="{{ org.logo.url }}" alt="{{ org.name }}" class="w-12 h-12 rounded-full">
+                            {% if assignment.organisation.logo %}
+                                <img src="{{ assignment.organisation.logo.url }}" alt="{{ assignment.organisation.name }}" class="w-12 h-12 rounded-full">
                             {% else %}
                                 <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <span class="text-xl font-bold text-primary">{{ org.name|first }}</span>
+                                    <span class="text-xl font-bold text-primary">{{ assignment.organisation.name|first }}</span>
                                 </div>
                             {% endif %}
-                            <h3 class="card-title text-lg">{{ org.name }}</h3>
+                            <h3 class="card-title text-lg">{{ assignment.organisation.name }}</h3>
                         </div>
 
-                        {% if org.description %}
-                            <p class="text-base-content/70 mb-4">{{ org.description }}</p>
-                        {% endif %}
+                        <div class="text-sm text-base-content/70 mb-4">
+                            Role: {{ assignment.get_role_display }}
+                        </div>
 
                         <div class="card-actions flex-col gap-3 mt-auto pt-4 border-t border-base-200">
                             <div class="flex justify-between w-full">
-                                <a href="{% url 'portal:organisation-detail' org.id %}" 
+                                <a href="{% url 'portal:organisation-detail' assignment.organisation.id %}" 
                                    class="btn btn-primary btn-sm">
                                     View Details
                                 </a>
-                                <form method="POST" action="{% url 'portal:switch-organisation' org.id %}">
+                                <form method="POST" action="{% url 'portal:switch-organisation' assignment.organisation.id %}">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-ghost btn-sm">
                                         Switch to →
@@ -47,7 +52,13 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <span>You are not a member of any organisations.</span>
+            <div>
+                <h3 class="font-bold">No organisations yet</h3>
+                <div class="text-sm">Create your first organisation to get started!</div>
+            </div>
+            <a href="{% url 'portal:create-organisation' %}" class="btn btn-primary btn-sm">
+                Create Organisation
+            </a>
         </div>
     {% endif %}
 </div>

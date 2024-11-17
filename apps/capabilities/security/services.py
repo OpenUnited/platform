@@ -1,6 +1,9 @@
 from typing import List, Dict, Optional, Union, Tuple
 from django.contrib.auth.hashers import make_password
 from django.db.models import QuerySet, Q
+import logging
+
+logger = logging.getLogger(__name__)
 
 from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.product_management.models import Product
@@ -467,49 +470,59 @@ class RoleService:
 
     @staticmethod
     def has_product_management_access(person: Person, product_or_challenge) -> bool:
-        """
-        Check if person has management-level access to the product
-        
-        Args:
-            person: Person object to check access for
-            product_or_challenge: Product object or any object with a product attribute
-            
-        Returns:
-            bool indicating if person has management access
-        """
         # Get the actual product object if we were passed something else
         if hasattr(product_or_challenge, 'product'):
             product = product_or_challenge.product
         else:
             product = product_or_challenge
             
-        # Direct product ownership
-        if product.person == person:
-            return True
-            
-        # Check product roles (admin, manager)
-        if ProductRoleAssignment.objects.filter(
+        logger.info(f"Checking product management access for person {person.id} on product {product.id}")
+        
+        # Check product roles (admin includes manager permissions)
+        admin_role = ProductRoleAssignment.objects.filter(
             person=person,
             product=product,
-            role__in=[
-                ProductRoleAssignment.ProductRoles.ADMIN,
-                ProductRoleAssignment.ProductRoles.MANAGER
-            ]
-        ).exists():
+            role=ProductRoleAssignment.ProductRoles.ADMIN
+        ).first()
+        
+        if admin_role:
+            logger.info(f"Found admin role: {admin_role.id}")
             return True
             
-        # Check organization access (owner/manager only)
+        logger.info("No admin role found, checking other permissions...")
+        
+        # Direct product ownership
+        if product.person == person:
+            logger.info("Access granted: Direct product owner")
+            return True
+        
+        # Check for manager role
+        manager_role = ProductRoleAssignment.objects.filter(
+            person=person,
+            product=product,
+            role=ProductRoleAssignment.ProductRoles.MANAGER
+        ).first()
+        
+        if manager_role:
+            logger.info(f"Found manager role: {manager_role.id}")
+            return True
+        
+        # Check organisation access (owner/manager only)
         if product.organisation:
-            if OrganisationPersonRoleAssignment.objects.filter(
+            org_role = OrganisationPersonRoleAssignment.objects.filter(
                 person=person,
                 organisation=product.organisation,
                 role__in=[
                     OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
                     OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER
                 ]
-            ).exists():
+            ).first()
+            
+            if org_role:
+                logger.info(f"Access granted: Organisation role {org_role.role}")
                 return True
                 
+        logger.info("Access denied: No management permissions found")
         return False
 
     @staticmethod
@@ -558,10 +571,6 @@ class RoleService:
         
         return False
 
-
-class OrganisationRoleService:
-    """Handles organisation-specific role operations and validations"""
-    
     @staticmethod
     def get_user_organisations(person: Person) -> QuerySet:
         """Get all organisations the person has access to"""
@@ -575,34 +584,3 @@ class OrganisationRoleService:
         return Product.objects.filter(
             organisation=organisation
         ).order_by('name')
-    
-    @staticmethod
-    def get_user_organisation_context(person: Person, current_org_id: Optional[int] = None) -> Dict:
-        """
-        Get organisation context for the user including:
-        - List of organisations they have access to
-        - Currently selected organisation
-        - Products for the current organisation
-        """
-        user_orgs = OrganisationRoleService.get_user_organisations(person)
-        
-        # If no current_org_id provided, use first available org
-        if not current_org_id and user_orgs.exists():
-            current_org = user_orgs.first()
-        else:
-            current_org = user_orgs.filter(id=current_org_id).first() or user_orgs.first()
-            
-        # Get products for current org if one is selected
-        org_products = []
-        if current_org:
-            org_products = OrganisationRoleService.get_organisation_products(current_org)
-            
-        return {
-            'user_organisations': user_orgs,
-            'current_organisation': current_org,
-            'organisation_products': org_products,
-            'can_manage_org': current_org and RoleService.is_organisation_manager(
-                person, 
-                current_org
-            ) if current_org else False
-        }

@@ -110,55 +110,74 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                 </svg>
-                                Product Portfolio
+                                <span class="ml-2">Product Portfolio</span>
                             </summary>
-                            <ul class="menu menu-sm pl-6 mt-2 space-y-1">
-                                {% if user_products %}
-                                    {% for product in user_products %}
-                                    <li>
-                                        <a href="{% url 'portal:product-summary' product.slug %}"
-                                           class="{% if product.slug == current_product_slug %}active{% endif %}">
-                                            {{ product.name }}
-                                        </a>
-                                        
-                                        {% if product.slug == current_product_slug %}
-                                        <ul class="pl-4 mt-1 space-y-1">
-                                            <li><a href="{% url 'portal:product-challenges' product.slug %}"
-                                                  class="{% if request.resolver_match.url_name == 'product-challenges' %}active{% endif %}">
-                                                Challenges
-                                            </a></li>
+                            <ul class="menu menu-sm pl-6 mt-2">
+                                {% if organisation_products %}
+                                    <div class="space-y-1">
+                                        {% for product in organisation_products %}
+                                        <li>
+                                            <a href="{% url 'portal:product-summary' product.slug %}"
+                                               class="{% if product.slug == current_product_slug %}active{% endif %}">
+                                                {{ product.name }}
+                                            </a>
                                             
-                                            <li><a href="{% url 'portal:product-bounties' product.slug %}"
-                                                  class="{% if request.resolver_match.url_name == 'product-bounties' %}active{% endif %}">
-                                                Bounties
-                                            </a></li>
-                                            
-                                            <li><a href="{% url 'portal:product-users' product.slug %}"
-                                                  class="{% if request.resolver_match.url_name == 'product-users' %}active{% endif %}">
-                                                Users
-                                            </a></li>
-                                            
-                                            <li><a href="{% url 'portal:product-review' product.slug %}"
-                                                  class="{% if request.resolver_match.url_name == 'product-review' %}active{% endif %}">
-                                                Review Work
-                                            </a></li>
-                                            
-                                            <li><a href="{% url 'portal:product-agreements' product.slug %}"
-                                                  class="{% if request.resolver_match.url_name == 'product-agreements' %}active{% endif %}">
-                                                Agreements
-                                            </a></li>
+                                            {% if product.slug == current_product_slug %}
+                                            <ul class="pl-4 mt-1 space-y-1">
+                                                <li><a href="{% url 'portal:product-challenges' product.slug %}"
+                                                      class="{% if request.resolver_match.url_name == 'product-challenges' %}active{% endif %}">
+                                                    Challenges
+                                                </a></li>
+                                                
+                                                <li><a href="{% url 'portal:product-bounties' product.slug %}"
+                                                      class="{% if request.resolver_match.url_name == 'product-bounties' %}active{% endif %}">
+                                                    Bounties
+                                                </a></li>
+                                                
+                                                <li><a href="{% url 'portal:product-users' product.slug %}"
+                                                      class="{% if request.resolver_match.url_name == 'product-users' %}active{% endif %}">
+                                                    Users
+                                                </a></li>
+                                                
+                                                <li><a href="{% url 'portal:product-review' product.slug %}"
+                                                      class="{% if request.resolver_match.url_name == 'product-review' %}active{% endif %}">
+                                                    Review Work
+                                                </a></li>
+                                                
+                                                <li><a href="{% url 'portal:product-agreements' product.slug %}"
+                                                      class="{% if request.resolver_match.url_name == 'product-agreements' %}active{% endif %}">
+                                                    Agreements
+                                                </a></li>
 
-                                            <li><a href="{% url 'portal:product-settings' product.slug %}"
-                                                  class="{% if request.resolver_match.url_name == 'product-settings' %}active{% endif %}">
-                                                Settings
-                                            </a></li>
-                                        </ul>
-                                        {% endif %}
+                                                <li><a href="{% url 'portal:product-settings' product.slug %}"
+                                                      class="{% if request.resolver_match.url_name == 'product-settings' %}active{% endif %}">
+                                                    Settings
+                                                </a></li>
+                                            </ul>
+                                            {% endif %}
+                                        </li>
+                                        {% endfor %}
+                                    </div>
+                                    {% if can_manage_org and current_organisation %}
+                                    <li class="mt-6">
+                                        <a href="{% url 'portal:create-product' current_organisation.id %}" 
+                                           class="flex items-center text-gray-600 hover:text-gray-900">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Create Product
+                                        </a>
                                     </li>
-                                    {% endfor %}
+                                    {% endif %}
                                 {% else %}
                                     <li class="menu-disabled">
-                                        <span>No products available</span>
+                                        <span class="text-sm opacity-70">No products available for this organisation</span>
+                                        {% if can_manage_org and current_organisation %}
+                                        <a href="{% url 'portal:create-product' current_organisation.id %}" 
+                                           class="btn btn-primary btn-sm mt-2">
+                                            Create First Product
+                                        </a>
+                                        {% endif %}
                                     </li>
                                 {% endif %}
                             </ul>

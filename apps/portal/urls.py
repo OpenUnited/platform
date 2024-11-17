@@ -54,4 +54,10 @@ urlpatterns = [
     path('organisations/<int:org_id>/members/', 
          views.OrganisationMembersView.as_view(), 
          name='organisation-members'),
+    path('organisations/create/', 
+         views.CreateOrganisationView.as_view(), 
+         name='create-organisation'),
+    path('organisations/<int:org_id>/products/create/', 
+         views.CreateProductView.as_view(), 
+         name='create-product'),
 ]

@@ -12,6 +12,9 @@ from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.talent.models import Person
 from apps.capabilities.product_management.models import ProductContributorAgreementTemplate
 from apps.capabilities.security.models import OrganisationPersonRoleAssignment
+import logging
+
+logger = logging.getLogger(__name__)
 
 class PortalBaseForm(forms.ModelForm):
     """Base form with common styling and functionality."""
@@ -199,3 +202,82 @@ class OrganisationMemberForm(PortalBaseForm):
     class Meta:
         model = OrganisationPersonRoleAssignment
         fields = ['person', 'role']
+
+class CreateOrganisationForm(PortalBaseForm):
+    """Form for creating new organisations"""
+    
+    class Meta:
+        model = Organisation
+        fields = [
+            'name',
+            'username',
+            'photo'
+        ]
+        widgets = {
+            'photo': forms.FileInput(attrs={
+                'class': 'file-input file-input-bordered w-full max-w-xs',
+                'accept': 'image/*'
+            })
+        }
+        help_texts = {
+            'username': 'Username may only contain letters and numbers',
+            'photo': 'Upload an image for your organisation'
+        }
+
+class CreateProductForm(PortalBaseForm):
+    """Form for creating new products"""
+    
+    class Meta:
+        model = Product
+        fields = [
+            'name',
+            'slug',
+            'short_description',
+            'photo',
+            'visibility',
+            'organisation',
+        ]
+        widgets = {
+            'photo': forms.FileInput(attrs={
+                'class': 'file-input file-input-bordered w-full max-w-xs',
+                'accept': 'image/*'
+            }),
+            'short_description': forms.Textarea(attrs={
+                'class': 'textarea textarea-bordered w-full',
+                'rows': 3
+            }),
+            'visibility': forms.Select(attrs={
+                'class': 'select select-bordered w-full'
+            }),
+            'organisation': forms.HiddenInput()
+        }
+
+    def __init__(self, *args, organisation=None, **kwargs):
+        logger.info(f"CreateProductForm init - organisation: {organisation}")
+        self.organisation = organisation
+        super().__init__(*args, **kwargs)
+        self.fields['visibility'].initial = 'public'
+        if organisation:
+            self.fields['organisation'].initial = organisation.id
+            
+    def clean(self):
+        cleaned_data = super().clean()
+        logger.info(f"CreateProductForm clean - data before: {cleaned_data}")
+        
+        # Set the organisation from the form instance
+        if self.organisation:
+            cleaned_data['organisation'] = self.organisation
+            logger.info(f"Setting organisation in clean: {self.organisation.id}")
+        else:
+            logger.error("No organisation available in form!")
+            
+        logger.info(f"CreateProductForm clean - data after: {cleaned_data}")
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        logger.info(f"CreateProductForm save - instance before save: {instance.__dict__}")
+        if commit:
+            instance.save()
+            logger.info(f"Product saved with ID: {instance.id}")
+        return instance

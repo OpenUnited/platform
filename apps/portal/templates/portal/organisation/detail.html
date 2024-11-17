@@ -48,7 +48,16 @@
 
     <!-- Products Section -->
     <div class="mb-8">
-        <h2 class="text-xl font-bold mb-4">Products</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Products</h2>
+            {% if can_manage %}
+                <a href="{% url 'portal:create-product' organisation.id %}" 
+                   class="btn btn-primary btn-sm">
+                    Create Product
+                </a>
+            {% endif %}
+        </div>
+        
         {% if products %}
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {% for product in products %}
@@ -71,6 +80,12 @@
         {% else %}
             <div class="alert alert-info">
                 <span>No products available.</span>
+                {% if can_manage %}
+                    <a href="{% url 'portal:create-product' organisation.id %}" 
+                       class="btn btn-primary btn-sm">
+                        Create First Product
+                    </a>
+                {% endif %}
             </div>
         {% endif %}
     </div>

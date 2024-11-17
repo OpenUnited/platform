@@ -81,20 +81,84 @@ class PortalBaseService:
         
         return context
 
+    def get_current_organisation(self, request):
+        """Get the current organisation from session or default to first available."""
+        current_org_id = request.session.get('current_organisation_id')
+        logger.info(f"Getting current org - session org_id: {current_org_id}")
+        
+        if not current_org_id:
+            logger.warning("No current_organisation_id in session")
+            return None
+            
+        try:
+            org = Organisation.objects.get(id=current_org_id)
+            logger.info(f"Found current org: {org.id} - {org.name}")
+            return org
+        except Organisation.DoesNotExist:
+            logger.error(f"Organisation {current_org_id} not found")
+            return None
+
 
 class PortalService(PortalBaseService):
     """Main service for portal operations."""
     
     def get_user_context(self, person: Optional[Person]) -> Dict[str, Any]:
-        """Get basic context for user including products they have access to."""
+        """Get basic context for user including products and organizations they have access to."""
         if not person:
             raise PortalError("No person associated with user")
             
+        # Get current organization from session if available
+        current_org_id = self.request.session.get('current_organisation_id') if hasattr(self, 'request') else None
+        
+        # Get all organizations the user has access to with their roles
+        user_orgs = RoleService.get_person_organisations_with_roles(person)
+        
+        # If we have a current_org_id, find it in the user's orgs
+        current_org = None
+        if current_org_id:
+            for org_assignment in user_orgs:
+                if org_assignment.organisation.id == current_org_id:
+                    current_org = org_assignment.organisation
+                    break
+        
+        # If no current org found, use the first available
+        if not current_org and user_orgs:
+            current_org = user_orgs[0].organisation
+            
+        # Get products for the current organization
+        org_products = []
+        if current_org:
+            org_products = Product.objects.filter(
+                organisation=current_org
+            ).order_by('name')
+            
         return {
+            "person": person,
+            "current_organisation": current_org,
+            "user_organisations": user_orgs,
+            "organisation_products": org_products,
             "products": RoleService.get_user_products(person=person),
             "managed_products": RoleService.get_managed_products(person=person),
-            "person": person,
+            "can_manage_org": current_org and RoleService.is_organisation_manager(
+                person, 
+                current_org
+            ) if current_org else False
         }
+
+    def switch_organisation(self, person: Person, org_id: int) -> Organisation:
+        """Handle organization switching."""
+        organisation = get_object_or_404(Organisation, id=org_id)
+        
+        # Verify user has access to this organisation
+        has_access = RoleService.has_organisation_role(
+            person, 
+            organisation
+        )
+        
+        if not has_access:
+            raise PermissionDenied("User does not have access to this organisation")
+        
+        return organisation
 
     def get_product_detail_context(self, slug: str, person: Person, tab: str = 'challenges') -> Dict[str, Any]:
         """Get context data for product detail view."""

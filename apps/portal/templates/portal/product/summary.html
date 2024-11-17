@@ -107,8 +107,14 @@
             <div class="card-body">
                 <h2 class="card-title">Quick Actions</h2>
                 <div class="space-y-2">
-                    <button class="btn btn-primary w-full">Create Challenge</button>
-                    <button class="btn btn-secondary w-full">Manage Users</button>
+                    <a href="{% url 'challenge_authoring:create' product_slug=product.slug %}" 
+                       class="btn btn-primary w-full">
+                        Create Challenge
+                    </a>
+                    <a href="{% url 'portal:product-users' product_slug=product.slug %}" 
+                       class="btn btn-secondary w-full">
+                        Manage Users
+                    </a>
                     <button class="btn btn-accent w-full">View Analytics</button>
                 </div>
             </div>
