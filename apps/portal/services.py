@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 import logging
 from django.db.models import Count
 
+from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.product_management.models import (
     Product,
     ProductContributorAgreementTemplate,
@@ -194,9 +195,28 @@ class PortalService(PortalBaseService):
         if not person:
             raise PortalError("No person associated with user")
             
-        # Get user's products and claims
-        user_products = RoleService.get_user_products(person=person)
-        bounty_claims = BountyClaim.objects.filter(
+        context = {
+            "person": person,
+            "page_title": "Dashboard",
+        }
+        
+        # Get personal products
+        context["personal_products"] = Product.objects.filter(person=person)
+        
+        # Get current organisation and its products if in org context
+        if hasattr(person, 'request') and person.request.session.get('current_organisation_id'):
+            org_id = person.request.session['current_organisation_id']
+            current_org = Organisation.objects.filter(id=org_id).first()
+            
+            if current_org:
+                # Get organisation-specific data
+                context["organisation_products"] = Product.objects.filter(
+                    organisation=current_org
+                ).select_related('organisation')
+                context["current_organisation"] = current_org
+        
+        # Get bounty claims regardless of context
+        context["active_bounty_claims"] = BountyClaim.objects.filter(
             person=person,
             status__in=[
                 BountyClaim.Status.GRANTED,
@@ -204,13 +224,7 @@ class PortalService(PortalBaseService):
             ]
         ).select_related('bounty', 'bounty__challenge', 'bounty__challenge__product')
         
-        return {
-            "products": user_products,
-            "managed_products": RoleService.get_managed_products(person=person),
-            "person": person,
-            "active_bounty_claims": bounty_claims,
-            "page_title": "Dashboard"
-        }
+        return context
 
     def get_product_summary_context(self, slug: str, person: Person) -> Dict[str, Any]:
         """Get context data for product summary view."""

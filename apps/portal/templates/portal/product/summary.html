@@ -65,11 +65,40 @@
 
     <!-- Additional Content -->
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <!-- Recent Activity -->
+        <!-- Product Team (replacing Recent Activity) -->
         <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
-                <h2 class="card-title">Recent Activity</h2>
-                <!-- Add recent activity content here -->
+                <h2 class="card-title">Product Team</h2>
+                {% if product_roles %}
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra w-full">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for role in product_roles %}
+                                    <tr>
+                                        <td>{{ role.person.full_name }}</td>
+                                        <td>
+                                            <div class="badge badge-outline">
+                                                {{ role.get_role_display }}
+                                            </div>
+                                        </td>
+                                        <td class="text-sm text-base-content/70">
+                                            {{ role.created_at|date:"M j, Y" }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-base-content/70">No team members yet</p>
+                {% endif %}
             </div>
         </div>
 

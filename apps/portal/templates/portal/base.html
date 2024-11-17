@@ -26,6 +26,18 @@
             <a href="/" class="btn btn-ghost">
                 <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="OpenUnited Logo">
             </a>
+            {% if current_organisation %}
+            <div class="divider divider-horizontal"></div>
+            <div class="text-sm flex items-center gap-3">
+                <div>
+                    <i class="fas fa-building"></i>
+                    {{ current_organisation.name }}
+                </div>
+                <a href="{% url 'portal:organisations' %}" class="link link-hover text-xs opacity-70">
+                    Switch organisation
+                </a>
+            </div>
+            {% endif %}
         </div>
         
         <!-- Right side - User Menu -->

@@ -13,7 +13,8 @@ from django.contrib import messages
 from apps.capabilities.product_management.models import Product
 from apps.capabilities.commerce.models import Organisation
 from apps.capabilities.security.models import OrganisationPersonRoleAssignment
-
+from apps.capabilities.security.services import RoleService, OrganisationRoleService
+from django.conf import settings
 
 from apps.common.mixins import AttachmentMixin
 from apps.portal.forms import (
@@ -31,7 +32,6 @@ from .services import (
     BountyDeliveryReviewService,
     PortalError,
     AgreementTemplateService,
-    RoleService,
 )
 from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -40,6 +40,11 @@ from django.urls import reverse_lazy
 from apps.capabilities.product_management.models import Product  # Adjust import path as needed
 from apps.capabilities.product_management.models import ProductContributorAgreementTemplate  # Adjust import path as needed
 from django.core.exceptions import PermissionDenied
+import logging
+from django.db import connection
+from django.db.models import Q
+
+logger = logging.getLogger(__name__)
 
 
 class PortalBaseView(LoginRequiredMixin, TemplateView):
@@ -570,7 +575,7 @@ class OrganisationBaseView(PortalBaseView):
     def dispatch(self, request, *args, **kwargs):
         if 'org_id' in kwargs:
             org_id = kwargs['org_id']
-            user_orgs = self.organisation_service.get_user_organisations(request.user.person)
+            user_orgs = OrganisationRoleService.get_user_organisations(request.user.person)
             if not user_orgs.filter(id=org_id).exists():
                 messages.error(request, "Access denied to this organisation")
                 return redirect('portal:dashboard')
@@ -597,15 +602,53 @@ class OrganisationDetailView(OrganisationBaseView):
         organisation = get_object_or_404(Organisation, id=org_id)
         person = self.request.user.person
         
-        if not RoleService.has_organisation_role(person, organisation, 
-            ['OWNER', 'MANAGER', 'MEMBER']):
+        # Debug logging
+        logger.info(f"Checking access for person {person.id} to org {organisation.id}")
+        
+        # Get the raw assignment record
+        from apps.capabilities.security.models import OrganisationPersonRoleAssignment
+        assignment = OrganisationPersonRoleAssignment.objects.filter(
+            person=person,
+            organisation=organisation
+        ).first()
+        
+        if assignment:
+            logger.info(f"Found role assignment: {assignment.role}")
+            
+            # Check specific role access using constants from model
+            has_role = RoleService.has_organisation_role(
+                person, 
+                organisation,
+                [
+                    OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MEMBER
+                ]
+            )
+            logger.info(f"Has required role: {has_role}")
+
+            if not has_role:
+                logger.warning(f"Access denied despite having role {assignment.role}")
+                raise PermissionDenied("You don't have access to this organisation")
+        else:
+            logger.warning(f"No role assignment found for person {person.id} and org {organisation.id}")
             raise PermissionDenied("You don't have access to this organisation")
+        
+        # Get all organization members using the correct method
+        members = RoleService.get_organisation_members(organisation)
+        
+        # Get the role assignments for display
+        member_roles = OrganisationPersonRoleAssignment.objects.filter(
+            organisation=organisation
+        ).select_related('person')
         
         context.update({
             'organisation': organisation,
-            'products': Product.objects.filter(organisation=organisation),
-            'members': RoleService.get_organisation_roles(organisation=organisation),
-            'page_title': organisation.name
+            'products': OrganisationRoleService.get_organisation_products(organisation),
+            'members': member_roles,  # Contains the role information for the table
+            'members_count': members.count(),  # Use the members queryset for the count
+            'page_title': organisation.name,
+            'can_manage': RoleService.is_organisation_manager(person, organisation)
         })
         return context
 
@@ -682,8 +725,53 @@ class OrganisationMembersView(OrganisationBaseView):
         
         context.update({
             'organisation': organisation,
-            'members': RoleService.get_organisation_roles(organisation=organisation),
+            'members': RoleService.get_organisation_members(organisation),
             'can_manage': RoleService.is_organisation_manager(person, organisation),
             'page_title': f"Members - {organisation.name}"
+        })
+        return context
+
+
+class ProductDetailView(PortalBaseView):
+    template_name = "portal/product/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        person = self.request.user.person
+
+        # Get product roles
+        from apps.capabilities.security.models import ProductRoleAssignment
+        product_roles = ProductRoleAssignment.objects.filter(
+            product=product
+        ).select_related('person')
+
+        context.update({
+            'product': product,
+            'product_roles': product_roles,
+        })
+        return context
+
+
+class ProductSummaryView(PortalBaseView):
+    template_name = "portal/product/summary.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        
+        # Get product roles
+        from apps.capabilities.security.models import ProductRoleAssignment
+        product_roles = ProductRoleAssignment.objects.filter(
+            product=product
+        ).select_related('person').order_by('person__full_name')
+
+        context.update({
+            'product': product,
+            'product_roles': product_roles,
+            'active_challenges_count': self.get_active_challenges_count(),
+            'open_bounties_count': self.get_open_bounties_count(),
+            'active_contributors_count': self.get_active_contributors_count(),
+            'debug': settings.DEBUG,
         })
         return context

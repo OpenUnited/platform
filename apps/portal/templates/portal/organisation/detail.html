@@ -33,10 +33,10 @@
                 <p class="text-base-content/70">{{ organisation.description }}</p>
             {% endif %}
 
-            <div class="stats shadow mt-4">
+            <div class="stats">
                 <div class="stat">
                     <div class="stat-title">Products</div>
-                    <div class="stat-value">{{ products.count }}</div>
+                    <div class="stat-value">{{ products|length }}</div>
                 </div>
                 <div class="stat">
                     <div class="stat-title">Members</div>
