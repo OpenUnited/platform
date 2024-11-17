@@ -105,115 +105,136 @@
 
         <div class="drawer-side">
             <label for="drawer-toggle" class="drawer-overlay"></label>
-            <!-- Sidebar content here -->
             <div class="bg-base-100 w-64 min-h-full pt-16">
-                <!-- Previous sidebar content goes here -->
                 <div class="p-4">
-                    <h2 class="text-xl font-semibold">Portal</h2>
+                    <h2 class="text-xl">Portal</h2>
                 </div>
-                <nav class="menu p-4">
-                    <ul class="space-y-2">
-                        <!-- Dashboard -->
-                        <li>
-                            <a href="{% url 'portal:dashboard' %}" 
-                               class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                <ul class="menu">
+                    <!-- Dashboard -->
+                    <li>
+                        <a href="{% url 'portal:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                            <span class="flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                                 </svg>
                                 Dashboard
-                            </a>
-                        </li>
+                            </span>
+                        </a>
+                    </li>
 
-                        <!-- Products Dropdown -->
-                        <li x-data="{ open: {% if 'product-' in request.resolver_match.url_name %}true{% else %}false{% endif %} }">
-                            <details :open="open">
-                                <summary class="flex items-center">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                    </svg>
-                                    <span class="ml-2">Product Portfolio</span>
-                                </summary>
-                                <ul class="menu menu-sm pl-6 mt-2">
-                                    {% if organisation_products %}
-                                        <div class="space-y-1">
-                                            {% for product in organisation_products %}
-                                            <li>
-                                                <a href="{% url 'portal:product-summary' product.slug %}"
-                                                   class="{% if product.slug == current_product_slug %}active{% endif %}">
-                                                    {{ product.name }}
-                                                </a>
-                                                
-                                                {% if product.slug == current_product_slug %}
-                                                <ul class="pl-4 mt-1 space-y-1">
-                                                    <li><a href="{% url 'portal:product-challenges' product.slug %}"
-                                                          class="{% if request.resolver_match.url_name == 'product-challenges' %}active{% endif %}">
+                    <!-- Product Portfolio -->
+                    <li>
+                        <details {% if current_product_slug %}open{% endif %}>
+                            <summary>
+                                <span class="flex items-center">
+                                    <span class="mr-2">📦</span>
+                                    Product Portfolio
+                                </span>
+                            </summary>
+                            <ul>
+                                {% for product in organisation_products %}
+                                    <li>
+                                        <a href="{% url 'portal:product-summary' product.slug %}"
+                                           class="{% if product.slug == current_product_slug and request.resolver_match.url_name == 'product-summary' %}active{% endif %}">
+                                            {{ product.name }}
+                                        </a>
+                                        {% if product.slug == current_product_slug %}
+                                            <ul class="pl-4 mt-1 space-y-1">
+                                                <li>
+                                                    <a href="{% url 'portal:product-challenges' product.slug %}"
+                                                       class="{% if request.resolver_match.url_name == 'product-challenges' %}active{% endif %}">
                                                         Challenges
-                                                    </a></li>
-                                                    
-                                                    <li><a href="{% url 'portal:product-bounties' product.slug %}"
-                                                          class="{% if request.resolver_match.url_name == 'product-bounties' %}active{% endif %}">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'portal:product-bounties' product.slug %}"
+                                                       class="{% if request.resolver_match.url_name == 'product-bounties' %}active{% endif %}">
                                                         Bounties
-                                                    </a></li>
-                                                    
-                                                    <li><a href="{% url 'portal:product-users' product.slug %}"
-                                                          class="{% if request.resolver_match.url_name == 'product-users' %}active{% endif %}">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'portal:product-users' product.slug %}"
+                                                       class="{% if request.resolver_match.url_name == 'product-users' %}active{% endif %}">
                                                         Users
-                                                    </a></li>
-                                                    
-                                                    <li><a href="{% url 'portal:product-review' product.slug %}"
-                                                          class="{% if request.resolver_match.url_name == 'product-review' %}active{% endif %}">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'portal:product-review' product.slug %}"
+                                                       class="{% if request.resolver_match.url_name == 'product-review' %}active{% endif %}">
                                                         Review Work
-                                                    </a></li>
-                                                    
-                                                    <li><a href="{% url 'portal:product-agreements' product.slug %}"
-                                                          class="{% if request.resolver_match.url_name == 'product-agreements' %}active{% endif %}">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'portal:product-agreements' product.slug %}"
+                                                       class="{% if request.resolver_match.url_name == 'product-agreements' %}active{% endif %}">
                                                         Agreements
-                                                    </a></li>
-
-                                                    <li><a href="{% url 'portal:product-settings' product.slug %}"
-                                                          class="{% if request.resolver_match.url_name == 'product-settings' %}active{% endif %}">
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'portal:product-settings' product.slug %}"
+                                                       class="{% if request.resolver_match.url_name == 'product-settings' %}active{% endif %}">
                                                         Settings
-                                                    </a></li>
-                                                </ul>
-                                                {% endif %}
-                                            </li>
-                                            {% endfor %}
-                                        </div>
-                                        {% if can_manage_org and current_organisation %}
-                                        <li class="mt-6">
-                                            <a href="{% url 'portal:create-product' current_organisation.id %}" 
-                                               class="flex items-center text-gray-600 hover:text-gray-900">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                                </svg>
-                                                Create Product
-                                            </a>
-                                        </li>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         {% endif %}
-                                    {% else %}
-                                        <li class="menu-disabled">
-                                            <span class="text-sm opacity-70">No products available for this organisation</span>
-                                            {% if can_manage_org and current_organisation %}
-                                            <a href="{% url 'portal:create-product' current_organisation.id %}" 
-                                               class="btn btn-primary btn-sm mt-2">
-                                                Create First Product
-                                            </a>
-                                            {% endif %}
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </details>
-                        </li>
-                        <li>
-                            <a href="{% url 'portal:organisations' %}" class="flex items-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
-                                Organisations
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                                    </li>
+                                {% endfor %}
+                                <li>
+                                    <a href="{% url 'portal:create-product' current_organisation.id %}">
+                                        + Create Product
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+
+                    <!-- Organizations -->
+                    <li>
+                        <details {% if current_organisation and not current_product_slug %}open{% endif %}>
+                            <summary>
+                                <span class="flex items-center">
+                                    <span class="mr-2">🏢</span>
+                                    Organisations
+                                </span>
+                            </summary>
+                            <ul>
+                                {% for org in user_organisations %}
+                                    <li>
+                                        <a href="{% url 'portal:organisation-detail' org.id %}"
+                                           class="{% if org.id == current_organisation.id and not current_product_slug %}active{% endif %}">
+                                            {{ org.name }}
+                                        </a>
+                                        {% if org.id == current_organisation.id and not current_product_slug %}
+                                            <ul>
+                                                <li>
+                                                    <a href="{% url 'portal:organisation-members' org.id %}"
+                                                       class="{% if request.resolver_match.url_name == 'organisation-members' %}active{% endif %}">
+                                                        Members
+                                                    </a>
+                                                </li>
+                                                {% if can_manage_org %}
+                                                    <li>
+                                                        <a href="{% url 'portal:organisation-settings' org.id %}"
+                                                           class="{% if request.resolver_match.url_name == 'organisation-settings' %}active{% endif %}">
+                                                            Settings
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                                <li>
+                                    <a href="{% url 'portal:create-organisation' %}">
+                                        + Create Organisation
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

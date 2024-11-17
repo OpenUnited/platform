@@ -43,6 +43,7 @@ THIRD_PARTIES = [
     "corsheaders",
     "tinymce",
     "csp",
+    "widget_tweaks",
 ]
 BUILTIN_APPS = [
     "jazzmin",

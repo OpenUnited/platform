@@ -584,3 +584,15 @@ class RoleService:
         return Product.objects.filter(
             organisation=organisation
         ).order_by('name')
+
+    @staticmethod
+    def has_organisation_admin_rights(person: Person, organisation: Organisation) -> bool:
+        """Check if person has admin rights (OWNER or MANAGER) in the organisation"""
+        return OrganisationPersonRoleAssignment.objects.filter(
+            person=person,
+            organisation=organisation,
+            role__in=[
+                OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER
+            ]
+        ).exists()

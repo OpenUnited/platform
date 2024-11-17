@@ -1,4 +1,5 @@
 {% extends "portal/base.html" %}
+{% load widget_tweaks %}
 
 {% block content %}
 <div class="dashboard-content max-w-4xl mx-auto">
@@ -11,41 +12,50 @@
     </div>
 
     <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
+        <div class="card-body p-8">
+            <form method="post" enctype="multipart/form-data" class="space-y-8">
                 {% csrf_token %}
                 
                 <!-- Organisation Name -->
-                <div>
+                <div class="space-y-2">
                     <label for="{{ form.name.id_for_label }}" 
-                           class="block text-sm font-medium mb-2">
+                           class="block text-lg font-medium">
                         Organisation Name
                     </label>
-                    {{ form.name }}
+                    <input type="text" 
+                           name="{{ form.name.name }}" 
+                           id="{{ form.name.id_for_label }}"
+                           value="{{ form.name.value|default:'' }}"
+                           class="input input-bordered w-full">
                     {% if form.name.errors %}
-                        <div class="text-error text-sm mt-1">{{ form.name.errors.0 }}</div>
+                        <div class="text-error text-sm">{{ form.name.errors.0 }}</div>
                     {% endif %}
                 </div>
 
                 <!-- Username -->
-                <div>
+                <div class="space-y-2">
                     <label for="{{ form.username.id_for_label }}" 
-                           class="block text-sm font-medium mb-2">
+                           class="block text-lg font-medium">
                         Username
                     </label>
-                    {{ form.username }}
+                    <input type="text" 
+                           name="{{ form.username.name }}"
+                           id="{{ form.username.id_for_label }}"
+                           value="{{ form.username.value|default:'' }}"
+                           class="input input-bordered w-full"
+                           {% if form.username.field.required %}required{% endif %}>
                     {% if form.username.errors %}
-                        <div class="text-error text-sm mt-1">{{ form.username.errors.0 }}</div>
+                        <div class="text-error text-sm">{{ form.username.errors.0 }}</div>
                     {% endif %}
                     {% if form.username.help_text %}
-                        <div class="text-sm text-base-content/70 mt-1">{{ form.username.help_text }}</div>
+                        <div class="text-sm text-base-content/70">{{ form.username.help_text }}</div>
                     {% endif %}
                 </div>
 
                 <!-- Photo -->
-                <div>
+                <div class="space-y-2">
                     <label for="{{ form.photo.id_for_label }}" 
-                           class="block text-sm font-medium mb-2">
+                           class="block text-lg font-medium">
                         Organisation Photo
                     </label>
                     {% if organisation.photo %}
@@ -55,9 +65,15 @@
                                  class="w-32 h-32 object-cover rounded-lg">
                         </div>
                     {% endif %}
-                    {{ form.photo }}
+                    <div class="flex items-center space-x-3">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('{{ form.photo.id_for_label }}').click()">
+                            Choose File
+                        </button>
+                        <span class="text-sm text-base-content/70" id="file-name">No file chosen</span>
+                    </div>
+                    {{ form.photo|add_class:"hidden" }}
                     {% if form.photo.errors %}
-                        <div class="text-error text-sm mt-1">{{ form.photo.errors.0 }}</div>
+                        <div class="text-error text-sm">{{ form.photo.errors.0 }}</div>
                     {% endif %}
                 </div>
 
@@ -71,4 +87,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Update file name display when file is selected
+    document.getElementById('{{ form.photo.id_for_label }}').addEventListener('change', function(e) {
+        const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+        document.getElementById('file-name').textContent = fileName;
+    });
+</script>
 {% endblock %} 

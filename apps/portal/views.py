@@ -116,8 +116,13 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
             if not current_org and user_orgs.exists():
                 current_org = user_orgs.first()
                 
-            logger.info(f"Selected organization: {current_org.name if current_org else None}")
-            
+            # Get current product slug from URL if available
+            current_product_slug = None
+            if 'product_slug' in self.kwargs:
+                current_product_slug = self.kwargs['product_slug']
+                
+            logger.info(f"Current product slug: {current_product_slug}")
+                
             # Get products specifically for the current organization
             organisation_products = []
             if current_org:
@@ -128,6 +133,7 @@ class PortalBaseView(LoginRequiredMixin, TemplateView):
                 'current_organisation': current_org,
                 'user_organisations': user_orgs,
                 'organisation_products': organisation_products,
+                'current_product_slug': current_product_slug,
                 'can_manage_org': current_org and RoleService.is_organisation_manager(
                     person, 
                     current_org
@@ -742,14 +748,14 @@ class OrganisationMembersView(OrganisationBaseView):
         organisation = get_object_or_404(Organisation, id=org_id)
         person = self.request.user.person
         
-        if not RoleService.has_organisation_role(person, organisation, 
-            ['OWNER', 'MANAGER', 'MEMBER']):
-            raise PermissionDenied("You don't have access to this organisation")
+        # Check for admin rights (OWNER or MANAGER)
+        if not RoleService.has_organisation_admin_rights(person, organisation):
+            raise PermissionDenied("You must be an owner or manager to view organization members")
         
         context.update({
             'organisation': organisation,
             'members': RoleService.get_organisation_members(organisation),
-            'can_manage': RoleService.is_organisation_manager(person, organisation),
+            'can_manage': True,  # They must be admin to get here
             'page_title': f"Members - {organisation.name}"
         })
         return context
