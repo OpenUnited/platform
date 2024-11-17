@@ -27,6 +27,7 @@ django-extensions==3.2.3
 django-filter==23.5
 django-formtools==2.4.1
 django-htmx==1.17.3
+django-jazzmin==2.6.0
 django-js-asset==2.2.0
 django-lifecycle==1.2.3
 django-model-utils==4.5.1
