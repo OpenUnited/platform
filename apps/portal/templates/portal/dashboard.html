@@ -9,18 +9,18 @@
         <!-- Organization's Products Section -->
         <div class="mb-8">
             <div class="space-y-6">
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h2 class="text-2xl font-semibold">Organisation Products</h2>
                     {% if can_manage_org and current_organisation %}
                     <a href="{% url 'portal:create-product' current_organisation.id %}" 
-                       class="btn btn-primary">
+                       class="btn btn-primary w-full sm:w-auto">
                         Create Product
                     </a>
                     {% endif %}
                 </div>
                 
                 {% if organisation_products %}
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
                         {% for product in organisation_products %}
                             <div class="card bg-base-100 shadow-xl">
                                 <div class="card-body">

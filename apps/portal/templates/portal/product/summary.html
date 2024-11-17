@@ -2,123 +2,111 @@
 
 {% block content %}
 <div class="container mx-auto p-4">
-    <!-- Product Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold">
-            {{ product.name }}
-        </h1>
-        {% if product.description %}
-        <p class="mt-2 text-base-content/70">
-            {{ product.description }}
-        </p>
-        {% endif %}
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <!-- Debug Card -->
-        {% if debug %}
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h3 class="card-title text-sm">Debug Values</h3>
-                <div class="text-sm">
-                    <p>active_challenges_count: {{ active_challenges_count }}</p>
-                    <p>open_bounties_count: {{ open_bounties_count }}</p>
-                    <p>active_contributors_count: {{ active_contributors_count }}</p>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Available Points -->
-        <div class="stats shadow bg-base-100">
-            <div class="stat">
-                <div class="stat-title">Available Points</div>
-                <div class="stat-value">1,000</div>
-            </div>
-        </div>
-
-        <!-- Active Challenges -->
-        <div class="stats shadow bg-base-100">
-            <div class="stat">
-                <div class="stat-title">Active Challenges</div>
-                <div class="stat-value">{{ active_challenges_count }}</div>
-            </div>
-        </div>
-
-        <!-- Open Bounties -->
-        <div class="stats shadow bg-base-100">
-            <div class="stat">
-                <div class="stat-title">Open Bounties</div>
-                <div class="stat-value">{{ open_bounties_count }}</div>
-            </div>
-        </div>
-
-        <!-- Active Contributors -->
-        <div class="stats shadow bg-base-100">
-            <div class="stat">
-                <div class="stat-title">Active Contributors</div>
-                <div class="stat-value">{{ active_contributors_count }}</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Additional Content -->
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <!-- Product Team (replacing Recent Activity) -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title">Product Team</h2>
-                {% if product_roles %}
-                    <div class="overflow-x-auto">
-                        <table class="table table-zebra w-full">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Joined</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for role in product_roles %}
-                                    <tr>
-                                        <td>{{ role.person.full_name }}</td>
-                                        <td>
-                                            <div class="badge badge-outline">
-                                                {{ role.get_role_display }}
-                                            </div>
-                                        </td>
-                                        <td class="text-sm text-base-content/70">
-                                            {{ role.created_at|date:"M j, Y" }}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p class="text-base-content/70">No team members yet</p>
-                {% endif %}
-            </div>
+    <!-- Header Section with Quick Actions -->
+    <div class="bg-base-100 rounded-xl shadow-lg p-6 mb-8">
+        <!-- Title and Description -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold">{{ product.name }}</h1>
+            {% if product.description %}
+                <p class="text-base-content/70 mt-2">{{ product.description }}</p>
+            {% endif %}
         </div>
 
         <!-- Quick Actions -->
-        <div class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <h2 class="card-title">Quick Actions</h2>
-                <div class="space-y-2">
-                    <a href="{% url 'challenge_authoring:create' product_slug=product.slug %}" 
-                       class="btn btn-primary w-full">
-                        Create Challenge
-                    </a>
-                    <a href="{% url 'portal:product-users' product_slug=product.slug %}" 
-                       class="btn btn-secondary w-full">
-                        Manage Users
-                    </a>
-                    <button class="btn btn-accent w-full">View Analytics</button>
-                </div>
+        <div>
+            <h2 class="text-xl font-bold mb-4">Quick Actions</h2>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{% url 'challenge_authoring:create' product_slug=product.slug %}" 
+                   class="btn btn-primary flex-1">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Create Challenge
+                </a>
+                <a href="{% url 'portal:product-users' product_slug=product.slug %}" 
+                   class="btn btn-secondary flex-1">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    Manage Users
+                </a>
+                <button class="btn btn-accent flex-1">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    View Analytics
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card bg-base-100 p-6 rounded-xl shadow-lg">
+            <div class="text-base-content/70 text-sm font-medium">Available Points</div>
+            <div class="text-3xl font-bold mt-2">1,000</div>
+        </div>
+
+        <div class="stat-card bg-base-100 p-6 rounded-xl shadow-lg">
+            <div class="text-base-content/70 text-sm font-medium">Active Challenges</div>
+            <div class="text-3xl font-bold mt-2">{{ active_challenges_count }}</div>
+        </div>
+
+        <div class="stat-card bg-base-100 p-6 rounded-xl shadow-lg">
+            <div class="text-base-content/70 text-sm font-medium">Open Bounties</div>
+            <div class="text-3xl font-bold mt-2">{{ open_bounties_count }}</div>
+        </div>
+
+        <div class="stat-card bg-base-100 p-6 rounded-xl shadow-lg">
+            <div class="text-base-content/70 text-sm font-medium">Active Contributors</div>
+            <div class="text-3xl font-bold mt-2">{{ active_contributors_count }}</div>
+        </div>
+    </div>
+
+    <!-- Product Team -->
+    <div class="bg-base-100 p-6 rounded-xl shadow-lg">
+        <h2 class="text-xl font-bold mb-6">Product Team</h2>
+        {% if product_roles %}
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for role in product_roles %}
+                            <tr>
+                                <td>{{ role.person.full_name }}</td>
+                                <td>
+                                    <div class="badge badge-outline">
+                                        {{ role.get_role_display }}
+                                    </div>
+                                </td>
+                                <td class="text-sm text-base-content/70">
+                                    {{ role.created_at|date:"M j, Y" }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-base-content/70">No team members yet</p>
+        {% endif %}
+    </div>
+
+    {% if debug %}
+    <div class="mt-8 bg-base-100 p-6 rounded-xl shadow-lg">
+        <h3 class="font-bold mb-2">Debug Values</h3>
+        <div class="text-sm">
+            <p>active_challenges_count: {{ active_challenges_count }}</p>
+            <p>open_bounties_count: {{ open_bounties_count }}</p>
+            <p>active_contributors_count: {{ active_contributors_count }}</p>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %} 
