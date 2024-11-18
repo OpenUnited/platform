@@ -402,3 +402,8 @@ class Media:
     css = {
         'all': ['admin/css/custom_admin.css']
     }
+
+# Groq settings
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+if not GROQ_API_KEY:
+    raise ImproperlyConfigured("GROQ_API_KEY is required")

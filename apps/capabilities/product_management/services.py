@@ -7,6 +7,11 @@ from django.http import HttpResponse
 from itertools import groupby
 from operator import attrgetter
 from urllib.parse import urlparse
+from abc import ABC, abstractmethod
+from django.conf import settings
+import httpx
+import time
+import json
 
 from apps.capabilities.talent.models import Person, Expertise
 from apps.capabilities.security.services import RoleService
@@ -16,6 +21,7 @@ from apps.capabilities.commerce.models import Organisation
 from . import forms
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.common.exceptions import ServiceException, InvalidInputError, ResourceNotFoundError
+from apps.portal.services.ai_services import LLMService
 
 logger = logging.getLogger(__name__)
 
@@ -516,3 +522,4 @@ class ProductContentService:
             'initiative_count': Initiative.objects.filter(product=product).count(),
             'challenge_count': Challenge.objects.filter(product=product).count()
         }
+

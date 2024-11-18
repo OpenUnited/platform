@@ -91,3 +91,7 @@ websockets==11.0.3
 whitenoise==6.6.0
 django-csp==3.8
 django-widget-tweaks==1.5.0
+anthropic>=0.8.0
+openai>=1.0.0
+groq>=0.4.0
+tenacity>=8.0.0

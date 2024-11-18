@@ -16,6 +16,7 @@ from apps.capabilities.security.models import OrganisationPersonRoleAssignment
 from apps.capabilities.security.services import RoleService
 from django.conf import settings
 
+from apps.common.exceptions import InvalidInputError
 from apps.common.mixins import AttachmentMixin
 from apps.portal.forms import (
     PortalProductForm, 
@@ -27,7 +28,7 @@ from apps.portal.forms import (
     CreateProductForm,
     ProductForm,
 )
-from .services import (
+from .services.portal_services import (
     PortalService,
     BountyService,
     ProductUserService,
@@ -48,6 +49,14 @@ from django.db import connection
 from django.db.models import Q
 from apps.capabilities.product_management.services import ProductManagementService
 from django.db import transaction
+from django.http import HttpResponseRedirect, JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
+import json
+from .services.product_tree_services import ProductTreeService
+from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -907,3 +916,204 @@ class CreateProductView(PortalBaseView):
             'organisation': self.current_organisation
         })
         return render(request, self.template_name, context)
+
+
+class ProductTreeView(PortalBaseView):
+    """View for creating a new product tree."""
+    template_name = 'portal/product/product_trees/edit.html'
+    
+    def get(self, request, product_slug):
+        product = get_object_or_404(Product, slug=product_slug)
+        
+        # Get your tree data
+        tree_data = {
+            "name": product.name,
+            "description": product.full_description,
+            "children": []  # Add your actual tree data here
+        }
+        
+        context = self.get_context_data()
+        context.update({
+            'product': product,
+            'current_organisation': product.organisation,
+            'tree_data': json.dumps(json.dumps(tree_data))  # Double encode to match template
+        })
+        return render(request, self.template_name, context)
+
+
+class CreateProductTreeView(PortalBaseView):
+    """View for showing the initial tree creation form."""
+    template_name = "portal/product/product_trees/create.html"
+    
+    def get(self, request, product_slug):
+        product = get_object_or_404(Product, slug=product_slug)
+        context = self.get_context_data()
+        context.update({
+            'product': product
+        })
+        return render(request, self.template_name, context)
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class GenerateProductTreeView(PortalBaseView):
+    """API endpoint for generating product tree."""
+    template_name = 'portal/product/product_trees/edit.html'
+    
+    def post(self, request, product_slug):
+        try:
+            product = get_object_or_404(Product, slug=product_slug)
+            
+            if not RoleService.has_product_management_access(request.user.person, product):
+                messages.error(request, "You don't have permission to edit this product")
+                return redirect('portal:view-product-tree', product_slug=product_slug)
+            
+            additional_context = request.POST.get('context', '')
+            
+            tree_service = ProductTreeService()
+            try:
+                success, tree_data, error = tree_service.generate_initial_tree(
+                    product=product,
+                    additional_context=additional_context
+                )
+            except Exception as e:
+                if '503' in str(e):
+                    messages.error(
+                        request, 
+                        "The AI service is temporarily unavailable. Please wait a few minutes and try again."
+                    )
+                else:
+                    messages.error(
+                        request, 
+                        "Failed to generate tree. Please try again or contact support if the problem persists."
+                    )
+                logger.exception("Tree generation failed")
+                return redirect('portal:create-product-tree', product_slug=product_slug)
+
+            if success:
+                # Render the edit template directly with the generated tree
+                context = self.get_context_data()
+                context.update({
+                    'product': product,
+                    'tree_data': json.dumps(tree_data),
+                    'current_organisation': product.organisation,
+                    'edit_mode': True
+                })
+                return render(request, self.template_name, context)
+            
+            messages.error(request, f"Failed to generate tree: {error}")
+            return redirect('portal:create-product-tree', product_slug=product_slug)
+            
+        except Exception as e:
+            logger.exception("Unexpected error in GenerateProductTreeView")
+            messages.error(request, "An unexpected error occurred. Please try again.")
+            return redirect('portal:create-product-tree', product_slug=product_slug)
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class RefineProductTreeView(View):
+    """View for refining product tree."""
+    
+    def post(self, request, product_slug):
+        try:
+            product = get_object_or_404(Product, slug=product_slug)
+            current_tree = request.POST.get('current_tree')
+            feedback = request.POST.get('feedback')
+            
+            tree_service = ProductTreeService()
+            success, refined_tree, error = tree_service.refine_tree(
+                product=product,
+                current_tree=current_tree,
+                feedback=feedback
+            )
+            
+            if success:
+                # Pass the refined tree to edit view via POST
+                return render(request, 'portal/product/product_trees/edit.html', {
+                    'product': product,
+                    'tree_data': json.loads(refined_tree)
+                })
+            
+            messages.error(request, f"Failed to refine tree: {error}")
+            return redirect('portal:edit-product-tree', product_slug=product_slug)
+            
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('portal:edit-product-tree', product_slug=product_slug)
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class SaveProductTreeView(View):
+    """View for saving final product tree."""
+    
+    def post(self, request, product_slug):
+        try:
+            product = get_object_or_404(Product, slug=product_slug)
+            tree = request.POST.get('tree')
+            
+            tree_service = ProductTreeService()
+            success, error = tree_service.save_tree(
+                product=product,
+                tree=tree
+            )
+            
+            if success:
+                messages.success(request, "Tree saved successfully")
+                return redirect('portal:view-product-tree', product_slug=product_slug)
+            else:
+                messages.error(request, f"Failed to save tree: {error}")
+                return redirect('portal:edit-product-tree', product_slug=product_slug)
+                
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('portal:edit-product-tree', product_slug=product_slug)
+
+
+class ViewProductTreeView(PortalBaseView):
+    """View for displaying saved product tree."""
+    template_name = "portal/product/product_trees/view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
+        tree_service = ProductTreeService()
+        context['product'] = product
+        context['tree_data'] = tree_service.get_tree(product)
+        return context
+
+
+class EditProductTreeView(PortalBaseView):
+    """View for editing product tree."""
+    template_name = "portal/product/product_trees/edit.html"
+    
+    def get(self, request, product_slug):
+        try:
+            context = self.get_context_data()
+            product = get_object_or_404(Product, slug=product_slug)
+            
+            tree_service = ProductTreeService()
+            tree_data = tree_service.get_tree(product)
+            
+            # Ensure we have valid data before JSON encoding
+            if tree_data is None:
+                tree_data = {
+                    "name": product.name,
+                    "description": product.description or "",
+                    "lens_type": "experience",
+                    "children": []
+                }
+            
+            # Use json.dumps with proper escaping
+            json_data = json.dumps(tree_data, ensure_ascii=False)
+            
+            context.update({
+                'product': product,
+                'tree_data': json_data
+            })
+            
+            return render(request, self.template_name, context)
+            
+        except Exception as e:
+            print("Error in EditProductTreeView:", str(e))
+            messages.error(request, str(e))
+            return redirect('portal:view-product-tree', product_slug=product_slug)
+

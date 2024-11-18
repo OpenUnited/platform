@@ -60,4 +60,25 @@ urlpatterns = [
     path('organisations/<int:org_id>/products/create/', 
          views.CreateProductView.as_view(), 
          name='create-product'),
+    
+    # Product Tree URLs
+    path('product/<slug:product_slug>/tree/', 
+         views.ViewProductTreeView.as_view(), 
+         name='view-product-tree'),
+    path('product/<slug:product_slug>/tree/create/', 
+         views.CreateProductTreeView.as_view(), 
+         name='create-product-tree'),
+    path('product/<slug:product_slug>/tree/edit/', 
+         views.EditProductTreeView.as_view(), 
+         name='edit-product-tree'),
+    path('product/<slug:product_slug>/tree/refine/', 
+         views.RefineProductTreeView.as_view(), 
+         name='refine-product-tree'),
+    # API endpoints
+    path('product/<slug:product_slug>/tree/generate/', 
+         views.GenerateProductTreeView.as_view(), 
+         name='generate-product-tree'),
+    path('product/<slug:product_slug>/tree/save/', 
+         views.SaveProductTreeView.as_view(), 
+         name='save-product-tree'),
 ]

@@ -16,7 +16,7 @@
     {% block extra_css %}{% endblock %}
 
     <!-- Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="h-screen bg-base-200">
     <!-- Top Navigation Bar -->
@@ -144,6 +144,12 @@
                                                 <a href="{% url 'portal:product-challenges' product.slug %}"
                                                    class="{% if request.resolver_match.url_name == 'product-challenges' %}active{% endif %}">
                                                     Challenges
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'portal:view-product-tree' product.slug %}"
+                                                   class="{% if request.resolver_match.url_name == 'view-product-tree' %}active{% endif %}">
+                                                    Product Tree
                                                 </a>
                                             </li>
                                             <li>
