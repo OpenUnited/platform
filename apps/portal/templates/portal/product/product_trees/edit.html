@@ -1,0 +1,77 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl mb-4">Edit Product Tree</h1>
+    
+    <script id="tree-data" type="application/json">{{ tree_data|safe }}</script>
+    
+    <div x-data="{ 
+        treeData: null,
+        
+        init() {
+            const rawData = document.getElementById('tree-data').textContent;
+            this.treeData = JSON.parse(JSON.parse(rawData));
+        }
+    }">
+        <!-- Tree Node Template -->
+        <template x-if="treeData">
+            <div class="space-y-2">
+                <div class="collapse collapse-arrow bg-base-100">
+                    <input type="checkbox" class="collapse-toggle">
+                    <div class="collapse-title py-2">
+                        <h3 class="text-xl font-bold" x-text="treeData.name"></h3>
+                        <p class="text-base-content/70 text-sm" x-text="treeData.description"></p>
+                        <span x-show="treeData.lens_type" x-text="treeData.lens_type" class="badge badge-outline badge-sm"></span>
+                    </div>
+                    
+                    <div class="collapse-content py-1">
+                        <div class="ml-4 space-y-2">
+                            <template x-for="child in treeData.children" :key="child.name">
+                                <div class="collapse collapse-arrow bg-base-100">
+                                    <input type="checkbox" class="collapse-toggle">
+                                    <div class="collapse-title py-2">
+                                        <h4 class="font-bold text-base" x-text="child.name"></h4>
+                                        <p class="text-base-content/70 text-sm" x-text="child.description"></p>
+                                        <span x-show="child.lens_type" x-text="child.lens_type" class="badge badge-outline badge-sm"></span>
+                                    </div>
+                                    
+                                    <div class="collapse-content py-1">
+                                        <div class="ml-4 space-y-2">
+                                            <template x-for="grandchild in child.children" :key="grandchild.name">
+                                                <div class="collapse bg-base-100" :class="{'collapse-arrow': grandchild.children && grandchild.children.length > 0}">
+                                                    <input type="checkbox" class="collapse-toggle">
+                                                    <div class="collapse-title py-2">
+                                                        <h5 class="font-bold text-base" x-text="grandchild.name"></h5>
+                                                        <p class="text-base-content/70 text-sm" x-text="grandchild.description"></p>
+                                                        <span x-show="grandchild.lens_type" x-text="grandchild.lens_type" class="badge badge-outline badge-sm"></span>
+                                                    </div>
+                                                    <div class="collapse-content py-1" x-show="grandchild.children && grandchild.children.length > 0">
+                                                        <div class="ml-4 space-y-2">
+                                                            <template x-for="greatGrandchild in grandchild.children" :key="greatGrandchild.name">
+                                                                <div class="collapse bg-base-100">
+                                                                    <div class="collapse-title py-2">
+                                                                        <h6 class="font-bold text-base" x-text="greatGrandchild.name"></h6>
+                                                                        <p class="text-base-content/70 text-sm" x-text="greatGrandchild.description"></p>
+                                                                        <span x-show="greatGrandchild.lens_type" x-text="greatGrandchild.lens_type" class="badge badge-outline badge-sm"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+{% endblock %}
+
