@@ -1,0 +1,56 @@
+{% if request.user.is_authenticated %}
+    {% with person=request.user.person %}
+    <div class="space-y-2">
+        <!-- User Info Section -->
+        <div class="group w-full rounded-md px-3.5 py-2 text-left text-sm font-medium">
+            <span class="flex w-full items-center space-x-3">
+                <img class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
+                     src="{{ person.get_photo_url }}" 
+                     alt="Profile Picture">
+                <span class="flex min-w-0 flex-1 flex-col">
+                    <span class="truncate text-sm font-medium text-gray-900">{{ person.get_full_name }}</span>
+                    <span class="truncate text-sm text-gray-500">@{{ person.get_username }}</span>
+                </span>
+            </span>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="border-t border-gray-200 pt-4">
+            <a href="{% url 'portal:dashboard' %}" 
+               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Portal
+            </a>
+            <a href="{% url 'profile' request.user.person.pk %}"
+               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Your Profile
+            </a>
+            <a href="{% url 'showcase' request.user.username %}"
+               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Visit Showcase
+            </a>
+        </div>
+
+        <!-- Logout Form -->
+        <div class="border-t border-gray-200">
+            <form method="post" action="{% url 'security:logout' %}">
+                {% csrf_token %}
+                <button type="submit" 
+                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    Log out
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endwith %}
+{% else %}
+    <div class="space-y-4 pt-4">
+        <a href="{% url 'security:sign_in' %}" 
+           class="block px-4 py-2 text-sm font-semibold text-gray-900">
+            Sign in <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a href="{% url 'security:sign_up' %}"
+           class="block px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded hover:bg-indigo-500">
+            Sign up
+        </a>
+    </div>
+{% endif %}

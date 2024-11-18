@@ -57,10 +57,56 @@
         </ul>
       </div>
 
-      <div class="navbar-end gap-3">
-        <a class="btn btn-ghost btn-sm" href="{% url "security:sign_in" %}">Sign in</a>
-        <a class="btn btn-primary btn-sm" href="{% url "security:sign_up" %}">Sign up</a>
-      </div>
+      {% if user.is_authenticated %}
+    <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="flex items-center gap-3 hover:bg-base-100 rounded-lg px-3 py-2">
+            <img src="{{ user.person.get_photo_url }}" 
+                 alt="" 
+                 class="w-8 h-8 rounded-full object-cover">
+            <div class="flex flex-col">
+                <span class="font-medium">{{ user.person.get_full_name }}</span>
+                <span class="text-gray-500">@{{ user.username }}</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-2">
+            <li><a href="{% url 'portal:dashboard' %}">Portal</a></li>
+            <li><a href="{% url 'profile' pk=user.person.id %}">Your Profile</a></li>
+            <li><a href="{% url 'showcase' username=user.username %}">Visit Showcase</a></li>
+            <li class="border-t mt-2 pt-2"><a href="{% url 'security:logout' %}">Log out</a></li>
+        </ul>
+    </div>
+{% else %}
+    {% if user.is_authenticated %}
+    <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="flex items-center gap-3 hover:bg-base-100 rounded-lg px-3 py-2">
+            <img src="{{ user.person.get_photo_url }}" 
+                 alt="" 
+                 class="w-8 h-8 rounded-full object-cover">
+            <div class="flex flex-col">
+                <span class="font-medium">{{ user.person.get_full_name }}</span>
+                <span class="text-gray-500">@{{ user.username }}</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-2">
+            <li><a href="{% url 'portal:dashboard' %}">Portal</a></li>
+            <li><a href="{% url 'profile' pk=user.person.id %}">Your Profile</a></li>
+            <li><a href="{% url 'showcase' username=user.username %}">Visit Showcase</a></li>
+            <li class="border-t mt-2 pt-2"><a href="{% url 'security:logout' %}">Log out</a></li>
+        </ul>
+    </div>
+{% else %}
+    <div class="navbar-end gap-3">
+        <a class="btn btn-ghost btn-sm" href="{% url 'security:sign_in' %}">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="{% url 'security:sign_up' %}">Sign up</a>
+    </div>
+{% endif %}
+{% endif %}
     </nav>
 
     <!-- sm screen menu (drawer) -->

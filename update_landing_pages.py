@@ -85,12 +85,38 @@ def update_asset_paths(html_content):
         r'<a href="index\.html"([^>]*)>': r'<a href="{% url "marketing:index" %}"\1>',
         r'<li class="font-medium"><a href="index\.html">Home</a></li>': r'<li class="font-medium"><a href="{% url "marketing:index" %}">Home</a></li>',
         
-        # Auth buttons - replace onclick with href
-        r'<a class="btn btn-ghost btn-sm" onclick="register_modal\.showModal\(\)">Sign in</a>': 
-        r'<a class="btn btn-ghost btn-sm" href="{% url "security:sign_in" %}">Sign in</a>',
-        
-        r'<a class="btn btn-primary btn-sm" onclick="login_modal\.showModal\(\)">Sign up</a>': 
-        r'<a class="btn btn-primary btn-sm" href="{% url "security:sign_up" %}">Sign up</a>',
+        # Auth buttons - replace with styled dropdown menu
+        r'<div class="navbar-end gap-3">\s*' +
+        r'(?:<a[^>]*>Sign in</a>\s*)?' + 
+        r'(?:<a[^>]*>Sign up</a>\s*)?' +
+        r'</div>': 
+        r'''{% if user.is_authenticated %}
+    <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="flex items-center gap-3 hover:bg-base-100 rounded-lg px-3 py-2">
+            <img src="{{ user.person.get_photo_url }}" 
+                 alt="" 
+                 class="w-8 h-8 rounded-full object-cover">
+            <div class="flex flex-col">
+                <span class="font-medium">{{ user.person.get_full_name }}</span>
+                <span class="text-gray-500">@{{ user.username }}</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-2">
+            <li><a href="{% url 'portal:dashboard' %}">Portal</a></li>
+            <li><a href="{% url 'profile' pk=user.person.id %}">Your Profile</a></li>
+            <li><a href="{% url 'showcase' username=user.username %}">Visit Showcase</a></li>
+            <li class="border-t mt-2 pt-2"><a href="{% url 'security:logout' %}">Log out</a></li>
+        </ul>
+    </div>
+{% else %}
+    <div class="navbar-end gap-3">
+        <a class="btn btn-ghost btn-sm" href="{% url 'security:sign_in' %}">Sign in</a>
+        <a class="btn btn-primary btn-sm" href="{% url 'security:sign_up' %}">Sign up</a>
+    </div>
+{% endif %}''',
         
         # Main navigation
         r'href=[\'"]*/(?:index\.html)?[\'"]': r'href="{% url "marketing:index" %}"',
@@ -133,6 +159,11 @@ def update_asset_paths(html_content):
             r'<li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>',
     }
     
+    # Remove the user_menu template tag loading since we don't need it
+    if '{% load user_menu %}' in html_content:
+        html_content = html_content.replace('{% load user_menu %}', '')
+    
+    # Apply replacements
     for old_link, new_link in nav_links.items():
         html_content = re.sub(old_link, new_link, html_content)
     
