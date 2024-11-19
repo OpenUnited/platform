@@ -203,14 +203,14 @@
 
                     <!-- Organizations -->
                     <li>
-                        <details {% if current_organisation_id %}open{% endif %}>
+                        <details open>
                             <summary class="flex items-center">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                 </svg>
                                 <span class="ml-2">Organisations</span>
                             </summary>
-                            <ul class="menu menu-sm pl-6 mt-2 space-y-2">
+                            <ul class="menu menu-sm pl-6 mt-2 space-y-4">
                                 {% for org in user_organisations %}
                                 <li>
                                     <a href="{% url 'portal:organisation-detail' org.id %}"
@@ -235,15 +235,15 @@
                                     {% endif %}
                                 </li>
                                 {% endfor %}
+                                <li class="mt-6">
+                                    <a href="{% url 'portal:create-organisation' %}" class="flex items-center text-gray-600 hover:text-gray-900">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Create Organisation
+                                    </a>
+                                </li>
                             </ul>
-                            <li class="mt-6">
-                                <a href="{% url 'portal:create-organisation' %}" class="flex items-center text-gray-600 hover:text-gray-900">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                    </svg>
-                                    Create Organisation
-                                </a>
-                            </li>
                         </details>
                     </li>
                 </ul>
