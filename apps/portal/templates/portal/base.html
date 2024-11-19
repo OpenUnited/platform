@@ -210,42 +210,24 @@
                                 </svg>
                                 <span class="ml-2">Organisations</span>
                             </summary>
-                            <ul class="menu menu-sm pl-6 mt-2">
+                            <ul class="menu menu-sm pl-6 mt-2 space-y-2">
                                 {% for org in user_organisations %}
-                                <div class="space-y-1">
-                                    <li>
-                                        <a href="{% url 'portal:organisation-detail' org.id %}"
-                                           class="{% if org.id == current_organisation_id %}active{% endif %}">
-                                            {{ org.name }}
-                                        </a>
-                                        {% if org.id == current_organisation_id %}
-                                        <ul class="pl-4 mt-1 space-y-1">
-                                            <li>
-                                                <a href="{% url 'portal:organisation-members' org.id %}"
-                                                   class="{% if request.resolver_match.url_name == 'organisation-members' %}active{% endif %}">
-                                                    Members
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{% url 'portal:organisation-settings' org.id %}"
-                                                   class="{% if request.resolver_match.url_name == 'organisation-settings' %}active{% endif %}">
-                                                    Settings
-                                                </a>
-                                            </li>
-                                        </ul>
-                                        {% endif %}
-                                    </li>
-                                </div>
-                                {% endfor %}
-                                <li class="mt-6">
-                                    <a href="{% url 'portal:create-organisation' %}" class="flex items-center text-gray-600 hover:text-gray-900">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                        </svg>
-                                        Create Organisation
+                                <li>
+                                    <a href="{% url 'portal:organisation-detail' org.id %}"
+                                       class="{% if org.id == current_organisation_id %}active{% endif %}">
+                                        {{ org.name }}
                                     </a>
                                 </li>
+                                {% endfor %}
                             </ul>
+                            <li class="mt-6">
+                                <a href="{% url 'portal:create-organisation' %}" class="flex items-center text-gray-600 hover:text-gray-900">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Create Organisation
+                                </a>
+                            </li>
                         </details>
                     </li>
                 </ul>
