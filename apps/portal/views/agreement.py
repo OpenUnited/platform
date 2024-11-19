@@ -27,33 +27,28 @@ class PortalAgreementTemplatesView(PortalBaseView):
     template_name = "portal/product/agreements/list.html"
     agreement_service = AgreementTemplateService()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        product = get_object_or_404(Product, slug=self.kwargs['product_slug'])
-        
-        if not RoleService.has_product_management_access(self.request.user.person, product):
-            raise PermissionDenied("You don't have permission to view agreement templates")
-            
-        templates = ProductContributorAgreementTemplate.objects.filter(
-            product=product
-        ).order_by('-created_at')
-        
-        context.update({
-            'product': product,
-            'templates': templates,
-            'can_create': True,
-            'page_title': f"Agreement Templates - {product.name}",
-            'active_tab': 'agreements'
-        })
-        return context
-
     def get(self, request, product_slug):
         try:
+            product = get_object_or_404(Product, slug=product_slug)
+            
+            if not RoleService.has_product_management_access(request.user.person, product):
+                messages.error(request, "You don't have permission to view agreement templates")
+                return redirect('portal:product-summary', product_slug=product_slug)
+            
+            templates = ProductContributorAgreementTemplate.objects.filter(
+                product=product
+            ).order_by('-created_at')
+            
             context = self.get_context_data()
+            context.update({
+                'product': product,
+                'templates': templates,
+                'can_create': True,
+                'page_title': f"Agreement Templates - {product.name}",
+                'active_tab': 'agreements'
+            })
             return render(request, self.template_name, context)
-        except PermissionDenied as e:
-            messages.error(request, str(e))
-            return redirect('portal:product-summary', product_slug=product_slug)
+            
         except Exception as e:
             logger.exception("Error in PortalAgreementTemplatesView")
             messages.error(request, "An error occurred while loading agreement templates")
@@ -154,15 +149,31 @@ class ViewAgreementTemplateView(PortalBaseView):
 
     def get(self, request, product_slug, template_id):
         try:
+            product = get_object_or_404(Product, slug=product_slug)
+            template = get_object_or_404(
+                ProductContributorAgreementTemplate,
+                id=template_id,
+                product=product
+            )
+            
+            if not RoleService.has_product_management_access(request.user.person, product):
+                messages.error(request, "You don't have permission to view this template")
+                return redirect('portal:product-summary', product_slug=product_slug)
+            
             context = self.get_context_data()
+            context.update({
+                'product': product,
+                'template': template,
+                'can_edit': True,
+                'page_title': f"View Agreement Template - {template.name}",
+                'active_tab': 'agreements'
+            })
             return render(request, self.template_name, context)
-        except PermissionDenied as e:
-            messages.error(request, str(e))
-            return redirect('portal:agreement-templates', product_slug=product_slug)
+            
         except Exception as e:
             logger.exception("Error in ViewAgreementTemplateView")
             messages.error(request, "An error occurred while loading the template")
-            return redirect('portal:agreement-templates', product_slug=product_slug)
+            return redirect('portal:product-summary', product_slug=product_slug)
 
 
 class EditAgreementTemplateView(PortalBaseView):
