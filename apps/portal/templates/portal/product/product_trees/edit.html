@@ -5,73 +5,57 @@
 <div class="container mx-auto p-4">
     <h1 class="text-2xl mb-4">Edit Product Tree</h1>
     
-    <script id="tree-data" type="application/json">{{ tree_data|safe }}</script>
+    <!-- Convert tree_data to a JavaScript object literal -->
+    <script>
+        window.initialTreeData = JSON.parse('{{ tree_data|escapejs }}');
+        console.log('Initial tree data:', window.initialTreeData);
+    </script>
     
     <div x-data="{ 
-        treeData: null,
+        tree: window.initialTreeData,
+        updatedTree: JSON.parse(JSON.stringify(window.initialTreeData)),
         
         init() {
-            const rawData = document.getElementById('tree-data').textContent;
-            this.treeData = JSON.parse(JSON.parse(rawData));
-        }
-    }">
-        <!-- Tree Node Template -->
-        <template x-if="treeData">
-            <div class="space-y-2">
-                <div class="collapse collapse-arrow bg-base-100">
-                    <input type="checkbox" class="collapse-toggle">
-                    <div class="collapse-title py-2">
-                        <h3 class="text-xl font-bold" x-text="treeData.name"></h3>
-                        <p class="text-base-content/70 text-sm" x-text="treeData.description"></p>
-                        <span x-show="treeData.lens_type" x-text="treeData.lens_type" class="badge badge-outline badge-sm"></span>
+            console.log('Initial tree data:', this.tree);
+            console.log('Editable tree data:', this.updatedTree);
+        },
+        
+        renderNode(node, depth = 0) {
+            if (!node) return '';
+            
+            const childrenHtml = node.children?.length 
+                ? `<div class='collapse-content'>
+                    <div class='space-y-2'>
+                        ${node.children.map(child => this.renderNode(child, depth + 1)).join('')}
                     </div>
-                    
-                    <div class="collapse-content py-1">
-                        <div class="ml-4 space-y-2">
-                            <template x-for="child in treeData.children" :key="child.name">
-                                <div class="collapse collapse-arrow bg-base-100">
-                                    <input type="checkbox" class="collapse-toggle">
-                                    <div class="collapse-title py-2">
-                                        <h4 class="font-bold text-base" x-text="child.name"></h4>
-                                        <p class="text-base-content/70 text-sm" x-text="child.description"></p>
-                                        <span x-show="child.lens_type" x-text="child.lens_type" class="badge badge-outline badge-sm"></span>
-                                    </div>
-                                    
-                                    <div class="collapse-content py-1">
-                                        <div class="ml-4 space-y-2">
-                                            <template x-for="grandchild in child.children" :key="grandchild.name">
-                                                <div class="collapse bg-base-100" :class="{'collapse-arrow': grandchild.children && grandchild.children.length > 0}">
-                                                    <input type="checkbox" class="collapse-toggle">
-                                                    <div class="collapse-title py-2">
-                                                        <h5 class="font-bold text-base" x-text="grandchild.name"></h5>
-                                                        <p class="text-base-content/70 text-sm" x-text="grandchild.description"></p>
-                                                        <span x-show="grandchild.lens_type" x-text="grandchild.lens_type" class="badge badge-outline badge-sm"></span>
-                                                    </div>
-                                                    <div class="collapse-content py-1" x-show="grandchild.children && grandchild.children.length > 0">
-                                                        <div class="ml-4 space-y-2">
-                                                            <template x-for="greatGrandchild in grandchild.children" :key="greatGrandchild.name">
-                                                                <div class="collapse bg-base-100">
-                                                                    <div class="collapse-title py-2">
-                                                                        <h6 class="font-bold text-base" x-text="greatGrandchild.name"></h6>
-                                                                        <p class="text-base-content/70 text-sm" x-text="greatGrandchild.description"></p>
-                                                                        <span x-show="greatGrandchild.lens_type" x-text="greatGrandchild.lens_type" class="badge badge-outline badge-sm"></span>
-                                                                    </div>
-                                                                </div>
-                                                            </template>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
+                   </div>`
+                : '';
+            
+            return `
+                <div class='collapse bg-base-100 ${depth > 0 ? 'ml-4' : ''} ${node.children?.length ? 'collapse-arrow' : ''}'>
+                    <input type='checkbox' 
+                           class='collapse-toggle' 
+                           ${node.children?.length ? '' : 'hidden'}>
+                    <div class='collapse-title py-2'>
+                        <div class='flex items-center justify-between'>
+                            <div>
+                                <h${depth + 3} class='font-bold ${depth === 0 ? 'text-xl' : 'text-base'}'>${node.name}</h${depth + 3}>
+                                <p class='text-base-content/70 text-sm'>${node.description || ''}</p>
+                            </div>
+                            ${node.lens_type ? `<span class='badge badge-outline badge-sm'>${node.lens_type}</span>` : ''}
                         </div>
                     </div>
+                    ${childrenHtml}
                 </div>
-            </div>
+            `;
+        }
+    }">
+        <!-- Root Node -->
+        <template x-if="updatedTree">
+            <div class="space-y-2" x-html="renderNode(updatedTree)"></div>
         </template>
     </div>
 </div>
 {% endblock %}
 
+m,

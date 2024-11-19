@@ -10,6 +10,7 @@ from apps.capabilities.product_management.models import Product
 from apps.capabilities.security.services import RoleService
 from apps.portal.services.product_tree_services import ProductTreeService
 from .base import PortalBaseView
+from apps.portal.utils.json_utils import TreeJSONEncoder
 import json
 import logging
 
@@ -78,36 +79,95 @@ class GenerateProductTreeView(PortalBaseView):
                     product=product,
                     additional_context=additional_context
                 )
+                
+                logger.info(f"View received tree_data type: {type(tree_data)}")
+                logger.debug("Tree data received from service", extra={'tree_data': tree_data})
+                
+                if success:
+                    logger.info("Initial tree structure", extra={
+                        'tree': json.dumps(tree_data, indent=2)
+                    })
+                    
+                    # Deep copy with verification
+                    import copy
+                    tree_data_copy = copy.deepcopy(tree_data)
+                    logger.info("Tree after deep copy", extra={
+                        'tree': json.dumps(tree_data_copy, indent=2)
+                    })
+                    
+                    def prepare_node_for_template(node, path="root"):
+                        """Prepare node while preserving all children"""
+                        if not isinstance(node, dict):
+                            logger.error(f"Invalid node type at {path}: {type(node)}")
+                            return None
+                        
+                        # Create new node with all fields
+                        prepared_node = {
+                            'name': str(node.get('name', '')),
+                            'description': str(node.get('description', '')),
+                            'lens_type': str(node.get('lens_type', 'experience')),
+                            'children': []  # Initialize empty children list
+                        }
+                        
+                        # Process children if they exist
+                        if 'children' in node and isinstance(node['children'], list):
+                            for i, child in enumerate(node['children']):
+                                if isinstance(child, dict):
+                                    prepared_child = prepare_node_for_template(child, f"{path}.children[{i}]")
+                                    if prepared_child:
+                                        prepared_node['children'].append(prepared_child)
+                        
+                            logger.info(f"Processed children at {path}", extra={
+                                'children_count': len(prepared_node['children']),
+                                'children': json.dumps(prepared_node['children'], indent=2)
+                            })
+                        
+                        logger.info(f"Prepared node at {path}", extra={
+                            'node': json.dumps(prepared_node, indent=2)
+                        })
+                        return prepared_node
+                    
+                    # Prepare the tree
+                    serializable_tree = prepare_node_for_template(tree_data_copy)
+                    logger.info("Final tree before serialization", extra={
+                        'tree': json.dumps(serializable_tree, indent=2)
+                    })
+                    
+                    # Convert to JSON string
+                    json_tree = json.dumps(serializable_tree, cls=TreeJSONEncoder)
+                    logger.debug("JSON string", extra={
+                        'json': json_tree
+                    })
+                    
+                    # Parse back to verify structure
+                    parsed_tree = json.loads(json_tree)
+                    logger.debug("Post-parse verification", extra={
+                        'parsed': repr(parsed_tree)
+                    })
+                    
+                    context = self.get_context_data()
+                    context.update({
+                        'product': product,
+                        'tree_data': json_tree,
+                        'current_organisation': product.organisation,
+                        'edit_mode': True
+                    })
+                    return render(request, self.template_name, context)
+                
+                messages.error(request, f"Failed to generate tree: {error}")
+                return redirect('portal:create-product-tree', product_slug=product_slug)
+            
             except Exception as e:
+                logger.exception("Error in tree generation", extra={'error': str(e)})
                 if '503' in str(e):
-                    messages.error(
-                        request, 
-                        "The AI service is temporarily unavailable. Please wait a few minutes and try again."
-                    )
+                    messages.error(request, "The AI service is temporarily unavailable.")
                 else:
-                    messages.error(
-                        request, 
-                        "Failed to generate tree. Please try again or contact support if the problem persists."
-                    )
-                logger.exception("Tree generation failed")
+                    messages.error(request, "Failed to generate tree.")
                 return redirect('portal:create-product-tree', product_slug=product_slug)
 
-            if success:
-                context = self.get_context_data()
-                context.update({
-                    'product': product,
-                    'tree_data': json.dumps(tree_data),
-                    'current_organisation': product.organisation,
-                    'edit_mode': True
-                })
-                return render(request, self.template_name, context)
-            
-            messages.error(request, f"Failed to generate tree: {error}")
-            return redirect('portal:create-product-tree', product_slug=product_slug)
-            
         except Exception as e:
             logger.exception("Unexpected error in GenerateProductTreeView")
-            messages.error(request, "An unexpected error occurred. Please try again.")
+            messages.error(request, "An unexpected error occurred.")
             return redirect('portal:create-product-tree', product_slug=product_slug)
 
 
@@ -122,10 +182,17 @@ class RefineProductTreeView(View):
             if not RoleService.has_product_management_access(request.user.person, product):
                 return JsonResponse({
                     'success': False,
-                    'error': "You don't have permission to refine this product tree"
+                    'error': "Permission denied"
                 }, status=403)
                 
-            current_tree = request.POST.get('current_tree')
+            try:
+                current_tree = json.loads(request.POST.get('current_tree', '{}'))
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    'success': False,
+                    'error': "Invalid tree data format"
+                }, status=400)
+                
             feedback = request.POST.get('feedback')
             
             if not current_tree or not feedback:
@@ -137,14 +204,14 @@ class RefineProductTreeView(View):
             tree_service = ProductTreeService()
             success, refined_tree, error = tree_service.refine_tree(
                 product=product,
-                current_tree=current_tree,
+                current_tree=current_tree,  # Now passing dict
                 feedback=feedback
             )
             
             if success:
                 return JsonResponse({
                     'success': True,
-                    'tree_data': refined_tree
+                    'tree_data': refined_tree  # Already a dict
                 })
             
             return JsonResponse({
@@ -223,14 +290,13 @@ class EditProductTreeView(PortalBaseView):
             product = get_object_or_404(Product, slug=product_slug)
             
             if not RoleService.has_product_management_access(request.user.person, product):
-                messages.error(request, "You don't have permission to edit this product tree")
+                messages.error(request, "Permission denied")
                 return redirect('portal:view-product-tree', product_slug=product_slug)
             
             context = self.get_context_data()
             tree_service = ProductTreeService()
             tree_data = tree_service.get_tree(product)
             
-            # Ensure we have valid data before JSON encoding
             if tree_data is None:
                 tree_data = {
                     "name": product.name,
@@ -241,7 +307,7 @@ class EditProductTreeView(PortalBaseView):
             
             context.update({
                 'product': product,
-                'tree_data': json.dumps(tree_data),
+                'tree_data': json.dumps(tree_data),  # Convert dict to JSON for template
                 'edit_mode': True,
                 'page_title': f"Edit Product Tree - {product.name}"
             })
@@ -250,5 +316,5 @@ class EditProductTreeView(PortalBaseView):
             
         except Exception as e:
             logger.exception("Error in EditProductTreeView")
-            messages.error(request, "An error occurred while loading the product tree")
+            messages.error(request, "An error occurred")
             return redirect('portal:view-product-tree', product_slug=product_slug)

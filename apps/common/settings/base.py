@@ -349,6 +349,7 @@ CSP_FONT_SRC = (
     "'self'",
     "https://rsms.me",
     "https://cdn.tailwindcss.com",
+    "https://cdnjs.cloudflare.com",
 )
 CSP_IMG_SRC = (
     "'self'",
