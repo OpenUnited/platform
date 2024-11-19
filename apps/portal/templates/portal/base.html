@@ -217,6 +217,22 @@
                                        class="{% if org.id == current_organisation_id %}active{% endif %}">
                                         {{ org.name }}
                                     </a>
+                                    {% if org.id == current_organisation_id %}
+                                    <ul class="pl-4 mt-1 space-y-1">
+                                        <li>
+                                            <a href="{% url 'portal:organisation-members' org.id %}"
+                                               class="{% if request.resolver_match.url_name == 'organisation-members' %}active{% endif %}">
+                                                Members
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'portal:organisation-settings' org.id %}"
+                                               class="{% if request.resolver_match.url_name == 'organisation-settings' %}active{% endif %}">
+                                                Settings
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    {% endif %}
                                 </li>
                                 {% endfor %}
                             </ul>
