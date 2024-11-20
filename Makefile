@@ -2,7 +2,7 @@ MANAGE = python manage.py
 
 help:
 	@echo "help               -- Print this help showing all commands.         "
-	@echo "run                -- run the django development server             "
+	@echo "run                -- run the django development server and qcluster"
 	@echo "test               -- run all tests                                 "
 	@echo "cov                -- run all tests with coverage                   "
 	@echo "cov_html           -- run all tests with html coverage              "
@@ -13,6 +13,7 @@ help:
 	@echo "dumpdata           -- Backup the data from the running django app   "
 	@echo "tailwindcss        -- Generate Tailwindcss 						   "
 	@echo "docs               -- Update schema.json and generate documentation "
+	@echo "qcluster           -- run only the Django Q cluster                "
 
 .PHONY: docs
 docs:
@@ -25,7 +26,7 @@ rmpyc:
 	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs sudo rm -rf
 
 run:
-	$(MANAGE) runserver
+	./run.sh
 
 migrate:
 	$(MANAGE) makemigrations
@@ -70,3 +71,6 @@ cov:
 
 cov_html:
 	pytest --cov  --cov-report html --cov-fail-under=50
+
+qcluster:
+	$(MANAGE) qcluster

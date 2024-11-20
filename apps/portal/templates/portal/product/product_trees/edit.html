@@ -1,61 +1,321 @@
 {% extends 'portal/base.html' %}
-{% load static %}
+
+{% block extra_css %}
+<!-- jsTree CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/themes/default/style.min.css" />
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+    /* Tree container height */
+    .tree-container {
+        height: calc(100vh - 180px);
+    }
+
+    /* Quill Editor Styles */
+    .editor-container {
+        @apply border rounded-lg overflow-hidden;
+    }
+    
+    .ql-toolbar.ql-snow {
+        @apply border-0 border-b bg-base-100;
+    }
+    
+    .ql-container.ql-snow {
+        @apply border-0 bg-base-100;
+    }
+    
+    .ql-editor {
+        min-height: 200px;
+    }
+
+    /* jsTree customization */
+    .jstree-default .jstree-anchor {
+        @apply text-base-content;
+    }
+
+    /* Selected node styling */
+    .jstree-default .jstree-clicked {
+        background: hsl(var(--p) / 0.1) !important;
+        border-radius: 4px;
+        box-shadow: none;
+    }
+
+    /* Quill container needs a defined height */
+    #editor {
+        height: 200px;
+        background: white;
+    }
+
+    .ql-container {
+        font-size: inherit !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl mb-4">Edit Product Tree</h1>
-    
-    <!-- Convert tree_data to a JavaScript object literal -->
-    <script>
-        window.initialTreeData = JSON.parse('{{ tree_data|escapejs }}');
-        console.log('Initial tree data:', window.initialTreeData);
-    </script>
-    
-    <div x-data="{ 
-        tree: window.initialTreeData,
-        updatedTree: JSON.parse(JSON.stringify(window.initialTreeData)),
-        
-        init() {
-            console.log('Initial tree data:', this.tree);
-            console.log('Editable tree data:', this.updatedTree);
-        },
-        
-        renderNode(node, depth = 0) {
-            if (!node) return '';
-            
-            const childrenHtml = node.children?.length 
-                ? `<div class='collapse-content'>
-                    <div class='space-y-2'>
-                        ${node.children.map(child => this.renderNode(child, depth + 1)).join('')}
-                    </div>
-                   </div>`
-                : '';
-            
-            return `
-                <div class='collapse bg-base-100 ${depth > 0 ? 'ml-4' : ''} ${node.children?.length ? 'collapse-arrow' : ''}'>
-                    <input type='checkbox' 
-                           class='collapse-toggle' 
-                           ${node.children?.length ? '' : 'hidden'}>
-                    <div class='collapse-title py-2'>
-                        <div class='flex items-center justify-between'>
-                            <div>
-                                <h${depth + 3} class='font-bold ${depth === 0 ? 'text-xl' : 'text-base'}'>${node.name}</h${depth + 3}>
-                                <p class='text-base-content/70 text-sm'>${node.description || ''}</p>
-                            </div>
-                            ${node.lens_type ? `<span class='badge badge-outline badge-sm'>${node.lens_type}</span>` : ''}
-                        </div>
-                    </div>
-                    ${childrenHtml}
-                </div>
-            `;
-        }
-    }">
-        <!-- Root Node -->
-        <template x-if="updatedTree">
-            <div class="space-y-2" x-html="renderNode(updatedTree)"></div>
-        </template>
+<h1 class="text-3xl font-bold mb-6">Edit Product Tree</h1>
+
+<!-- Panel headers -->
+<div class="flex gap-6 mb-2">
+    <div class="w-1/3">
+        <h2 class="text-sm text-base-content/60">Modify ProductTree & Select Product Area</h2>
+    </div>
+    <div class="w-2/3">
+        <h2 class="text-sm text-base-content/60">Edit Selected Product Area Details</h2>
     </div>
 </div>
+
+<!-- Tree and Details Panels -->
+<div class="flex gap-6 mb-8">
+    <!-- Tree Panel -->
+    <div class="w-1/3 bg-base-100 rounded-lg p-4 shadow-sm">
+        <div id="tree"></div>
+    </div>
+
+    <!-- Details Panel -->
+    <div class="w-2/3 bg-base-100 rounded-lg p-4 shadow-sm">
+        <div id="nodeDetails" class="hidden">
+            <h2 class="text-xl mb-4" id="nodeName"></h2>
+            
+            <div class="form-control w-full">
+                <label class="label">
+                    <span class="label-text">Description</span>
+                </label>
+                <div class="editor-container">
+                    <div id="editor"></div>
+                </div>
+            </div>
+
+            <div class="form-control w-full mt-4">
+                <label class="label">
+                    <span class="label-text">Lens Type</span>
+                </label>
+                <select id="lensType" class="select select-bordered w-full">
+                    <option value="experience">Experience</option>
+                    <option value="capability">Capability</option>
+                    <option value="solution">Solution</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="noSelection" class="text-center py-8 text-base-content/60">
+            Select a node to view and edit its details
+        </div>
+    </div>
+</div>
+
+<!-- Tab container with proper styling -->
+<div class="w-full">
+    <!-- Tabs styled to connect with panel -->
+    <div class="tabs">
+        <a class="tab tab-lifted tab-lg flex-1 tab-active bg-base-100" id="saveTab">Save Product Tree</a>
+        <a class="tab tab-lifted tab-lg flex-1" id="refineTab">Ask LLM to refine further</a>
+    </div>
+
+    <!-- Panel content -->
+    <div class="bg-base-100 p-6">
+        <!-- Save tab content -->
+        <div id="saveContent" class="mb-4">
+            <div class="flex items-center h-[100px] pl-6">
+                <button id="saveButton" class="btn btn-warning px-12">Save Product Tree</button>
+            </div>
+        </div>
+
+        <!-- Refine tab content -->
+        <div id="refineContent" class="mb-4 hidden">
+            <form method="POST" action="{% url 'portal:refine-product-tree' product.slug %}">
+                {% csrf_token %}
+                <div class="text-base-content/70 mb-4">
+                    Any updates and additions in the ProductTree above will be sent.
+                </div>
+                
+                <div class="form-control mb-6">
+                    <label class="label">
+                        <span class="label-text">Additional Context (Optional)</span>
+                        <span class="label-text-alt">Help refine the tree by providing context</span>
+                    </label>
+                    <textarea 
+                        name="feedback"
+                        class="textarea textarea-bordered h-32"
+                        placeholder="Describe any additional context that would help refine the tree structure..."></textarea>
+                </div>
+
+                <!-- Hidden input for current tree data -->
+                <input type="hidden" name="current_tree" id="current_tree_input">
+                
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-primary">Send for Refinement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add jQuery and jsTree -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.15/jstree.min.js"></script>
+<!-- Add Quill -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+<script>
+    // Convert data to jsTree format - simplified to only show names
+    function convertToJSTree(node) {
+        return {
+            text: node.name,  // Only show the name in the tree
+            data: {           // Keep the data but don't display it
+                description: node.description,
+                lens_type: node.lens_type
+            },
+            children: node.children?.map(convertToJSTree) || []
+        };
+    }
+
+    // Initialize Quill with minimal configuration
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        placeholder: 'Enter description...',
+        modules: {
+            toolbar: {
+                container: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link'],
+                    ['clean']
+                ]
+            }
+        }
+    });
+
+    // Prevent Quill from trying to handle paste events directly
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
+        return delta;
+    });
+
+    $(document).ready(function() {
+        const initialData = JSON.parse('{{ tree_data|escapejs }}');
+        
+        $('#tree').jstree({
+            core: {
+                data: convertToJSTree(initialData),
+                check_callback: true,
+                themes: {
+                    name: 'default',
+                    dots: true,
+                    icons: true
+                }
+            },
+            plugins: ['dnd', 'wholerow', 'contextmenu', 'types'],
+            types: {
+                default: {
+                    icon: 'fas fa-cube'  // Set cube icon as default for all nodes
+                }
+            }
+        }).on('select_node.jstree', function(e, data) {
+            console.log('Selected node data:', data.node); // Debug log
+            
+            // Show details panel
+            $('#noSelection').hide();
+            $('#nodeDetails').removeClass('hidden').show();
+            
+            // Update details
+            $('#nodeName').text(data.node.text);
+            
+            // Safely set Quill content
+            try {
+                quill.setContents([]);  // Clear first
+                quill.clipboard.dangerouslyPasteHTML(
+                    data.node.data?.description || ''
+                );
+            } catch (error) {
+                console.error('Error setting Quill content:', error);
+            }
+            
+            // Set lens type
+            $('#lensType').val(data.node.data?.lens_type || 'experience');
+        }).on('rename_node.jstree', function(e, data) {
+            // Update the node name in our data
+            data.node.original.text = data.text;
+            
+            // If this is the currently selected node, update the details panel title
+            const selectedNode = $('#tree').jstree('get_selected')[0];
+            if (selectedNode === data.node.id) {
+                $('#nodeName').text(data.text);
+            }
+        });
+
+        // Debug: Log the initial tree data
+        console.log('Initial tree data:', initialData);
+    });
+
+    // Function to convert jsTree format back to our API format
+    function convertToApiFormat(node, tree) {
+        const treeNode = tree.get_node(node);
+        return {
+            name: treeNode.text,
+            description: treeNode.data?.description || '',
+            lens_type: treeNode.data?.lens_type || 'experience',
+            children: treeNode.children.map(childId => convertToApiFormat(childId, tree))
+        };
+    }
+
+    // Update node data when description or lens type changes
+    quill.on('text-change', function() {
+        const selectedNode = $('#tree').jstree('get_selected')[0];
+        if (selectedNode) {
+            const tree = $('#tree').jstree(true);
+            const node = tree.get_node(selectedNode);
+            node.data = node.data || {};
+            node.data.description = quill.root.innerHTML;
+        }
+    });
+
+    $('#lensType').on('change', function() {
+        const selectedNode = $('#tree').jstree('get_selected')[0];
+        if (selectedNode) {
+            const tree = $('#tree').jstree(true);
+            const node = tree.get_node(selectedNode);
+            node.data = node.data || {};
+            node.data.lens_type = $(this).val();
+        }
+    });
+
+    // Handle save button click
+    $('#saveButton').click(function() {
+        const tree = $('#tree').jstree(true);
+        const rootNode = tree.get_node('#').children[0];  // Get the first root node
+        const finalData = convertToApiFormat(rootNode, tree);
+        
+        console.log('Saving final data:', finalData);
+        // Here you would send finalData to your server
+    });
+
+    // Update tab switching handlers to manage styling
+    $('#saveTab').click(function() {
+        $(this).addClass('tab-active bg-base-100');
+        $('#refineTab').removeClass('tab-active bg-base-100');
+        $('#saveContent').removeClass('hidden');
+        $('#refineContent').addClass('hidden');
+    });
+
+    $('#refineTab').click(function() {
+        $(this).addClass('tab-active bg-base-100');
+        $('#saveTab').removeClass('tab-active bg-base-100');
+        $('#refineContent').removeClass('hidden');
+        $('#saveContent').addClass('hidden');
+    });
+
+    // Update the hidden input with current tree data before form submission
+    $('form').on('submit', function() {
+        const tree = $('#tree').jstree(true);
+        const rootNode = tree.get_node('#').children[0];
+        const finalData = convertToApiFormat(rootNode, tree);
+        $('#current_tree_input').val(JSON.stringify(finalData));
+        return true;
+    });
+</script>
 {% endblock %}
 
 m,

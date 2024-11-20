@@ -182,53 +182,54 @@ Please return the response as a JSON object with this structure:
     @classmethod
     def refine_product_tree(cls, current_tree: str, feedback: str, product_name: str) -> Tuple[bool, str, Optional[str]]:
         """Refine an existing product tree based on feedback"""
+        print("=== Starting refine_product_tree ===")  # Debug print
+        print(f"Product name: {product_name}")          # Debug print
+        logger.info(f"Starting refine_product_tree for product: {product_name}")
+        
         prompt_messages = [{
             "role": "system",
-            "content": """You are a product strategist helping to refine and improve product trees.
-Focus on incorporating feedback while maintaining the existing structure and format."""
+            "content": """You are a product strategist creating intuitive product trees that focus on user journeys and business value.
+Think about the key paths users take to achieve their goals."""
         }, {
-            "role": "user",
-            "content": f"""Refine this product tree for {product_name} based on the provided feedback.
+            "role": "user", 
+            "content": f"""Refine this product tree based on the feedback while maintaining its structure.
 
 Current Tree:
 {current_tree}
 
-Feedback to incorporate:
+Feedback:
 {feedback}
 
-Keep the same JSON schema:
+Please return the response as a JSON object with this structure:
 {{
     "name": "Journey/Area name",
-    "description": "User goals and value (2-3 sentences)",
-    "lens_type": "experience|flow|persona|feature",
+    "description": "Description",
+    "lens_type": "experience",
     "children": []
-}}
-
-Return only a valid JSON object with the refined tree."""
+}}"""
         }]
-
+        
+        print("=== Making LLM request ===")  # Debug print
+        success, content, error = cls._make_llm_request(prompt_messages)
+        print(f"Success: {success}")         # Debug print
+        print(f"Content: {content}")         # Debug print
+        print(f"Error: {error}")            # Debug print
+        
         try:
-            # Make LLM request with retry logic
-            success, content, error = cls._make_llm_request(prompt_messages)
             if not success:
+                print(f"LLM request failed: {error}")  # Debug print
                 return False, "", error
             
-            # Clean and validate JSON response
+            print("=== Raw LLM response ===")  # Debug print
+            print(content)                     # Debug print
+            
             json_str = cls.clean_json_output(content)
-            return True, json_str, None
+            tree_dict = json.loads(json_str)
+            plain_dict = cls._convert_to_plain_dict(tree_dict)
+            
+            return True, json.dumps(plain_dict), None
 
-        except LLMConnectionError as e:
-            logger.error(f"Failed to connect to LLM service: {e}")
-            return False, "", f"Service temporarily unavailable: {str(e)}"
-            
-        except LLMResponseError as e:
-            logger.error(f"Invalid LLM response: {e}")
-            return False, "", f"Failed to generate valid tree structure: {str(e)}"
-            
-        except LLMServiceException as e:
-            logger.error(f"LLM service error: {e}")
-            return False, "", f"Service error: {str(e)}"
-            
         except Exception as e:
-            logger.error(f"Unexpected error: {e}")
+            print(f"=== Error in refine_product_tree ===")  # Debug print
+            print(f"Error: {str(e)}")                        # Debug print
             return False, "", f"Unexpected error: {str(e)}"

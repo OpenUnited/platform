@@ -254,7 +254,8 @@ class BountyClaim(TimeStampMixin, UUIDMixin):
     person = models.ForeignKey(
         'Person',
         on_delete=models.CASCADE,
-        related_name='bounty_claims'
+        related_name='bounty_claims',
+        null=True
     )
     expected_finish_date = models.DateField(default=date.today)
     status = models.CharField(

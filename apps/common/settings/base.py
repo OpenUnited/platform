@@ -32,6 +32,7 @@ PLATFORM_APPS = [
     "apps.canopy",
     "apps.common",
     "apps.flows.challenge_authoring",
+    "apps.event_hub",
 ]
 THIRD_PARTIES = [
     "django_htmx",
@@ -44,6 +45,7 @@ THIRD_PARTIES = [
     "tinymce",
     "csp",
     "widget_tweaks",
+    "django_q",
 ]
 BUILTIN_APPS = [
     "jazzmin",
@@ -408,3 +410,27 @@ class Media:
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 if not GROQ_API_KEY:
     raise ImproperlyConfigured("GROQ_API_KEY is required")
+
+# Event Hub Configuration
+EVENT_BUS = {
+    'BACKEND': 'apps.event_hub.services.backends.django_q.DjangoQBackend',
+    'LOGGING_ENABLED': True,
+    'TASK_TIMEOUT': 300,  # 5 minutes
+    'TASK_RETRIES': 3,
+    'ERROR_CALLBACK': 'apps.common.utils.error_reporting.report_event_bus_error',  # optional
+}
+
+# Django Q Configuration (using PostgreSQL as broker)
+Q_CLUSTER = {
+    'name': 'OpenUnited',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 300,  # 5 minutes
+    'retry': 600,    # 10 minutes - must be greater than timeout
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q',
+    'orm': 'default'
+}
