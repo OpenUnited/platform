@@ -34,7 +34,9 @@ jobs:
     - name: Build the Docker image
       run: |
         export VERSION=$(python -c 'import version; print(version.version)')
-        docker build . --file Dockerfile --tag registry.digitalocean.com/openunited/core:$VERSION
+        docker build . --file Dockerfile \
+          --build-arg DJANGO_SETTINGS_MODULE=apps.common.settings.production \
+          --tag registry.digitalocean.com/openunited/core:$VERSION
     - name: Login to registry
       run: doctl registry login --expiry-seconds 600
     - name: Push to DigitalOcean
@@ -44,6 +46,6 @@ jobs:
     - name: Update image tag
       run: |
         export VERSION=$(python -c 'import version; print(version.version)')
-        sed -i "s/\(.*tag: \).*/\1$VERSION/" spec.yaml
+        sed -i -E "s/(tag: ).*/\1$VERSION/" spec.yaml
     - name: Update the environment
       run: doctl apps update $STAGING_ID --spec spec.yaml

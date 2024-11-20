@@ -1,17 +1,5 @@
 #!/bin/bash
 
-# Reset existing database
-# echo "Reset existing database"
-#  echo "----------------------------------------------------------"
-#  nohup python reset_database.py
-
-# Create database migrations
-# echo "Create database migrations"
-# echo "----------------------------------------------------------"
-# nohup python manage.py makemigrations
-
-export DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-apps.common.settings.development}
-
 # Apply database migrations
 echo "Apply database migrations"
 echo "----------------------------------------------------------"
@@ -22,10 +10,10 @@ echo "Preparing static files"
 echo "----------------------------------------------------------"
 nohup python manage.py collectstatic --no-input
 
-# Load Sample Data
-# echo "Load Sample Data"
-# echo "----------------------------------------------------------"
-# echo "Y" | python load_sample_data.py
+# Start Django Q worker in background
+echo "Starting Django Q worker"
+echo "----------------------------------------------------------"
+python manage.py qcluster &
 
 # Start server
 echo "Starting server"
