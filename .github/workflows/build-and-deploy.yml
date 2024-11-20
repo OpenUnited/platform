@@ -32,7 +32,9 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
     - name: Login to registry
-      run: doctl registry login --expiry-seconds 1200
+      run: |
+        doctl registry login --expiry-seconds 1200
+        docker login registry.digitalocean.com -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --password-stdin
     - name: Build the Docker image
       run: |
         export VERSION=$(python -c 'import version; print(version.version)')
