@@ -1,6 +1,0 @@
--r base.txt
-
-playwright==1.43.0
-pytest-django==4.8.0
-model_bakery==1.18.0
-pytest-cov==5.0.0
