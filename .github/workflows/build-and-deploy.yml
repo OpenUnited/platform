@@ -46,6 +46,7 @@ jobs:
     - name: Update image tag
       run: |
         export VERSION=$(python -c 'import version; print(version.version)')
-        sed -i -E "s/(tag: ).*/\1$VERSION/" spec.yaml
+        python -m yq -Y --indentless --arg TAG "$VERSION" '.services[].image.tag = $TAG' spec.yaml > tmp.yaml && mv tmp.yaml spec.yaml
+        python -m yq -Y --indentless --arg TAG "$VERSION" '.workers[].image.tag = $TAG' spec.yaml > tmp.yaml && mv tmp.yaml spec.yaml
     - name: Update the environment
       run: doctl apps update $STAGING_ID --spec spec.yaml

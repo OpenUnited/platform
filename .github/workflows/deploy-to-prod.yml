@@ -30,21 +30,77 @@ jobs:
         doctl apps spec get $STAGING_ID > staging.yaml
         doctl apps spec get $PRODUCTION_ID > production.yaml
         doctl apps spec get $DEMO_ID > demo.yaml
+    - name: Verify image exists
+      run: |
+        export TAG="$(python -m yq -r '.services[] | select(.name == "platform") | .image.tag' staging.yaml)"
+        if ! doctl registry repository list-tags openunited/core --format Tag | grep -q "^$TAG$"; then
+          echo "Image tag $TAG not found in registry"
+          exit 1
+        fi
     - name: Update image tag and env vars
       run: |
         export TAG="$(python -m yq -r '.services[] | select(.name == "platform") | .image.tag' staging.yaml)"
-        echo "Updating production image tag to $TAG"
-        # Update tags
+        if [ -z "$TAG" ]; then
+          echo "Failed to get tag from staging environment"
+          exit 1
+        fi
+        echo "Updating production and demo image tags to $TAG"
+        
+        # Update production tags
         python -m yq -Y --indentless --arg TAG "$TAG" '.services[].image.tag = $TAG' production.yaml > tmp.yaml && mv tmp.yaml production.yaml
+        python -m yq -Y --indentless --arg TAG "$TAG" '.workers[].image.tag = $TAG' production.yaml > tmp.yaml && mv tmp.yaml production.yaml
+        
+        # Update demo tags
         python -m yq -Y --indentless --arg TAG "$TAG" '.services[].image.tag = $TAG' demo.yaml > tmp.yaml && mv tmp.yaml demo.yaml
+        python -m yq -Y --indentless --arg TAG "$TAG" '.workers[].image.tag = $TAG' demo.yaml > tmp.yaml && mv tmp.yaml demo.yaml
+        
+        # Verify the updates
+        PROD_TAG=$(python -m yq -r '.services[] | select(.name == "platform") | .image.tag' production.yaml)
+        PROD_WORKER_TAG=$(python -m yq -r '.workers[] | select(.name == "django-q-worker") | .image.tag' production.yaml)
+        DEMO_TAG=$(python -m yq -r '.services[] | select(.name == "platform") | .image.tag' demo.yaml)
+        DEMO_WORKER_TAG=$(python -m yq -r '.workers[] | select(.name == "django-q-worker") | .image.tag' demo.yaml)
+        
+        if [ "$TAG" != "$PROD_TAG" ] || [ "$TAG" != "$PROD_WORKER_TAG" ] || [ "$TAG" != "$DEMO_TAG" ] || [ "$TAG" != "$DEMO_WORKER_TAG" ]; then
+          echo "Tag update verification failed"
+          exit 1
+        fi
     - name: Update the environments
       run: |
         doctl apps update $PRODUCTION_ID --spec production.yaml
         doctl apps update $DEMO_ID --spec demo.yaml
         
-    - name: Wait for deployment
-      run: sleep 30
-      
+    - name: Wait for production deployment
+      run: |
+        echo "Waiting for production deployment to complete..."
+        while true; do
+          STATUS=$(doctl apps get $PRODUCTION_ID --format Status --no-header)
+          if [ "$STATUS" = "running" ]; then
+            echo "Production deployment complete!"
+            break
+          elif [ "$STATUS" = "error" ]; then
+            echo "Production deployment failed!"
+            exit 1
+          fi
+          echo "Status: $STATUS - waiting 30 seconds..."
+          sleep 30
+        done
+
+    - name: Wait for demo deployment
+      run: |
+        echo "Waiting for demo deployment to complete..."
+        while true; do
+          STATUS=$(doctl apps get $DEMO_ID --format Status --no-header)
+          if [ "$STATUS" = "running" ]; then
+            echo "Demo deployment complete!"
+            break
+          elif [ "$STATUS" = "error" ]; then
+            echo "Demo deployment failed!"
+            exit 1
+          fi
+          echo "Status: $STATUS - waiting 30 seconds..."
+          sleep 30
+        done
+        
     - name: Check production deployment
       run: |
         echo "Production worker logs:"
