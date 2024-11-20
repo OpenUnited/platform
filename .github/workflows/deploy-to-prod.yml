@@ -36,9 +36,26 @@ jobs:
         python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[].image.tag = $TAG' production.yaml
         python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[].image.tag = $TAG' demo.yaml
         # Add SERVICE_TYPE env var to worker services
-        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker").envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' production.yaml
-        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker").envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' demo.yaml
+        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker") | .envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' production.yaml
+        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker") | .envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' demo.yaml
     - name: Update the environments
       run: |
         doctl apps update $PRODUCTION_ID --spec production.yaml
         doctl apps update $DEMO_ID --spec demo.yaml
+        
+    - name: Wait for deployment
+      run: sleep 30
+      
+    - name: Check production deployment
+      run: |
+        echo "Production worker logs:"
+        doctl apps logs $PRODUCTION_ID --component django-q-worker --tail 50
+        echo "Production platform logs:"
+        doctl apps logs $PRODUCTION_ID --component platform --tail 50
+        
+    - name: Check demo deployment
+      run: |
+        echo "Demo worker logs:"
+        doctl apps logs $DEMO_ID --component django-q-worker --tail 50
+        echo "Demo platform logs:"
+        doctl apps logs $DEMO_ID --component platform --tail 50
