@@ -1,21 +1,24 @@
 #!/bin/bash
 
-# Apply database migrations
-echo "Apply database migrations"
-echo "----------------------------------------------------------"
-nohup python manage.py migrate --run-syncdb
+# Apply database migrations (only for main platform)
+if [ "$SERVICE_TYPE" != "worker" ]; then
+    echo "Apply database migrations"
+    echo "----------------------------------------------------------"
+    python manage.py migrate --run-syncdb
 
-# Prepare static files
-echo "Preparing static files"
-echo "----------------------------------------------------------"
-nohup python manage.py collectstatic --no-input
+    # Prepare static files
+    echo "Preparing static files"
+    echo "----------------------------------------------------------"
+    python manage.py collectstatic --no-input
+fi
 
-# Start Django Q worker in background
-echo "Starting Django Q worker"
-echo "----------------------------------------------------------"
-python manage.py qcluster &
-
-# Start server
-echo "Starting server"
-echo "----------------------------------------------------------"
-python manage.py runserver 0.0.0.0:80
+# Start appropriate service
+if [ "$SERVICE_TYPE" = "worker" ]; then
+    echo "Starting Django Q worker"
+    echo "----------------------------------------------------------"
+    python manage.py qcluster
+else
+    echo "Starting server"
+    echo "----------------------------------------------------------"
+    python manage.py runserver 0.0.0.0:80
+fi
