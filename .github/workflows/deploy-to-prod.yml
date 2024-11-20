@@ -18,6 +18,9 @@ jobs:
       uses: digitalocean/action-doctl@v2
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - uses: actions/setup-python@v4
     - run: pip install yq
     - name: Fetch spec files
@@ -25,12 +28,16 @@ jobs:
         doctl apps spec get $STAGING_ID > staging.yaml
         doctl apps spec get $PRODUCTION_ID > production.yaml
         doctl apps spec get $DEMO_ID > demo.yaml
-    - name: Update image tag
+    - name: Update image tag and env vars
       run: |
         export TAG="$(python -m yq -r .services[0].image.tag staging.yaml)"
         echo "Updating production image tag to $TAG"
+        # Update tags
         python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[].image.tag = $TAG' production.yaml
         python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[].image.tag = $TAG' demo.yaml
+        # Add SERVICE_TYPE env var to worker services
+        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker").envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' production.yaml
+        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker").envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' demo.yaml
     - name: Update the environments
       run: |
         doctl apps update $PRODUCTION_ID --spec production.yaml
