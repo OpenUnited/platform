@@ -15,11 +15,9 @@ Other apps:
 - Portal (UI for Management of Org, Products, Challenges, Bounties etc)
 - Challenge Authoring Flow (UI and services for authoring challenges)
 
-The apps aspire to be loosely coupled, and to use a service layer between views and models. This approach also allows us to use mocks to test the services effectively.
+The apps aspire to be loosely coupled, and we use a service layer between views and models. Services are also used to communicate across the boudaries of apps. This approach also allows us to use mocks to test the services effectively.
 
-This repo contains the full platform including the frontend - which is deliberately simple.
-We use a mix of TailwindCSS, DaisyUI and a mix of HTMX, AlpineJS and reluctantly JQuery where needed. Over time we may rewrite some things in ReactJS, but for now that's overkill and the focus is on evolving the platform to create value and getting mileage out of the most simple frontend tech possible. We initially started with a ReactJS frontend, but it just created bloat, difficulty in shipping features end-to-end and made it difficult to iterate on the platform efficientlyso we ditched it.
-
+This repo contains the full platform including the frontend - which is deliberately simple. We use a mix of TailwindCSS, DaisyUI and a mix of HTMX, AlpineJS and reluctantly JQuery where it makes sense. We favour frontend simplicity and server side rendering using django templates where possible. Over time we may rewrite some things in ReactJS, but for now that's overkill and the focus is on evolving the platform to create value and getting mileage out of the most simple frontend tech possible to deliver excellent UX.
 
 ## Setting up The Project and Contributing
 
