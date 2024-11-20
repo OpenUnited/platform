@@ -31,16 +31,14 @@ jobs:
         fi
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-    - name: Login to registry
-      run: |
-        doctl registry login --expiry-seconds 1200
-        docker login registry.digitalocean.com -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --password-stdin
     - name: Build the Docker image
       run: |
         export VERSION=$(python -c 'import version; print(version.version)')
         docker build . --file Dockerfile \
           --build-arg DJANGO_SETTINGS_MODULE=apps.common.settings.production \
           --tag registry.digitalocean.com/openunited/core:$VERSION
+    - name: Login to registry
+      run: doctl registry login --expiry-seconds 600
     - name: Push to DigitalOcean
       run: docker push -a registry.digitalocean.com/openunited/core
     - name: Fetch current spec file
