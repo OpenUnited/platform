@@ -423,10 +423,10 @@ EVENT_BUS = {
 # Django Q Configuration (using PostgreSQL as broker)
 Q_CLUSTER = {
     'name': 'OpenUnited',
-    'workers': 4,
+    'workers': int(os.environ.get('DJANGO_Q_WORKERS', 4)), 
     'recycle': 500,
-    'timeout': 300,  # 5 minutes
-    'retry': 600,    # 10 minutes - must be greater than timeout
+    'timeout': 300,
+    'retry': 600,
     'compress': True,
     'save_limit': 250,
     'queue_limit': 500,
