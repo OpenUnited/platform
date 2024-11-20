@@ -22,6 +22,8 @@ jobs:
       with:
         fetch-depth: 0
     - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
     - run: pip install yq
     - name: Fetch spec files
       run: |
@@ -46,13 +48,13 @@ jobs:
     - name: Check production deployment
       run: |
         echo "Production worker logs:"
-        doctl apps logs $PRODUCTION_ID component=django-q-worker --tail 50
+        doctl apps logs $PRODUCTION_ID django-q-worker --tail 50
         echo "Production platform logs:"
-        doctl apps logs $PRODUCTION_ID component=platform --tail 50
+        doctl apps logs $PRODUCTION_ID platform --tail 50
         
     - name: Check demo deployment
       run: |
         echo "Demo worker logs:"
-        doctl apps logs $DEMO_ID component=django-q-worker --tail 50
+        doctl apps logs $DEMO_ID django-q-worker --tail 50
         echo "Demo platform logs:"
-        doctl apps logs $DEMO_ID component=platform --tail 50
+        doctl apps logs $DEMO_ID platform --tail 50
