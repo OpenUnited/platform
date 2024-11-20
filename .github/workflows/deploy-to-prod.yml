@@ -6,7 +6,6 @@ on:
   - workflow_dispatch
 
 env:
-  STAGING_ID: cc67ac7f-d41b-4a9c-a2ce-37f322690cb8
   PRODUCTION_ID: c3364f4f-1d34-4b31-ac49-da9782159a7e
   DEMO_ID: c87ff841-b900-4cc7-b3ea-19d29948be6e
 
@@ -25,19 +24,20 @@ jobs:
     - run: pip install yq
     - name: Fetch spec files
       run: |
-        doctl apps spec get $STAGING_ID > staging.yaml
         doctl apps spec get $PRODUCTION_ID > production.yaml
         doctl apps spec get $DEMO_ID > demo.yaml
     - name: Update image tag and env vars
       run: |
-        export TAG="$(python -m yq -r .services[0].image.tag staging.yaml)"
-        echo "Updating production image tag to $TAG"
+        # Get current production tag and increment it
+        export CURRENT_TAG="$(python -m yq -r '.services[] | select(.name == "platform") | .image.tag' production.yaml)"
+        export NEW_TAG="2.139.0"  # This should be determined by your versioning strategy
+        echo "Updating production image tag from $CURRENT_TAG to $NEW_TAG"
         # Update tags
-        python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[].image.tag = $TAG' production.yaml
-        python -m yq -Y --indentless --arg TAG "$TAG" --in-place '.services[].image.tag = $TAG' demo.yaml
+        python -m yq -Y --indentless --arg TAG "$NEW_TAG" '.services[].image.tag = $TAG' production.yaml > tmp.yaml && mv tmp.yaml production.yaml
+        python -m yq -Y --indentless --arg TAG "$NEW_TAG" '.services[].image.tag = $TAG' demo.yaml > tmp.yaml && mv tmp.yaml demo.yaml
         # Add SERVICE_TYPE env var to worker services
-        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker") | .envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' production.yaml
-        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker") | .envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' demo.yaml
+        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker") | .envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' production.yaml > tmp.yaml && mv tmp.yaml production.yaml
+        python -m yq -Y --indentless '.services[] | select(.name == "django-q-worker") | .envs += [{"key": "SERVICE_TYPE", "scope": "RUN_AND_BUILD_TIME", "value": "worker"}]' demo.yaml > tmp.yaml && mv tmp.yaml demo.yaml
     - name: Update the environments
       run: |
         doctl apps update $PRODUCTION_ID --spec production.yaml
@@ -49,13 +49,13 @@ jobs:
     - name: Check production deployment
       run: |
         echo "Production worker logs:"
-        doctl apps logs $PRODUCTION_ID --component django-q-worker --tail 50
+        doctl apps logs $PRODUCTION_ID component=django-q-worker --tail 50
         echo "Production platform logs:"
-        doctl apps logs $PRODUCTION_ID --component platform --tail 50
+        doctl apps logs $PRODUCTION_ID component=platform --tail 50
         
     - name: Check demo deployment
       run: |
         echo "Demo worker logs:"
-        doctl apps logs $DEMO_ID --component django-q-worker --tail 50
+        doctl apps logs $DEMO_ID component=django-q-worker --tail 50
         echo "Demo platform logs:"
-        doctl apps logs $DEMO_ID --component platform --tail 50
+        doctl apps logs $DEMO_ID component=platform --tail 50
