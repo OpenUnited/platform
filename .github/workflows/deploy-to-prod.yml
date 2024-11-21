@@ -33,8 +33,10 @@ jobs:
     - name: Verify image exists
       run: |
         export TAG="$(python -m yq -r '.services[] | select(.name == "platform") | .image.tag' staging.yaml)"
-        if ! doctl registry repository list-tags openunited/core --format Tag | grep -q "^$TAG$"; then
-          echo "Image tag $TAG not found in registry"
+        echo "Checking for image tag: $TAG"
+        if ! doctl registry repository list-tags core --format Tag | grep -q "^$TAG$"; then
+          echo "Image tag $TAG not found in registry. Available tags:"
+          doctl registry repository list-tags core --format Tag
           exit 1
         fi
     - name: Update image tag and env vars
@@ -72,7 +74,14 @@ jobs:
     - name: Wait for production deployment
       run: |
         echo "Waiting for production deployment to complete..."
+        TIMEOUT=600  # 10 minutes
+        START_TIME=$(date +%s)
         while true; do
+          CURRENT_TIME=$(date +%s)
+          if [ $((CURRENT_TIME - START_TIME)) -gt $TIMEOUT ]; then
+            echo "Deployment timed out after $TIMEOUT seconds"
+            exit 1
+          fi
           STATUS=$(doctl apps get $PRODUCTION_ID --format Status --no-header)
           if [ "$STATUS" = "running" ]; then
             echo "Production deployment complete!"
@@ -88,7 +97,14 @@ jobs:
     - name: Wait for demo deployment
       run: |
         echo "Waiting for demo deployment to complete..."
+        TIMEOUT=600  # 10 minutes
+        START_TIME=$(date +%s)
         while true; do
+          CURRENT_TIME=$(date +%s)
+          if [ $((CURRENT_TIME - START_TIME)) -gt $TIMEOUT ]; then
+            echo "Demo deployment timed out after $TIMEOUT seconds"
+            exit 1
+          fi
           STATUS=$(doctl apps get $DEMO_ID --format Status --no-header)
           if [ "$STATUS" = "running" ]; then
             echo "Demo deployment complete!"
@@ -114,3 +130,21 @@ jobs:
         doctl apps logs $DEMO_ID django-q-worker --tail 50
         echo "Demo platform logs:"
         doctl apps logs $DEMO_ID platform --tail 50
+
+    - name: Verify deployments are healthy
+      run: |
+        echo "Checking production health..."
+        PROD_HEALTH=$(doctl apps get $PRODUCTION_ID --format "Spec.HealthCheck.Status" --no-header)
+        if [ "$PROD_HEALTH" != "healthy" ]; then
+          echo "Production deployment is not healthy!"
+          exit 1
+        fi
+        
+        echo "Checking demo health..."
+        DEMO_HEALTH=$(doctl apps get $DEMO_ID --format "Spec.HealthCheck.Status" --no-header)
+        if [ "$DEMO_HEALTH" != "healthy" ]; then
+          echo "Demo deployment is not healthy!"
+          exit 1
+        fi
+        
+        echo "All deployments are healthy!"
