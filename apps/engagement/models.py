@@ -3,7 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
-from common.models import TimeStampMixin
+from apps.common.mixins import TimeStampMixin
 
 
 def default_delete_at():

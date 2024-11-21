@@ -3,7 +3,7 @@ import logging
 from apps.capabilities.security.services import RoleService
 from apps.capabilities.commerce.models import Organisation
 from apps.engagement.models import NotifiableEvent
-from apps.capabilities.commerce.models import Person
+from apps.capabilities.talent.models import Person
 
 logger = logging.getLogger(__name__)
 
