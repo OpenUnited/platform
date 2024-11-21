@@ -1,50 +1,58 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from datetime import timedelta
+from common.models import TimeStampMixin
 
 
-class Notification(models.Model):
-    class EventType(models.IntegerChoices):
-        BOUNTY_CLAIMED = 0, _("Bounty Claimed")
-        CHALLENGE_COMMENT = 1, _("Challenge Comment")
-        SUBMISSION_APPROVED = 2, _("Submission Approved")
-        SUBMISSION_REJECTED = 3, _("Submission Rejected")
-        BUG_REJECTED = 4, _("Bug Rejected")
-        IDEA_REJECTED = 5, _("Idea Rejected")
-        BUG_CREATED = 6, _("Bug Created")
-        IDEA_CREATED = 7, _("Idea Created")
-        BUG_CREATED_FOR_MEMBERS = 8, _("Bug Created For Members")
-        IDEA_CREATED_FOR_MEMBERS = 9, _("Idea Created For Members")
-        CHALLENGE_STATUS_CHANGED = 10, _("Task Status Changed")
-        BOUNTY_IN_REVIEW = 11, _("Bounty In Review")
-        GENERIC_COMMENT = 12, _("Generic Comment")
-        BOUNTY_SUBMISSION_MADE = 13, _("Bounty Submission Made")
-        BOUNTY_SUBMISSION_READY_TO_REVIEW = 14, _("Task Ready To Review")
-        BOUNTY_DELIVERY_ATTEMPT_CREATED = 15, _("Task Delivery Attempt Created")
-        CONTRIBUTOR_ABANDONED_BOUNTY = 16, _("Contributor Abandoned Bounty")
-        SUBMISSION_REVISION_REQUESTED = 17, _("Submission Revision Requested")
+def default_delete_at():
+    return timezone.now() + timedelta(hours=72)
 
-    class Type(models.IntegerChoices):
-        EMAIL = 0
-        SMS = 1
 
-    event_type = models.IntegerField(choices=EventType.choices, primary_key=True)
-    permitted_params = models.CharField(max_length=500)
+class NotifiableEvent(TimeStampMixin):
+    """An event that occurred that a person could be notified about"""
+    class EventType(models.TextChoices):
+        PRODUCT_CREATED = 'PRODUCT_CREATED', _("Product Created")
+
+    class Type(models.TextChoices):
+        APPS = 'APPS', _("Apps")
+        EMAIL = 'EMAIL', _("Email")
+        BOTH = 'BOTH', _("Both")
+        NONE = 'NONE', _("None")
+
+    event_type = models.CharField(max_length=50, choices=EventType.choices)
+    person = models.ForeignKey('talent.Person', on_delete=models.CASCADE)
+    params = models.JSONField()
+    delete_at = models.DateTimeField(default=default_delete_at)
 
     class Meta:
-        abstract = True
+        indexes = [
+            models.Index(fields=['delete_at']),
+            models.Index(fields=['person']),
+        ]
 
     def __str__(self):
-        return self.get_event_type_display()
+        return f"{self.get_event_type_display()} for {self.person}"
 
 
-class EmailNotification(Notification):
+class EmailNotificationTemplate(models.Model):
+    """Email notification templates for different event types"""
+    event_type = models.CharField(
+        max_length=50, 
+        choices=NotifiableEvent.EventType.choices, 
+        primary_key=True
+    )
     title = models.CharField(max_length=400)
     template = models.CharField(max_length=4000)
+    permitted_params = models.CharField(max_length=500)
 
     def clean(self):
         _template_is_valid(self.title, self.permitted_params)
         _template_is_valid(self.template, self.permitted_params)
+
+    def __str__(self):
+        return f"Email template for {self.get_event_type_display()}"
 
 
 def _template_is_valid(template, permitted_params):
@@ -62,3 +70,95 @@ def _template_is_valid(template, permitted_params):
                 )
             }
         ) from None
+
+
+class NotificationPreference(TimeStampMixin):
+    person = models.OneToOneField(
+        "talent.Person",
+        on_delete=models.CASCADE,
+        related_name="notification_preferences"
+    )
+    
+    product_notifications = models.CharField(
+        max_length=10,
+        choices=NotifiableEvent.Type.choices,
+        default=NotifiableEvent.Type.BOTH,
+        help_text=_("Notifications about products (creation, updates)")
+    )
+
+    class Meta:
+        verbose_name_plural = "Notification Preferences"
+        indexes = [
+            models.Index(fields=['person'])
+        ]
+
+    def __str__(self):
+        return f"Notification Preferences for {self.person}"
+
+    def get_channel_for_event(self, event_type: str) -> str:
+        """Maps event types to their corresponding preference field"""
+        return self.product_notifications
+
+
+class EmailNotification(TimeStampMixin):
+    """Record of emails sent to users"""
+    event = models.ForeignKey(NotifiableEvent, on_delete=models.CASCADE)
+    title = models.CharField(max_length=400)
+    body = models.CharField(max_length=4000)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    delete_at = models.DateTimeField(default=default_delete_at)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['event']),
+            models.Index(fields=['sent_at']),
+            models.Index(fields=['delete_at']),
+        ]
+
+    def __str__(self):
+        return f"Email notification for {self.event}"
+
+
+class AppNotification(TimeStampMixin):
+    """Notifications to be displayed in the web app"""
+    event = models.ForeignKey(NotifiableEvent, on_delete=models.CASCADE)
+    title = models.CharField(max_length=400)
+    message = models.CharField(max_length=4000)
+    is_read = models.BooleanField(default=False)
+    read_at = models.DateTimeField(null=True, blank=True)
+    delete_at = models.DateTimeField(default=default_delete_at)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['event']),
+            models.Index(fields=['is_read']),
+            models.Index(fields=['read_at']),
+            models.Index(fields=['delete_at']),
+        ]
+
+    def __str__(self):
+        return f"App notification for {self.event}"
+
+    def mark_as_read(self):
+        self.is_read = True
+        self.read_at = timezone.now()
+        self.save(update_fields=['is_read', 'read_at'])
+
+
+class AppNotificationTemplate(models.Model):
+    """Templates for in-app notifications"""
+    event_type = models.CharField(
+        max_length=50, 
+        choices=NotifiableEvent.EventType.choices, 
+        primary_key=True
+    )
+    title_template = models.CharField(max_length=400)
+    message_template = models.CharField(max_length=4000)
+    permitted_params = models.CharField(max_length=500)
+
+    def clean(self):
+        _template_is_valid(self.title_template, self.permitted_params)
+        _template_is_valid(self.message_template, self.permitted_params)
+
+    def __str__(self):
+        return f"App notification template for {self.get_event_type_display()}"

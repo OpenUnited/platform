@@ -22,6 +22,7 @@ from . import forms
 from apps.capabilities.security.models import ProductRoleAssignment
 from apps.common.exceptions import ServiceException, InvalidInputError, ResourceNotFoundError
 from apps.portal.services.ai_services import LLMService
+from apps.event_hub.services.factory import get_event_bus
 
 logger = logging.getLogger(__name__)
 
@@ -338,6 +339,17 @@ class ProductManagementService:
                 role=ProductRoleAssignment.ProductRoles.ADMIN
             )
             logger.info(f"Assigned {person} as ADMIN for product {product.id}")
+
+            # Emit product.created event with correct field names
+            event_bus = get_event_bus()
+            event_bus.publish('product.created', {
+                'organisation_id': product.organisation_id if product.organisation else None,
+                'person_id': product.person_id if product.person else None,
+                'name': product.name,
+                'url': product.get_absolute_url(),
+                'product_id': product.id
+            })
+            logger.info(f"Published product.created event for product {product.id}")
             
             return product
             

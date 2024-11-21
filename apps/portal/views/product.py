@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from apps.capabilities.product_management.models import Product
 from apps.common.exceptions import InvalidInputError
 from apps.common.mixins import AttachmentMixin
