@@ -46,14 +46,13 @@ class DjangoQBackend(EventBusBackend):
             
             # Queue the task using the module-level function
             task_id = async_task(
-                'apps.event_hub.services.backends.django_q.execute_listener',
+                execute_listener,  # Call the function directly
                 listener_module,
                 listener_name,
                 payload,
                 task_name=f"event.{listener_name}",
                 hook='apps.event_hub.services.backends.django_q.task_hook',
-                timeout=getattr(settings, 'EVENT_BUS_TASK_TIMEOUT', 300),  # 5 minutes default
-                retry=getattr(settings, 'EVENT_BUS_TASK_RETRIES', 3)
+                timeout=getattr(settings, 'EVENT_BUS_TASK_TIMEOUT', 300),
             )
             
             logger.info(f"[DjangoQBackend] Task {task_id} enqueued successfully")

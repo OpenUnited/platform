@@ -40,4 +40,9 @@ class EventBus:
                     self.backend.execute_task_sync(listener, payload)
             except Exception as e:
                 logger.error(f"Error processing event {event_name}: {str(e)}")
-                raise
+                self.backend.report_error(e, {
+                    'event_name': event_name,
+                    'listener': listener.__name__,
+                    'payload': payload
+                })
+                raise  # Re-raise to maintain current behavior

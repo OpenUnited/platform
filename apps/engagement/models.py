@@ -23,7 +23,7 @@ class NotifiableEvent(TimeStampMixin):
 
     event_type = models.CharField(max_length=50, choices=EventType.choices)
     person = models.ForeignKey('talent.Person', on_delete=models.CASCADE)
-    params = models.JSONField()
+    params = models.JSONField(default=dict)
     delete_at = models.DateTimeField(default=default_delete_at)
 
     class Meta:
@@ -73,17 +73,21 @@ def _template_is_valid(template, permitted_params):
 
 
 class NotificationPreference(TimeStampMixin):
+    class Type(models.TextChoices):
+        NONE = "NONE", "No notifications"
+        APPS = "APPS", "In-app only"
+        EMAIL = "EMAIL", "Email only"
+        BOTH = "BOTH", "Both app and email"
+
     person = models.OneToOneField(
         "talent.Person",
         on_delete=models.CASCADE,
         related_name="notification_preferences"
     )
-    
     product_notifications = models.CharField(
         max_length=10,
-        choices=NotifiableEvent.Type.choices,
-        default=NotifiableEvent.Type.BOTH,
-        help_text=_("Notifications about products (creation, updates)")
+        choices=Type.choices,
+        default=Type.BOTH
     )
 
     class Meta:
@@ -102,9 +106,9 @@ class NotificationPreference(TimeStampMixin):
 
 class EmailNotification(TimeStampMixin):
     """Record of emails sent to users"""
-    event = models.ForeignKey(NotifiableEvent, on_delete=models.CASCADE)
+    event = models.ForeignKey(NotifiableEvent, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=400)
-    body = models.CharField(max_length=4000)
+    body = models.CharField(max_length=4000, null=True, blank=True)
     sent_at = models.DateTimeField(auto_now_add=True)
     delete_at = models.DateTimeField(default=default_delete_at)
 

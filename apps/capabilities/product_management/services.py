@@ -340,9 +340,8 @@ class ProductManagementService:
             )
             logger.info(f"Assigned {person} as ADMIN for product {product.id}")
 
-            # Emit product.created event with correct field names
             event_bus = get_event_bus()
-            event_bus.publish('product.created', {
+            event_bus.emit_event('product.created', {
                 'organisation_id': product.organisation_id if product.organisation else None,
                 'person_id': product.person_id if product.person else None,
                 'name': product.name,
