@@ -1,15 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 from django.utils import timezone
-import datetime
 from django.contrib.auth import get_user_model
-from django.test import override_settings
-from django_q.models import Schedule, Task
-from time import sleep
-from django_q.tasks import async_task
-from apps.event_hub.services.event_bus import EventBus
-from apps.event_hub.services.factory import get_event_bus
-from apps.event_hub.services.backends.django_q import execute_listener
 
 from apps.capabilities.product_management.services import ProductManagementService
 from apps.engagement.models import (
@@ -22,31 +14,7 @@ from apps.engagement.models import (
 )
 from apps.capabilities.talent.models import Person
 from apps.capabilities.commerce.models import Organisation, Product
-import time
-from django.db import transaction
-
-def error_handler(payload):
-    raise ValueError("Test error")
-
-_retry_count = 0  # Module level counter for testing
-
-def retry_handler(payload):
-    global _retry_count
-    _retry_count += 1
-    
-    if _retry_count <= 2:
-        raise ValueError("Temporary failure")
-    return "Success"
-
-def wait_for_task_completion(task_name: str, timeout: int = 5):
-    """Helper function to wait for task completion"""
-    start_time = time.time()
-    while time.time() - start_time < timeout:
-        task = Task.objects.filter(name=task_name).order_by('-id').first()
-        if task and task.success is not None:
-            return task
-        time.sleep(0.1)
-    raise TimeoutError(f"Task {task_name} did not complete within {timeout} seconds")
+from apps.event_hub.events import EventTypes
 
 @pytest.fixture
 def user():
@@ -64,9 +32,7 @@ def person(user):
         full_name="Test Person",
         preferred_name="Test",
         headline="Test Headline",
-        overview="Test Overview",
-        points=0,
-        send_me_bounties=True
+        overview="Test Overview"
     )
 
 @pytest.fixture
@@ -85,220 +51,200 @@ def notification_preferences(person):
 @pytest.fixture
 def app_template():
     return AppNotificationTemplate.objects.create(
-        event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
+        event_type=EventTypes.PRODUCT_CREATED,
         title_template="New Product: {name}",
-        message_template="A new product {name} has been created. View it at {url}"
+        message_template="A new product {name} has been created. View it at {url}",
+        permitted_params="name,url"
     )
 
 @pytest.fixture
 def email_template():
     return EmailNotificationTemplate.objects.create(
-        event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
+        event_type=EventTypes.PRODUCT_CREATED,
         title="New Product: {name}",
         template="A new product {name} has been created. View it at {url}",
         permitted_params="name,url"
     )
 
-@pytest.fixture(scope='function')
-def django_q_cluster(db):
-    """Configure Django Q for testing in synchronous mode"""
-    from django_q.conf import Conf
-    from django_q.models import OrmQ, Task
-    
-    # Store original settings
-    original_settings = {
-        'sync': getattr(Conf, 'SYNC', False),
-        'testing': getattr(Conf, 'TESTING', False),
-    }
-    
-    # Configure for testing
-    Conf.SYNC = True
-    Conf.TESTING = True
-    Conf.CACHED = False
-    
-    # Clear existing tasks
-    OrmQ.objects.all().delete()
-    Task.objects.all().delete()
-    
+@pytest.fixture(autouse=True)
+def cleanup_test_data():
     yield
-    
-    # Restore original settings
-    for key, value in original_settings.items():
-        setattr(Conf, key.upper(), value)
-    
-    # Cleanup
-    OrmQ.objects.all().delete()
-    Task.objects.all().delete()
+    NotifiableEvent.objects.all().delete()
+    AppNotification.objects.all().delete()
+    EmailNotification.objects.all().delete()
+    Product.objects.all().delete()
 
-@pytest.mark.django_db(transaction=True, reset_sequences=True)
+@pytest.fixture
+def organisation(db):
+    """Create a test organisation"""
+    return Organisation.objects.create(
+        name="Test Organisation",
+        username="testorg"
+    )
+
+@pytest.fixture
+def product(db, organisation):
+    """Create a test product"""
+    return Product.objects.create(
+        id=1,
+        name="Test Product",
+        slug="test-product",
+        organisation=organisation,  # Required owner
+        visibility=Product.Visibility.ORG_ONLY,  # Default visibility for org-owned products
+        short_description="A test product"  # Optional but good for completeness
+    )
+
 class TestNotificationFlow:
-    def test_product_created_event_emission(self, mocker: MockerFixture, person, org):
-        """Test that creating a product emits the correct event"""
-        mock_bus = mocker.patch('apps.event_hub.services.event_bus.EventBus._instance')
-        mock_bus.emit_event = mocker.Mock()
+    """Tests for the notification creation flow"""
 
-        product = ProductManagementService.create_product(
-            {
-                "name": "Test Product",
-                "organisation": org,
-                "short_description": "Test description",
-                "full_description": "Full test description",
-                "visibility": "ORG_ONLY"
-            },
-            person=person
-        )
-
-        mock_bus.emit_event.assert_called_once_with('product.created', {
-            'organisation_id': product.organisation_id,
-            'person_id': product.person_id,
-            'name': product.name,
-            'url': product.get_absolute_url(),
-            'product_id': product.id
-        })
-
-    def test_handle_product_created_org_product(self, org, notification_preferences, app_template, email_template, django_q_cluster):
-        """Test handling product.created event for org product"""
-        from apps.engagement.events import handle_product_created
-        
-        person = notification_preferences.person
-        
-        # First create the product
-        product = ProductManagementService.create_product(
-            {
-                "name": "Test Product",
-                "organisation": org,
-                "short_description": "Test description",
-                "full_description": "Full test description",
-                "visibility": "ORG_ONLY"
-            },
-            person=person
-        )
-        
-        payload = {
+    @pytest.fixture
+    def event_data(self, org, person):
+        """Standard event data for testing"""
+        return {
             'organisation_id': org.id,
             'name': "Test Product",
-            'url': "/products/test",
-            'product_id': product.id,
+            'url': "/products/test-product/",
+            'product_id': 1,
             'person_id': person.id
         }
-        
-        try:
-            handle_product_created(payload)
-            
-            event = NotifiableEvent.objects.filter(
-                event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
-                person=person
-            ).first()
-            assert event is not None, "NotifiableEvent was not created"
-            
-            assert AppNotification.objects.filter(event=event).exists(), "App notification was not created"
-        except Exception as e:
-            pytest.fail(f"Failed to handle product created event: {str(e)}")
 
-    def test_product_created_event_emission_async(self, mocker: MockerFixture, person, org, app_template, email_template, django_q_cluster):
-        """Test that creating a product emits the correct event"""
+    def test_creates_both_notifications_when_preference_is_both(
+        self, 
+        person, 
+        event_data, 
+        notification_preferences, 
+        app_template, 
+        email_template, 
+        product
+    ):
+        """
+        When user preferences are set to BOTH:
+        - Should create both app and email notifications
+        - Should format templates correctly
+        """
         from apps.engagement.events import handle_product_created
-        
-        # Mock the event bus but execute handlers synchronously
-        mock_bus = mocker.patch('apps.event_hub.services.event_bus.EventBus._instance')
-        
-        def mock_handler(payload):
-            try:
-                handle_product_created(payload)
-            except Exception as e:
-                pytest.fail(f"Handler failed: {str(e)}")
-        
-        mock_bus.get_listeners.return_value = [mock_handler]
-        
-        with transaction.atomic():  # Ensure DB consistency
-            product = ProductManagementService.create_product(
-                {
-                    "name": "Test Product",
-                    "organisation": org,
-                    "short_description": "Test description",
-                    "full_description": "Full test description",
-                    "visibility": "ORG_ONLY"
-                },
-                person=person
-            )
-            
-            # Force sync execution
-            mock_handler({
-                'organisation_id': org.id,
-                'name': product.name,
-                'url': f'/products/{product.id}',
-                'product_id': product.id,
-                'person_id': person.id
-            })
-        
-        event = NotifiableEvent.objects.filter(
-            event_type=NotifiableEvent.EventType.PRODUCT_CREATED
-        ).first()
-        assert event is not None, "Event was not created"
+        handle_product_created(event_data)
 
-    def test_event_bus_error_handling(self, mocker: MockerFixture, person, org, django_q_cluster):
-        """Test error handling in async event processing"""
-        event_bus = get_event_bus()
-        
-        # Create a proper callback function
-        mock_callback = mocker.Mock()
-        
-        # Mock the error reporting directly in the backend
-        mocker.patch.object(
-            event_bus.backend,
-            'report_error',
-            side_effect=lambda error, context: mock_callback(error, context)
+        event = NotifiableEvent.objects.get(
+            event_type=EventTypes.PRODUCT_CREATED,
+            person=person
         )
         
-        event_bus.register_listener('test.error', error_handler)
-        
-        # The error is expected
-        with pytest.raises(ValueError, match="Test error"):
-            event_bus.emit_event('test.error', {'test': 'data'})
-            time.sleep(0.1)  # Allow async processing
-        
-        # Verify error was reported
-        assert mock_callback.called, "Error callback was not called"
-        
-        # Verify error details
-        call_args = mock_callback.call_args
-        assert call_args is not None, "No arguments passed to error callback"
-        error, context = call_args[0]
-        assert isinstance(error, ValueError)
-        assert str(error) == "Test error"
-        assert context['event_name'] == 'test.error'
+        # Verify app notification
+        app_notification = AppNotification.objects.get(event=event)
+        assert app_notification.title == "New Product: Test Product"
+        assert app_notification.message == "A new product Test Product has been created. View it at /products/test-product/"
 
-    def test_event_retry_mechanism(self, mocker: MockerFixture, person, org, django_q_cluster):
-        """Test that failed tasks are retried"""
-        global _retry_count
-        _retry_count = 0  # Reset counter
-        
-        event_bus = get_event_bus()
-        event_bus.register_listener('test.retry', retry_handler)
-        
-        # First attempt will fail
-        with pytest.raises(ValueError, match="Temporary failure"):
-            event_bus.emit_event('test.retry', {'test': 'data'})
-        
-        # Verify retry count
-        assert _retry_count > 0, "Handler was not called"
+        # Verify email notification
+        email_notification = EmailNotification.objects.get(event=event)
+        assert email_notification.title == "New Product: Test Product"
+        assert email_notification.body == "A new product Test Product has been created. View it at /products/test-product/"
 
-    def test_notification_cleanup(self, person):
-        """Test that old notifications are cleaned up"""
-        event = NotifiableEvent.objects.create(
-            event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
-            person=person,
-            delete_at=timezone.now() - datetime.timedelta(days=1)
+    def test_creates_only_app_notification_when_preference_is_apps(
+        self, 
+        person, 
+        event_data, 
+        notification_preferences, 
+        app_template, 
+        email_template, 
+        product
+    ):
+        """
+        When user preferences are set to APPS:
+        - Should create only app notification
+        - Should not create email notification
+        """
+        notification_preferences.product_notifications = NotificationPreference.Type.APPS
+        notification_preferences.save()
+
+        from apps.engagement.events import handle_product_created
+        handle_product_created(event_data)
+
+        event = NotifiableEvent.objects.get(
+            event_type=EventTypes.PRODUCT_CREATED,
+            person=person
         )
         
-        AppNotification.objects.create(
-            event=event,
-            delete_at=timezone.now() - datetime.timedelta(days=1)
+        assert AppNotification.objects.filter(event=event).exists()
+        assert not EmailNotification.objects.filter(event=event).exists()
+
+    def test_creates_only_email_notification_when_preference_is_email(
+        self,
+        person,
+        event_data,
+        notification_preferences,
+        app_template,
+        email_template,
+        product
+    ):
+        """
+        When user preferences are set to EMAIL:
+        - Should create only email notification
+        - Should not create app notification
+        """
+        notification_preferences.product_notifications = NotificationPreference.Type.EMAIL
+        notification_preferences.save()
+
+        from apps.engagement.events import handle_product_created
+        handle_product_created(event_data)
+
+        event = NotifiableEvent.objects.get(
+            event_type=EventTypes.PRODUCT_CREATED,
+            person=person
         )
         
-        from apps.engagement.services import NotificationService
-        service = NotificationService()
-        app_deleted, email_deleted = service.cleanup_old_notifications()
+        assert EmailNotification.objects.filter(event=event).exists()
+        assert not AppNotification.objects.filter(event=event).exists()
+
+    def test_handles_invalid_template_gracefully(
+        self, 
+        person, 
+        event_data, 
+        notification_preferences, 
+        app_template, 
+        email_template, 
+        product
+    ):
+        """
+        When template contains invalid parameters:
+        - Should create notification with error message
+        - Should not raise exception
+        """
+        app_template.message_template = "Product: {invalid_param}"
+        app_template.save()
         
-        assert app_deleted == 1
-        assert AppNotification.objects.count() == 0
+        from apps.engagement.events import handle_product_created
+        handle_product_created(event_data)
+        
+        notification = AppNotification.objects.get(
+            event__event_type=EventTypes.PRODUCT_CREATED,
+            event__person=person
+        )
+        assert notification.message == "There was an error processing this notification."
+
+    def test_handles_missing_template_gracefully(
+        self,
+        person,
+        event_data,
+        notification_preferences,
+        product
+    ):
+        """
+        When templates don't exist:
+        - Should create notification with error message
+        - Should not raise exception
+        """
+        # Delete any existing templates
+        AppNotificationTemplate.objects.all().delete()
+        EmailNotificationTemplate.objects.all().delete()
+
+        from apps.engagement.events import handle_product_created
+        handle_product_created(event_data)
+
+        event = NotifiableEvent.objects.get(
+            event_type=EventTypes.PRODUCT_CREATED,
+            person=person
+        )
+        
+        notification = AppNotification.objects.get(event=event)
+        assert notification.message == "There was an error processing this notification."

@@ -3,7 +3,7 @@
 ## Core Concepts
 
 ### Event-Driven Architecture
-- Events are published when significant actions occur
+- Events are emitted when significant actions occur
 - Events are processed asynchronously via Django Q
 - Handlers create notifications based on event type and user preferences
 
@@ -31,7 +31,7 @@ The event bus handles asynchronous processing and decouples event producers from
 - Records that something notification-worthy happened
 - Links event to specific person
 - Stores event parameters
-- Creates appropriate notifications
+- Used by event handlers to create notifications
 
 ### 3. Notification Templates
 - `AppNotificationTemplate`
@@ -50,15 +50,22 @@ The event bus handles asynchronous processing and decouples event producers from
 When a product is created, the ProductManagementService emits an event with the product details and ownership information.
 
 ### Step 2: Event Processing
-The Django Q worker picks up the event and routes it to the appropriate handler. The handler determines who should be notified:
-- For organization products: notify organization managers
-- For personal products: notify the product owner
+The Django Q worker picks up the event and routes it to the appropriate handler. The handler:
+1. Validates the event payload and retrieves the product
+2. Creates NotifiableEvent records for:
+   - The product creator
+   - Organization managers/owners (if org-owned product)
+3. Includes error handling and logging
 
 ### Step 3: Notification Creation
 The system:
 1. Creates a NotifiableEvent record
 2. Checks the recipient's notification preferences
-3. Creates appropriate notifications (app and/or email) based on those preferences
+3. Creates appropriate notifications based on those preferences
+4. Handles errors gracefully:
+   - Missing notification preferences
+   - Missing notification templates
+   - Template rendering errors
 
 ### Step 4: Notification Delivery
 - App notifications appear in the web interface
@@ -99,7 +106,7 @@ Represents an event that can trigger notifications:
 ### NotificationPreference
 Stores user preferences for different notification types:
 - One record per person
-- Controls notification channels per event type
+- Controls notification channels per event type (currently supports product notifications)
 
 ### AppNotification & EmailNotification
 Track actual notifications:
@@ -126,11 +133,12 @@ def create_product(form_data: dict, person: Person, organisation: Organisation =
     
     # Emit event
     event_bus = get_event_bus()
-    event_bus.publish('product.created', {
-        'organisation_id': product.organisation_id,
-        'person_id': product.person_id,
+    event_bus.emit_event('product.created', {
+        'organisation_id': product.organisation_id if product.organisation else None,
+        'person_id': product.person_id if product.person else None,
         'name': product.name,
-        'url': product.get_absolute_url()
+        'url': product.get_absolute_url(),
+        'product_id': product.id
     })
 `````
 
@@ -139,39 +147,72 @@ def create_product(form_data: dict, person: Person, organisation: Organisation =
 ````python`
 # apps/engagement/events.py
 
-def handle_product_created(payload: Dict) -> None:
-    """Handle product creation notification"""
-    if organisation_id := payload.get('organisation_id'):
-        # Notify org managers
-        organisation = Organisation.objects.get(id=organisation_id)
-        org_managers = RoleService.get_organisation_managers(organisation)
+def handle_product_created(payload: dict) -> None:
+    """Handle product.created event"""
+    logger.info(f"Processing product created event: {payload}")
+    try:
+        product_id = payload.get('product_id')
+        if not product_id:
+            logger.error("No product_id in payload")
+            return
+            
+        product = Product.objects.get(id=product_id)
         
-        for manager in org_managers:
-            NotifiableEvent.objects.create(
+        params = {
+            'name': payload.get('name', product.name),
+            'url': payload.get('url', f'/products/{product.id}/summary/')
+        }
+        
+        # Always notify the creator
+        person_id = payload.get('person_id')
+        if person_id:
+            creator = Person.objects.get(id=person_id)
+            event = NotifiableEvent.objects.create(
                 event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
-                person=manager,
-                params={'name': payload['name'], 'url': payload['url']}
-            ).create_notifications()
+                person=creator,
+                params=params
+            )
+            _create_notifications_for_event(event)
+        
+        # If org-owned, also notify org admins
+        if product.is_owned_by_organisation():
+            admin_assignments = OrganisationPersonRoleAssignment.objects.filter(
+                organisation=product.organisation,
+                role__in=[
+                    OrganisationPersonRoleAssignment.OrganisationRoles.OWNER,
+                    OrganisationPersonRoleAssignment.OrganisationRoles.MANAGER
+                ]
+            ).exclude(person_id=person_id)  # Don't double-notify the creator
+            
+            for assignment in admin_assignments:
+                event = NotifiableEvent.objects.create(
+                    event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
+                    person=assignment.person,
+                    params=params
+                )
+                _create_notifications_for_event(event)
 `````
 
 ### 3. Creating Notifications
 
-````python`
-# apps/engagement/models.py
-
-class NotifiableEvent(TimeStampMixin):
-    def create_notifications(self):
-        """Creates notifications based on preference"""
-        pref = self.person.notification_preferences
-        channel = pref.get_channel_for_event(self.event_type)
-        
-        if channel in [self.Type.APPS, self.Type.BOTH]:
-            template = AppNotificationTemplate.objects.get(event_type=self.event_type)
+```python
+def _create_notifications_for_event(event: NotifiableEvent) -> None:
+    """Create notifications based on user preferences"""
+    try:
+        prefs = NotificationPreference.objects.get(person=event.person)
+        if prefs.product_notifications in [NotificationPreference.Type.APPS, NotificationPreference.Type.BOTH]:
+            template = AppNotificationTemplate.objects.get(event_type=event.event_type)
             AppNotification.objects.create(
-                event=self,
-                title=template.title_template.format(**self.params),
-                message=template.message_template.format(**self.params)
-`````
+                event=event,
+                title=template.title_template.format(**event.params),
+                message=template.message_template.format(**event.params)
+            )
+    except NotificationPreference.DoesNotExist:
+        logger.warning(f"No notification preferences found for person {event.person.id}")
+    except AppNotificationTemplate.DoesNotExist:
+        logger.error(f"No app notification template found for event type {event.event_type}")
+    except Exception as e:
+        logger.error(f"Error creating notifications for event: {str(e)}")
 
 ### 4. Retrieving Notifications
 
@@ -219,3 +260,159 @@ class AppNotificationTemplate(models.Model):
         _template_is_valid(self.title_template, self.permitted_params)
         _template_is_valid(self.message_template, self.permitted_params)
 `````
+
+### Detailed Product Creation Flow
+
+1. **Product Creation**
+   - Product is created via ProductManagementService
+   - Creator is assigned as admin
+   - Event is emitted with product details
+
+2. **Event Processing**
+   - Event is picked up by handler
+   - Product is retrieved using product_id
+   - Two notification paths:
+     a. Creator notification
+     b. Organization admin notification (if org-owned)
+
+3. **Notification Creation**
+   - Checks user preferences
+   - Creates notifications based on template
+   - Handles both app and email notifications
+   - Includes error handling and logging
+
+4. **Template Validation**
+   - Templates are validated for permitted parameters
+   - Invalid templates trigger appropriate error responses
+   - Validation occurs at template creation/update
+
+5. **Cleanup**
+   - Notifications are automatically marked for deletion after 72 hours
+   - Cleanup process removes expired notifications
+
+## Email Notifications
+
+### Implementation
+Email notifications are handled similarly to app notifications but with additional considerations:
+
+1. **Templates**
+```python
+class EmailNotificationTemplate(models.Model):
+    event_type = models.CharField(max_length=50, choices=NotifiableEvent.EventType.choices)
+    title = models.CharField(max_length=400)
+    template = models.CharField(max_length=4000)
+    permitted_params = models.CharField(max_length=500)
+```
+
+2. **Delivery**
+- Email notifications are created in the database first
+- Actual email sending is handled asynchronously
+- Includes sent status tracking and error handling
+
+3. **Lifecycle**
+- Emails have a 72-hour retention period (delete_at field)
+- Sent status is tracked for monitoring
+- Failed deliveries are logged for investigation
+
+## Testing Strategy
+
+### 1. Test Categories
+- **Basic Flow Tests**: Verify core notification creation and delivery
+- **Async Behavior**: Test event processing and notification generation
+- **Error Handling**: Validate system resilience
+- **Performance**: Check system behavior under load
+- **Edge Cases**: Test unusual scenarios
+- **Maintenance**: Verify cleanup and housekeeping
+
+### 2. Test Infrastructure
+```python
+# Global fixtures (conftest.py)
+@pytest.fixture(autouse=True)
+def enable_db_access_for_all_tests(db):
+    """Enable database access for all tests"""
+    pass
+
+@pytest.fixture(autouse=True)
+def use_transaction_db(transactional_db):
+    """Make all tests transactional"""
+    pass
+
+@pytest.fixture(autouse=True)
+def clear_cache():
+    """Clear cache before/after tests"""
+    cache.clear()
+    yield
+    cache.clear()
+```
+
+### 3. Key Test Scenarios
+1. **Event Emission**
+   - Verify correct event payload
+   - Check async processing
+   - Test concurrent events
+
+2. **Notification Creation**
+   - Test preference-based creation
+   - Validate template rendering
+   - Check error handling
+
+3. **Email Specific**
+   - Test email template rendering
+   - Verify email queuing
+   - Check delivery status tracking
+
+4. **Performance Testing**
+   - Test under high load
+   - Check query optimization
+   - Verify async processing scales
+
+5. **Cleanup and Maintenance**
+   - Test automatic deletion
+   - Verify retention periods
+   - Check cleanup efficiency
+
+### 4. Test Helpers
+```python
+@pytest.fixture
+def wait_for_notifications():
+    """Wait for notifications with exponential backoff"""
+    def _wait(filter_kwargs, expected_count=1, timeout=10):
+        start_time = time.time()
+        sleep_time = 0.1
+        
+        while time.time() - start_time < timeout:
+            count = NotifiableEvent.objects.filter(**filter_kwargs).count()
+            if count == expected_count:
+                return True
+            time.sleep(min(sleep_time, 0.5))
+            sleep_time *= 1.5
+        
+        raise TimeoutError(f"Timed out waiting for {expected_count} notifications")
+    return _wait
+```
+
+### 5. Best Practices
+1. **Test Isolation**
+   - Each test runs in its own transaction
+   - Automatic cleanup of test data
+   - Cache clearing between tests
+
+2. **Async Testing**
+   - Use django_q_cluster fixture
+   - Handle race conditions
+   - Proper timeout handling
+
+3. **Error Scenarios**
+   - Test template errors
+   - Handle missing preferences
+   - Validate error logging
+
+4. **Performance Monitoring**
+   - Track query counts
+   - Monitor processing time
+   - Check memory usage
+
+5. **Maintenance Testing**
+   - Verify cleanup jobs
+   - Test retention policies
+   - Check index usage

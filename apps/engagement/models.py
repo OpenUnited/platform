@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 from apps.common.mixins import TimeStampMixin
+from apps.event_hub.events import EventTypes
 
 
 def default_delete_at():
@@ -12,16 +13,11 @@ def default_delete_at():
 
 class NotifiableEvent(TimeStampMixin):
     """An event that occurred that a person could be notified about"""
-    class EventType(models.TextChoices):
-        PRODUCT_CREATED = 'PRODUCT_CREATED', _("Product Created")
-
-    class Type(models.TextChoices):
-        APPS = 'APPS', _("Apps")
-        EMAIL = 'EMAIL', _("Email")
-        BOTH = 'BOTH', _("Both")
-        NONE = 'NONE', _("None")
-
-    event_type = models.CharField(max_length=50, choices=EventType.choices)
+    event_type = models.CharField(
+        max_length=50, 
+        choices=EventTypes.choices(),
+        db_index=True
+    )
     person = models.ForeignKey('talent.Person', on_delete=models.CASCADE)
     params = models.JSONField(default=dict)
     delete_at = models.DateTimeField(default=default_delete_at)
@@ -40,7 +36,7 @@ class EmailNotificationTemplate(models.Model):
     """Email notification templates for different event types"""
     event_type = models.CharField(
         max_length=50, 
-        choices=NotifiableEvent.EventType.choices, 
+        choices=EventTypes.choices(),
         primary_key=True
     )
     title = models.CharField(max_length=400)
@@ -153,7 +149,7 @@ class AppNotificationTemplate(models.Model):
     """Templates for in-app notifications"""
     event_type = models.CharField(
         max_length=50, 
-        choices=NotifiableEvent.EventType.choices, 
+        choices=EventTypes.choices(),
         primary_key=True
     )
     title_template = models.CharField(max_length=400)

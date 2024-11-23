@@ -4,9 +4,10 @@ from apps.capabilities.security.services import RoleService
 from apps.capabilities.commerce.models import Organisation
 from apps.engagement.models import NotifiableEvent
 from apps.capabilities.talent.models import Person
-from apps.engagement.models import NotificationPreference, AppNotificationTemplate, AppNotification
+from apps.engagement.models import NotificationPreference, AppNotificationTemplate, AppNotification, EmailNotificationTemplate, EmailNotification
 from apps.capabilities.security.models import OrganisationPersonRoleAssignment
 from apps.capabilities.commerce.models import Product
+from apps.event_hub.events import EventTypes
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ def handle_product_created(payload: dict) -> None:
         if person_id:
             creator = Person.objects.get(id=person_id)
             event = NotifiableEvent.objects.create(
-                event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
+                event_type=EventTypes.PRODUCT_CREATED,
                 person=creator,
                 params=params
             )
@@ -49,7 +50,7 @@ def handle_product_created(payload: dict) -> None:
             
             for assignment in admin_assignments:
                 event = NotifiableEvent.objects.create(
-                    event_type=NotifiableEvent.EventType.PRODUCT_CREATED,
+                    event_type=EventTypes.PRODUCT_CREATED,
                     person=assignment.person,
                     params=params
                 )
@@ -63,16 +64,43 @@ def _create_notifications_for_event(event: NotifiableEvent) -> None:
     """Create notifications based on user preferences"""
     try:
         prefs = NotificationPreference.objects.get(person=event.person)
+        
+        # Handle app notifications
         if prefs.product_notifications in [NotificationPreference.Type.APPS, NotificationPreference.Type.BOTH]:
-            template = AppNotificationTemplate.objects.get(event_type=event.event_type)
-            AppNotification.objects.create(
-                event=event,
-                title=template.title_template.format(**event.params),
-                message=template.message_template.format(**event.params)
-            )
+            try:
+                template = AppNotificationTemplate.objects.get(event_type=event.event_type)
+                AppNotification.objects.create(
+                    event=event,
+                    title=template.title_template.format(**event.params),
+                    message=template.message_template.format(**event.params)
+                )
+            except (AppNotificationTemplate.DoesNotExist, KeyError) as e:
+                logger.error(f"Error creating app notification: {str(e)}")
+                AppNotification.objects.create(
+                    event=event,
+                    title="Error Processing Notification",
+                    message="There was an error processing this notification."
+                )
+        
+        # Handle email notifications
+        if prefs.product_notifications in [NotificationPreference.Type.EMAIL, NotificationPreference.Type.BOTH]:
+            try:
+                template = EmailNotificationTemplate.objects.get(event_type=event.event_type)
+                EmailNotification.objects.create(
+                    event=event,
+                    title=template.title.format(**event.params),
+                    body=template.template.format(**event.params)
+                )
+            except (EmailNotificationTemplate.DoesNotExist, KeyError) as e:
+                logger.error(f"Error creating email notification: {str(e)}")
+                EmailNotification.objects.create(
+                    event=event,
+                    title="Error Processing Notification",
+                    body="There was an error processing this notification."
+                )
+                
     except NotificationPreference.DoesNotExist:
         logger.warning(f"No notification preferences found for person {event.person.id}")
-    except AppNotificationTemplate.DoesNotExist:
-        logger.error(f"No app notification template found for event type {event.event_type}")
     except Exception as e:
         logger.error(f"Error creating notifications for event: {str(e)}")
+        raise

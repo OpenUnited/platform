@@ -53,6 +53,13 @@ class DjangoQBackend(EventBusBackend):
                 task_name=f"event.{listener_name}",
                 hook='apps.event_hub.services.backends.django_q.task_hook',
                 timeout=getattr(settings, 'EVENT_BUS_TASK_TIMEOUT', 300),
+                # Configure for reliable async processing
+                q_options={
+                    'retry': 3,  # Retry failed tasks up to 3 times
+                    'timeout': 30,  # Shorter timeout for tests
+                    'priority': 1,  # High priority
+                    'retry_delay': 1  # Wait 1 second between retries
+                }
             )
             
             logger.info(f"[DjangoQBackend] Task {task_id} enqueued successfully")

@@ -420,6 +420,9 @@ EVENT_BUS = {
     'ERROR_CALLBACK': 'apps.common.utils.error_reporting.report_event_bus_error',  # optional
 }
 
+# Event Hub Settings
+EVENT_LOG_RETENTION_DAYS = int(os.getenv('EVENT_LOG_RETENTION_DAYS', '30'))
+
 # Django Q Configuration (using PostgreSQL as broker)
 Q_CLUSTER = {
     'name': 'OpenUnited',
