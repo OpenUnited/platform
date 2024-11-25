@@ -12,10 +12,12 @@ from django.conf import settings
 import httpx
 import time
 import json
+from django.urls import reverse
 
 from apps.capabilities.talent.models import Person, Expertise
 from apps.capabilities.security.services import RoleService
 from apps.common import utils
+from apps.event_hub.events import EventTypes
 from .models import Bounty, Challenge, Product, Idea, Bug, IdeaVote, ProductContributorAgreementTemplate, ProductArea, Initiative
 from apps.capabilities.commerce.models import Organisation
 from . import forms
@@ -342,7 +344,7 @@ class ProductManagementService:
 
             # Publish event
             event_bus = get_event_bus()
-            event_bus.publish('product.created', {
+            event_bus.publish(EventTypes.PRODUCT_CREATED, {
                 'organisation_id': product.organisation_id if product.organisation else None,
                 'person_id': product.person_id if product.person else None,
                 'name': product.name,
@@ -360,13 +362,25 @@ class ProductManagementService:
             logger.error(f"Error creating product: {str(e)}", exc_info=True)
             raise InvalidInputError(f"Failed to create product: {str(e)}")
 
-    @staticmethod
-    def update_product(product: Product, form_data: Dict) -> Tuple[bool, Optional[str]]:
+    @classmethod
+    @transaction.atomic
+    def update_product(cls, product: Product, data: Dict, person: Person) -> Product:
         try:
-            for key, value in form_data.items():
+            for key, value in data.items():
                 setattr(product, key, value)
             product.save()
-            return True, None
+            
+            # After successful update
+            event_bus = get_event_bus()
+            event_bus.publish(EventTypes.PRODUCT_UPDATED, {
+                'organisation_id': product.organisation_id if product.organisation else None,
+                'person_id': product.person_id if product.person else None,
+                'name': product.name,
+                'product_id': product.id,
+                'url': product.get_absolute_url()
+            })
+            
+            return product
         except Exception as e:
             logger.error(f"Error updating product: {e}")
             return False, str(e)
