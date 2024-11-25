@@ -12,83 +12,71 @@ def process_notification(event_id):
     import logging
     logger = logging.getLogger(__name__)
     
-    # Add worker process ID for tracking
-    import os
-    worker_pid = os.getpid()
-    print(f"\n[WORKER {worker_pid}] Starting process_notification for event {event_id}")
-    logger.info(f"[WORKER {worker_pid}] Starting process_notification for event {event_id}")
-    
-    result = {
-        'success': False,
-        'app_notification_created': False,
-        'email_notification_created': False,
-        'error': None,
-        'worker_pid': worker_pid
-    }
-    
     try:
-        # Add more detailed exception handling
-        try:
-            event = NotifiableEvent.objects.get(id=event_id)
-        except NotifiableEvent.DoesNotExist:
-            msg = f"Event {event_id} not found"
-            logger.error(f"[WORKER {worker_pid}] {msg}")
-            result['error'] = msg
-            return result
+        # Handle case where event_id might be a dict
+        if isinstance(event_id, dict):
+            event_id = event_id.get('event_id')
             
-        try:
-            prefs = NotificationPreference.objects.get(person=event.person)
-        except NotificationPreference.DoesNotExist:
-            msg = f"Preferences not found for person {event.person_id}"
-            logger.error(f"[WORKER {worker_pid}] {msg}")
-            result['error'] = msg
-            return result
-
-        # Log preference values
-        print(f"[WORKER {worker_pid}] Preference type: {prefs.product_notifications}")
-        print(f"[WORKER {worker_pid}] Preference type class: {type(prefs.product_notifications)}")
-        print(f"[WORKER {worker_pid}] Valid types: {NotificationPreference.Type.choices}")
+        event = NotifiableEvent.objects.get(id=event_id)
+        person = event.person
+        prefs = NotificationPreference.objects.get(person=person)
         
-        print("[WORKER DEBUG] Attempting to get templates")
-        app_template = AppNotificationTemplate.objects.get(event_type=event.event_type)
-        email_template = EmailNotificationTemplate.objects.get(event_type=event.event_type)
-        print("[WORKER DEBUG] Found both templates")
+        # Get notification type based on preferences
+        notification_type = prefs.product_notifications
         
-        # Debug preference check
-        print(f"[DEBUG] Checking if {prefs.product_notifications} in {[NotificationPreference.Type.APP, NotificationPreference.Type.BOTH]}")
-        
-        # Create app notification if enabled
-        if prefs.product_notifications in [NotificationPreference.Type.APP, NotificationPreference.Type.BOTH]:
-            print("[DEBUG] Creating app notification")
-            rendered_title = app_template.render_title(event.params)
-            rendered_message = app_template.render_template(event.params)
-            print(f"[DEBUG] Rendered title: {rendered_title}")
-            print(f"[DEBUG] Rendered message: {rendered_message}")
-            
-            app_notif = AppNotification.objects.create(
-                event=event,
-                title=rendered_title,
-                message=rendered_message
-            )
-            print(f"[DEBUG] Created app notification: {app_notif.id}")
-            result['app_notification_created'] = True
-        
-        # Create email notification if enabled
-        if prefs.product_notifications in [NotificationPreference.Type.EMAIL, NotificationPreference.Type.BOTH]:
-            logger.info("[PROCESS] Creating email notification")
-            email_notif = EmailNotification.objects.create(
-                event=event,
-                title=email_template.render_title(event.params),
-                body=email_template.render_template(event.params)
-            )
-            logger.info(f"[PROCESS] Created email notification: {email_notif.id}")
-            result['email_notification_created'] = True
-            
-        result['success'] = True
-        logger.info("[PROCESS] Successfully completed notification processing")
-        return result
+        if notification_type in [NotificationPreference.Type.APPS, NotificationPreference.Type.BOTH]:
+            try:
+                template = AppNotificationTemplate.objects.get(event_type=event.event_type)
+                
+                try:
+                    title = template.title.format(**event.params)
+                    message = template.template.format(**event.params)
+                except KeyError as e:
+                    logger.error(f"Missing template parameter: {e}")
+                    title = "Notification Error"
+                    message = "There was an error processing this notification."
+                    
+                AppNotification.objects.create(
+                    event=event,
+                    title=title,
+                    message=message
+                )
+            except AppNotificationTemplate.DoesNotExist:
+                logger.error(f"No app template found for event type: {event.event_type}")
+                # Create default notification when template is missing
+                AppNotification.objects.create(
+                    event=event,
+                    message="There was an error processing this notification."
+                )
+                
+        if notification_type in [NotificationPreference.Type.EMAIL, NotificationPreference.Type.BOTH]:
+            try:
+                template = EmailNotificationTemplate.objects.get(event_type=event.event_type)
+                
+                try:
+                    title = template.title.format(**event.params)
+                    body = template.template.format(**event.params)
+                except KeyError as e:
+                    logger.error(f"Missing template parameter: {e}")
+                    title = "Notification Error"
+                    body = "There was an error processing this notification."
+                    
+                EmailNotification.objects.create(
+                    event=event,
+                    title=title,
+                    body=body
+                )
+            except EmailNotificationTemplate.DoesNotExist:
+                logger.error(f"No email template found for event type: {event.event_type}")
+                # Create default notification when template is missing
+                EmailNotification.objects.create(
+                    event=event,
+                    title="System Notification",
+                    body="A notification was generated but the template was not found."
+                )
+                
+        return True
             
     except Exception as e:
-        logger.error(f"[PROCESS] Error processing notification: {str(e)}", exc_info=True)
-        result['error'] = str(e)
-        return result
+        logger.error(f"Error processing notification: {str(e)}")
+        return False

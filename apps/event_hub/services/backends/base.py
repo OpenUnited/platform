@@ -25,5 +25,7 @@ class EventBusBackend(ABC):
         """Execute a task synchronously"""
         pass
 
-    def report_error(self, error, task_info=None):
-        logger.error(f"Error in task {task_info}: {error}") 
+    @abstractmethod
+    def report_error(self, error: Exception, context: Dict = None) -> None:
+        """Report error to monitoring system"""
+        pass

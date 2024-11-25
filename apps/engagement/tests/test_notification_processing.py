@@ -24,7 +24,12 @@ from apps.capabilities.commerce.models import Organisation
 from apps.event_hub.events import EventTypes
 from apps.event_hub.models import EventLog
 from apps.event_hub.services.factory import get_event_bus
-from apps.engagement.tests.test_listeners import listener_1, listener_2, executed_listeners, clear_executed
+
+# Add at the top of the file, after imports
+executed_listeners = []
+
+def clear_executed():
+    executed_listeners.clear()
 
 class TestNotificationProcessing:
     """Tests for notification processing through the event system.
@@ -162,6 +167,45 @@ class TestNotificationProcessing:
         }
         yield
 
+    @pytest.fixture
+    def product_manager(self, db):
+        """Create a product manager user"""
+        user = User.objects.create_user(
+            username="productmanager",
+            email="pm@example.com",
+            password="testpass123"
+        )
+        return Person.objects.create(
+            user=user,
+            full_name="Product Manager",
+            preferred_name="PM"
+        )
+
+    @pytest.fixture
+    def org_manager(self, db):
+        """Create an organization manager user"""
+        user = User.objects.create_user(
+            username="orgmanager",
+            email="om@example.com",
+            password="testpass123"
+        )
+        return Person.objects.create(
+            user=user,
+            full_name="Org Manager",
+            preferred_name="OM"
+        )
+
+    @pytest.fixture
+    def all_notification_preferences(self, product_manager, org_manager):
+        """Create notification preferences for all stakeholders"""
+        prefs = []
+        for person in [product_manager, org_manager]:
+            prefs.append(NotificationPreference.objects.create(
+                person=person,
+                product_notifications=NotificationPreference.Type.BOTH
+            ))
+        return prefs
+
     @pytest.mark.django_db(transaction=True)
     def test_async_notification_processing(
         self, transactional_db, person, event_data, notification_preferences,
@@ -179,8 +223,7 @@ class TestNotificationProcessing:
         print(f"Templates: {notification_templates}")
         print(f"Preferences: {notification_preferences}")
 
-        # Emit event
-        event_bus.emit_event(EventTypes.PRODUCT_CREATED, event_data)
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
 
         # Add debug for notifications
         events = NotifiableEvent.objects.filter(person=person)
@@ -203,7 +246,7 @@ class TestNotificationProcessing:
         event_bus = get_event_bus()
 
         # Emit event
-        event_bus.emit_event(EventTypes.PRODUCT_CREATED, event_data)
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
 
         # Verify that notifications were created
         assert AppNotification.objects.filter(event__person=person).exists(), "App notification not created"
@@ -219,17 +262,26 @@ class TestNotificationProcessing:
         # Reset executed listeners list
         clear_executed()
 
-        # Register listeners with full path for both
-        event_bus.register_listener(EventTypes.TEST_MULTIPLE_LISTENERS, 'apps.engagement.tests.test_listeners.listener_1')
-        event_bus.register_listener(EventTypes.TEST_MULTIPLE_LISTENERS, 'apps.engagement.tests.test_listeners.listener_2')
+        # Define the listeners directly in the test
+        def listener_1(payload):
+            executed_listeners.append('listener_1')
+            return True
+
+        def listener_2(payload):
+            executed_listeners.append('listener_2')
+            return True
+
+        # Register listeners as callable functions instead of strings
+        event_bus.register_listener(EventTypes.TEST_MULTIPLE_LISTENERS, listener_1)
+        event_bus.register_listener(EventTypes.TEST_MULTIPLE_LISTENERS, listener_2)
 
         # Debug internal state
         print(f"\nInternal listeners state: {event_bus._listeners}")
-        print(f"Emitting event: {EventTypes.TEST_MULTIPLE_LISTENERS}")
+        print(f"Publishing event: {EventTypes.TEST_MULTIPLE_LISTENERS}")
         print(f"Event data: {event_data}")
 
         # Emit event
-        event_bus.emit_event(EventTypes.TEST_MULTIPLE_LISTENERS, event_data)
+        event_bus.publish(EventTypes.TEST_MULTIPLE_LISTENERS, event_data)
 
         # Add small delay to allow for processing
         time.sleep(0.1)
@@ -256,8 +308,111 @@ class TestNotificationProcessing:
         
         # Emit event
         test_payload = {'test': 'data'}
-        event_bus.emit_event(EventTypes.TEST_EVENT, test_payload)
+        event_bus.publish(EventTypes.TEST_EVENT, test_payload)
         
         # Verify assumptions
         assert len(executed) == 1, "Callable listener should execute immediately"
         assert EventLog.objects.filter(payload=test_payload, processed=True).exists(), "Event log should be marked as processed"
+
+    @pytest.mark.django_db(transaction=True)
+    def test_async_notification_processing_for_org_product(
+        self, 
+        transactional_db, 
+        product_manager, 
+        org_manager,
+        event_data, 
+        all_notification_preferences,
+        notification_templates,
+        mocker
+    ):
+        """Test that notifications are created for all stakeholders when events are published."""
+        event_bus = get_event_bus()
+
+        # Mock RoleService methods
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_product_managers',
+            return_value=[product_manager]
+        )
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_organisation_managers',
+            return_value=[org_manager]
+        )
+
+        # Commit any pending fixture data
+        transaction.commit()
+
+        # Emit event
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Verify notifications for product manager
+        assert NotifiableEvent.objects.filter(person=product_manager).exists()
+        assert AppNotification.objects.filter(event__person=product_manager).exists()
+        assert EmailNotification.objects.filter(event__person=product_manager).exists()
+
+        # Verify notifications for org manager
+        assert NotifiableEvent.objects.filter(person=org_manager).exists()
+        assert AppNotification.objects.filter(event__person=org_manager).exists()
+        assert EmailNotification.objects.filter(event__person=org_manager).exists()
+
+    @pytest.mark.django_db(transaction=True)
+    def test_async_notification_processing_for_personal_product(
+        self,
+        transactional_db,
+        person,
+        product,
+        event_data,
+        notification_preferences,
+        notification_templates
+    ):
+        """Test that notifications are created for personal product owner."""
+        event_bus = get_event_bus()
+
+        # Make product personally owned
+        product.organisation = None
+        product.person = person
+        product.save()
+
+        # Commit any pending fixture data
+        transaction.commit()
+
+        # Emit event
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Verify notifications for owner
+        assert NotifiableEvent.objects.filter(person=person).exists()
+        assert AppNotification.objects.filter(event__person=person).exists()
+        assert EmailNotification.objects.filter(event__person=person).exists()
+
+    @pytest.mark.django_db(transaction=True)
+    def test_async_notification_processing_distinct(
+        self,
+        transactional_db,
+        person,
+        event_data,
+        notification_preferences,
+        notification_templates,
+        mocker
+    ):
+        """Test that notifications are distinct when person has multiple roles."""
+        event_bus = get_event_bus()
+
+        # Mock person as both product and org manager
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_product_managers',
+            return_value=[person]
+        )
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_organisation_managers',
+            return_value=[person]
+        )
+
+        # Commit any pending fixture data
+        transaction.commit()
+
+        # Emit event
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Verify only one set of notifications was created
+        assert NotifiableEvent.objects.filter(person=person).count() == 1
+        assert AppNotification.objects.filter(event__person=person).count() == 1
+        assert EmailNotification.objects.filter(event__person=person).count() == 1

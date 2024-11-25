@@ -104,3 +104,4 @@ class NotificationService:
         NotifiableEvent.objects.filter(delete_at__lte=now).delete()
         
         return app_deleted, email_deleted
+

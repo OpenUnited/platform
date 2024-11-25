@@ -1,5 +1,5 @@
 import logging
-from typing import Union, Dict, Callable
+from typing import Union, Dict, Callable, Any
 from django_q.tasks import async_task
 from .base import EventBusBackend
 from django.conf import settings
@@ -16,80 +16,33 @@ from apps.event_hub.models import EventLog
 
 logger = logging.getLogger(__name__)
 
-def execute_listener(listener_module: str, listener_name: str, payload: Dict) -> None:
-    """
-    Execute a listener function by importing it dynamically.
-    This function needs to be at module level to be pickleable.
-    """
-    try:
-        import importlib
-        from django.utils import timezone
-        from apps.event_hub.models import EventLog
-        
-        # Get event log before execution
-        event_log = EventLog.objects.filter(payload=payload).first()
-        if not event_log:
-            logger.error(f"No event log found for payload: {payload}")
-            return
-            
-        # Import and execute the listener
-        if isinstance(listener_module, str):
-            module = importlib.import_module(listener_module)
-            listener = getattr(module, listener_name)
-        else:
-            listener = listener_module
-        
-        start_time = timezone.now()
-        result = listener(payload)
-        
-        # Update event log
-        processing_time = (timezone.now() - start_time).total_seconds()
-        if event_log:
-            event_log.processed = True
-            event_log.processing_time = processing_time
-            event_log.save(update_fields=['processed', 'processing_time'])
-        
-        return result
-        
-    except Exception as e:
-        logger.exception(f"Error executing listener: {str(e)}")
-        if event_log:
-            event_log.error = str(e)
-            event_log.save(update_fields=['error'])
-        raise
+def _create_event_log(payload: Dict, event_type: str) -> EventLog:
+    """Create an event log entry"""
+    return EventLog.objects.create(
+        payload=payload,
+        processed=False,
+        event_type=event_type
+    )
 
+def _execute_listener(listener: Union[str, Callable], payload: Dict) -> Any:
+    """Execute a listener function"""
+    if isinstance(listener, str):
+        module_path, function_name = listener.rsplit('.', 1)
+        module = __import__(module_path, fromlist=[function_name])
+        listener = getattr(module, function_name)
+    return listener(payload)
 
 class DjangoQBackend(EventBusBackend):
     def enqueue_task(self, listener: Union[str, Callable], payload: Dict, event_type: str) -> str:
-        """
-        Enqueues a task for execution
-        
-        Args:
-            listener: Function or import path to execute
-            payload: Data to pass to the function
-            event_type: The type of event being processed (e.g. "product.created")
-        """
+        """Enqueues a task for execution"""
         try:
-            from apps.event_hub.models import EventLog
-
+            # Create event log
+            event_log = _create_event_log(payload, event_type)
+            
             # Check if we're in test mode
             if getattr(settings, 'DJANGO_Q', {}).get('sync', False):
-                # Create event log before execution
-                event_log = EventLog.objects.create(
-                    payload=payload,
-                    processed=False,
-                    event_type=event_type
-                )
-                
                 start_time = timezone.now()
-                
-                # Execute the listener
-                if isinstance(listener, str):
-                    module_path, function_name = listener.rsplit('.', 1)
-                    module = __import__(module_path, fromlist=[function_name])
-                    listener = getattr(module, function_name)
-                
-                result = listener(payload)
+                result = _execute_listener(listener, payload)
                 
                 # Update event log
                 event_log.processed = True
@@ -98,7 +51,7 @@ class DjangoQBackend(EventBusBackend):
                 
                 return 'sync-executed'
 
-            # For async execution...
+            # For async execution
             task_id = async_task(
                 listener if not isinstance(listener, str) else import_string(listener),
                 payload,
@@ -107,41 +60,25 @@ class DjangoQBackend(EventBusBackend):
             return task_id
 
         except Exception as e:
-            logger.exception(f"[DjangoQBackend] Failed to enqueue task: {str(e)}")
+            self.report_error(e, {'listener': listener, 'payload': payload})
             raise
 
     def execute_task_sync(self, listener: Union[str, Callable], payload: Dict, event_type: str) -> None:
         """Execute the listener synchronously"""
         try:
-            from apps.event_hub.models import EventLog
-            
-            # Get event log before execution
-            event_log = EventLog.objects.filter(payload=payload).first()
-            if not event_log:
-                logger.error(f"No event log found for payload: {payload}")
-                return
-            
+            event_log = _create_event_log(payload, event_type)
             start_time = timezone.now()
             
-            # Execute listener
-            if isinstance(listener, str):
-                module_path, function_name = listener.rsplit('.', 1)
-                module = __import__(module_path, fromlist=[function_name])
-                listener = getattr(module, function_name)
-            result = listener(payload)
+            result = _execute_listener(listener, payload)
             
             # Update event log
-            processing_time = (timezone.now() - start_time).total_seconds()
             event_log.processed = True
-            event_log.processing_time = processing_time
+            event_log.processing_time = (timezone.now() - start_time).total_seconds()
             event_log.save(update_fields=['processed', 'processing_time'])
             
             return result
         except Exception as e:
-            logger.exception(f"[DjangoQBackend] Sync execution failed: {str(e)}")
-            if event_log:
-                event_log.error = str(e)
-                event_log.save(update_fields=['error'])
+            self.report_error(e, {'listener': listener, 'payload': payload})
             raise
 
     def report_error(self, error: Exception, context: Dict) -> None:

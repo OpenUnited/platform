@@ -96,6 +96,34 @@ def product(db, organisation):
         short_description="A test product"  # Optional but good for completeness
     )
 
+@pytest.fixture
+def product_manager(db):
+    """Create a product manager user"""
+    user = get_user_model().objects.create_user(
+        username="productmanager",
+        email="pm@example.com",
+        password="testpass123"
+    )
+    return Person.objects.create(
+        user=user,
+        full_name="Product Manager",
+        preferred_name="PM"
+    )
+
+@pytest.fixture
+def org_manager(db):
+    """Create an organization manager user"""
+    user = get_user_model().objects.create_user(
+        username="orgmanager",
+        email="om@example.com",
+        password="testpass123"
+    )
+    return Person.objects.create(
+        user=user,
+        full_name="Org Manager",
+        preferred_name="OM"
+    )
+
 @pytest.mark.django_db
 class TestNotificationCreation:
     """Tests for notification creation and content generation.
@@ -105,6 +133,16 @@ class TestNotificationCreation:
     - Template rendering and content formatting
     - Error handling for invalid/missing templates
     """
+
+    @pytest.fixture(autouse=True)
+    def setup_event_bus(self):
+        """Register event handlers with event bus"""
+        from apps.event_hub.services.event_bus import EventBus
+        from apps.engagement.events import handle_product_created
+        
+        event_bus = EventBus()
+        event_bus.register_listener(EventTypes.PRODUCT_CREATED, handle_product_created)
+        return event_bus
 
     @pytest.fixture
     def event_data(self, org, person):
@@ -117,6 +155,22 @@ class TestNotificationCreation:
             'person_id': person.id
         }
 
+    @pytest.fixture(autouse=True)
+    def configure_sync_mode(self, settings):
+        """Configure Django-Q for synchronous execution"""
+        settings.DJANGO_Q = {
+            'sync': True,
+            'timeout': 30,
+            'save_limit': 0
+        }
+        
+        # Configure event bus for sync mode
+        settings.EVENT_BUS = {
+            'BACKEND': 'apps.event_hub.services.backends.django_q.DjangoQBackend',
+            'TASK_COMPLETE_HOOK': None  # Disable the hook in sync mode
+        }
+
+    @pytest.mark.django_db(transaction=True)
     def test_creates_both_notifications_when_preference_is_both(
         self, 
         person, 
@@ -124,15 +178,27 @@ class TestNotificationCreation:
         notification_preferences, 
         app_template, 
         email_template, 
-        product
+        product,
+        transactional_db
     ):
         """
         When user preferences are set to BOTH:
         - Should create both app and email notifications
         - Should format templates correctly
         """
-        from apps.engagement.events import handle_product_created
-        handle_product_created(event_data)
+        from apps.event_hub.services.event_bus import get_event_bus
+        event_bus = get_event_bus()
+
+        # Commit any pending fixture data
+        from django.db import transaction
+        transaction.commit()
+
+        # Emit event instead of publish
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Add small delay to allow for task processing
+        import time
+        time.sleep(0.1)
 
         event = NotifiableEvent.objects.get(
             event_type=EventTypes.PRODUCT_CREATED,
@@ -150,12 +216,12 @@ class TestNotificationCreation:
         assert email_notification.body == "A new product Test Product has been created. View it at /products/test-product/"
 
     def test_creates_only_app_notification_when_preference_is_apps(
-        self, 
-        person, 
-        event_data, 
-        notification_preferences, 
-        app_template, 
-        email_template, 
+        self,
+        person,
+        event_data,
+        notification_preferences,
+        app_template,
+        email_template,
         product
     ):
         """
@@ -166,8 +232,9 @@ class TestNotificationCreation:
         notification_preferences.product_notifications = NotificationPreference.Type.APPS
         notification_preferences.save()
 
-        from apps.engagement.events import handle_product_created
-        handle_product_created(event_data)
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
 
         event = NotifiableEvent.objects.get(
             event_type=EventTypes.PRODUCT_CREATED,
@@ -194,8 +261,9 @@ class TestNotificationCreation:
         notification_preferences.product_notifications = NotificationPreference.Type.EMAIL
         notification_preferences.save()
 
-        from apps.engagement.events import handle_product_created
-        handle_product_created(event_data)
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
 
         event = NotifiableEvent.objects.get(
             event_type=EventTypes.PRODUCT_CREATED,
@@ -222,8 +290,9 @@ class TestNotificationCreation:
         app_template.template = "Product: {invalid_param}"
         app_template.save()
         
-        from apps.engagement.events import handle_product_created
-        handle_product_created(event_data)
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
         
         notification = AppNotification.objects.get(
             event__event_type=EventTypes.PRODUCT_CREATED,
@@ -247,8 +316,9 @@ class TestNotificationCreation:
         AppNotificationTemplate.objects.all().delete()
         EmailNotificationTemplate.objects.all().delete()
 
-        from apps.engagement.events import handle_product_created
-        handle_product_created(event_data)
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
 
         event = NotifiableEvent.objects.get(
             event_type=EventTypes.PRODUCT_CREATED,
@@ -257,3 +327,94 @@ class TestNotificationCreation:
         
         notification = AppNotification.objects.get(event=event)
         assert notification.message == "There was an error processing this notification."
+
+    def test_notifies_all_relevant_stakeholders_for_org_product(
+        self,
+        product,
+        org_manager,
+        product_manager,
+        event_data,
+        notification_preferences,
+        app_template,
+        email_template,
+        mocker
+    ):
+        """
+        When product is org-owned:
+        - Should notify product managers
+        - Should notify org managers
+        """
+        # Mock RoleService methods
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_product_managers',
+            return_value=[product_manager]
+        )
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_organisation_managers',
+            return_value=[org_manager]
+        )
+
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Verify notifications were created for both managers
+        assert NotifiableEvent.objects.filter(person=product_manager).exists()
+        assert NotifiableEvent.objects.filter(person=org_manager).exists()
+
+    def test_notifies_owner_for_personal_product(
+        self,
+        person,
+        product,
+        event_data,
+        notification_preferences,
+        app_template,
+        email_template
+    ):
+        """
+        When product is personally owned:
+        - Should notify the product owner
+        """
+        # Make product personally owned
+        product.organisation = None
+        product.person = person
+        product.visibility = product.Visibility.GLOBAL
+        product.save()
+
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Verify notification was created for owner
+        assert NotifiableEvent.objects.filter(person=person).exists()
+
+    def test_notifications_are_distinct(
+        self,
+        product,
+        person,
+        event_data,
+        notification_preferences,
+        app_template,
+        email_template,
+        mocker
+    ):
+        """
+        When a person has multiple roles:
+        - Should only create one notification
+        """
+        # Mock person as both product and org manager
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_product_managers',
+            return_value=[person]
+        )
+        mocker.patch(
+            'apps.capabilities.security.services.RoleService.get_organisation_managers',
+            return_value=[person]
+        )
+
+        from apps.event_hub.services.event_bus import EventBus
+        event_bus = EventBus()
+        event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+
+        # Verify only one notification was created
+        assert NotifiableEvent.objects.filter(person=person).count() == 1
