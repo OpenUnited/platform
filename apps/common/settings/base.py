@@ -425,15 +425,13 @@ EVENT_LOG_RETENTION_DAYS = int(os.getenv('EVENT_LOG_RETENTION_DAYS', '30'))
 
 # Django Q Configuration (using PostgreSQL as broker)
 Q_CLUSTER = {
-    'name': 'OpenUnited',
+    'name': 'DjangoORM',
     'workers': int(os.getenv('DJANGO_Q_WORKERS', '4')),
-    'recycle': 500,
-    'timeout': 300,
-    'retry': 600,
-    'compress': True,
-    'save_limit': 250,
-    'queue_limit': 500,
-    'cpu_affinity': 1,
-    'label': 'Django Q',
-    'orm': 'default'
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+    'sync': False,
+    'queue_table': 'django_q_task'
 }

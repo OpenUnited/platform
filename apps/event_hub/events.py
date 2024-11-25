@@ -7,12 +7,18 @@ class EventTypes:
     PRODUCT_CREATED = 'product.created'
     PRODUCT_UPDATED = 'product.updated'
     PRODUCT_DELETED = 'product.deleted'
+    
+    # Test Events
+    TEST_EVENT = 'test.event'
+    TEST_MULTIPLE_LISTENERS = 'test.multiple_listeners'
 
     # Map events to their display names
     DISPLAY_NAMES = {
         PRODUCT_CREATED: _("Product Created"),
         PRODUCT_UPDATED: _("Product Updated"),
         PRODUCT_DELETED: _("Product Deleted"),
+        TEST_EVENT: _("Test Event"),
+        TEST_MULTIPLE_LISTENERS: _("Test Multiple Listeners"),
     }
 
     @classmethod

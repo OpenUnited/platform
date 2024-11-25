@@ -8,7 +8,7 @@ REJECTED = "Rejected"
 
 
 def forward_func(apps, schema_editor):
-    BountyDeliveryAttempt = apps.capabilities.get_model("talent.BountyDeliveryAttempt")
+    BountyDeliveryAttempt = apps.get_model("talent", "BountyDeliveryAttempt")
     for attempt in BountyDeliveryAttempt.objects.all():
         if attempt.kind in ["0", 0]:
             attempt.kind = NEW
@@ -17,6 +17,10 @@ def forward_func(apps, schema_editor):
         elif attempt.kind in ["2", 2]:
             attempt.kind = REJECTED
         attempt.save()
+
+
+def reverse_func(apps, schema_editor):
+    pass
 
 
 class Migration(migrations.Migration):
@@ -33,5 +37,5 @@ class Migration(migrations.Migration):
                 choices=[("New", "New"), ("Approved", "Approved"), ("Rejected", "Rejected")], default="New"
             ),
         ),
-        migrations.RunPython(forward_func, migrations.RunPython.noop),
+        migrations.RunPython(forward_func, reverse_func),
     ]

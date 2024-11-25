@@ -5,6 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 from apps.common.mixins import TimeStampMixin
 from apps.event_hub.events import EventTypes
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def default_delete_at():
@@ -49,6 +52,20 @@ class EmailNotificationTemplate(models.Model):
 
     def __str__(self):
         return f"Email template for {self.get_event_type_display()}"
+
+    def render_title(self, params):
+        try:
+            return self.title.format(**params)
+        except Exception as e:
+            logger.error(f"Error rendering email notification title: {e}")
+            return "Notification"
+
+    def render_template(self, params):
+        try:
+            return self.template.format(**params)
+        except Exception as e:
+            logger.error(f"Error rendering email notification template: {e}")
+            return "There was an error creating this notification."
 
 
 def _template_is_valid(template, permitted_params):
@@ -152,13 +169,27 @@ class AppNotificationTemplate(models.Model):
         choices=EventTypes.choices(),
         primary_key=True
     )
-    title_template = models.CharField(max_length=400)
-    message_template = models.CharField(max_length=4000)
+    title = models.CharField(max_length=400)
+    template = models.CharField(max_length=4000)
     permitted_params = models.CharField(max_length=500)
 
     def clean(self):
-        _template_is_valid(self.title_template, self.permitted_params)
-        _template_is_valid(self.message_template, self.permitted_params)
+        _template_is_valid(self.title, self.permitted_params)
+        _template_is_valid(self.template, self.permitted_params)
 
     def __str__(self):
         return f"App notification template for {self.get_event_type_display()}"
+
+    def render_title(self, params):
+        try:
+            return self.title.format(**params)
+        except Exception as e:
+            logger.error(f"Error rendering app notification title: {e}")
+            return "Notification"
+
+    def render_template(self, params):
+        try:
+            return self.template.format(**params)
+        except Exception as e:
+            logger.error(f"Error rendering app notification template: {e}")
+            return "There was an error processing this notification."

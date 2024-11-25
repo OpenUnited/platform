@@ -10,12 +10,13 @@ def convert_generic_to_explicit(apps, schema_editor):
     Person = apps.get_model('talent', 'Person')
     ContentType = apps.get_model('contenttypes', 'ContentType')
     
-    # Get content types using the historical models
-    org_content_type = ContentType.objects.get(
+    # Create both ContentTypes if they don't exist
+    org_content_type, _ = ContentType.objects.get_or_create(
         app_label='commerce',
         model='organisation'
     )
-    person_content_type = ContentType.objects.get(
+    
+    person_content_type, _ = ContentType.objects.get_or_create(
         app_label='talent',
         model='person'
     )
@@ -33,7 +34,6 @@ def convert_generic_to_explicit(apps, schema_editor):
         product.save()
 
 def reverse_convert(apps, schema_editor):
-    # If you need to reverse the migration
     pass
 
 class Migration(migrations.Migration):

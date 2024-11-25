@@ -3,7 +3,7 @@ from django.db import migrations, models
 
 
 def forward_func(apps, schema_editor):
-    Challenge = apps.capabilities.get_model("product_management", "Challenge")
+    Challenge = apps.get_model("product_management", "Challenge")
 
     for challenge in Challenge.objects.all():
         status = int(challenge.status)

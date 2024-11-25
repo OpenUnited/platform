@@ -44,18 +44,31 @@ The event bus handles asynchronous processing and decouples event producers from
 - `EmailNotification` (with sent status)
 - Track actual notifications sent
 
+### 5. Task Processors
+- Asynchronous notification creation
+- Template rendering
+- Error handling with fallback notifications
+- Preference-based notification routing
+
 ## Example Flow: Product Creation Notification
 
 ### Step 1: Event Emission
 When a product is created, the ProductManagementService emits an event with the product details and ownership information.
 
 ### Step 2: Event Processing
-The Django Q worker picks up the event and routes it to the appropriate handler. The handler:
-1. Validates the event payload and retrieves the product
-2. Creates NotifiableEvent records for:
-   - The product creator
-   - Organization managers/owners (if org-owned product)
-3. Includes error handling and logging
+The system uses a two-layer approach for event processing:
+
+1. **Event Handlers** (`events.py`):
+   - Receive and validate event payloads
+   - Create NotifiableEvent records
+   - Queue async tasks for notification creation
+   - Handle organization-specific routing
+
+2. **Task Processors** (`tasks.py`):
+   - Run asynchronously via Django Q
+   - Process NotifiableEvent records
+   - Create actual notifications based on preferences
+   - Handle template rendering and error cases
 
 ### Step 3: Notification Creation
 The system:
@@ -317,65 +330,62 @@ class EmailNotificationTemplate(models.Model):
 ## Testing Strategy
 
 ### 1. Test Categories
-- **Basic Flow Tests**: Verify core notification creation and delivery
-- **Async Behavior**: Test event processing and notification generation
-- **Error Handling**: Validate system resilience
-- **Performance**: Check system behavior under load
-- **Edge Cases**: Test unusual scenarios
-- **Maintenance**: Verify cleanup and housekeeping
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: End-to-end notification flow
+- **Async Tests**: Verify asynchronous processing
+- **Preference Tests**: Validate notification routing
+- **Error Cases**: System resilience testing
 
 ### 2. Test Infrastructure
+
+1. **Base Test Setup**
 ```python
-# Global fixtures (conftest.py)
 @pytest.fixture(autouse=True)
 def enable_db_access_for_all_tests(db):
-    """Enable database access for all tests"""
-    pass
-
-@pytest.fixture(autouse=True)
-def use_transaction_db(transactional_db):
-    """Make all tests transactional"""
     pass
 
 @pytest.fixture(autouse=True)
 def clear_cache():
-    """Clear cache before/after tests"""
     cache.clear()
     yield
     cache.clear()
 ```
 
-### 3. Key Test Scenarios
-1. **Event Emission**
-   - Verify correct event payload
-   - Check async processing
-   - Test concurrent events
+2. **Async Test Environment**
+```python
+@pytest.fixture(autouse=True)
+def setup_async_environment():
+    broker = get_broker()
+    broker.purge_queue()
+    
+    ready_event = Event()
+    cluster = Cluster(broker)
+    cluster.start()
+    ready_event.wait(timeout=1)
+    
+    yield
+    
+    cluster.stop()
+    broker.purge_queue()
+    cache.clear()
+```
 
-2. **Notification Creation**
-   - Test preference-based creation
-   - Validate template rendering
-   - Check error handling
+### 3. Testing Patterns
 
-3. **Email Specific**
-   - Test email template rendering
-   - Verify email queuing
-   - Check delivery status tracking
+1. **Synchronous Flow Testing**
+   - Direct handler calls
+   - Immediate assertion checking
+   - Used for preference and template testing
 
-4. **Performance Testing**
-   - Test under high load
-   - Check query optimization
-   - Verify async processing scales
+2. **Asynchronous Flow Testing**
+   - Django Q cluster setup
+   - Exponential backoff waiting
+   - Race condition handling
 
-5. **Cleanup and Maintenance**
-   - Test automatic deletion
-   - Verify retention periods
-   - Check cleanup efficiency
-
-### 4. Test Helpers
+3. **Test Helpers**
 ```python
 @pytest.fixture
 def wait_for_notifications():
-    """Wait for notifications with exponential backoff"""
     def _wait(filter_kwargs, expected_count=1, timeout=10):
         start_time = time.time()
         sleep_time = 0.1
@@ -391,28 +401,24 @@ def wait_for_notifications():
     return _wait
 ```
 
-### 5. Best Practices
+### 4. Best Practices
+
 1. **Test Isolation**
-   - Each test runs in its own transaction
-   - Automatic cleanup of test data
-   - Cache clearing between tests
+   - Use transaction rollback
+   - Clear queues between tests
+   - Reset cache state
 
 2. **Async Testing**
-   - Use django_q_cluster fixture
-   - Handle race conditions
-   - Proper timeout handling
+   - Configure Django Q for testing
+   - Handle timeouts appropriately
+   - Clean up broker queues
 
-3. **Error Scenarios**
-   - Test template errors
-   - Handle missing preferences
-   - Validate error logging
+3. **Preference Testing**
+   - Test all notification types
+   - Verify correct routing
+   - Check template rendering
 
-4. **Performance Monitoring**
-   - Track query counts
-   - Monitor processing time
-   - Check memory usage
-
-5. **Maintenance Testing**
-   - Verify cleanup jobs
-   - Test retention policies
-   - Check index usage
+4. **Error Handling**
+   - Test missing templates
+   - Verify fallback notifications
+   - Check error logging

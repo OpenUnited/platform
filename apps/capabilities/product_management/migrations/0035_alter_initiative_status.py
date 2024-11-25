@@ -4,7 +4,7 @@ from django.db import migrations, models
 
 
 def forward_func(apps, schema_editor):
-    Initiative = apps.capabilities.get_model("product_management", "Initiative")
+    Initiative = apps.get_model("product_management", "Initiative")
     for initiative in Initiative.objects.all():
         status = int(initiative.status)
         if status == 1:

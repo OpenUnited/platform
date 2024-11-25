@@ -4,7 +4,7 @@ from django.db import migrations, models
 
 
 def forward_func(apps, schema_editor):
-    Bounty = apps.capabilities.get_model("product_management.Bounty")
+    Bounty = apps.get_model("product_management", "Bounty")
     for bounty in Bounty.objects.all():
         expertise_as_str = ", ".join([exp.name.title() for exp in bounty.expertise.all()])
         skill_name = ""

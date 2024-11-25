@@ -52,8 +52,8 @@ def notification_preferences(person):
 def app_template():
     return AppNotificationTemplate.objects.create(
         event_type=EventTypes.PRODUCT_CREATED,
-        title_template="New Product: {name}",
-        message_template="A new product {name} has been created. View it at {url}",
+        title="New Product: {name}",
+        template="A new product {name} has been created. View it at {url}",
         permitted_params="name,url"
     )
 
@@ -67,7 +67,9 @@ def email_template():
     )
 
 @pytest.fixture(autouse=True)
+@pytest.mark.django_db
 def cleanup_test_data():
+    """Clean up notifications after each test"""
     yield
     NotifiableEvent.objects.all().delete()
     AppNotification.objects.all().delete()
@@ -94,8 +96,15 @@ def product(db, organisation):
         short_description="A test product"  # Optional but good for completeness
     )
 
-class TestNotificationFlow:
-    """Tests for the notification creation flow"""
+@pytest.mark.django_db
+class TestNotificationCreation:
+    """Tests for notification creation and content generation.
+    
+    These tests verify:
+    - Notification creation based on user preferences
+    - Template rendering and content formatting
+    - Error handling for invalid/missing templates
+    """
 
     @pytest.fixture
     def event_data(self, org, person):
@@ -210,7 +219,7 @@ class TestNotificationFlow:
         - Should create notification with error message
         - Should not raise exception
         """
-        app_template.message_template = "Product: {invalid_param}"
+        app_template.template = "Product: {invalid_param}"
         app_template.save()
         
         from apps.engagement.events import handle_product_created

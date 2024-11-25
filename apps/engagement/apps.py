@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from apps.event_hub.events import EventTypes
 
 
 class EngagementConfig(AppConfig):
@@ -10,4 +11,4 @@ class EngagementConfig(AppConfig):
         from .events import handle_product_created
 
         event_bus = get_event_bus()
-        event_bus.register_listener('product.created', handle_product_created)
+        event_bus.register_listener(EventTypes.PRODUCT_CREATED, handle_product_created)

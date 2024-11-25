@@ -5,7 +5,12 @@ import django.db.models.deletion
 
 
 def forward_func(apps, schema_editor):
-    apps.capabilities.get_model("talent.PersonSkill").objects.all().delete()
+    PersonSkill = apps.get_model("talent", "PersonSkill")
+    PersonSkill.objects.all().delete()
+
+
+def reverse_func(apps, schema_editor):
+    pass
 
 
 class Migration(migrations.Migration):
@@ -14,7 +19,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(forward_func, migrations.RunPython.noop),
+        migrations.RunPython(forward_func, reverse_func),
         migrations.RemoveField(
             model_name="personskill",
             name="expertise",
