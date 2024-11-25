@@ -52,7 +52,7 @@ class EventBus:
 ```python
 class AppNotificationTemplate:
     - event_type: CharField (matches EventTypes registry)
-    - title_template: CharField
+    - title: CharField
     - template: CharField
     - permitted_params: CharField
 
