@@ -21,6 +21,12 @@ class EventTypes:
         TEST_MULTIPLE_LISTENERS: _("Test Multiple Listeners"),
     }
 
+
+    @classmethod
+    def is_notifiable(cls, event_name: str) -> bool:
+        """Check if an event should trigger notifications"""
+        return event_name in cls.NOTIFIABLE_EVENTS
+
     @classmethod
     def choices(cls):
         """Return event choices suitable for Django model fields"""

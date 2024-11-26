@@ -148,11 +148,11 @@ class TestNotificationCreation:
     def event_data(self, org, person):
         """Standard event data for testing"""
         return {
-            'organisation_id': org.id,
+            'organisationId': org.id,
             'name': "Test Product",
             'url': "/products/test-product/",
-            'product_id': 1,
-            'person_id': person.id
+            'productId': 1,
+            'personId': person.id
         }
 
     @pytest.fixture(autouse=True)

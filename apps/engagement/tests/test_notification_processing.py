@@ -144,11 +144,11 @@ class TestNotificationProcessing:
     def event_data(self, product, person):
         """Standard event data for testing"""
         return {
-            'product_id': str(product.id),
+            'productId': str(product.id),
             'name': product.name,
             'url': f'/products/{product.slug}/',
-            'organisation_id': str(product.organisation.id),
-            'person_id': str(person.id)
+            'organisationId': str(product.organisation.id),
+            'personId': str(person.id)
         }
 
     @pytest.fixture(autouse=True)

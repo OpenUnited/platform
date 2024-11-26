@@ -1,122 +1,109 @@
-from typing import Dict, List, Callable, Union
+from typing import Dict, Callable
 import logging
-from django.conf import settings
-from .backends.base import EventBusBackend
-from .backends.django_q import DjangoQBackend
-from ..models import EventLog
-import importlib
+from collections import defaultdict
+import pickle
+from django.core.cache import cache
+
+from apps.event_hub.models import EventLog
 
 logger = logging.getLogger(__name__)
 
-def get_event_bus():
-    return EventBus()
+def process_event_task(event_type: str, data: Dict) -> None:
+    """Standalone function to process events in worker process"""
+    logger.info(f"Processing event {event_type}")
+    payload = data['payload']
+    listener_paths = data['listener_paths']
+    
+    for path in listener_paths:
+        try:
+            logger.info(f"Importing listener from path: {path}")
+            module_path, function_name = path.rsplit('.', 1)
+            module = __import__(module_path, fromlist=[function_name])
+            listener = getattr(module, function_name)
+            
+            logger.info(f"Executing listener: {listener}")
+            listener(event_type=event_type, payload=payload)
+        except Exception as e:
+            logger.error(f"Error executing listener {path}: {e}", exc_info=True)
 
 class EventBus:
     """
-    Event bus implementation that delegates to a configured backend
+    Event bus implementation that delegates to a configured backend.
     """
-    _instance = None
-    _backend = None
-    _listeners: Dict[str, List[Union[str, Callable]]] = {}
+    def __init__(self, backend):
+        self.backend = backend  # Store the backend instance
+        self.listeners: Dict[str, set[Callable]] = defaultdict(set)
+        # Try to load listeners from cache
+        self._load_listeners()
 
-    def __new__(cls, backend=None):
-        if cls._instance is None:
-            cls._instance = super(EventBus, cls).__new__(cls)
-            cls._instance._backend = backend or DjangoQBackend()
-            cls._instance._listeners = {}
-        return cls._instance
-
-    def register_listener(self, event_type: str, listener: Union[str, Callable]) -> None:
+    def register_listener(self, event_type: str, listener: Callable) -> None:
         """
-        Register a listener for a specific event type
-        
+        Register a listener for a specific event type.
+
         Args:
-            event_type: The type of event to listen for
-            listener: Function or import path to execute when event occurs
+            event_type: The type of event to listen for.
+            listener: Function to execute when the event occurs.
         """
-        if event_type not in self._listeners:
-            self._listeners[event_type] = []
-        if listener not in self._listeners[event_type]:
-            self._listeners[event_type].append(listener)
-            logger.debug(f"Registered listener {listener} for event {event_type}")
+        if listener not in self.listeners[event_type]:
+            self.listeners[event_type].add(listener)
+            # Store the listener's import path instead of the callable
+            listener_path = f"{listener.__module__}.{listener.__name__}"
+            cached_listeners = cache.get('event_bus_listeners', {})
+            if event_type not in cached_listeners:
+                cached_listeners[event_type] = set()
+            cached_listeners[event_type].add(listener_path)
+            cache.set('event_bus_listeners', cached_listeners)
+            logger.debug(f"Registered listener {listener_path} for event {event_type}")
 
-    def publish(self, event_type: str, payload: Dict) -> List[str]:
-        """
-        Publish an event to all registered listeners
+    def _load_listeners(self):
+        """Load listeners from cache"""
+        cached_listeners = cache.get('event_bus_listeners', {})
+        for event_type, listener_paths in cached_listeners.items():
+            for path in listener_paths:
+                try:
+                    module_path, function_name = path.rsplit('.', 1)
+                    module = __import__(module_path, fromlist=[function_name])
+                    listener = getattr(module, function_name)
+                    self.listeners[event_type].add(listener)
+                    logger.debug(f"Loaded listener {path} for event {event_type}")
+                except Exception as e:
+                    logger.error(f"Failed to load listener {path}: {e}")
+
+    def publish(self, event_type: str, payload: Dict) -> None:
+        logger.info(f"Publishing event {event_type}")
+        if event_type not in self.listeners:
+            logger.warning(f"No listeners registered for event type: {event_type}")
+            return
         
-        Args:
-            event_type: The type of event being published
-            payload: Data to pass to the listeners
-            
-        Returns:
-            List[str]: List of task IDs for the enqueued tasks (or ['sync'] for sync execution)
-        """
-        # Log the event first
-        event_log = EventLog.objects.create(
-            event_type=event_type,
-            payload=payload,
-            processed=False
+        # Get the import paths for all listeners
+        listener_paths = [
+            f"{listener.__module__}.{listener.__name__}"
+            for listener in self.listeners[event_type]
+        ]
+        
+        logger.info(f"Enqueueing task with listener paths: {listener_paths}")
+        
+        self.backend.enqueue_task(
+            process_event_task,  # Use the standalone function instead of self.process_event
+            {
+                'payload': payload,
+                'listener_paths': listener_paths
+            },
+            event_type
         )
 
-        if event_type not in self._listeners:
-            logger.warning(f"No listeners registered for event type: {event_type}")
-            return []
-
-        task_ids = []
-        errors = []
-        success = False
-        
-        for listener in self._listeners[event_type]:
-            try:
-                # Always execute synchronously in test environment
-                if getattr(settings, 'TEST', False):
-                    if isinstance(listener, str):
-                        module_path, function_name = listener.rsplit('.', 1)
-                        module = importlib.import_module(module_path)
-                        func = getattr(module, function_name)
-                    else:
-                        func = listener
-                    
-                    func(payload)
-                    task_ids.append('sync')
-                    success = True
-                else:
-                    task_id = self.enqueue_task(listener, payload, event_type)
-                    task_ids.append(task_id)
-                    success = True
-            except Exception as e:
-                error_msg = f"Error executing listener {listener} for event {event_type}: {e}"
-                logger.error(error_msg)
-                errors.append(error_msg)
-                continue
-
-        event_log.processed = success
-        event_log.error = '\n'.join(errors) if errors else None
-        event_log.save()
-        
-        return task_ids
-
-    def enqueue_task(self, listener: Union[str, Callable], payload: Dict, event_type: str) -> str:
+    def execute_task_sync(self, listener: Callable, payload: Dict, event_type: str) -> None:
         """
-        Enqueue a task using the configured backend
-        
+        Execute a listener synchronously. This might be used in testing or where immediate execution is required.
+
         Args:
-            listener: Function or import path to execute
-            payload: Data to pass to the function
-            event_type: The type of event being processed
-            
-        Returns:
-            str: Task ID
+            listener: Function to execute.
+            payload: Data to pass to the function.
+            event_type: The type of event being processed.
         """
-        return self._backend.enqueue_task(listener, payload, event_type)
-
-    def execute_task_sync(self, listener: Union[str, Callable], payload: Dict, event_type: str) -> None:
-        """
-        Execute a task synchronously using the configured backend
-        
-        Args:
-            listener: Function or import path to execute
-            payload: Data to pass to the function
-            event_type: The type of event being processed
-        """
-        return self._backend.execute_task_sync(listener, payload, event_type)
+        try:
+            listener(event_type=event_type, payload=payload)
+            logger.debug(f"Executed listener {listener} synchronously for event {event_type}")
+        except Exception as e:
+            logger.error(f"Error executing listener {listener} synchronously for event {event_type}: {e}")
+            raise

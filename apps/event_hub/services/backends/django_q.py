@@ -1,5 +1,5 @@
 import logging
-from typing import Union, Dict, Callable, Any
+from typing import Union, Dict, Callable, Any, Optional
 from django_q.tasks import async_task
 from .base import EventBusBackend
 from django.conf import settings
@@ -13,68 +13,73 @@ import time
 import threading
 from django_q.brokers import get_broker
 from apps.event_hub.models import EventLog
+from apps.event_hub.events import EventTypes
 
 logger = logging.getLogger(__name__)
 
-def _create_event_log(payload: Dict, event_type: str) -> EventLog:
+def _create_event_log(event_data: Dict, event_type: str, parent_event_id: Optional[int] = None) -> EventLog:
     """Create an event log entry"""
     return EventLog.objects.create(
-        payload=payload,
-        processed=False,
-        event_type=event_type
+        event_type=event_type,
+        payload=event_data,
+        parent_event_id=parent_event_id
     )
 
-def _execute_listener(listener: Union[str, Callable], payload: Dict) -> Any:
+def _execute_listener(listener: Union[str, Callable], event_data: Dict, event_type: str = None) -> Any:
     """Execute a listener function"""
     if isinstance(listener, str):
+        logger.info(f"Importing listener from path: {listener}")
         module_path, function_name = listener.rsplit('.', 1)
         module = __import__(module_path, fromlist=[function_name])
         listener = getattr(module, function_name)
-    return listener(payload)
+    
+    try:
+        # Add event_type to event data
+        event_data = event_data.copy()
+        event_data['event_type'] = event_type
+        return listener(event_type=event_type, payload=event_data)
+    except Exception as e:
+        logger.error(f"Error executing listener: {str(e)}", exc_info=True)
+        raise
 
 class DjangoQBackend(EventBusBackend):
-    def enqueue_task(self, listener: Union[str, Callable], payload: Dict, event_type: str) -> str:
+    def enqueue_task(self, listener: Union[str, Callable], event_data: Dict, event_type: str) -> str:
         """Enqueues a task for execution"""
         try:
             # Create event log
-            event_log = _create_event_log(payload, event_type)
+            event_log = _create_event_log(event_data['payload'], event_type)
             
-            # Check if we're in test mode
-            if getattr(settings, 'DJANGO_Q', {}).get('sync', False):
-                start_time = timezone.now()
-                result = _execute_listener(listener, payload)
-                
-                # Update event log
-                event_log.processed = True
-                event_log.processing_time = (timezone.now() - start_time).total_seconds()
-                event_log.save(update_fields=['processed', 'processing_time'])
-                
-                return 'sync-executed'
-
-            # For async execution
+            # Convert callable to string path if needed
+            if not isinstance(listener, str):
+                listener = f"{listener.__module__}.{listener.__name__}"
+            
+            # Enqueue the task
             task_id = async_task(
-                listener if not isinstance(listener, str) else import_string(listener),
-                payload,
-                event_type=event_type
+                listener,
+                event_type=event_type,
+                data={
+                    'event_id': event_log.id,
+                    'payload': event_data['payload'],
+                    'listener_paths': event_data['listener_paths']
+                }
             )
+            
+            logger.info(f"Task enqueued with ID: {task_id} for event_log: {event_log.id}")
             return task_id
 
         except Exception as e:
-            self.report_error(e, {'listener': listener, 'payload': payload})
+            logger.error(f"Error in enqueue_task: {str(e)}", exc_info=True)
+            self.report_error(e, {'listener': listener, 'event_data': event_data, 'event_type': event_type})
             raise
 
     def execute_task_sync(self, listener: Union[str, Callable], payload: Dict, event_type: str) -> None:
         """Execute the listener synchronously"""
+        logger.info(f"execute_task_sync called")
         try:
             event_log = _create_event_log(payload, event_type)
             start_time = timezone.now()
             
-            result = _execute_listener(listener, payload)
-            
-            # Update event log
-            event_log.processed = True
-            event_log.processing_time = (timezone.now() - start_time).total_seconds()
-            event_log.save(update_fields=['processed', 'processing_time'])
+            result = _execute_listener(listener, payload, event_type)
             
             return result
         except Exception as e:
@@ -106,20 +111,13 @@ class DjangoQBackend(EventBusBackend):
 
 def task_hook(task):
     """Hook that runs after task completion"""
-    logger.info(f"Task {task.id} completed with status: {task.success}")
+    logger.info(f"Task hook called for task {task.id}")
+    logger.info(f"Task args: {task.args}")
+    logger.info(f"Task kwargs: {task.kwargs}")
+    logger.info(f"Task success: {task.success}")
     
     if task.success:
-        # Update event log if it exists
-        from apps.event_hub.models import EventLog
-        if isinstance(task.args, tuple) and len(task.args) > 0:
-            payload = task.args[-1] if isinstance(task.args[-1], dict) else None
-            if payload:
-                event_log = EventLog.objects.filter(payload=payload).first()
-                if event_log and not event_log.processed:
-                    event_log.processed = True
-                    event_log.processing_time = (task.stopped - task.started).total_seconds()
-                    event_log.save(update_fields=['processed', 'processing_time'])
+        logger.info(f"Task result: {task.result}")
+        # Task is automatically deleted after this
     else:
         logger.error(f"Task failed with error: {task.result}")
-        if hasattr(task.result, '__traceback__'):
-            logger.error(f"Traceback: {task.result.__traceback__}")

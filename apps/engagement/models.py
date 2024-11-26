@@ -119,7 +119,20 @@ class NotificationPreference(TimeStampMixin):
 
 class EmailNotification(TimeStampMixin):
     """Record of emails sent to users"""
-    event = models.ForeignKey(NotifiableEvent, on_delete=models.CASCADE, null=True, blank=True)
+    notifiable_event = models.ForeignKey(
+        NotifiableEvent, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='email_notifications'
+    )
+    person = models.ForeignKey(
+        'talent.Person',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='email_notifications'
+    )
     title = models.CharField(max_length=400)
     body = models.CharField(max_length=4000, null=True, blank=True)
     sent_at = models.DateTimeField(auto_now_add=True)
@@ -127,18 +140,31 @@ class EmailNotification(TimeStampMixin):
 
     class Meta:
         indexes = [
-            models.Index(fields=['event']),
+            models.Index(fields=['notifiable_event']),
             models.Index(fields=['sent_at']),
             models.Index(fields=['delete_at']),
         ]
 
     def __str__(self):
-        return f"Email notification for {self.event}"
+        return f"Email notification for {self.notifiable_event}"
 
 
 class AppNotification(TimeStampMixin):
     """Notifications to be displayed in the web app"""
-    event = models.ForeignKey(NotifiableEvent, on_delete=models.CASCADE)
+    notifiable_event = models.ForeignKey(
+        NotifiableEvent, 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='app_notifications'
+    )
+    person = models.ForeignKey(
+        'talent.Person',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='app_notifications'
+    )
     title = models.CharField(max_length=400)
     message = models.CharField(max_length=4000)
     is_read = models.BooleanField(default=False)
@@ -147,14 +173,14 @@ class AppNotification(TimeStampMixin):
 
     class Meta:
         indexes = [
-            models.Index(fields=['event']),
+            models.Index(fields=['notifiable_event']),
             models.Index(fields=['is_read']),
             models.Index(fields=['read_at']),
             models.Index(fields=['delete_at']),
         ]
 
     def __str__(self):
-        return f"App notification for {self.event}"
+        return f"App notification for {self.notifiable_event}"
 
     def mark_as_read(self):
         self.is_read = True

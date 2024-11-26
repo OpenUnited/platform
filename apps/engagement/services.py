@@ -15,9 +15,9 @@ class NotificationService:
     def get_unread_notifications(self, person: Person) -> QuerySet[AppNotification]:
         """Get all unread app notifications for a person"""
         return AppNotification.objects.filter(
-            event__person=person,
+            person=person,
             is_read=False
-        ).select_related('event').order_by('-created_at')
+        ).select_related('notifiable_event').order_by('-created_at')
 
     def get_all_notifications(
         self, 
@@ -27,8 +27,8 @@ class NotificationService:
     ) -> QuerySet[AppNotification]:
         """Get all app notifications for a person with optional pagination"""
         notifications = AppNotification.objects.filter(
-            event__person=person
-        ).select_related('event').order_by('-created_at')
+            person=person
+        ).select_related('notifiable_event').order_by('-created_at')
 
         if offset is not None:
             notifications = notifications[offset:]
@@ -42,7 +42,7 @@ class NotificationService:
         try:
             notification = AppNotification.objects.get(
                 id=notification_id,
-                event__person=person
+                person=person
             )
             notification.mark_as_read()
             return True
@@ -53,22 +53,22 @@ class NotificationService:
         """Mark all unread notifications as read for a person"""
         now = timezone.now()
         return AppNotification.objects.filter(
-            event__person=person,
+            person=person,
             is_read=False
         ).update(is_read=True, read_at=now)
 
     def get_notification_count(self, person: Person) -> int:
         """Get count of unread notifications"""
         return AppNotification.objects.filter(
-            event__person=person,
+            person=person,
             is_read=False
         ).count()
 
     def get_recent_notifications(self, person: Person, limit: int = 5) -> QuerySet[AppNotification]:
         """Get most recent notifications regardless of read status"""
         return AppNotification.objects.filter(
-            event__person=person
-        ).select_related('event').order_by('-created_at')[:limit]
+            person=person
+        ).select_related('notifiable_event').order_by('-created_at')[:limit]
 
     def update_notification_preferences(
         self, 
@@ -89,9 +89,9 @@ class NotificationService:
         """Get email notification history for a person"""
         cutoff = timezone.now() - timezone.timedelta(days=days)
         return EmailNotification.objects.filter(
-            event__person=person,
+            notifiable_event__person=person,
             sent_at__gte=cutoff
-        ).select_related('event').order_by('-sent_at')
+        ).select_related('notifiable_event').order_by('-sent_at')
 
     def cleanup_old_notifications(self) -> tuple[int, int]:
         """

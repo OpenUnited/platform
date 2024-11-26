@@ -13,22 +13,23 @@
 - Users can choose notification delivery method:
   - Apps (web interface only)
   - Email only
-  - Both channels
+  - Both channels (default)
   - None (opt-out)
-- Preferences are stored per person and per event type
-- Notifications are only created in enabled channels
+- Preferences are stored per person
+- Default preferences created on first notification (BOTH)
+- Notifications are created based on preference type
 
 ### Notification Types
 - **App Notifications**: Displayed in the web interface
 - **Email Notifications**: Sent via email
-- Both types use templates for consistent formatting
-- Templates include parameter validation
+- Both types use templates with parameter substitution
+- Fallback notifications created when templates missing/invalid
 
 ### Data Lifecycle
 - Transient records (events, notifications) have `delete_at` fields
 - Automatic cleanup of old records (72-hour retention)
 - Templates and preferences are permanent
-- Failed deliveries are logged for investigation
+- Failed deliveries logged with error details
 
 ## System Components
 
@@ -36,17 +37,17 @@
 ```python
 class EventBus:
     - Singleton pattern implementation
-    - Supports both sync and async execution
+    - Single-task processing per event
     - Maintains registry of event listeners
     - Logs events in EventLog model
-    - Handles execution errors gracefully
+    - Transaction-safe event processing
 ```
 
 ### 2. NotifiableEvent
 - Records notification-worthy events
 - Links events to specific persons
-- Stores event parameters
-- Used by event handlers to create notifications
+- Stores event parameters for template rendering
+- Used by notification processor to create notifications
 
 ### 3. Notification Templates
 ```python
@@ -54,13 +55,11 @@ class AppNotificationTemplate:
     - event_type: CharField (matches EventTypes registry)
     - title: CharField
     - template: CharField
-    - permitted_params: CharField
 
 class EmailNotificationTemplate:
     - event_type: CharField
     - title: CharField
     - template: CharField
-    - permitted_params: CharField
 ```
 
 ### 4. Notification Records
@@ -81,11 +80,11 @@ class EmailNotification:
 ```
 
 ### 5. Task Processors
-- Asynchronous notification creation
-- Template rendering
+- Atomic transaction handling
+- Template-based notification creation
 - Error handling with fallback notifications
 - Preference-based notification routing
-- Transaction management
+- Default preference creation
 
 ### 6. EventTypes Registry
 - Centralized registry of all application events
@@ -102,140 +101,197 @@ def create_product(form_data: dict, person: Person, organisation: Organisation =
     
     event_bus = get_event_bus()
     event_bus.publish('product.created', {
-        'organisation_id': product.organisation_id,
-        'person_id': product.person_id,
+        'productId': str(product.id),
         'name': product.name,
-        'url': product.get_absolute_url(),
-        'product_id': product.id
+        'url': f'/products/{product.slug}/',
+        'organisationId': str(product.organisation.id),
+        'personId': str(person.id)
     })
 ```
 
 ### Step 2: Event Processing
-The system uses a multi-layer approach:
+The system uses a transaction-safe approach:
 
 1. **Event Bus**:
    - Validates events against EventTypes registry
    - Logs events in EventLog model
+   - Manages task queuing with atomic transactions
    - Handles sync/async execution configuration
-   - Manages task queuing and execution
 
 2. **Event Handlers**:
 ```python
 def handle_product_created(event_data):
-    # Get all stakeholders to notify
-    people_to_notify = set()
-    
-    if product.organisation:
-        people_to_notify.update(RoleService.get_organisation_managers(product.organisation))
-        people_to_notify.update(RoleService.get_product_managers(product))
-    elif product.person:
-        people_to_notify.add(product.person)
+    with transaction.atomic():
+        # Get all stakeholders to notify
+        people_to_notify = set()
         
-    # Create events and queue notifications
-    for person in people_to_notify:
-        event = NotifiableEvent.objects.create(
-            event_type=EventTypes.PRODUCT_CREATED,
-            person=person,
-            params=event_data
-        )
-        
-        EventBus().enqueue_task(
-            'process_notification',
-            {'event_id': event.id},
-            EventTypes.PRODUCT_CREATED
-        )
+        if product.organisation:
+            people_to_notify.update(RoleService.get_organisation_managers(product.organisation))
+            people_to_notify.update(RoleService.get_product_managers(product))
+        elif product.person:
+            people_to_notify.add(product.person)
+            
+        # Create events and queue notifications
+        for person in people_to_notify:
+            event = NotifiableEvent.objects.create(
+                event_type=EventTypes.PRODUCT_CREATED,
+                person=person,
+                params=event_data
+            )
+            
+            process_notification(event_id=event.id)
 ```
 
 ### Step 3: Notification Creation
-The system:
-1. Retrieves user notification preferences
-2. Loads appropriate templates
-3. Creates notifications based on preferences:
+The system processes notifications atomically:
 ```python
-def _create_notifications_for_event(event: NotifiableEvent) -> None:
-    prefs = NotificationPreference.objects.get(person=event.person)
-    
-    if prefs.product_notifications in [NotificationPreference.Type.APPS, NotificationPreference.Type.BOTH]:
-        template = AppNotificationTemplate.objects.get(event_type=event.event_type)
-        AppNotification.objects.create(
-            event=event,
-            title=template.title_template.format(**event.params),
-            message=template.message_template.format(**event.params)
-        )
+def process_notification(event_id):
+    try:
+        with transaction.atomic():
+            event = NotifiableEvent.objects.select_for_update().get(id=event_id)
+            person = event.person
+            
+            # Get or create notification preferences with default BOTH
+            prefs, created = NotificationPreference.objects.get_or_create(
+                person=person,
+                defaults={'product_notifications': NotificationPreference.Type.BOTH}
+            )
+            
+            notification_type = prefs.product_notifications
+            
+            # Create app notifications if enabled
+            if notification_type in [NotificationPreference.Type.APPS, NotificationPreference.Type.BOTH]:
+                try:
+                    template = AppNotificationTemplate.objects.get(event_type=event.event_type)
+                    try:
+                        title = template.title.format(**event.params)
+                        message = template.template.format(**event.params)
+                    except KeyError as e:
+                        logger.error(f"Missing template parameter: {e}")
+                        title = "Notification Error"
+                        message = "There was an error processing this notification."
+                    
+                    AppNotification.objects.create(
+                        event=event,
+                        title=title,
+                        message=message
+                    )
+                except AppNotificationTemplate.DoesNotExist:
+                    logger.error(f"No app template found for event type: {event.event_type}")
+                    AppNotification.objects.create(
+                        event=event,
+                        message="There was an error processing this notification."
+                    )
+            
+            # Create email notifications if enabled
+            if notification_type in [NotificationPreference.Type.EMAIL, NotificationPreference.Type.BOTH]:
+                try:
+                    template = EmailNotificationTemplate.objects.get(event_type=event.event_type)
+                    try:
+                        title = template.title.format(**event.params)
+                        body = template.template.format(**event.params)
+                    except KeyError as e:
+                        logger.error(f"Missing template parameter: {e}")
+                        title = "Notification Error"
+                        body = "There was an error processing this notification."
+                    
+                    EmailNotification.objects.create(
+                        event=event,
+                        title=title,
+                        body=body
+                    )
+                except EmailNotificationTemplate.DoesNotExist:
+                    logger.error(f"No email template found for event type: {event.event_type}")
+                    EmailNotification.objects.create(
+                        event=event,
+                        title="System Notification",
+                        body="A notification was generated but the template was not found."
+                    )
+            
+            return True
+    except Exception as e:
+        logger.error(f"Error processing notification: {str(e)}")
+        return False
 ```
-
-### Step 4: Notification Delivery
-- App notifications appear immediately in web interface
-- Email notifications are sent asynchronously
-- Notifications are retained for 72 hours
-- Failed deliveries are logged for investigation
 
 ## Testing Strategy
 
 ### 1. Test Categories
-- Event Processing Tests
-- Event Bus Tests
-- Multiple Listener Tests
-- Transaction Tests
-- Error Cases
+- Event Processing Tests with sync execution
+- Transaction safety tests
+- Multiple stakeholder notification tests
+- Template rendering and fallback tests
+- Default preference creation tests
 
 ### 2. Test Infrastructure
 ```python
 @pytest.fixture(autouse=True)
 def configure_sync_mode(settings):
+    """Configure Django-Q for synchronous execution"""
     settings.DJANGO_Q = {
         'sync': True,
         'timeout': 30,
         'save_limit': 0
     }
+    
+    settings.EVENT_BUS = {
+        'BACKEND': 'apps.event_hub.services.backends.django_q.DjangoQBackend',
+        'TASK_COMPLETE_HOOK': None  # Disable the hook in sync mode
+    }
 ```
 
 ### 3. Testing Patterns
-1. **Synchronous Flow Testing**:
-   - Direct handler calls
-   - Immediate assertion checking
-   - Used for preference and template testing
+1. **Transaction Testing**:
+   - Use `@pytest.mark.django_db(transaction=True)`
+   - Test atomic operations
+   - Verify rollback behavior
+   - Ensure notification consistency
 
-2. **Test Helpers**:
+2. **Notification Creation Testing**:
 ```python
-@pytest.fixture
-def wait_for_notifications():
-    def _wait(filter_kwargs, expected_count=1, timeout=10):
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            count = NotifiableEvent.objects.filter(**filter_kwargs).count()
-            if count == expected_count:
-                return True
-            time.sleep(min(sleep_time, 0.5))
-        raise TimeoutError(f"Timed out waiting for {expected_count} notifications")
-    return _wait
+@pytest.mark.django_db(transaction=True)
+def test_async_notification_processing(
+    self, transactional_db, person, event_data, notification_preferences,
+    notification_templates
+):
+    event_bus = get_event_bus()
+    
+    # Commit fixture data
+    transaction.commit()
+    
+    event_bus.publish(EventTypes.PRODUCT_CREATED, event_data)
+    
+    # Verify notifications
+    assert AppNotification.objects.filter(event__person=person).exists()
+    assert EmailNotification.objects.filter(event__person=person).exists()
 ```
 
 ## Best Practices
 
 ### 1. Error Handling
-- Graceful handling of missing templates
-- Fallback error messages for template rendering failures
-- Comprehensive error logging
-- Transaction management
+- Catch and log all template rendering errors
+- Create fallback notifications for all failure cases
+- Use atomic transactions for consistency
+- Log detailed error information
 
 ### 2. Performance
-- Async processing via Django Q
-- Efficient database queries
-- Automatic cleanup of old records
-- Distinct notifications for users with multiple roles
+- Select related fields in queries
+- Use atomic transactions for consistency
+- Create notifications efficiently
+- Handle multiple stakeholders distinctly
+- Ensure distinct notifications for users with multiple roles
 
 ### 3. Maintainability
-- Clear separation of concerns
-- Template-based formatting
-- Centralized event type registry
+- Clear separation of notification types
+- Template-based message formatting
+- Centralized event registry
 - Comprehensive test coverage
 
 ### 4. Reliability
-- Event logging
-- Error tracking
+- Transaction safety guarantees
 - Fallback notifications
-- Transaction safety
+- Default preferences
+- Error logging and monitoring
 
 ## Usage Guidelines
 
@@ -243,22 +299,23 @@ def wait_for_notifications():
 1. Add to EventTypes registry
 2. Create notification templates
 3. Implement event handler
-4. Add appropriate tests
+4. Add transaction-safe tests
 
 ### 2. Creating Templates
-1. Define permitted parameters
-2. Implement validation
+1. Define template parameters
+2. Implement safe parameter substitution
 3. Create both app and email templates
-4. Test parameter formatting
+4. Test rendering and fallbacks
 
 ### 3. Error Handling
-1. Log all errors comprehensively
-2. Provide fallback notifications
-3. Monitor failed deliveries
-4. Implement retry mechanisms
+1. Implement fallback notifications
+2. Use atomic transactions
+3. Log detailed error information
+4. Test error scenarios
 
 ### 4. Testing
-1. Test all notification paths
-2. Verify preference handling
-3. Check error cases
-4. Test async behavior
+1. Test transaction safety
+2. Verify notification creation
+3. Check template rendering
+4. Test preference handling
+5. Verify stakeholder notifications

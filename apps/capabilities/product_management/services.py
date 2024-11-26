@@ -309,31 +309,36 @@ class IdeasAndBugsService:
 class ProductManagementService:
     @staticmethod
     def create_product(form_data: dict, person: Person, organisation: Organisation = None) -> Product:
-        """
-        Create a product and assign the creator as admin
+        """Create a new product and assign initial roles.
         
         Args:
-            form_data: Cleaned form data
-            person: Person creating the product
-            organisation: Optional organisation to own the product
+            form_data (dict): Product data from form submission
+            person (Person): Person creating the product
+            organisation (Organisation, optional): Organisation owning the product
             
         Returns:
-            Created Product instance
+            Product: The newly created product instance
+            
+        Creates a new product and:
+        - Assigns the creator as an admin
+        - Sets ownership (org or personal)
+        - Publishes product.created event
         """
         logger.info(f"Creating product - person: {person}, org: {organisation}")
         
-        if not form_data.get('name'):
-            raise InvalidInputError("Product name is required")
-            
-        try:
-            product_data = form_data.copy()
-            if organisation:
-                product_data['organisation'] = organisation
-            
+        with transaction.atomic():
             # Create the product
-            product = Product.objects.create(**product_data)
+            product = Product.objects.create(
+                name=form_data['name'],
+                slug=form_data['slug'],
+                short_description=form_data['short_description'],
+                photo=form_data.get('photo'),
+                visibility=form_data['visibility'],
+                organisation=organisation,
+                person=None if organisation else person
+            )
             logger.info(f"Product created: {product.id} - {product.name}")
-            
+
             # Assign creator as admin
             RoleService.assign_product_role(
                 person=person,
@@ -342,25 +347,20 @@ class ProductManagementService:
             )
             logger.info(f"Assigned {person} as ADMIN for product {product.id}")
 
-            # Publish event
+            # Publish event ONCE after everything is set up
             event_bus = get_event_bus()
-            event_bus.publish(EventTypes.PRODUCT_CREATED, {
-                'organisation_id': product.organisation_id if product.organisation else None,
-                'person_id': product.person_id if product.person else None,
+            event_payload = {
+                'productId': product.id,
+                'organisationId': product.organisation_id,
+                'personId': person.id,
                 'name': product.name,
-                'url': product.get_absolute_url(),
-                'product_id': product.id
-            })
+                'url': product.get_absolute_url()
+            }
+            # Use on_commit to ensure the event is only published after transaction commits
+            transaction.on_commit(lambda: event_bus.publish(EventTypes.PRODUCT_CREATED, event_payload))
             logger.info(f"Published product.created event for product {product.id}")
-            
+
             return product
-            
-        except ValidationError as e:
-            logger.error(f"Validation error creating product: {str(e)}")
-            raise InvalidInputError(str(e))
-        except Exception as e:
-            logger.error(f"Error creating product: {str(e)}", exc_info=True)
-            raise InvalidInputError(f"Failed to create product: {str(e)}")
 
     @classmethod
     @transaction.atomic
@@ -373,10 +373,10 @@ class ProductManagementService:
             # After successful update
             event_bus = get_event_bus()
             event_bus.publish(EventTypes.PRODUCT_UPDATED, {
-                'organisation_id': product.organisation_id if product.organisation else None,
-                'person_id': product.person_id if product.person else None,
+                'organisationId': product.organisation_id,
+                'personId': product.person_id,
                 'name': product.name,
-                'product_id': product.id,
+                'productId': product.id,
                 'url': product.get_absolute_url()
             })
             

@@ -9,24 +9,14 @@ from .events import EventTypes
 class EventLog(models.Model):
     """Log of all events that pass through the event bus"""
     
-    event_type = models.CharField(
-        max_length=255,
-        choices=EventTypes.choices(),
-        db_index=True,
-        help_text="Type of event from the centralized event registry"
-    )
+    event_type = models.CharField(max_length=100)
     payload = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    delete_at = models.DateTimeField(db_index=True)
-    
-    # Tracking fields
-    processed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     error = models.TextField(null=True, blank=True)
-    processing_time = models.FloatField(null=True)
+    parent_event_id = models.IntegerField(null=True, blank=True)
     
     class Meta:
         indexes = [
-            models.Index(fields=['delete_at', 'processed']),
             models.Index(fields=['event_type', 'created_at']),
         ]
     
@@ -39,7 +29,4 @@ class EventLog(models.Model):
     
     def save(self, *args, **kwargs):
         self.clean()
-        if not self.delete_at:
-            retention_days = getattr(settings, 'EVENT_LOG_RETENTION_DAYS', 30)
-            self.delete_at = timezone.now() + timedelta(days=retention_days)
         super().save(*args, **kwargs)
