@@ -13,7 +13,8 @@ class EventLog(models.Model):
     payload = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     error = models.TextField(null=True, blank=True)
-    parent_event_id = models.IntegerField(null=True, blank=True)
+    delete_at = models.DateTimeField(null=True, blank=True)
+    parent_event_id = models.IntegerField(null=True)
     
     class Meta:
         indexes = [
