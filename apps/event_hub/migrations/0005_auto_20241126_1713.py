@@ -1,26 +1,20 @@
 from django.db import migrations, models
 from django.db.utils import ProgrammingError
 
-def check_field_exists(apps, schema_editor):
+def check_and_create_field(apps, schema_editor):
     # Get the database connection
-    db_alias = schema_editor.connection.alias
+    connection = schema_editor.connection
+    
+    # Check if field exists
     try:
-        # Try to query the field
-        schema_editor.execute("SELECT parent_event_id FROM event_hub_eventlog LIMIT 1")
-        # If we get here, the field exists
-        return True
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT parent_event_id FROM event_hub_eventlog LIMIT 1")
     except ProgrammingError:
-        # If we get here, the field doesn't exist
-        return False
-
-def add_field_if_not_exists(apps, schema_editor):
-    if not check_field_exists(apps, schema_editor):
-        # Only add the field if it doesn't exist
-        migrations.AddField(
-            model_name='eventlog',
-            name='parent_event_id',
-            field=models.IntegerField(null=True),
-        ).database_forwards('event_hub', schema_editor, None, None)
+        # Field doesn't exist, so add it
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "ALTER TABLE event_hub_eventlog ADD COLUMN parent_event_id integer NULL"
+            )
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -28,5 +22,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_field_if_not_exists, migrations.RunPython.noop),
+        migrations.RunPython(check_and_create_field, migrations.RunPython.noop),
     ]
