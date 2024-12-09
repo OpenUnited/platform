@@ -16,13 +16,13 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-CP_qCmq8.js" %}"></script>
-  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-BTsMR4bA.css" %}">
+  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-5e73NwXY.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-DU1DU4D2.css" %}">
 </head>
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
   <span>
-    Welcome to OpenUnited - Empowering Global Talent
+    Transform Months into Days with AI-Enhanced Buildathons & Fixathons
   </span>
 </div>
 
@@ -53,7 +53,6 @@
           <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
           <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
           <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
-          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
         </ul>
       </div>
 
@@ -128,98 +127,158 @@
   </div>
 </div>
 
-<section class="py-8 lg:py-20" id="how-it-works">
+<!-- Main Process Section -->
+<section class="py-8 lg:py-20">
     <div class="container">
-        <h1 class="text-4xl font-bold text-center">How It Works</h1>
-        <p class="mt-4 text-xl text-center text-gray-600 max-w-3xl mx-auto">
-            OpenUnited offers tailored solutions for contributors, tech companies, and enterprises, powered by our AI-driven marketplace platform.
-        </p>
+        <h1 class="text-4xl font-bold mb-8">How AI-Enhanced Buildathons & Fixathons Work</h1>
         
-        <div class="grid gap-8 lg:grid-cols-3 mt-12">
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Contributors</h2>
-                <p class="text-gray-600 mb-4">
-                    Build your portfolio and advance your career by contributing to real-world products.
-                </p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Work on lasting digital products</li>
-                    <li>• Claim bounties and earn rewards</li>
-                    <li>• Build a public portfolio</li>
-                    <li>• Connect with top tech companies</li>
-                    <li>• Learn from real-world challenges</li>
-                </ul>
-                <div class="mt-6">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('H2N4IfaGZ94')">Watch How It Works</a>
+        <!-- Step 1 -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">1. AI-Driven Product & Challenge Creation</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Transform your docs, bugs and priorities into clear, actionable bounties using our Generative AI engine.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Process unstructured data into clear products</li>
+                        <li>Create well-scoped bounties automatically</li>
+                        <li>Generate detailed specifications from high-level requirements</li>
+                        <li>Align tasks with business priorities</li>
+                    </ul>
                 </div>
             </div>
+        </div>
 
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Tech Companies</h2>
-                <p class="text-gray-600 mb-4">
-                    Transform your ecosystem products into engaging opportunities for global talent.
-                </p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Revitalize ecosystem products</li>
-                    <li>• Access global talent pool</li>
-                    <li>• AI-powered issue management</li>
-                    <li>• Track contributions and impact</li>
-                    <li>• Accelerate product development</li>
-                </ul>
-                <div class="mt-6">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch How It Works</a>
+        <!-- Step 2 -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">2. Intelligent Estimation</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Leverage AI to allocate points to bounties and optimize incentives for maximum impact.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Smart ranking of challenges based on business value</li>
+                        <li>Automated point allocation based on complexity</li>
+                        <li>Dynamic adjustment of priorities</li>
+                        <li>Optimized incentive structures</li>
+                    </ul>
                 </div>
             </div>
+        </div>
 
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Enterprises</h2>
-                <p class="text-gray-600 mb-4">
-                    Optimize internal engineering capabilities with flexible adoption strategies.
-                </p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Start with focused events</li>
-                    <li>• Drive internal innovation</li>
-                    <li>• Enable cross-team collaboration</li>
-                    <li>• Optimize resource allocation</li>
-                    <li>• Scale engineering capacity</li>
-                </ul>
-                <div class="mt-6">
-                    <a href="{% url "marketing:enterprise_support" %}" class="btn btn-primary">Learn More</a>
+        <!-- Step 3 -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">3. Effortless Talent Matching</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Our AI-powered marketplace connects developers, designers, PMs, and specialists with challenges and bounties tailored to their expertise.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Skill-based challenge matching</li>
+                        <li>Real-time availability tracking</li>
+                        <li>Cross-functional team formation</li>
+                        <li>Expertise verification</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">4. Rapid Onboarding</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Cut onboarding time by 90% with AI-generated guides that empower new contributors to make meaningful contributions in hours.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Instant project context generation</li>
+                        <li>Interactive setup guides</li>
+                        <li>Automated dependency management</li>
+                        <li>Quick-start documentation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">5. AI-Assisted Delivery</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Streamline requirement definition and quality review with AI-assisted workflows, deliver robust features in record time.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Clear requirement definitions</li>
+                        <li>Automated quality checks</li>
+                        <li>Smart review suggestions</li>
+                        <li>Performance optimization tips</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">6. Real-Time Visibility</h2>
+                <div class="space-y-4">
+                    <p class="text-lg">Track progress live, remove blockers instantly, and celebrate top contributors as your project unfolds.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Live progress dashboards</li>
+                        <li>Instant blocker identification</li>
+                        <li>Contributor recognition</li>
+                        <li>Real-time status updates</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Video Modal -->
-<div id="videoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg max-w-3xl w-full mx-4">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-semibold">How It Works</h3>
-            <button onclick="closeVideoModal()" class="text-gray-500 hover:text-gray-700">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+<!-- Event Types -->
+<section class="py-16 bg-base-200">
+    <div class="container">
+        <h2 class="text-3xl font-bold mb-8">Next-Generation Hackathons</h2>
+        
+        <!-- Buildathons -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h3 class="card-title text-2xl mb-4">Buildathons (3-4 Days)</h3>
+                <div class="space-y-4">
+                    <p class="text-lg">Transform your product backlog into production-ready features.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Compress months of development into days</li>
+                        <li>Deliver tangible results for your customers</li>
+                        <li>Create production-ready solutions</li>
+                        <li>Maintain development momentum</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="relative" style="padding-bottom: 56.25%">
-            <iframe id="videoFrame" class="absolute inset-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+        <!-- Fixathons -->
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h3 class="card-title text-2xl mb-4">Fixathons (2-3 Days)</h3>
+                <div class="space-y-4">
+                    <p class="text-lg">Turn technical debt and bugs into rapid improvements.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Clear bug backlogs quickly</li>
+                        <li>Address technical debt</li>
+                        <li>Boost system performance</li>
+                        <li>Improve user satisfaction</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<script>
-    function openVideoModal(videoId) {
-        document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videoId}`;
-        document.getElementById('videoModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeVideoModal() {
-        document.getElementById('videoFrame').src = '';
-        document.getElementById('videoModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-</script>
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-primary-content">
+    <div class="container text-center">
+        <h2 class="text-3xl font-bold mb-6">Ready to Transform Your Innovation Engine?</h2>
+        <div class="space-x-4">
+            <a href="/signup" class="btn btn-secondary btn-lg">Try It Free</a>
+            <a href="/contact" class="btn btn-outline btn-lg">Schedule Demo</a>
+        </div>
+    </div>
+</section>
 
 <footer class="bg-base-200 text-base-content">
     <div class="container py-8">
@@ -227,8 +286,8 @@
             <div>
                 <h2 class="font-bold mb-4">Platform</h2>
                 <ul class="space-y-2">
-                    <li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>
-                    <li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>
+                    <li><a href="#">Explore Buildathons</a></li>
+                    <li><a href="#">Start a Buildathon</a></li>
                     <li><a href="{% url "marketing:features" %}">Features</a></li>
                     <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
                     <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
@@ -237,9 +296,9 @@
             <div>
                 <h2 class="font-bold mb-4">Solutions</h2>
                 <ul class="space-y-2">
+                    <li><a href="{% url "marketing:features" %}#buildathons">Buildathons</a></li>
+                    <li><a href="{% url "marketing:features" %}#fixathons">Fixathons</a></li>
                     <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
-                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
-                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
                 </ul>
             </div>
             <div>

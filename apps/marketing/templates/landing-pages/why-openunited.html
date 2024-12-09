@@ -16,13 +16,13 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-CP_qCmq8.js" %}"></script>
-  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-BTsMR4bA.css" %}">
+  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-5e73NwXY.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-DU1DU4D2.css" %}">
 </head>
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
   <span>
-    Welcome to OpenUnited - Empowering Global Talent
+    Transform Months into Days with AI-Enhanced Buildathons & Fixathons
   </span>
 </div>
 
@@ -53,7 +53,6 @@
           <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
           <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
           <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
-          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
         </ul>
       </div>
 
@@ -132,60 +131,88 @@
     <div class="container">
         <h1 class="text-4xl font-bold text-center">Why OpenUnited?</h1>
         <p class="mt-4 text-xl text-center text-gray-600 max-w-3xl mx-auto">
-            OpenUnited provides unique value propositions for contributors, tech companies, and enterprises through our AI-powered marketplace platform.
+            Transform traditional hackathons into value-driving buildathons that deliver real results for your business.
         </p>
 
-        <div class="grid gap-8 lg:grid-cols-3 mt-12">
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Contributors</h2>
-                <p class="text-gray-600 mb-4">
-                    Break into tech, transition roles, or expand your expertise through real-world projects.
-                </p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Access to meaningful projects</li>
-                    <li>• Build a verified portfolio</li>
-                    <li>• Earn while you learn</li>
-                    <li>• Connect with top companies</li>
-                    <li>• Guided by AI assistance</li>
-                </ul>
-                <div class="mt-6">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('H2N4IfaGZ94')">Watch How It Works</a>
+        <div class="mt-12 grid gap-8 lg:grid-cols-2">
+            <!-- Hackathons vs Buildathons -->
+            <div class="bg-base-100 p-8 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">Traditional Hackathons</h2>
+                <div class="space-y-4">
+                    <p class="text-gray-600">
+                        While hackathons create excitement and foster innovation, their outputs rarely reach customers or create business value.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li>• Limited to rapid prototyping</li>
+                        <li>• Results rarely reach production</li>
+                        <li>• Focus on ideation only</li>
+                        <li>• Temporary engagement</li>
+                        <li>• Disconnected from business goals</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Tech Companies</h2>
-                <p class="text-gray-600 mb-4">
-                    Transform overlooked ecosystem products into dynamic opportunities.
-                </p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Revitalize existing repositories</li>
-                    <li>• Access global talent</li>
-                    <li>• Reduce maintenance overhead</li>
-                    <li>• Accelerate development</li>
-                    <li>• Scale ecosystem impact</li>
-                </ul>
-                <div class="mt-6">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch How It Works</a>
+            <div class="bg-base-100 p-8 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">AI-Enhanced Buildathons</h2>
+                <div class="space-y-4">
+                    <p class="text-gray-600">
+                        Maintain the positive atmosphere while delivering production-ready improvements that directly benefit your business.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li>• Production-ready improvements</li>
+                        <li>• Direct business impact</li>
+                        <li>• Focus on value delivery</li>
+                        <li>• Sustained ecosystem benefits</li>
+                        <li>• Aligned with strategic goals</li>
+                    </ul>
                 </div>
             </div>
+        </div>
 
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Enterprises</h2>
-                <p class="text-gray-600 mb-4">
-                    Optimize internal engineering capabilities with flexible adoption.
-                </p>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Non-disruptive integration</li>
-                    <li>• Enhanced resource utilization</li>
-                    <li>• Improved team collaboration</li>
-                    <li>• Scalable talent management</li>
-                    <li>• Clear ROI tracking</li>
-                </ul>
-                <div class="mt-6">
-                    <a href="{% url "marketing:enterprise_support" %}" class="btn btn-primary">Learn More</a>
+        <!-- Value Proposition -->
+        <div class="mt-12">
+            <h2 class="text-3xl font-semibold text-center mb-8">Get Started with Minimal Risk</h2>
+            
+            <div class="grid gap-8 lg:grid-cols-3">
+                <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Low-Risk Proof of Concept</h3>
+                    <p class="text-gray-600 mb-4">
+                        Start with a single buildathon event to prove the platform's value while unlocking significant improvements in your products.
+                    </p>
+                    <div class="mt-6">
+                        <a href="/contact" class="btn btn-primary">Schedule Event</a>
+                    </div>
+                </div>
+
+                <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Strategic Breakthrough</h3>
+                    <p class="text-gray-600 mb-4">
+                        Transform strategic challenges into actionable bounties. Break through roadblocks with focused, AI-enhanced collaboration.
+                    </p>
+                    <div class="mt-6">
+                        <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch How It Works</a>
+                    </div>
+                </div>
+
+                <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Lasting Benefits</h3>
+                    <p class="text-gray-600 mb-4">
+                        Build new connections, shared understanding, and improved team morale that extend beyond the event itself.
+                    </p>
+                    <div class="mt-6">
+                        <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch Demo</a>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-16 text-center">
+            <h2 class="text-3xl font-semibold mb-6">Ready to Transform Your Innovation Process?</h2>
+            <p class="text-xl text-gray-600 mb-8">
+                Contact us to discuss organizing a buildathon event at your company.
+            </p>
+            <a href="mailto:team@openunited.com" class="btn btn-primary btn-lg">Contact Our Team</a>
         </div>
     </div>
 </section>
@@ -196,8 +223,8 @@
             <div>
                 <h2 class="font-bold mb-4">Platform</h2>
                 <ul class="space-y-2">
-                    <li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>
-                    <li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>
+                    <li><a href="#">Explore Buildathons</a></li>
+                    <li><a href="#">Start a Buildathon</a></li>
                     <li><a href="{% url "marketing:features" %}">Features</a></li>
                     <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
                     <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
@@ -206,9 +233,9 @@
             <div>
                 <h2 class="font-bold mb-4">Solutions</h2>
                 <ul class="space-y-2">
+                    <li><a href="{% url "marketing:features" %}#buildathons">Buildathons</a></li>
+                    <li><a href="{% url "marketing:features" %}#fixathons">Fixathons</a></li>
                     <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
-                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
-                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
                 </ul>
             </div>
             <div>

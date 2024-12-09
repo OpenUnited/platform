@@ -16,13 +16,13 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-CP_qCmq8.js" %}"></script>
-  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-BTsMR4bA.css" %}">
+  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-5e73NwXY.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-DU1DU4D2.css" %}">
 </head>
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
   <span>
-    Welcome to OpenUnited - Empowering Global Talent
+    Transform Months into Days with AI-Enhanced Buildathons & Fixathons
   </span>
 </div>
 
@@ -53,7 +53,6 @@
           <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
           <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
           <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
-          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
         </ul>
       </div>
 
@@ -132,41 +131,76 @@
     <div class="container">
         <h1 class="text-4xl font-bold text-center">Platform Features</h1>
         <p class="mt-4 text-xl text-center text-gray-600 max-w-3xl mx-auto">
-            Our AI-powered platform offers tailored features for each audience, enabling seamless collaboration and efficient product development.
+            Our AI-powered platform transforms traditional hackathons into production-ready buildathons and fixathons.
         </p>
 
         <div class="grid gap-8 lg:grid-cols-3 mt-12">
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg" id="buildathons">
+                <h2 class="text-2xl font-semibold mb-4">Buildathons</h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• AI-driven challenge creation</li>
+                    <li>• Production-ready outputs</li>
+                    <li>• Real-time progress tracking</li>
+                    <li>• Automated documentation</li>
+                    <li>• Intelligent task allocation</li>
+                </ul>
+            </div>
+
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg" id="fixathons">
+                <h2 class="text-2xl font-semibold mb-4">Fixathons</h2>
+                <ul class="space-y-3 text-gray-600">
+                    <li>• Technical debt resolution</li>
+                    <li>• Bug prioritization</li>
+                    <li>• Performance optimization</li>
+                    <li>• System stability improvements</li>
+                    <li>• Quick-win identification</li>
+                </ul>
+            </div>
+
+            <div class="bg-base-100 p-6 rounded-lg shadow-lg" id="for-contributors">
                 <h2 class="text-2xl font-semibold mb-4">For Contributors</h2>
                 <ul class="space-y-3 text-gray-600">
-                    <li>• Dynamic portfolio building across products</li>
-                    <li>• AI-assisted task matching</li>
-                    <li>• Skill-based opportunity discovery</li>
-                    <li>• Achievement tracking and rewards</li>
-                    <li>• Collaborative learning environment</li>
+                    <li>• AI-assisted onboarding</li>
+                    <li>• Skill-based matching</li>
+                    <li>• Achievement tracking</li>
+                    <li>• Real-time collaboration</li>
+                    <li>• Automated rewards</li>
                 </ul>
             </div>
+        </div>
 
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Tech Companies</h2>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Repository transformation tools</li>
-                    <li>• Global talent pool access</li>
-                    <li>• AI-powered issue management</li>
-                    <li>• Contribution analytics</li>
-                    <li>• Ecosystem product optimization</li>
-                </ul>
+        <!-- AI Features Section -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-semibold text-center mb-8">AI-Enhanced Capabilities</h2>
+            <div class="grid gap-8 lg:grid-cols-2">
+                <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Smart Challenge Creation</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li>• Convert requirements into clear tasks</li>
+                        <li>• Generate detailed specifications</li>
+                        <li>• Estimate complexity and effort</li>
+                        <li>• Identify dependencies</li>
+                    </ul>
+                </div>
+
+                <div class="bg-base-100 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Intelligent Matching</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li>• Skill-based task allocation</li>
+                        <li>• Team composition optimization</li>
+                        <li>• Resource balancing</li>
+                        <li>• Expertise verification</li>
+                    </ul>
+                </div>
             </div>
+        </div>
 
-            <div class="bg-base-100 p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">For Enterprises</h2>
-                <ul class="space-y-3 text-gray-600">
-                    <li>• Internal marketplace setup</li>
-                    <li>• Resource allocation tracking</li>
-                    <li>• Cross-team collaboration tools</li>
-                    <li>• AI-driven talent matching</li>
-                    <li>• Flexible adoption pathways</li>
-                </ul>
+        <!-- Call to Action -->
+        <div class="mt-16 text-center">
+            <h2 class="text-3xl font-semibold mb-6">Ready to Transform Your Innovation Process?</h2>
+            <div class="space-x-4">
+                <a href="/signup" class="btn btn-primary btn-lg">Get Started Free</a>
+                <a href="/contact" class="btn btn-outline btn-lg">Schedule Demo</a>
             </div>
         </div>
     </div>
@@ -178,8 +212,8 @@
             <div>
                 <h2 class="font-bold mb-4">Platform</h2>
                 <ul class="space-y-2">
-                    <li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>
-                    <li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>
+                    <li><a href="#">Explore Buildathons</a></li>
+                    <li><a href="#">Start a Buildathon</a></li>
                     <li><a href="{% url "marketing:features" %}">Features</a></li>
                     <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
                     <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
@@ -188,9 +222,9 @@
             <div>
                 <h2 class="font-bold mb-4">Solutions</h2>
                 <ul class="space-y-2">
+                    <li><a href="{% url "marketing:features" %}#buildathons">Buildathons</a></li>
+                    <li><a href="{% url "marketing:features" %}#fixathons">Fixathons</a></li>
                     <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
-                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
-                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
                 </ul>
             </div>
             <div>

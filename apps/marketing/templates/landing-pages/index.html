@@ -16,14 +16,13 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/card3d@2.6.5/dist/card3d.min.js"></script>
-  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-CP_qCmq8.js" %}"></script>
-  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-BTsMR4bA.css" %}">
+  <script type="module" crossorigin src="{% static "assets/landing-pages/assets/app-5e73NwXY.js" %}"></script>
+  <link rel="stylesheet" crossorigin href="{% static "assets/landing-pages/assets/app-DU1DU4D2.css" %}">
 </head>
-
 <body>
 <div class="bg-neutral py-1.5 text-center text-xs text-neutral-content md:text-sm">
   <span>
-    Welcome to OpenUnited - Empowering Global Talent
+    Transform Months into Days with AI-Enhanced Buildathons & Fixathons
   </span>
 </div>
 
@@ -54,7 +53,6 @@
           <li class="font-medium"><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
           <li class="font-medium"><a href="{% url "marketing:features" %}">Features</a></li>
           <li class="font-medium"><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
-          <li class="font-medium"><a href="{% url "marketing:enterprise_support" %}">OpenUnited for Enterprises</a></li>
         </ul>
       </div>
 
@@ -129,140 +127,130 @@
   </div>
 </div>
 
-<section class="py-8 lg:py-20" id="home">
+<!-- Hero Section -->
+<section class="py-12 lg:py-24 bg-gradient-to-r from-base-100 to-base-200">
     <div class="container">
-        <div class="grid gap-12 lg:grid-cols-2">
-            <div>
-                <h1 class="text-4xl font-black tracking-tighter lg:text-6xl lg:leading-none">
-                    Empowering Global Talent to Drive Faster Innovation
-                </h1>
-                <p class="mt-8 text-lg">
-                    OpenUnited connects skilled contributors with enterprise-grade digital products through AI-enhanced challenges and bounties.
-                </p>
-                <p class="mt-2 text-lg">
-                    <a href="{% url "marketing:about" %}" class="text-blue-500 hover:text-blue-600">Learn more →</a>
-                </p>
-                <div class="mt-16 inline-flex gap-3">
-                    <a href="{% url "product_management:bounty-list" %}" class="btn btn-primary">Explore Bounties</a>
-                    <a href="{% url "security:sign_in" %}" class="btn btn-primary">Add Your Product</a>
-                </div>
-
-                <div class="mt-6 text-left">
-                    <a href="{% url "marketing:enterprise_support" %}" class="text-gray-500 hover:underline">
-                        Enterprise Customer wanting to use OpenUnited?
-                    </a>
-                </div>
-            </div>
-            <div>
-                <img 
-                    src="{% static "assets/landing-pages/assets/hero-qZHp0eXj.png" %}" 
-                    alt="Digital garden with vintage computers and bees" 
-                    class="rounded-lg w-full h-auto object-cover shadow-lg"
-                />
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-5xl lg:text-6xl font-bold leading-tight">
+                Transform Months of Work into Days, with AI-Enhanced Buildathons & Fixathons
+            </h1>
+            <p class="mt-6 text-xl text-gray-600">
+                Next-generation hackathons that produce tangible results for your customers and business.
+            </p>
+            <div class="mt-8 space-x-4">
+                <a href="/signup" class="btn btn-primary btn-lg">Get Started for Free</a>
+                <a href="/contact" class="btn btn-outline btn-lg">Schedule a Demo ➜</a>
             </div>
         </div>
-
-        <!-- First row: Contributors and Tech Companies -->
-        <div class="mt-12 grid gap-8 lg:grid-cols-2">
-            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-800">For Contributors</h2>
-                <p class="mt-4 text-gray-600">
-                    Break into tech, transition roles, or expand your expertise through real-world projects. OpenUnited transforms complex repositories into accessible opportunities where you can:
-                </p>
-                <ul class="mt-4 space-y-2 text-gray-600 list-disc list-inside">
-                    <li>Work on impactful digital products from leading tech companies</li>
-                    <li>Build a public showcase of your contributions</li>
-                    <li>Earn rewards through structured bounties</li>
-                    <li>Connect with a global community of professionals</li>
-                    <li>Leverage AI to simplify complex codebases</li>
-                </ul>
-                <div class="mt-6 flex items-center gap-4">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('H2N4IfaGZ94')">Watch How It Works</a>
-                    <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-800">For Tech Companies</h2>
-                <p class="mt-4 text-gray-600">
-                    Transform your ecosystem products from overlooked assets into dynamic opportunities. Our AI-powered platform helps you:
-                </p>
-                <ul class="mt-4 space-y-2 text-gray-600 list-disc list-inside">
-                    <li>Convert obscure repositories into engaging products</li>
-                    <li>Access global talent across development, UX, and product</li>
-                    <li>Streamline contribution processes with AI assistance</li>
-                    <li>Maintain and evolve your ecosystem efficiently</li>
-                    <li>Track progress with transparent metrics</li>
-                </ul>
-                <div class="mt-6 flex items-center gap-4">
-                    <a href="#" class="btn btn-primary" onclick="openVideoModal('urIf0Ld9adE')">Watch How It Works</a>
-                    <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Second row: Enterprise -->
-        <div class="mt-8">
-            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 max-w-3xl mx-auto">
-                <h2 class="text-2xl font-semibold text-gray-800">For Enterprises</h2>
-                <p class="mt-4 text-gray-600">
-                    Optimize your internal engineering capabilities with flexible adoption strategies. Our platform helps you:
-                </p>
-                <ul class="mt-4 space-y-2 text-gray-600 list-disc list-inside">
-                    <li>Start with focused events like buildathons</li>
-                    <li>Drive innovation through internal competitions</li>
-                    <li>Enable seamless cross-team collaboration</li>
-                    <li>Optimize resource allocation with AI</li>
-                    <li>Scale engineering capacity efficiently</li>
-                </ul>
-                <div class="mt-6 flex items-center gap-4">
-                    <a href="{% url "marketing:enterprise_support" %}" class="btn btn-primary">Enterprise Support</a>
-                    <a href="{% url "marketing:why_openunited" %}" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Video Modal -->
-        <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded-lg max-w-3xl w-full mx-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold">How It Works</h3>
-                    <button onclick="closeVideoModal()" class="text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="relative" style="padding-bottom: 56.25%">
-                    <iframe id="videoFrame" class="absolute inset-0 w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            function openVideoModal(videoId) {
-                document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videoId}`;
-                document.getElementById('videoModal').classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeVideoModal() {
-                document.getElementById('videoFrame').src = '';
-                document.getElementById('videoModal').classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-
-            // Close modal when clicking outside
-            document.getElementById('videoModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeVideoModal();
-                }
-            });
-        </script>
     </div>
 </section>
 
-<!-- TODO: Add more sections as needed based on the content outline -->
+
+<!-- How It Works -->
+<section class="py-16">
+    <div class="container">
+        <h2 class="text-4xl font-bold text-center mb-12">How It Works</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">1. AI-Driven Product & Challenge Creation</h3>
+                    <p>Transform your docs, bugs and priorities into clear, actionable bounties. Our Generative AI engine processes unstructured data into clear products and well-scoped bounties.</p>
+                </div>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">2. Intelligent Estimation</h3>
+                    <p>Leverage AI to allocate points to bounties. Identify high-impact challenges, optimize incentives, and ensure your team focuses on what matters most.</p>
+                </div>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">3. Effortless Talent Matching</h3>
+                    <p>Our AI-powered marketplace connects developers, designers, PMs, and specialists with challenges and bounties tailored to their expertise.</p>
+                </div>
+            </div>
+            
+            <!-- Step 4 -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">4. Rapid Onboarding</h3>
+                    <p>Cut onboarding time by 90%. AI-generated guides empower new contributors to make meaningful contributions in hours.</p>
+                </div>
+            </div>
+            
+            <!-- Step 5 -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">5. AI-Assisted Delivery</h3>
+                    <p>Streamline requirement definition and quality review with AI-assisted workflows, deliver robust features in record time.</p>
+                </div>
+            </div>
+            
+            <!-- Step 6 -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">6. Real-Time Visibility</h3>
+                    <p>Track progress live, remove blockers instantly, and celebrate top contributors. See the path to completion as it unfolds.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Section -->
+<section class="py-16 bg-base-200">
+    <div class="container">
+        <h2 class="text-4xl font-bold text-center mb-12">Why Choose OpenUnited?</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Months to Days</h3>
+                    <p>Compress the innovation cycle. Tackle technical debt, user requests, and strategic initiatives in a matter of days.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Sustained Innovation</h3>
+                    <p>Beyond the Buildathon, maintain the momentum with our platform supporting ongoing development and team growth.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Real Results</h3>
+                    <p>Unlike traditional hackathons, AI-Enhanced Buildathons produce production-ready solutions that boost your ROI.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonial Section -->
+<section class="py-16">
+    <div class="container">
+        <div class="max-w-3xl mx-auto text-center">
+            <blockquote class="text-2xl italic">
+                "Until now, Hackathons were limited to a theme as the input and prototype software as outputs. OpenUnited is the first platform that allows you to have the incredible buzz and productivity of hackathons, with real stuff getting done that helps your customers and business."
+            </blockquote>
+            <p class="mt-4 font-semibold">— Adrian McPhee, Founder</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary text-primary-content">
+    <div class="container text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Transform Your Innovation Engine?</h2>
+        <div class="space-x-4">
+            <a href="/signup" class="btn btn-secondary btn-lg">Try It Free</a>
+            <a href="/contact" class="btn btn-outline btn-lg">Schedule a Demo</a>
+        </div>
+    </div>
+</section>
 
 <footer class="bg-base-200 text-base-content">
     <div class="container py-8">
@@ -270,8 +258,8 @@
             <div>
                 <h2 class="font-bold mb-4">Platform</h2>
                 <ul class="space-y-2">
-                    <li><a href="{% url "product_management:bounty-list" %}">Explore Bounties</a></li>
-                    <li><a href="{% url "security:sign_in" %}">Add Your Product</a></li>
+                    <li><a href="#">Explore Buildathons</a></li>
+                    <li><a href="#">Start a Buildathon</a></li>
                     <li><a href="{% url "marketing:features" %}">Features</a></li>
                     <li><a href="{% url "marketing:how_it_works" %}">How It Works</a></li>
                     <li><a href="{% url "marketing:why_openunited" %}">Why OpenUnited?</a></li>
@@ -280,9 +268,9 @@
             <div>
                 <h2 class="font-bold mb-4">Solutions</h2>
                 <ul class="space-y-2">
+                    <li><a href="{% url "marketing:features" %}#buildathons">Buildathons</a></li>
+                    <li><a href="{% url "marketing:features" %}#fixathons">Fixathons</a></li>
                     <li><a href="{% url "marketing:features" %}#for-contributors">For Contributors</a></li>
-                    <li><a href="{% url "marketing:features" %}#for-tech-companies">For Tech Companies</a></li>
-                    <li><a href="{% url "marketing:enterprise_customers" %}">Enterprise Customers</a></li>
                 </ul>
             </div>
             <div>
