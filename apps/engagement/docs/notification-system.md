@@ -4,7 +4,7 @@
 
 ### Event-Driven Architecture
 - Events are published when significant actions occur
-- Events are processed via Django Q (configurable sync/async)
+- Events are processed via the Event Bus with a pluggable backend architecture (currently - Django Q (configurable sync/async))
 - Events are logged in EventLog model with retention period
 - Handlers create notifications based on event type and user preferences
 - Events are processed synchronously in test environments
